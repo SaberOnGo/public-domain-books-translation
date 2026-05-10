@@ -1,4 +1,4 @@
-# LifeBook Shufang: Public-Domain Book Translation and EPUB Collaboration
+# LifeBook Translation Group: Public-Domain Book Translation and EPUB Collaboration
 
 <table align="center">
   <tr>
@@ -8,7 +8,7 @@
   </tr>
 </table>
 
-LifeBook Shufang is a collaborative project for translating public-domain books and producing readable EPUB editions.
+LifeBook Translation Group is a collaborative project for translating public-domain books and producing readable EPUB editions.
 
 The goal is not to publish raw AI output. AI can help with repetitive work: finding and cleaning source text, splitting chapters, drafting translations, creating glossaries, checking omissions, and building EPUB files. But good books still need human judgment. People are needed to read, question, correct, polish, verify names and terms, and test the final book in real reading apps.
 
