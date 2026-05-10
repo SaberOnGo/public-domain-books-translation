@@ -1,0 +1,25 @@
+type,source_term,target_term,domain,notes
+proper_noun,Matthew A. Henson,马修·A·亨森,person,author and narrator
+proper_noun,Matthew Alexander Henson,马修·亚历山大·亨森,person,full name
+proper_noun,Robert E. Peary,罗伯特·E·皮里,person,expedition commander
+proper_noun,Commander Peary,皮里指挥官,person,title in narrative
+proper_noun,Booker T. Washington,布克·T·华盛顿,person,introduction author
+proper_noun,Roosevelt,罗斯福号,ship,Peary expedition ship
+proper_noun,North Pole,北极点,place,
+proper_noun,Cape Sheridan,谢里登角,place,
+proper_noun,Cape Columbia,哥伦比亚角,place,
+proper_noun,Etah,伊塔,place,
+proper_noun,Smith Sound,史密斯海峡,place,
+proper_noun,Peary Arctic Club,皮里北极俱乐部,organization,
+technical_term,sledge,雪橇,polar exploration,
+technical_term,dog-team,狗拉雪橇队,polar exploration,
+technical_term,ice-pack,浮冰群,polar exploration,
+technical_term,lead,冰间水道,polar exploration,when referring to open water crack in ice
+technical_term,Big Lead,大冰间水道,polar exploration,proper expedition feature
+technical_term,floe,浮冰,polar exploration,
+technical_term,igloo,冰屋,polar exploration,
+technical_term,musk-ox,麝牛,animal,
+term,Esquimo,爱斯基摩人,historical ethnonym,retain historically but consider note that Inuit is modern term
+term,Colored Man,有色人种,historical racial term,use context-sensitive translation
+symbol,Old Glory,星条旗,national symbol,body text default; explain as nickname of American flag only in notes
+symbol,Stars and Stripes,星条旗,national symbol,prefer image-bearing term over plain 美国国旗 in body text

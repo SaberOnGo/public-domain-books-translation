@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2400" viewBox="0 0 1600 2400" role="img" aria-label="黑人北极探险家封面">
+  <defs>
+    <linearGradient id="ice" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e8f7ff"/>
+      <stop offset="0.48" stop-color="#b8d9ea"/>
+      <stop offset="1" stop-color="#1d3c55"/>
+    </linearGradient>
+    <linearGradient id="night" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d2130"/>
+      <stop offset="1" stop-color="#163c55"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="2400" fill="url(#ice)"/>
+  <rect x="110" y="130" width="1380" height="2140" rx="42" fill="url(#night)" opacity="0.94"/>
+  <path d="M110 1740 C320 1610 530 1660 720 1540 C930 1410 1120 1500 1490 1320 L1490 2270 L110 2270 Z" fill="#edf8ff" opacity="0.95"/>
+  <path d="M110 1900 C390 1780 600 1840 790 1720 C980 1600 1190 1650 1490 1515 L1490 2270 L110 2270 Z" fill="#cbe6f3" opacity="0.82"/>
+  <circle cx="1230" cy="420" r="120" fill="#fff7d2" opacity="0.88"/>
+  <path d="M320 1100 L470 760 L620 1100 Z M550 1120 L760 610 L990 1120 Z M920 1130 L1080 800 L1230 1130 Z" fill="#f4fbff" opacity="0.92"/>
+  <text x="800" y="360" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="72" fill="#d6edf7" letter-spacing="8">LifeBook 公版新译</text>
+  <text x="800" y="720" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-weight="700" font-size="150" fill="#ffffff">黑人北极</text>
+  <text x="800" y="910" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-weight="700" font-size="150" fill="#ffffff">探险家</text>
+  <line x1="420" y1="1010" x2="1180" y2="1010" stroke="#d6edf7" stroke-width="5" opacity="0.75"/>
+  <text x="800" y="1210" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="54" fill="#d6edf7">A Negro Explorer at the North Pole</text>
+  <text x="800" y="1350" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="58" fill="#ffffff">马修·A. 亨森 著</text>
+  <text x="800" y="1440" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="52" fill="#d6edf7">LifeBook 书坊 译制</text>
+  <text x="800" y="2110" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="44" fill="#123246">依据 Project Gutenberg #20923 公版原文制作</text>
+</svg>

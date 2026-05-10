@@ -1,0 +1,17 @@
+{
+  "name": "pg20923_a_negro_explorer_at_the_north_pole",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build:epub": "node scripts/build_epub.js",
+    "check:epub": "node scripts/run_epubcheck.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "epub-gen": "^0.1.0",
+    "epubchecker": "^5.2.1"
+  }
+}

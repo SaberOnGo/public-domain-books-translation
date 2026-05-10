@@ -1,0 +1,44 @@
+{
+  "project_root": "D:\\project\\49_英文公版书_翻译制作\\books\\pg20923_a_negro_explorer_at_the_north_pole",
+  "source_url": "https://www.gutenberg.org/ebooks/20923",
+  "status": "EPUB_BUILT_EPUBCHECK_PASS_COVER_COMPRESSED_FONT_UNLOCKED",
+  "chapters_total": 26,
+  "chapters_translated": 26,
+  "chapters_reviewed": 26,
+  "current_step": "EPUB rebuilt with compressed JPEG cover, no CSS font-family lock, chapter title sizes unified, and LifeBook Shufang metadata fixed",
+  "last_error": "",
+  "translation_engine": "codex_app_manual_ai_translation",
+  "forbidden_tools": [
+    "gemini"
+  ],
+  "quality_gate": {
+    "style_profile": "metadata/style_profile.md",
+    "sample_test_report": "qa/samples/sample_test_report.md",
+    "sample_test_status": "PASS",
+    "pretranslation_report": "qa/pretranslation/pretranslation_report.md",
+    "pretranslation_status": "PASS_WITH_V1_V2_FAILURES_RECORDED",
+    "private_benchmark_method": "qa/benchmark/duras_wang_opening_method.md",
+    "existing_final_chapters_status": "NOT_APPROVED_UNDER_NEW_GATE",
+    "next_required_step": "retranslate_or_regate_004_chapter_i_under_new_quality_gate",
+    "epubcheck": "PASS_FATAL0_ERROR0_WARNING0_AFTER_FORMAT_REBUILD",
+    "final_chapters": "26/26",
+    "qa_gates": "26/26",
+    "scan_for_known_bad_patterns": "PASS_0_HITS",
+    "literary_caveat": "chapters 001-012 restored from earlier draft with targeted fixes; chapters 013-026 translated in current run under revised quality rules",
+    "publishing_review": "qa/publishing_review.md",
+    "epub_quality_review": "qa/epub_quality_review.md",
+    "cover": "PASS_COVER_JPEG_394KB",
+    "metadata": "PASS_LIFEBOOK_SHUFANG_NO_OLD_TRANSLATOR",
+    "mobile_css": "PASS_H1_1_18EM_CHINESE_FONT_STACK",
+    "font": "PASS_NO_FONT_FAMILY_LOCK",
+    "chapter_heading": "PASS_KICKER_AND_TITLE_SAME_SIZE",
+    "font_cover_metadata_fix": "qa/font_cover_metadata_fix.md"
+  },
+  "quality_requirements": [
+    "No mechanical AI-flavored translation.",
+    "Translate according to source meaning, context, tone, and narrative rhythm.",
+    "Target style should be faithful, fluent, and literary where appropriate.",
+    "Run repeated fidelity, readability, terminology, and EPUB quality checks before completion.",
+    "Do not mark DONE until EPUB exists and epubcheck validation passes."
+  ]
+}
