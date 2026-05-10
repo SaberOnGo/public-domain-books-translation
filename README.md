@@ -36,7 +36,9 @@ This repository is also documented in English below. The current working materia
 ```text
 /goal 按 D:\project\49_public-domain-books-translation\books\pg20923_a_negro_explorer_at_the_north_pole 工程制作《黑人北极探险家》中文 EPUB，
 从 https://www.gutenberg.org/ebooks/20923 抓取原文，
-按 00-08 流水线完成翻译、校对、排版、生成 output/book.epub，并通过 epubcheck。
+按 epub_pipeline_template_zh_en 的 00_orchestrator_zh_en.md 串联执行当前完整流程，
+覆盖来源核查、译前研究、预翻译、分章翻译、章节审校、章节门禁、预制作阶段 1、样章检查、全书 EPUB 制作、独立评审、返工路由、最终输出和复盘，
+生成 output/book.epub，并通过 epubcheck。
 ```
 
 如果你只知道书名，不知道 URL，也可以先让 AI 帮你找可靠公版来源：
