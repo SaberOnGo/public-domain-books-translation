@@ -1,10 +1,12 @@
 # LifeBook Shufang: Public-Domain Book Translation and EPUB Collaboration
 
-<p align="right">
-  <a href="./README.md"><img src="https://img.shields.io/badge/中文-switch-lightgrey" alt="中文"></a>
-  <a href="./README.en.md"><img src="https://img.shields.io/badge/English-current-blue" alt="English"></a>
-  <a href="./README.ja.md"><img src="https://img.shields.io/badge/日本語-switch-lightgrey" alt="日本語"></a>
-</p>
+<table align="center">
+  <tr>
+    <td align="center"><h3><a href="./README.md">中文</a></h3></td>
+    <td align="center"><h3><a href="./README.en.md">English</a></h3></td>
+    <td align="center"><h3><a href="./README.ja.md">日本語</a></h3></td>
+  </tr>
+</table>
 
 LifeBook Shufang is a collaborative project for translating public-domain books and producing readable EPUB editions.
 
@@ -158,4 +160,3 @@ Translations, notes, covers, formatting, and EPUB packaging created in this proj
 ## A Practical Invitation
 
 If you like books and want to help bring overlooked public-domain works to more readers, you can start small. Read a chapter. Mark one awkward sentence. Check one name. Test one EPUB. A book improves through many small acts of attention.
-
