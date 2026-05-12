@@ -42,7 +42,7 @@ Example prompt:
 /goal Create a Chinese EPUB for A Negro Explorer at the North Pole using the reference project
 D:\project\49_public-domain-books-translation\books\pg20923_a_negro_explorer_at_the_north_pole.
 Fetch the source text from https://www.gutenberg.org/ebooks/20923.
-Use epub_pipeline_template_zh_en and let 00_orchestrator_zh_en.md run the current full workflow:
+Use template/epub_pipeline/common plus template/epub_pipeline/en-zh-Hans, and let 00_orchestrator_zh_en.md run the current full workflow:
 source and rights review, book research, pre-translation trials, chapter translation, chapter review,
 chapter gates, preproduction stage 1, sample EPUB review, full EPUB production, independent review,
 revision routing, final output, and retrospective.
@@ -54,20 +54,21 @@ If you only know a title, ask AI to find a reliable public-domain source first:
 ```text
 Please find a reliable public-domain source for {book title}.
 Prioritize Project Gutenberg, Wikisource, and Standard Ebooks.
-After source and rights risks are checked, create a new book project under books/ using epub_pipeline_template_zh_en.
+After source and rights risks are checked, create a new book project under books/ by copying template/epub_pipeline/common first and overlaying template/epub_pipeline/en-zh-Hans.
 ```
 
 ## Repository Structure
 
-### `epub_pipeline_template_zh_en/`
+### `template/epub_pipeline/`
 
-This is the reusable book-production template. It is mainly for AI agents to read and execute. Human contributors usually do not need to inspect every file in it. For a new book, ask AI to copy this template into a new folder under `books/`; do not put real book data into the template folder itself.
+This is the reusable book-production template area. `common/` contains shared EPUB workflow contracts, rights checks, state files, scripts, and production rules. `en-zh-Hans/` contains English to Simplified Chinese prompts, glossary/style guidance, and review rules. For a new book, ask AI to copy `common/` into a new folder under `books/`, then overlay the matching language-pair template; do not put real book data into the template folder itself.
 
 Important files and folders:
 
-- `README_ZH_EN.md`: template guide.
-- `MASTER_PROMPT_ZH_EN.md`: master prompt for starting a new book project.
-- `PIPELINE_SPEC_ZH_EN.md`: pipeline contract and directory rules.
+- `template/epub_pipeline/README.md`: template layout guide.
+- `template/epub_pipeline/common/PIPELINE_SPEC.md`: pipeline contract and directory rules.
+- `template/epub_pipeline/en-zh-Hans/README.md`: English to Simplified Chinese template guide.
+- `template/epub_pipeline/en-zh-Hans/MASTER_PROMPT.md`: master prompt for starting a new book project.
 - `prompts/`: step-by-step prompts from ingestion to review, EPUB production, and retrospective.
 - `metadata/`: book metadata, rights checklist, source evidence, style profile.
 - `chapters/`: source chapters, translated drafts, and final chapters.
@@ -156,7 +157,15 @@ Each source book must be checked separately. A text may be public domain in one 
 
 Project Gutenberg texts are often public domain in the United States. Before wider distribution, contributors should review the copyright status for the target region.
 
-Translations, notes, covers, formatting, and EPUB packaging created in this project may have their own rights status. Project maintainers should define the release license clearly before public distribution.
+Translations, notes, covers, formatting, EPUB packaging, and other non-code content produced by this project are released to the public under `CC BY-NC-SA 4.0` by default. Third-party commercial use requires separate permission from LifeBook Shufang and the relevant rights holders.
+
+By contributing, contributors agree that their contributions may be included in this project for public release and may be used by LifeBook Shufang in LifeBook products and services. LifeBook Shufang is responsible for project organization, publication, quality control, license management, and contributor return arrangements. Specific attribution and return methods are determined according to contribution status and project rules.
+
+See:
+
+- [LICENSE.md](LICENSE.md): public content license and code license.
+- [CONTRIBUTING.md](CONTRIBUTING.md): contributor authorization and participation rules.
+- [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md): third-party commercial use notes.
 
 ## A Practical Invitation
 
