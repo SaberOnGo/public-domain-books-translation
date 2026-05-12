@@ -56,6 +56,18 @@ human_required: false
 - 正文段首缩进通常为 `2em`。
 - 行距建议 `1.55-1.8`。
 - 避免用 CSS 阻止阅读器改字体、字号、行距。
+- 旧纸书页码目录不得作为正文输出；EPUB 应使用 `nav.xhtml` 表达目录。
+- 靠连续空格对齐的内容必须改成真实列表、表格或删除，不得让普通正文出现可见异常空格。
+
+## Publication Lint / 出版文本检查
+
+构建前必须运行：
+
+```powershell
+node scripts/publication_lint.js --target={target-language} --write-report
+```
+
+输出必须保存为 `output/publication_lint.json`。
 
 ## Metadata / 元数据
 
@@ -78,3 +90,4 @@ OPF 必须包含：
 - 版本说明完整。
 - 字体策略不会导致读者无法调整字体。
 - 标题和正文排版适合手机阅读。
+- `output/publication_lint.json` 无硬错误。

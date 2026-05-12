@@ -38,6 +38,12 @@ This file is for AI agents using the `en-zh-Hans` template.
 - No translated chapter may enter `chapters/final/` without chapter controls, review, and gate pass records.
 - 任何章节没有译后控制、审校和门禁 PASS 记录，不得进入 `chapters/final/`。
 
+- Before building or publishing an EPUB, run `node scripts/publication_lint.js --target=zh-Hans --write-report` and fix all hard errors.
+- 构建或发布 EPUB 前，必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`，并修复所有硬错误。
+
+- Do not allow semicolon overuse, visible abnormal spaces between Chinese text, legacy print page-number tables, or garbled characters into final output.
+- 不得让分号滥用、中文可见异常空格、旧纸书页码目录或乱码进入最终成书。
+
 ## Human Checkpoints / 人类可选检查点
 
 - `metadata/book_specific_translation_research.md`
@@ -47,6 +53,7 @@ This file is for AI agents using the `en-zh-Hans` template.
 - `qa/chapter_controls/{NNN_slug}.control.md`
 - `qa/gates/{NNN_slug}.gate.md`
 - `preproduction/stage2_sample/sample_book.epub`
+- `output/publication_lint.json`
 - `reviews/scorecards/final_quality_score.md`
 
 If no human feedback is required, continue only when the relevant report says `PASS`.

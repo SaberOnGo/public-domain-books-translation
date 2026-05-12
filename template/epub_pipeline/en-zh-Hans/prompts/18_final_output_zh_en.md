@@ -9,6 +9,7 @@
 - `output/book.epub`
 - `reviews/scorecards/final_quality_score.md`
 - `reviews/revision_route.md`
+- `output/publication_lint.json`
 - `output/epubcheck.json` 或 `output/epubcheck.log`
 
 ## 最终检查 / Final Checks
@@ -22,11 +23,13 @@
 5. 标题层级、字体策略、正文排版符合 `production_spec.md`。
 6. 文件体积合理，封面和字体未异常膨胀。
 7. 双 Agent 评审分数达到 PASS。
+8. `output/publication_lint.json` 无硬错误；不存在分号滥用、异常连续空格、旧纸书页码目录或乱码。
 
 ## 输出 / Output
 
 - `output/book.epub`
 - 可选中文文件名副本：`output/{中文书名}.epub`
+- `output/publication_lint.json`
 - `output/final_manifest.md`
 
 ## 状态 / State
