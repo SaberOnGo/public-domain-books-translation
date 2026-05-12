@@ -38,7 +38,7 @@ This file is for AI agents working from a downloaded copy of this repository.
 
 ## Recommended Reading / 建议读取
 
-- `readme/README.md`, `readme/README.en.md`, `readme/README.zh-TW.md`, or `readme/README.ja.md`
+- `README.md`, `README.zh-CN.md`, `readme/README.zh-TW.md`, or `readme/README.ja.md`
 - `template/epub_pipeline/README.md`
 - `skills/public-domain-epub-pipeline/SKILL.md`
 - Matching language-pair template files under `template/epub_pipeline/{source-target}/`

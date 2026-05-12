@@ -2,9 +2,9 @@
 
 <table align="center">
   <tr>
-    <td align="center"><h3><a href="./README.md">简体中文</a></h3></td>
+    <td align="center"><h3><a href="../README.zh-CN.md">简体中文</a></h3></td>
     <td align="center"><h3><a href="./README.zh-TW.md">繁體中文</a></h3></td>
-    <td align="center"><h3><a href="./README.en.md">English</a></h3></td>
+    <td align="center"><h3><a href="../README.md">English</a></h3></td>
     <td align="center"><h3><a href="./README.ja.md">日本語</a></h3></td>
   </tr>
 </table>
