@@ -39,3 +39,11 @@ Examples:
 - `de-zh-Hant`: important prompts and review instructions should include Traditional Chinese, optionally paired with English.
 
 Shared repository-level documentation should include Chinese when it is intended for project-owner review. Bilingual Chinese-English wording is acceptable when exact terminology matters.
+
+## Public Agent and Skill Files
+
+Each language-pair template should include public `AGENTS.md` and `SKILL.md` files so downloaded copies of the repository can be used directly by AI agents.
+
+`AGENTS.md` should state mandatory behavior for the template. `SKILL.md` should state when and how to run the template workflow.
+
+These files must follow the same language rule: local contributor language plus optional English as the bridge language. For example, `en-ja/AGENTS.md` and `en-ja/SKILL.md` should include Japanese, optionally paired with English.
