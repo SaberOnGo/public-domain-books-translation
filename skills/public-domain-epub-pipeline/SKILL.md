@@ -31,6 +31,8 @@ Use this skill when an AI agent is asked to create a book project, add or update
 
 7. Run the workflow through source evidence, rights checks, research, trial translation, chapter translation, review, gates, EPUB production, validation, independent review, and retrospective.
    按来源证据、版权核查、研究、试译、章节翻译、审校、门禁、EPUB 制作、校验、独立评审和复盘流程执行。
+8. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
+   特定语言方向的脚本、数据集和探索性调研应放在 `research/{source-target}/...` 或对应语言方向模板中，不要放在仓库根目录。
 
 ## Language Requirements / 语言要求
 

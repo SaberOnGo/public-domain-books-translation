@@ -35,6 +35,8 @@ This file is for AI agents working from a downloaded copy of this repository.
 
 - Raw AI output is not publishable. Use research, trial translation, chapter review, quality gates, EPUB validation, and retrospective records.
 - AI 初稿不能直接发布。必须经过研究、试译、章节审校、质量门禁、EPUB 校验和复盘记录。
+- Do not place language-pair-specific scripts, datasets, or exploratory files in the repository root. Put them under `research/{source-target}/...` or the matching language-pair template.
+- 不要把特定语言方向的脚本、数据集或探索文件放在仓库根目录。应放到 `research/{source-target}/...` 或对应语言方向模板中。
 
 ## Recommended Reading / 建议读取
 
