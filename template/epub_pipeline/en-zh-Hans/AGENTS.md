@@ -1,0 +1,54 @@
+# en-zh-Hans Agent Instructions / 英文到简体中文模板 Agent 指令
+
+This file is for AI agents using the `en-zh-Hans` template.
+
+本文件供使用 `en-zh-Hans` 模板的 AI agent 读取。
+
+## Scope / 适用范围
+
+- Source language: English.
+- 原文语言：英文。
+
+- Target language: Simplified Chinese.
+- 目标语言：简体中文。
+
+- Intended contributors must be able to read Simplified Chinese instructions. English can appear in parallel for precision.
+- 面向本模板的贡献者必须能读到简体中文说明。为了精确，英文可以并列出现。
+
+## Mandatory Rules / 强制规则
+
+- Copy `template/epub_pipeline/common` first, then overlay `template/epub_pipeline/en-zh-Hans` into a book project under `books/{book_id_slug}/`.
+- 必须先复制 `template/epub_pipeline/common`，再覆盖复制 `template/epub_pipeline/en-zh-Hans` 到 `books/{book_id_slug}/` 书籍工程。
+
+- Do not write book-specific files into this template directory.
+- 不得把具体书籍文件写入本模板目录。
+
+- Important files and prompts for this template must include Simplified Chinese. English may be included in parallel, but English-only important instructions are not acceptable here.
+- 本模板的重要文件和 prompt 必须包含简体中文。英文可以并列，但重要说明不能只写英文。
+
+- Preserve source evidence and rights checks before translation.
+- 翻译前必须保留来源证据并完成版权核查。
+
+- Do not use modern Chinese translations as source material or hidden reference material.
+- 不得使用现代中文译本作为翻译底本或隐藏参考材料。
+
+- Translation quality must be faithful, readable, and natural in Chinese. It must not be mechanical, over-compressed, or embellished beyond the source.
+- 译文必须忠实、可读，并且是自然的中文；不得机械直译、过度压缩或无依据加戏。
+
+- No translated chapter may enter `chapters/final/` without chapter controls, review, and gate pass records.
+- 任何章节没有译后控制、审校和门禁 PASS 记录，不得进入 `chapters/final/`。
+
+## Human Checkpoints / 人类可选检查点
+
+- `metadata/book_specific_translation_research.md`
+- `metadata/style_profile.md`
+- `glossary/terms.csv`
+- `qa/pretranslation/pretranslation_report.md`
+- `qa/chapter_controls/{NNN_slug}.control.md`
+- `qa/gates/{NNN_slug}.gate.md`
+- `preproduction/stage2_sample/sample_book.epub`
+- `reviews/scorecards/final_quality_score.md`
+
+If no human feedback is required, continue only when the relevant report says `PASS`.
+
+如果不需要等待人工反馈，也只能在对应报告明确 `PASS` 后继续。
