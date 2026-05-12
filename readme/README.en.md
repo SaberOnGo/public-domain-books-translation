@@ -167,9 +167,9 @@ By contributing, contributors agree that their contributions may be included in 
 
 See:
 
-- [LICENSE.en.md](LICENSE.en.md): public content license and code license.
-- [CONTRIBUTING.en.md](CONTRIBUTING.en.md): contributor authorization and participation rules.
-- [COMMERCIAL_LICENSE.en.md](COMMERCIAL_LICENSE.en.md): third-party commercial use notes.
+- [LICENSE.en.md](../license/LICENSE.en.md): public content license and code license.
+- [CONTRIBUTING.en.md](../license/CONTRIBUTING.en.md): contributor authorization and participation rules.
+- [COMMERCIAL_LICENSE.en.md](../license/COMMERCIAL_LICENSE.en.md): third-party commercial use notes.
 
 ## A Practical Invitation
 
