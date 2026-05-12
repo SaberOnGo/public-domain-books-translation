@@ -11,7 +11,7 @@
 
 ## 参考对比
 
-参考 `D:\project\14_book\` 中的 Calibre/中文 EPUB：
+参考用户本地提供的 Calibre/中文 EPUB 样本目录（不提交到仓库）：
 
 - 常见结构包含：OPF metadata、manifest、spine、nav/toc、封面图片、封面页。
 - Calibre EPUB 通常写入 `<meta name="cover" content="cover"/>` 或 manifest `properties="cover-image"`。

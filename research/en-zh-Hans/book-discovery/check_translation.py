@@ -2,6 +2,24 @@ import urllib.request
 import urllib.parse
 import json
 import time
+import argparse
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+DEFAULT_OUTPUT = SCRIPT_DIR / "search_results.json"
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Check likely existing Chinese translation status for a historical English book list."
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=DEFAULT_OUTPUT,
+        help="Output JSON path. Defaults to search_results.json next to this script.",
+    )
+    return parser.parse_args()
 
 books = [
     # Travelogues
@@ -48,6 +66,7 @@ books = [
     'The Hampdenshire Wonder J. D. Beresford'
 ]
 
+args = parse_args()
 results = {}
 for book in books:
     query = f'"{book.split(" ")[0]} {book.split(" ")[1]}" (豆瓣 OR 中文版 OR 中译本)'
@@ -63,6 +82,11 @@ for book in books:
         results[book] = 'Error: ' + str(e)
     time.sleep(1) # Be nice to DDG
 
-with open("search_results.json", "w", encoding="utf-8") as f:
+output_path = args.output
+if not output_path.is_absolute():
+    output_path = (Path.cwd() / output_path).resolve()
+output_path.parent.mkdir(parents=True, exist_ok=True)
+
+with output_path.open("w", encoding="utf-8") as f:
     json.dump(results, f, indent=2, ensure_ascii=False)
-print("Done")
+print(f"Done: {output_path}")
