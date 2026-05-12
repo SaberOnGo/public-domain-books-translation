@@ -14,6 +14,8 @@ This file is for AI agents working from a downloaded copy of this repository.
 
 - For every new book project, copy `template/epub_pipeline/common` first, then overlay the matching language-pair template, and write all book-specific output only under `books/{book_id_slug}/`.
 - 制作每一本新书时，必须先复制 `template/epub_pipeline/common`，再覆盖复制匹配的语言方向模板；所有具体书籍产物只能写入 `books/{book_id_slug}/`。
+- Target-language quality rules live under `template/epub_pipeline/targets/{target}/`; source-to-target-specific rules live under `template/epub_pipeline/{source-target}/`.
+- 目标语言质量规则放在 `template/epub_pipeline/targets/{target}/`；源语言到目标语言的专用规则放在 `template/epub_pipeline/{source-target}/`。
 
 - Never write source text, translations, QA files, EPUB output, or book-specific metadata back into `template/`.
 - 严禁把原文、译文、QA、EPUB 输出或具体书籍 metadata 写回 `template/`。
@@ -44,6 +46,7 @@ This file is for AI agents working from a downloaded copy of this repository.
 
 - `README.md`, `README.zh-CN.md`, `readme/README.zh-TW.md`, or `readme/README.ja.md`
 - `template/epub_pipeline/README.md`
+- Matching target-language quality files under `template/epub_pipeline/targets/{target}/`
 - `skills/public-domain-epub-pipeline/SKILL.md`
 - Matching language-pair template files under `template/epub_pipeline/{source-target}/`
 

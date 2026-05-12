@@ -40,7 +40,7 @@ PASS 或 FAIL。
 
 ## 失败则回溯到哪一阶段
 
-- 如果是通用原则问题：回到 `translation_quality_framework/references/quality_standard.md`。
+- 如果是简体中文目标语言通用原则问题：回到 `template/epub_pipeline/targets/zh-Hans/quality_framework/references/quality_standard.md`。
 - 如果是本书判断问题：回到 `metadata/book_specific_translation_research.md`。
 - 如果只是个别表达问题：回到本阶段继续试译。
 

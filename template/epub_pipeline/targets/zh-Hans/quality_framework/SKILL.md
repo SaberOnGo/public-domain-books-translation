@@ -1,9 +1,9 @@
 ---
-name: literary-translation-quality
-description: Use when translating public-domain or licensed books into Chinese, especially literary nonfiction, memoir, travel, exploration, adventure, fiction, or essays. Provides a strict workflow for AI-assisted translation quality, including research-grounded standards, chapter prompts, MQM-style error review, literary revision, benchmark testing against legally available reference excerpts, and EPUB-ready final text checks.
+name: zh-hans-target-quality
+description: Use when translating public-domain or licensed books into Simplified Chinese, regardless of source language. Provides target-language quality rules for AI-assisted translation, including Chinese readability, style research, chapter gates, benchmark testing, literary revision, and EPUB-ready final text checks.
 ---
 
-# Literary Translation Quality
+# Simplified Chinese Target Quality / 简体中文目标语言质量
 
 Use this skill before translating full chapters. Do not begin batch translation until a sample passes the quality gate.
 

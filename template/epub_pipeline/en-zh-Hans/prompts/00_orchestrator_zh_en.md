@@ -24,9 +24,11 @@
 3. `automation_contract.md`
 4. `references/translation_research_universal.md`
 5. `references/quality_standard.md`
-6. `epub_production_lessons.md`
-7. `state/human_feedback_control.md`
-8. `TEMPLATE_VERSION.md`
+6. `references/english_source_notes.md`
+7. `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`
+8. `epub_production_lessons.md`
+9. `state/human_feedback_control.md`
+10. `TEMPLATE_VERSION.md`
 
 ## 执行顺序 / Execution Order
 
