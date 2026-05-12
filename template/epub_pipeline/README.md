@@ -25,3 +25,17 @@ Language-pair directories use BCP 47-style direction names:
 - `zh-Hant-de`: Traditional Chinese to German.
 
 Use `common/` for workflow pieces that should be shared by every language pair.
+
+## Documentation Language
+
+Important human-facing files in a language-pair template, including prompts, workflow instructions, quality gates, review rubrics, and policy notes, must include the local language that contributors for that template are expected to read.
+
+English can be included in parallel as a bridge language for precision and international collaboration, but important template instructions should not be English-only when the target contributors are expected to work in another language.
+
+Examples:
+
+- `en-ja`: important prompts and review instructions should include Japanese, optionally paired with English.
+- `fr-en`: important prompts and review instructions should include English.
+- `de-zh-Hant`: important prompts and review instructions should include Traditional Chinese, optionally paired with English.
+
+Shared repository-level documentation should include Chinese when it is intended for project-owner review. Bilingual Chinese-English wording is acceptable when exact terminology matters.
