@@ -1,124 +1,176 @@
-# LifeBook Shufang Public-Domain Translation Project
+# LifeBook Shufang: Global Public-Domain Book Translation and EPUB Collaboration
 
 <table align="center">
   <tr>
-    <td align="center"><strong><a href="./readme/README.md">简体中文</a></strong></td>
-    <td align="center"><strong><a href="./readme/README.zh-TW.md">繁體中文</a></strong></td>
-    <td align="center"><strong><a href="./readme/README.en.md">English</a></strong></td>
-    <td align="center"><strong><a href="./readme/README.ja.md">日本語</a></strong></td>
+    <td align="center"><h3><a href="./README.zh-CN.md">简体中文</a></h3></td>
+    <td align="center"><h3><a href="./readme/README.zh-TW.md">繁體中文</a></h3></td>
+    <td align="center"><h3><a href="./README.md">English</a></h3></td>
+    <td align="center"><h3><a href="./readme/README.ja.md">日本語</a></h3></td>
   </tr>
 </table>
 
-LifeBook Shufang is a global, multilingual project for translating public-domain books and producing high-quality EPUB editions with AI-assisted workflows and human review.
+LifeBook Shufang is a global, multilingual collaboration project for translating public-domain books and producing readable EPUB editions.
 
-LifeBook 书坊是一个全球多语言公版书翻译与 EPUB 制作协作项目。它使用 AI 提高整理、翻译、审校和制书效率，但最终质量仍依赖人的判断、校对和阅读体验检查。
+The goal is not to publish raw AI output. AI can help with repetitive work: finding and cleaning source text, splitting chapters, drafting translations, creating glossaries, checking omissions, and building EPUB files. But good books still need human judgment. People are needed to read, question, correct, polish, verify names and terms, and test the final book in real reading apps.
 
-## What This Project Does
+You do not need to be a programmer to help. Reading a chapter and saying "this part is confusing" is already useful.
 
-Many public-domain books are legally available but still difficult to read across languages, regions, and devices. This project helps contributors turn reliable public-domain sources into readable, reviewable, and reusable EPUB editions.
+## What We Are Trying To Do
 
-许多公版书虽然已经可以合法获取，但在不同语言、地区和设备上仍然不容易阅读。本项目希望把可靠来源的公版作品整理成可翻译、可审校、可追踪、可制作 EPUB 的协作工程。
+- Choose public-domain books from reliable sources such as Project Gutenberg, Wikisource, and Standard Ebooks.
+- Preserve source and rights evidence before translation.
+- Avoid modern copyrighted editions, modern annotations, and unclear download sources.
+- Use AI for traceable drafting and checking, not for one-shot unreviewed publishing.
+- Keep source chapters, draft translations, final chapters, review files, glossary files, and EPUB output in a structure that other people can inspect.
+- Let contributors help with small tasks: reading, proofreading, terminology, source research, layout checks, and EPUB testing.
 
-The project is not limited to one language direction. Templates can support many pairs, for example French to English, Japanese to Spanish, Chinese to English, English to Indonesian, German to Traditional Chinese, or English to Simplified Chinese.
+This is intentionally modest. Think of it as a small book workshop: someone finds a book, someone checks the source, someone reviews a chapter, someone tests the EPUB. Many small contributions can make one book better.
 
-本项目不只面向某一个翻译方向。模板可以支持多种语言组合，例如法语到英语、日语到西班牙语、中文到英语、英语到印尼语、德语到繁体中文、英语到简体中文等。
+## Easiest Way To Start
 
-## Why It Matters
+Most contributors do not need to manually copy folders or fill in metadata files. Give an AI assistant the template folder, a public-domain source URL if you have one, and the translation direction. The AI should create the book project, fill in metadata, document source evidence, run the translation pipeline, and build the EPUB.
 
-- Public-domain works should be easier to discover, translate, read, and preserve.
-- AI can accelerate repetitive work, but raw AI output should not be treated as a finished book.
-- A book project should keep source evidence, rights checks, terminology, translation notes, QA reports, EPUB output, and retrospective records together.
-- Small contributions should be useful: one chapter review, one terminology correction, one source note, one EPUB test, or one proofread paragraph can all improve a book.
+Usually you only need to provide:
 
-- 公版作品应该更容易被发现、翻译、阅读和保存。
-- AI 可以加速重复劳动，但 AI 初稿不能直接当作成书发布。
-- 每本书都应该保留来源证据、版权核查、术语表、翻译说明、质量报告、EPUB 输出和复盘记录。
-- 小贡献也应该有价值：审一章、改一个术语、补一条来源、试读一次 EPUB、校对一段文字，都能让一本书变好。
+- The book you want to work on.
+- A public-domain source URL, if known.
+- The translation direction, such as English to Spanish, French to Japanese, Chinese to English, or Japanese to German.
+- The existing language-pair template to use. If that template does not exist yet, add the matching template directory first.
 
-## How The Pipeline Works
+Example prompt. This uses French to English as a concrete direction. If `fr-en` does not exist yet, add that language-pair template first:
 
-1. Verify the source and public-domain status.
-2. Create a book workspace under `books/{book_id_slug}/`.
-3. Copy the shared EPUB pipeline from `template/epub_pipeline/common`.
-4. Overlay the matching language-pair template, such as `template/epub_pipeline/en-zh-Hans`.
-5. Run research, terminology preparation, trial translation, chapter translation, review, quality gates, EPUB production, validation, and retrospective.
+```text
+/goal Create an English EPUB from a French public-domain book.
+Fetch the source text from {reliable public-domain source URL}.
+Use template/epub_pipeline/common plus template/epub_pipeline/fr-en, and let the orchestrator prompt run the full workflow:
+source and rights review, book research, pre-translation trials, chapter translation, chapter review,
+chapter gates, preproduction stage 1, sample EPUB review, full EPUB production, independent review,
+revision routing, final output, and retrospective.
+Generate output/book.epub and pass epubcheck.
+```
 
-1. 先确认来源可靠，并核查公版状态。
-2. 在 `books/{book_id_slug}/` 下创建具体书籍工程。
-3. 先复制共享 EPUB 流水线：`template/epub_pipeline/common`。
-4. 再覆盖对应语言方向模板，例如 `template/epub_pipeline/en-zh-Hans`。
-5. 依次执行译前研究、术语准备、试译、章节翻译、审校、质量门禁、EPUB 制作、格式校验和复盘。
+If you only know a title, ask AI to find a reliable public-domain source first:
 
-## Ways To Contribute
+```text
+Please find a reliable public-domain source for {book title}.
+Prioritize Project Gutenberg, Wikisource, and Standard Ebooks.
+After source and rights risks are checked, choose the matching language-pair template. For French to English, use or add template/epub_pipeline/fr-en; for Japanese to Spanish, use or add template/epub_pipeline/ja-es; for English to Simplified Chinese, use template/epub_pipeline/en-zh-Hans. Then create a new book project under books/ by copying template/epub_pipeline/common first and overlaying the language-pair template.
+```
 
-You do not need to translate a whole book. Useful contributions include:
+## Repository Structure
 
-- finding reliable public-domain source texts;
-- checking copyright and source evidence;
-- building or improving language-pair templates;
-- reviewing chapter translations for readability and accuracy;
-- improving terminology, names, dates, places, and historical notes;
-- testing EPUB files on phones, tablets, e-readers, and desktop readers;
-- improving prompts, quality gates, scripts, and documentation.
+### `template/epub_pipeline/`
 
-你不需要一次翻译整本书。可以参与的事情包括：
+This is the reusable book-production template area. `common/` contains shared EPUB workflow contracts, rights checks, state files, scripts, and production rules. Each language-pair directory contains prompts, glossary/style guidance, typography expectations, and review rules for that direction. For a new book, ask AI to copy `common/` into a new folder under `books/`, then overlay the matching language-pair template; do not put real book data into the template folder itself.
 
-- 寻找可靠的公版原文来源；
-- 核查版权状态与来源证据；
-- 新增或改进语言方向模板；
-- 审校章节译文的准确性和可读性；
-- 改进术语、人名、日期、地点和历史说明；
-- 在手机、平板、电纸书和桌面阅读器上试读 EPUB；
-- 改进 prompt、质量门禁、脚本和文档。
+Important files and folders:
 
-## Repository Map
+- `template/epub_pipeline/README.md`: template layout guide.
+- `template/epub_pipeline/common/PIPELINE_SPEC.md`: pipeline contract and directory rules.
+- `template/epub_pipeline/en-zh-Hans/README.md`: one currently available language-pair template guide.
+- `template/epub_pipeline/en-zh-Hans/MASTER_PROMPT.md`: master prompt for starting a new book project.
+- `prompts/`: step-by-step prompts from ingestion to review, EPUB production, and retrospective.
+- `metadata/`: book metadata, rights checklist, source evidence, style profile.
+- `chapters/`: source chapters, translated drafts, and final chapters.
+- `qa/`: fidelity, readability, terminology, imagery, and gate reviews.
+- `preproduction/`: cover, metadata, layout, and sample EPUB checks.
+- `reviews/`: independent review and scorecards.
+- `output/`: final EPUB and validation results.
 
-- [readme/](./readme/) contains detailed localized README files.
-- [license/](./license/) contains public license, contributor rules, and commercial-use notes.
-- [template/epub_pipeline/](./template/epub_pipeline/) contains shared and language-pair EPUB pipeline templates.
-- [books/](./books/) is reserved for concrete book projects.
-- [skills/](./skills/) contains public AI-agent workflow instructions for this repository.
-- [AGENTS.md](./AGENTS.md) contains mandatory public instructions for AI agents.
+### `books/`
 
-- [readme/](./readme/) 存放详细的多语言 README。
-- [license/](./license/) 存放公开许可证、贡献者规则和商业使用说明。
-- [template/epub_pipeline/](./template/epub_pipeline/) 存放共享模板与语言方向模板。
-- [books/](./books/) 用于放置具体书籍工程。
-- [skills/](./skills/) 存放本仓库公开的 AI agent 工作说明。
-- [AGENTS.md](./AGENTS.md) 存放 AI agent 必须遵守的公开指令。
+This folder contains actual book projects. The current example is:
 
-## Start Here
+```text
+books/pg20923_a_negro_explorer_at_the_north_pole/
+```
 
-For readers and contributors:
+It is based on Project Gutenberg #20923, Matthew A. Henson's *A Negro Explorer at the North Pole*. It includes source evidence, rights notes, 26 source chapters, translated chapters, final chapters, review files, generated EPUB output, and an EPUBCheck report with zero fatal errors, zero errors, and zero warnings.
 
-- Read the detailed guide in your preferred language: [简体中文](./readme/README.md), [繁體中文](./readme/README.zh-TW.md), [English](./readme/README.en.md), [日本語](./readme/README.ja.md).
-- Check the license and contribution rules in [license/](./license/).
-- Open an issue or pull request for source suggestions, template improvements, translation review, EPUB fixes, or documentation improvements.
+The example proves that the workflow can run end to end. It does not mean every chapter has already received final human editorial approval.
 
-对读者和贡献者：
+### `translation_quality_framework/`
 
-- 先阅读你熟悉语言的详细说明：[简体中文](./readme/README.md)、[繁體中文](./readme/README.zh-TW.md)、[English](./readme/README.en.md)、[日本語](./readme/README.ja.md)。
-- 再查看 [license/](./license/) 中的许可证与贡献者规则。
-- 可以通过 issue 或 pull request 提交书源建议、模板改进、译文审校、EPUB 修复或文档改进。
+This folder defines the translation quality workflow. It explains how to research, sample-test, review, revise, and gate translation work before treating it as final.
 
-For AI agents:
+### `doc/public/`
 
-- Read [AGENTS.md](./AGENTS.md) first.
-- Then read [skills/public-domain-epub-pipeline/SKILL.md](./skills/public-domain-epub-pipeline/SKILL.md).
-- For book work, never write book-specific output back into `template/`; use `books/{book_id_slug}/`.
+This folder stores public notes for candidate books, copyright screening, and source research.
 
-对 AI agent：
+## How You Can Help
 
-- 必须先读取 [AGENTS.md](./AGENTS.md)。
-- 然后读取 [skills/public-domain-epub-pipeline/SKILL.md](./skills/public-domain-epub-pipeline/SKILL.md)。
-- 处理具体书籍时，不得把书籍产物写回 `template/`，只能写入 `books/{book_id_slug}/`。
+Useful contributions include:
 
-## License
+- Read a few pages and report awkward passages.
+- Compare one source paragraph with its translation.
+- Check names, places, and recurring terms.
+- Find typos or punctuation issues.
+- Test an EPUB on a phone, tablet, or e-reader.
+- Research whether a candidate book is truly public domain.
+- Improve cover, metadata, layout, or EPUB compatibility.
+- Review whether a chapter sounds like natural Chinese or natural English.
 
-Non-code book content is generally released under `CC BY-NC-SA 4.0` unless a file states otherwise. Code is generally released under the MIT License unless a file or directory states otherwise. Third-party commercial use requires separate permission from LifeBook Shufang and relevant rights holders.
+Simple feedback format:
 
-除非文件另有说明，非代码书籍内容通常按 `CC BY-NC-SA 4.0` 公开发布；代码通常按 MIT License 发布。第三方商业使用必须另行取得 LifeBook 书坊及相关权利人的授权。
+```text
+Book:
+Chapter:
+Location or sentence:
+Problem:
+Suggestion, if any:
+```
 
-See [license/](./license/) for the full terms.
+## Human Checkpoints
 
-完整说明见 [license/](./license/)。
+AI can run most of the workflow automatically, but people are especially useful at these points:
+
+- Book research: `metadata/book_specific_translation_research.md`, `metadata/style_profile.md`, `glossary/terms.csv`.
+- Pre-translation trial: `qa/pretranslation/pretranslation_report.md`.
+- Chapter control and review: `chapters/src/`, `chapters/translated/`, `chapters/final/`, `qa/chapter_controls/`, `qa/fidelity/`, `qa/readability/`, `qa/terminology/`, `qa/imagery/`, `qa/gates/`.
+- Preproduction stage 1: `preproduction/stage1/production_spec.md`.
+- Preproduction stage 2: `preproduction/stage2_sample/sample_book.epub` and `sample_review.md`.
+- Final output: `output/book.epub`, `output/epubcheck.json`, `reviews/`.
+
+## Translation Directions
+
+Templates are organized by concrete translation direction. `common` is shared by all language pairs. Directories such as `en-zh-Hans`, `fr-en`, `ja-es`, and `zh-Hant-de` identify the source and target languages.
+
+The project can support concrete directions such as:
+
+- English public-domain novels into Spanish.
+- French essays into Japanese.
+- Chinese public-domain works into English.
+- Japanese travel writing into German.
+- German philosophy into Traditional Chinese.
+- Arabic historical texts into Indonesian.
+
+For every direction, the same principles apply: verify rights, document sources, research before translating, run sample trials first, review chapters carefully, and validate the final EPUB.
+
+## Rules We Care About
+
+- Do not use modern copyrighted translations as source material.
+- Do not use pirate websites or unclear EPUB downloads.
+- Do not treat raw AI output as publishable text.
+- Do not write real book data into the template folder.
+- Keep review records and failure records.
+- Prefer small, reviewable improvements over untraceable whole-book rewrites.
+
+## License And Rights Notes
+
+Each source book must be checked separately. A text may be public domain in one country but not automatically public domain everywhere.
+
+Project Gutenberg texts are often public domain in the United States. Before wider distribution, contributors should review the copyright status for the target region.
+
+Translations, notes, covers, formatting, EPUB packaging, and other non-code content produced by this project are released to the public under `CC BY-NC-SA 4.0` by default. Third-party commercial use requires separate permission from LifeBook Shufang and the relevant rights holders.
+
+By contributing, contributors agree that their contributions may be included in this project for public release and may be used by LifeBook Shufang in LifeBook products and services. LifeBook Shufang is responsible for project organization, publication, quality control, license management, and contributor return arrangements. Specific attribution and return methods are determined according to contribution status and project rules.
+
+See:
+
+- [LICENSE.en.md](./license/LICENSE.en.md): public content license and code license.
+- [CONTRIBUTING.en.md](./license/CONTRIBUTING.en.md): contributor authorization and participation rules.
+- [COMMERCIAL_LICENSE.en.md](./license/COMMERCIAL_LICENSE.en.md): third-party commercial use notes.
+
+## A Practical Invitation
+
+If you like books and want to help bring overlooked public-domain works to more readers, you can start small. Read a chapter. Mark one awkward sentence. Check one name. Test one EPUB. A book improves through many small acts of attention.
