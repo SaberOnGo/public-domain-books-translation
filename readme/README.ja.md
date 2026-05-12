@@ -67,6 +67,7 @@ Project Gutenberg、Wikisource、Standard Ebooks を優先してください。
 
 - `template/epub_pipeline/README.md`：テンプレート構成の説明。
 - `template/epub_pipeline/common/PIPELINE_SPEC.md`：パイプラインとディレクトリ規約。
+- `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`：簡体字中国語ターゲット言語品質フレームワーク。
 - `template/epub_pipeline/en-zh-Hans/README.md`：現在利用できる言語方向テンプレートの一つ。
 - `template/epub_pipeline/en-zh-Hans/MASTER_PROMPT.md`：新しい本を始めるための主プロンプト。
 - `prompts/`：原文取得からレビュー、EPUB 制作、振り返りまでの手順プロンプト。
@@ -89,9 +90,9 @@ books/pg20923_a_negro_explorer_at_the_north_pole/
 
 このサンプルは工程が最後まで動くことを示しています。ただし、全章が人間の出版編集レベルで最終承認済みという意味ではありません。
 
-### `translation_quality_framework/`
+### `template/epub_pipeline/targets/`
 
-翻訳品質のためのフレームワークです。正式翻訳の前に何を調べ、どう試訳し、どうレビューし、どう差し戻すかを定義します。
+ターゲット言語ごとの品質フレームワークを置きます。たとえば `template/epub_pipeline/targets/zh-Hans/quality_framework/` には、簡体字中国語訳の品質基準、試訳ルール、ベンチマーク方針、章ごとのゲートがあります。
 
 ### `doc/public/`
 

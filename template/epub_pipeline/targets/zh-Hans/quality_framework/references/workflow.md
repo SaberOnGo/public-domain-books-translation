@@ -12,7 +12,7 @@
 
 译前研究分三层：
 
-1. 通用翻译研究：面向所有书，维护在 `translation_quality_framework/references/`。
+1. 简体中文目标语言翻译研究：面向所有译入简体中文的书，维护在 `template/epub_pipeline/targets/zh-Hans/quality_framework/references/`。
 2. 本书专项翻译研究：面向某一本书，输出 `metadata/book_specific_translation_research.md`。
 3. 预翻译试译：面向本书最难的若干段，输出 `qa/pretranslation/pretranslation_report.md`。
 

@@ -4,6 +4,8 @@
 
 - `references/translation_research_universal.md`
 - `references/quality_standard.md`
+- `references/english_source_notes.md`
+- `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`
 
 ## 任务 / Tasks
 

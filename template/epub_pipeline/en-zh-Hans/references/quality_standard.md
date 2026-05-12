@@ -1,4 +1,6 @@
-# 通用译文质量标准 / Universal Quality Standard
+# 英语到简体中文译文质量标准 / English To Simplified Chinese Quality Standard
+
+本文件是 `template/epub_pipeline/targets/zh-Hans/quality_framework/` 的简体中文目标语言规则在英语源文本场景下的应用摘要。更完整的中文目标语言质量规则见目标语言质量框架；英语源语言干扰问题见 `references/english_source_notes.md`。
 
 ## 总目标
 

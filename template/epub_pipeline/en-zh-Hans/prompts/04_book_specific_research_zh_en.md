@@ -8,6 +8,7 @@
 - `metadata/rights_checklist.md`
 - `references/translation_research_universal.md`
 - `references/quality_standard.md`
+- `references/english_source_notes.md`
 
 ## 任务 / Tasks
 

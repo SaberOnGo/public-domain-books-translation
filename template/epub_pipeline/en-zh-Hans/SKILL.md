@@ -23,11 +23,15 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
 4. `automation_contract.md`
    读取 `automation_contract.md`。
 
-5. `references/translation_research_universal.md`
+5. `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`
+   读取简体中文目标语言质量框架。
+6. `references/translation_research_universal.md`
    读取 `references/translation_research_universal.md`。
 
-6. `references/quality_standard.md`
+7. `references/quality_standard.md`
    读取 `references/quality_standard.md`。
+8. `references/english_source_notes.md`
+   读取英语源语言干扰说明。
 
 ## Translation Standard / 翻译标准
 

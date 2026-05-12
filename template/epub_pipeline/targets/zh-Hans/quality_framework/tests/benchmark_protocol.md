@@ -16,7 +16,7 @@
 
 当前可使用的私有基准：
 
-- 杜拉斯《情人》开头 / 王道乾译本：见 `tests/private_benchmark_cases/duras_wang_opening_benchmark.md`。
+- 杜拉斯《情人》开头 / 王道乾译本：见 `template/epub_pipeline/targets/zh-Hans/quality_framework/tests/private_benchmark_cases/duras_wang_opening_benchmark.md`。
 
 这个样本只用于提炼“优秀中文译文如何成立”的方法，不用于复刻其句子，也不要求待翻书模仿它的抒情小说腔调。
 

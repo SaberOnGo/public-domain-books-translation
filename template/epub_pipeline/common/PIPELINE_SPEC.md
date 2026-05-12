@@ -69,8 +69,8 @@
 
 ### Research
 
-- `references/translation_research_universal.md`：通用翻译研究规则。
-- `references/quality_standard.md`：通用质量标准。
+- `references/translation_research_universal.md`：由目标语言模板或语言方向模板提供的翻译研究规则。
+- `references/quality_standard.md`：由目标语言模板或语言方向模板提供的质量标准。
 - `automation_contract.md`：自动化执行合约。
 
 ### Chapters

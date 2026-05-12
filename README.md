@@ -67,6 +67,7 @@ Important files and folders:
 
 - `template/epub_pipeline/README.md`: template layout guide.
 - `template/epub_pipeline/common/PIPELINE_SPEC.md`: pipeline contract and directory rules.
+- `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`: Simplified Chinese target-language quality framework.
 - `template/epub_pipeline/en-zh-Hans/README.md`: one currently available language-pair template guide.
 - `template/epub_pipeline/en-zh-Hans/MASTER_PROMPT.md`: master prompt for starting a new book project.
 - `prompts/`: step-by-step prompts from ingestion to review, EPUB production, and retrospective.
@@ -89,9 +90,9 @@ It is based on Project Gutenberg #20923, Matthew A. Henson's *A Negro Explorer a
 
 The example proves that the workflow can run end to end. It does not mean every chapter has already received final human editorial approval.
 
-### `translation_quality_framework/`
+### `template/epub_pipeline/targets/`
 
-This folder defines the translation quality workflow. It explains how to research, sample-test, review, revise, and gate translation work before treating it as final.
+This folder stores target-language quality frameworks. For example, `template/epub_pipeline/targets/zh-Hans/quality_framework/` contains Simplified Chinese translation quality standards, trial-translation rules, benchmark policy, and chapter gates.
 
 ### `doc/public/`
 

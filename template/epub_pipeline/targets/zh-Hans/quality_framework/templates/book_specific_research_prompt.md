@@ -4,8 +4,8 @@
 
 ## 输入
 
-- 通用研究：`translation_quality_framework/references/research_digest.md`
-- 通用质量标准：`translation_quality_framework/references/quality_standard.md`
+- 简体中文目标语言通用研究：`template/epub_pipeline/targets/zh-Hans/quality_framework/references/research_digest.md`
+- 简体中文目标语言质量标准：`template/epub_pipeline/targets/zh-Hans/quality_framework/references/quality_standard.md`
 - 原书全文：`source/source_text.txt`
 - 章节列表：`source/source_manifest.json`
 - 元数据：`metadata/book.yaml`

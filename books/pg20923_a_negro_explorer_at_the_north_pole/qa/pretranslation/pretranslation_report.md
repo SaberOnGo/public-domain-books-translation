@@ -22,7 +22,7 @@ PASS。
 后续如预翻译失败：
 
 - 如果失败是“美国国旗”替代“星条旗”这类意象判断问题，回到 `metadata/book_specific_translation_research.md` 强化本书专项规则。
-- 如果失败是句子节奏、直译腔、中文不成立，回到 `translation_quality_framework/references/quality_standard.md` 强化通用质量标准。
+- 如果失败是句子节奏、直译腔、中文不成立，回到 `template/epub_pipeline/targets/zh-Hans/quality_framework/references/quality_standard.md` 强化简体中文目标语言质量标准。
 - 如果失败只是某个句子没有打磨到位，留在 `qa/pretranslation/` 继续生成新版本。
 
 ## 本次失败与修复判断

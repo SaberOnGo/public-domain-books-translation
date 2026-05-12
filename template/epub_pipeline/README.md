@@ -5,11 +5,12 @@ This directory separates shared EPUB production infrastructure from language-pai
 ## Layout
 
 - `common/`: language-neutral EPUB workflow contracts, source and rights templates, state files, preproduction templates, scripts, and build/check helpers.
-- `{source-target}/`: language-pair-specific translation prompts, glossary/style guidance, target-language metadata examples, translation quality rules, and review scorecards.
+- `targets/{target}/`: target-language quality frameworks, typography expectations, punctuation rules, and reader-experience standards.
+- `{source-target}/`: language-pair-specific translation prompts, glossary/style guidance, target-language metadata examples, source-language interference rules, and review scorecards.
 
 ## Creating a Book Project
 
-For a new book project, copy `common/` first, then overlay the matching language-pair template into:
+For a new book project, read the matching target-language framework when it exists, copy `common/` first, then overlay the matching language-pair template into:
 
 `books/{book_id_slug}/`
 
@@ -25,6 +26,8 @@ Language-pair directories use BCP 47-style direction names:
 - `zh-Hant-de`: Traditional Chinese to German.
 
 Use `common/` for workflow pieces that should be shared by every language pair.
+
+Use `targets/{target}/` for rules shared by multiple source languages that translate into the same target language. For example, `targets/zh-Hans/` applies to English to Simplified Chinese, French to Simplified Chinese, Japanese to Simplified Chinese, and other directions that produce Simplified Chinese.
 
 ## Documentation Language
 

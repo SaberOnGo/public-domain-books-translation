@@ -9,7 +9,7 @@
 - 原文全文：`source/source_text.txt`
 - 章节列表：`source/source_manifest.json`
 - 术语表草稿：`glossary/terms.csv`
-- 私有/公版基准测试说明：`translation_quality_framework/tests/benchmark_protocol.md`
+- 私有/公版基准测试说明：`template/epub_pipeline/targets/zh-Hans/quality_framework/tests/benchmark_protocol.md`
 
 ## 输出到
 
