@@ -33,6 +33,8 @@ Use this skill when an AI agent is asked to create a book project, add or update
    按来源证据、版权核查、研究、试译、章节翻译、审校、门禁、EPUB 制作、校验、独立评审和复盘流程执行。
 8. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
    特定语言方向的脚本、数据集和探索性调研应放在 `research/{source-target}/...` 或对应语言方向模板中，不要放在仓库根目录。
+9. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
+   不要在脚本或 prompt 中写死本机绝对路径。路径应基于脚本位置、仓库根目录或用户显式传入的参数解析。
 
 ## Language Requirements / 语言要求
 

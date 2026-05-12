@@ -22,6 +22,26 @@ This directory stores candidate-book research, initial rights screening, and exi
 - `generate_doc.py`: historical script for generating Chinese-facing candidate-book documentation.
 - `generate_doc.py`：用于生成中文候选书说明文档的历史脚本。
 
+## Usage / 使用方式
+
+Run scripts from any working directory. By default, outputs are written next to the script so they do not recreate files in the repository root.
+
+可以从任意工作目录执行这些脚本。默认输出会写到脚本所在目录，避免重新在仓库根目录生成文件。
+
+```powershell
+python research\en-zh-Hans\book-discovery\generate_doc.py
+python research\en-zh-Hans\book-discovery\check_translation.py
+```
+
+Use `--output` to choose another output path:
+
+如需指定其他输出位置，使用 `--output`：
+
+```powershell
+python research\en-zh-Hans\book-discovery\generate_doc.py --output research\en-zh-Hans\book-discovery\public_domain_book_audit.md
+python research\en-zh-Hans\book-discovery\check_translation.py --output research\en-zh-Hans\book-discovery\search_results.json
+```
+
 ## Maintenance Rule / 维护规则
 
 Do not move these files back to the repository root. If a script or dataset becomes truly language-neutral, refactor it first and move it to a shared `tools/` or `data/` area with multilingual documentation.

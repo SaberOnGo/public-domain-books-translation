@@ -1,5 +1,22 @@
 import json
-import os
+import argparse
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+DEFAULT_OUTPUT = SCRIPT_DIR / "public_domain_book_audit.md"
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Generate the English-to-Simplified-Chinese candidate book discovery report."
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=DEFAULT_OUTPUT,
+        help="Output Markdown path. Defaults to public_domain_book_audit.md next to this script.",
+    )
+    return parser.parse_args()
 
 data = {
     "categories": [
@@ -471,7 +488,13 @@ for category in data["categories"]:
         markdown_content += f"- **翻译难度**：{book['difficulty']}\n"
         markdown_content += f"- **复核状态**：{book['translation_status']}\n\n"
 
-with open(r"D:\project\49_英文公版书_翻译制作\doc\new_public_domain_books_v4.md", "w", encoding="utf-8") as f:
+args = parse_args()
+output_path = args.output
+if not output_path.is_absolute():
+    output_path = (Path.cwd() / output_path).resolve()
+output_path.parent.mkdir(parents=True, exist_ok=True)
+
+with output_path.open("w", encoding="utf-8") as f:
     f.write(markdown_content)
 
-print("Markdown generated successfully.")
+print(f"Markdown generated successfully: {output_path}")
