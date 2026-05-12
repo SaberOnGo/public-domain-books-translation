@@ -25,6 +25,14 @@
 
 只有当所有章节都有 `qa/gates/*.gate.md` 且结论为 `PASS` 时，才可构建临时 EPUB。
 
+构建前必须先运行出版文本检查：
+
+```powershell
+node scripts/publication_lint.js --target=zh-Hans --write-report
+```
+
+如发现分号滥用、异常连续空格、旧纸书页码目录、乱码或编码污染，必须先修正 `chapters/final/`、`frontmatter/` 或相关 metadata，不得直接构建。
+
 ## 构建 / Build
 
 优先使用项目已有脚本或 `pandoc`：
@@ -47,6 +55,7 @@ epubcheck output/book.epub > output/epubcheck.log
 
 - `output/book.epub`
 - `output/epubcheck.log`
+- `output/publication_lint.json`
 
 ## 新版限制 / New Pipeline Restriction
 

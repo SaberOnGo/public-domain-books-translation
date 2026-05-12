@@ -114,25 +114,44 @@
 
 - `output/book.epub`：最终 EPUB。
 - `output/epubcheck.log` 或 `output/epubcheck.json`：EPUB 校验结果。
+- `output/publication_lint.json`：出版文本 lint 结果，检查编码污染、异常空格、旧纸书页码目录等问题。
 - `output/final_manifest.md`：最终产物清单。
 
-## 5. 文件命名 / Naming
+## 5. 出版文本硬检查 / Publication Text Lint
+
+构建 EPUB 前必须运行出版文本 lint：
+
+```powershell
+node scripts/publication_lint.js --target={target-language} --write-report
+```
+
+通用硬检查：
+
+- 不得出现编码污染、替换字符或明显 mojibake。
+- 不得把旧纸书的页码目录、插图页码目录当正文放入 EPUB。
+- 不得在普通正文中保留用于纸书对齐的连续空格。
+- 不得让脚本依赖本机绝对路径；所有路径必须相对 `PROJECT_ROOT`。
+
+目标语言相关检查由 `template/epub_pipeline/targets/{target}/` 追加规则。例如简体中文会限制分号滥用、中文字符之间的异常空格、中文排版标点等。
+
+## 6. 文件命名 / Naming
 
 - 章节统一三位序号：`001_xxx.md`、`002_xxx.md`。
 - `src`、`translated`、`final`、`qa` 必须同名对应。
 - 不得让 AI 自创多套命名方案。
 
-## 6. 新增硬门禁 / New Hard Gates
+## 7. 新增硬门禁 / New Hard Gates
 
 - 每章翻译后必须经过 `qa/chapter_controls/{NNN_slug}.control.md`。
 - 未完成每章译后控制，不得进入后续审校。
 - 全部翻译完成后不得直接构建 EPUB，必须先完成预制作阶段 1。
 - 未通过样章制作检查，不得制作整本 EPUB。
+- 未通过出版文本 lint，不得构建最终 EPUB。
 - 整本 EPUB 制作后，必须派生 2 个独立 Agent 评审。
 - 评审失败时必须通过 `reviews/revision_route.md` 回到对应前置阶段。
 - 未完成复盘和经验沉淀，不得标记 `DONE`。
 
-## 7. 完成定义 / Done Definition
+## 8. 完成定义 / Done Definition
 
 必须同时满足：
 
@@ -142,6 +161,7 @@
 - 所有章节存在 `qa/gates/*.gate.md` 且结论为 `PASS`。
 - `preproduction/stage1/production_spec.md` 存在。
 - `preproduction/stage2_sample/sample_review.md` 结论为 `PASS`。
+- `output/publication_lint.json` 存在，且无硬错误。
 - `output/book.epub` 存在。
 - EPUBCheck 无 fatal/error。
 - `reviews/agent_a/review.md` 和 `reviews/agent_b/review.md` 均存在，且评分通过。

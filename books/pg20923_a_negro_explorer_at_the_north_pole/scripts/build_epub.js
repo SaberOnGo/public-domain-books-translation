@@ -22,9 +22,9 @@ const meta = {
   publisher: 'LifeBook 书坊',
   sourceUrl: 'https://www.gutenberg.org/ebooks/20923',
   sourceId: 'Project Gutenberg #20923',
-  originalPublication: '1912 年英文原著；本译本依据 Project Gutenberg #20923 公版文本制作。',
-  description: '本书是北极探险家马修·A. 亨森的亲历记，记录他随罗伯特·皮里远征北极、穿越冰原、组织雪橇队并抵达北极点的经历。本中文 EPUB 由 LifeBook 书坊依据 Project Gutenberg #20923 公版英文原文新译制作，翻译时间为 2026-05-10。源文本在美国为公版；跨地区发行前仍应按目标国家或地区复核版权状态。',
-  rights: '源文本：Project Gutenberg #20923，美国公版文本。中文译本：LifeBook 书坊译制；发行和授权由项目所有者决定。'
+  originalPublication: '1912 年英文原著。本译本依据 Project Gutenberg #20923 公版文本制作。',
+  description: '本书是北极探险家马修·A. 亨森的亲历记，记录他随罗伯特·皮里远征北极、穿越冰原、组织雪橇队并抵达北极点的经历。本中文 EPUB 由 LifeBook 书坊依据 Project Gutenberg #20923 公版英文原文新译制作，翻译时间为 2026-05-10。源文本在美国为公版，跨地区发行前仍应按目标国家或地区复核版权状态。',
+  rights: '源文本：Project Gutenberg #20923，美国公版文本。中文译本：LifeBook 书坊译制，发行和授权由项目所有者决定。'
 };
 const coverJpgPath = path.join(root, 'assets', 'cover.jpg');
 const coverPngPath = path.join(root, 'assets', 'cover.png');

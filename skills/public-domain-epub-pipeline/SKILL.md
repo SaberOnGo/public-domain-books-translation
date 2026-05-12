@@ -27,9 +27,11 @@ Use this skill when an AI agent is asked to create a book project, add or update
    所有具体书籍的原文、译文、QA、EPUB 输出和 metadata 只能写入书籍工程目录。
 8. Run the workflow through source evidence, rights checks, research, trial translation, chapter translation, review, gates, EPUB production, validation, independent review, and retrospective.
    按来源证据、版权核查、研究、试译、章节翻译、审校、门禁、EPUB 制作、校验、独立评审和复盘流程执行。
-9. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
+9. Before EPUB production, run `node scripts/publication_lint.js --target={target-language} --write-report` inside the book project and fix all hard errors.
+   EPUB 制作前，必须在书籍工程内运行 `node scripts/publication_lint.js --target={target-language} --write-report`，并修复所有硬错误。
+10. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
    特定语言方向的脚本、数据集和探索性调研应放在 `research/{source-target}/...` 或对应语言方向模板中，不要放在仓库根目录。
-10. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
+11. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
     不要在脚本或 prompt 中写死本机绝对路径。路径应基于脚本位置、仓库根目录或用户显式传入的参数解析。
 
 ## Language Requirements / 语言要求
@@ -53,6 +55,8 @@ Use this skill when an AI agent is asked to create a book project, add or update
 - 当前目录仍在 `template/` 下，却准备写入具体书籍产物。
 - A pretranslation report, chapter gate, EPUB validation, or independent review fails.
 - 预翻译报告、章节门禁、EPUB 校验或独立评审失败。
+- Publication lint reports hard errors such as mojibake, legacy print page-number tables, abnormal spacing, or target-language punctuation violations.
+- 出版文本 lint 报出硬错误，例如乱码、旧纸书页码目录、异常空格或目标语言标点违规。
 
 ## Public Policy / 公开政策
 

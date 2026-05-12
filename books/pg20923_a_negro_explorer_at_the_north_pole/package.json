@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build:epub": "node scripts/build_epub.js",
+    "lint:publication": "node scripts/publication_lint.js --target=zh-Hans --write-report",
+    "fix:publication": "node scripts/publication_lint.js --target=zh-Hans --fix --write-report",
+    "build:epub": "npm run lint:publication && node scripts/build_epub.js",
     "check:epub": "node scripts/run_epubcheck.js"
   },
   "keywords": [],

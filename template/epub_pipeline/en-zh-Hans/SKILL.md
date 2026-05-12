@@ -64,5 +64,8 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
 - Every translated chapter must pass chapter control, fidelity review, readability review, terminology review, imagery audit when relevant, and final chapter gate.
 - 每章译文必须通过译后控制、忠实度审校、可读性审校、术语审校、必要时的意象词审计，以及最终章节门禁。
 
+- Before EPUB build, run `node scripts/publication_lint.js --target=zh-Hans --write-report`; fix semicolon overuse, abnormal Chinese spacing, legacy print page-number tables, and mojibake before continuing.
+- EPUB 构建前必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`；如果发现分号滥用、中文异常空格、旧纸书页码目录或乱码，必须先修复再继续。
+
 - EPUB output must pass validation before final output.
 - EPUB 必须通过校验后才能进入最终输出。

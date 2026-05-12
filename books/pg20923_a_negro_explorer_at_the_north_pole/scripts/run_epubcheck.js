@@ -22,7 +22,21 @@ function findJava(dir) {
   return null;
 }
 
-const java = findJava(javaRoot) || 'java';
+function firstExisting(paths) {
+  return paths.find((item) => item && fs.existsSync(item)) || null;
+}
+
+const java = findJava(javaRoot) || firstExisting([
+  process.env.JAVA_HOME && path.join(process.env.JAVA_HOME, 'bin', 'java.exe'),
+  'C:\\Program Files\\Android\\Android Studio\\jbr\\bin\\java.exe',
+]) || 'java';
+
+if (!fs.existsSync(jar)) {
+  console.error(`Missing epubcheck jar: ${jar}`);
+  console.error('Run npm install, or download epubcheck-5.2.1.zip into node_modules/epubchecker/vendors/.');
+  process.exit(1);
+}
+
 if (fs.existsSync(report)) fs.unlinkSync(report);
 const result = spawnSync(java, ['-jar', jar, epub, '--json', report, '--failonwarnings', '-q'], {
   cwd: root,
@@ -31,5 +45,8 @@ const result = spawnSync(java, ['-jar', jar, epub, '--json', report, '--failonwa
 if (fs.existsSync(report)) {
   const parsed = JSON.parse(fs.readFileSync(report, 'utf8'));
   console.log(`epubcheck: fatal=${parsed.checker.nFatal}, error=${parsed.checker.nError}, warning=${parsed.checker.nWarning}`);
+}
+if (result.error) {
+  console.error(`Failed to run Java: ${result.error.message}`);
 }
 process.exit(result.status ?? 1);

@@ -16,6 +16,7 @@ AI 必须派生两个评审 Agent：
 ## 输入 / Input
 
 - `output/book.epub`
+- `output/publication_lint.json`
 - `output/epubcheck.json` 或 `output/epubcheck.log`
 - `preproduction/stage1/production_spec.md`
 - `preproduction/stage2_sample/sample_review.md`
@@ -44,6 +45,7 @@ AI 必须派生两个评审 Agent：
 - 封面大小、格式、清晰度、书架显示。
 - 字体策略是否合理，是否影响阅读器字体设置。
 - 章节标题、正文排版、版本说明页。
+- 出版文本 lint 是否通过；是否还有分号滥用、异常空格、旧纸书页码目录或乱码。
 - metadata 是否完整：`LifeBook 书坊`、译制时间、公版来源 URL、公版说明、作者信息、原书信息。
 - 文件体积是否异常。
 - EPUBCheck 是否 0 fatal、0 error。
