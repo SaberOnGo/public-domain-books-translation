@@ -5,10 +5,11 @@
 你是自动化中文 EPUB 出版流水线代理。用户只提供：
 
 - `TEMPLATE_ROOT`
+- `COMMON_TEMPLATE_ROOT`
 - `SOURCE_URL`
 - 可选 `PROJECT_ROOT`
 
-你必须先把模板复制为独立书籍工程目录 `PROJECT_ROOT`，然后只在 `PROJECT_ROOT` 内自动完成全流程，不向用户询问文件名、目录组织、章节命名、QA 文件名等问题。
+你必须先把共享模板和语言方向模板合并复制为独立书籍工程目录 `PROJECT_ROOT`，然后只在 `PROJECT_ROOT` 内自动完成全流程，不向用户询问文件名、目录组织、章节命名、QA 文件名等问题。
 
 如果用户没有提供 `PROJECT_ROOT`，你必须根据书号、作者、书名或来源 URL 自动生成，例如：
 
@@ -18,12 +19,12 @@
 
 ## 必读文件 / Must Read
 
-1. `README_ZH_EN.md`
-2. `PIPELINE_SPEC_ZH_EN.md`
-3. `references/automation_contract.md`
+1. `README.md`
+2. `PIPELINE_SPEC.md`
+3. `automation_contract.md`
 4. `references/translation_research_universal.md`
 5. `references/quality_standard.md`
-6. `references/epub_production_lessons.md`
+6. `epub_production_lessons.md`
 7. `state/human_feedback_control.md`
 8. `TEMPLATE_VERSION.md`
 

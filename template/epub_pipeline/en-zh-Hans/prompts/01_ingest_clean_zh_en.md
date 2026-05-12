@@ -32,7 +32,7 @@
 
 ## 硬规则 / Hard Rules
 
-- 如果当前目录仍是模板原目录 `epub_pipeline_template_zh_en`，必须停止，回到 `00_orchestrator` 先复制模板。
+- 如果当前目录仍在 `template/epub_pipeline/common` 或 `template/epub_pipeline/en-zh-Hans` 模板目录内，必须停止，回到 `00_orchestrator` 先复制模板到书籍工程。
 - 如果版权状态不明，设置 `status=FAILED`，不得继续。
 - 如果只找到商业电子书而无公版原文，不得继续。
 - 不要把来源方自动生成的 EPUB 当唯一翻译底本；优先可审计的纯文本或 HTML 原文。

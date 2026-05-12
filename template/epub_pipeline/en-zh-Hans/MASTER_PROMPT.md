@@ -2,7 +2,8 @@
 
 把下面这段发给 AI，并替换三个变量：
 
-- `{TEMPLATE_ROOT}`：模板目录，即 `epub_pipeline_template_zh_en`。
+- `{TEMPLATE_ROOT}`：语言方向模板目录，即 `template/epub_pipeline/en-zh-Hans`。
+- `{COMMON_TEMPLATE_ROOT}`：共享模板目录，即 `template/epub_pipeline/common`。
 - `{PROJECT_ROOT}`：复制模板后的具体书籍工程目录。
 - `{SOURCE_URL}`：原书公版来源 URL。
 
@@ -11,17 +12,19 @@
 
 PROJECT_ROOT = {PROJECT_ROOT}
 TEMPLATE_ROOT = {TEMPLATE_ROOT}
+COMMON_TEMPLATE_ROOT = {COMMON_TEMPLATE_ROOT}
 SOURCE_URL = {SOURCE_URL}
 
-第一步：如果 PROJECT_ROOT 不存在，先把 TEMPLATE_ROOT 整体复制到 PROJECT_ROOT。
+第一步：如果 PROJECT_ROOT 不存在，先把 COMMON_TEMPLATE_ROOT 复制到 PROJECT_ROOT，再把 TEMPLATE_ROOT 覆盖复制到 PROJECT_ROOT。
 
-严禁直接在 TEMPLATE_ROOT 内制作具体书籍。TEMPLATE_ROOT 是只读模板，只能作为复制来源。所有抓取、研究、翻译、QA、EPUB 输出都必须写入 PROJECT_ROOT。
+严禁直接在 COMMON_TEMPLATE_ROOT 或 TEMPLATE_ROOT 内制作具体书籍。它们是只读模板，只能作为复制来源。所有抓取、研究、翻译、QA、EPUB 输出都必须写入 PROJECT_ROOT。
 
 必须按以下顺序读取并执行：
 
-1. README_ZH_EN.md
-2. PIPELINE_SPEC_ZH_EN.md
-3. prompts/00_orchestrator_zh_en.md
+1. README.md
+2. PIPELINE_SPEC.md
+3. automation_contract.md
+4. prompts/00_orchestrator_zh_en.md
 
 然后由 00_orchestrator_zh_en.md 串联执行全部 prompts。
 

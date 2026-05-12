@@ -1,8 +1,8 @@
-# EPUB 公版书翻译制作模板 / Public-Domain EPUB Translation Pipeline
+# 英文到简体中文 EPUB 公版书翻译制作模板 / English to Simplified Chinese EPUB Translation Pipeline
 
 ## 目标 / Goal
 
-给 AI 这个模板目录 `TEMPLATE_ROOT`、目标工程目录 `PROJECT_ROOT` 和原书来源 `SOURCE_URL`，AI 应能自动完成：
+给 AI 这个语言模板目录 `TEMPLATE_ROOT`、共享模板目录 `COMMON_TEMPLATE_ROOT`、目标工程目录 `PROJECT_ROOT` 和原书来源 `SOURCE_URL`，AI 应能自动完成：
 
 1. 下载/读取公版英文原文。
 2. 核查来源与版权风险。
@@ -23,23 +23,24 @@
 
 ## 唯一必须输入 / Required Inputs
 
-- `TEMPLATE_ROOT`：模板目录，即 `epub_pipeline_template_zh_en`。
+- `TEMPLATE_ROOT`：语言方向模板目录，即 `template/epub_pipeline/en-zh-Hans`。
+- `COMMON_TEMPLATE_ROOT`：共享 EPUB 流水线目录，即 `template/epub_pipeline/common`。
 - `PROJECT_ROOT`：复制模板后的具体书籍工程目录；如未提供，AI 必须自动创建。
 - `SOURCE_URL`：原书来源 URL，例如 Project Gutenberg 页面或原文文本链接。
 
 ## 模板保护 / Template Protection
 
-严禁直接在模板原目录中制作具体书籍。执行任何书籍项目前，AI 必须先把 `epub_pipeline_template_zh_en` 复制到独立书籍工程目录，例如：
+严禁直接在模板原目录中制作具体书籍。执行任何书籍项目前，AI 必须先把 `template/epub_pipeline/common` 与 `template/epub_pipeline/en-zh-Hans` 合并复制到独立书籍工程目录，例如：
 
 `books/{book_id_slug}/`
 
-之后所有抓取、研究、翻译、QA、EPUB 输出都只能写入这个新目录。
+复制时若同名文件冲突，以语言方向模板为准。之后所有抓取、研究、翻译、QA、EPUB 输出都只能写入这个新目录。
 
-如果用户只给了模板目录和 `SOURCE_URL`，AI 的第一步必须是创建独立工程目录；不得把某本书的数据写回模板目录。
+如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须是定位对应的 `COMMON_TEMPLATE_ROOT` 并创建独立工程目录；不得把某本书的数据写回模板目录。
 
 ## 人类可选干预点 / Optional Human Checkpoints
 
-原则上 AI 自动执行。`state/human_feedback_control.md` 的 `human_required` 决定是否必须停下等人类检查。
+原则上 AI 自动执行。复制到书籍工程后的 `state/human_feedback_control.md` 的 `human_required` 决定是否必须停下等人类检查。
 
 默认：`human_required=false`，AI 自动执行。
 

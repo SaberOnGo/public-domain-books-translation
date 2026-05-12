@@ -13,7 +13,7 @@
 - 实际做书时，AI 必须先复制模板为独立书籍工程目录，例如 `books/{book_id_slug}/`。
 - 复制完成后，后续 `PROJECT_ROOT` 指向独立书籍工程目录。
 - AI 只能写入 `PROJECT_ROOT` 内文件。
-- 如果检测到当前目录名仍是 `epub_pipeline_template_zh_en`，必须停止并先复制模板。
+- 如果检测到当前目录仍在 `template/epub_pipeline/common` 或某个 `template/epub_pipeline/{source-target}` 语言模板内，必须停止并先复制模板到书籍工程。
 
 ## 3. 状态机 / State Machine
 
@@ -71,7 +71,7 @@
 
 - `references/translation_research_universal.md`：通用翻译研究规则。
 - `references/quality_standard.md`：通用质量标准。
-- `references/automation_contract.md`：自动化执行合约。
+- `automation_contract.md`：自动化执行合约。
 
 ### Chapters
 

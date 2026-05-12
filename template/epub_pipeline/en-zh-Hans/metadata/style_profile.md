@@ -1,6 +1,6 @@
 # 文体画像 / Style Profile
 
-本文件由 `prompts/04_book_specific_research_zh_en.md` 生成初版，并由 `prompts/06_glossary_style_zh_en.md` 根据预翻译结果修订。
+本文件由英文到简体中文模板的 `prompts/04_book_specific_research_zh_en.md` 生成初版，并由 `prompts/06_glossary_style_zh_en.md` 根据预翻译结果修订。
 
 ## 一句话定位
 

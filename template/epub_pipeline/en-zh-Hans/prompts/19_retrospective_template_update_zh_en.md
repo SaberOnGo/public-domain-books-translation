@@ -2,7 +2,7 @@
 
 ## 目的 / Purpose
 
-每本书完成后，AI 必须复审所有阶段，提炼经验教训，并写入该书工程的复盘文件。若这些经验属于通用模板规则，必须给出模板版本递增建议；当用户明确要求更新模板时，写入 `epub_pipeline_template_zh_en` 并递增版本号。
+每本书完成后，AI 必须复审所有阶段，提炼经验教训，并写入该书工程的复盘文件。若这些经验属于通用模板规则，必须给出模板版本递增建议；当用户明确要求更新模板时，通用规则写入 `template/epub_pipeline/common`，英文到简体中文规则写入 `template/epub_pipeline/en-zh-Hans`，并递增版本号。
 
 ## 输入 / Input
 
@@ -23,7 +23,7 @@
 模板被用户要求更新时，还要更新：
 
 - `TEMPLATE_VERSION.md`
-- `PIPELINE_SPEC_ZH_EN.md`
+- `PIPELINE_SPEC.md`
 - 相关 `prompts/*.md`
 - 相关 `references/*.md`
 
