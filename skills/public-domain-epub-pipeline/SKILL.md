@@ -68,5 +68,5 @@ Use this skill when an AI agent is asked to create a book project, add or update
 - Third-party commercial use requires separate permission from LifeBook Shufang and relevant rights holders.
 - 第三方商业使用必须另行取得 LifeBook 书坊及相关权利人的授权。
 
-- Contributor rules are defined in `CONTRIBUTING*.md`.
-- 贡献者规则见 `CONTRIBUTING*.md`。
+- Contributor rules are defined in `license/CONTRIBUTING*.md`.
+- 贡献者规则见 `license/CONTRIBUTING*.md`。
