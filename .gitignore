@@ -1,3 +1,7 @@
 **/node_modules/
 **/tools/zulu17-jre/
 **/tools/zulu17-jre.zip
+
+# Local Codex/agent instructions and environment notes.
+# Keep project-specific operational preferences here instead of global memory.
+.codex/

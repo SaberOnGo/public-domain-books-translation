@@ -1,4 +1,4 @@
-# 许可证
+# License
 
 <table align="center">
   <tr>
@@ -9,29 +9,29 @@
   </tr>
 </table>
 
-本仓库包含几类不同材料，它们使用不同授权。
+This repository contains several kinds of material. They are licensed differently.
 
-## 公版原文
+## Public-Domain Source Texts
 
-本仓库引用或整理的原始公版文本仍归其原始权利状态约束。本项目的许可证不改变原文自身的公版或版权状态。
+Original public-domain source texts keep their own rights status. This project license does not change the public-domain or copyright status of the original works.
 
-## 译文与书籍内容
+## Translations and Book Content
 
-除非某本书或某个文件另有明确说明，本项目产生的译文、译注、前言、整理文本、封面、排版设计、EPUB 打包内容和其他非代码创作内容，面向公众按以下许可证发布：
+Unless a specific book or file states otherwise, translations, notes, prefaces, edited text, covers, layout design, EPUB packaging, and other non-code creative content produced by this project are released to the public under:
 
 [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-简称：`CC BY-NC-SA 4.0`
+Short name: `CC BY-NC-SA 4.0`
 
-这表示公众可以在非商业目的下分享和改编，但必须署名，并且改编作品必须以相同许可证继续开放。
+This means the public may share and adapt the content for non-commercial purposes, with attribution, and adaptations must be shared under the same license.
 
-第三方商业使用不包含在上述公开授权内，必须另行取得 LifeBook 书坊及相关权利人的授权。参见 [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md)。
+Third-party commercial use is not included in this public license and requires separate permission from LifeBook Shufang and the relevant rights holders. See [COMMERCIAL_LICENSE.en.md](COMMERCIAL_LICENSE.en.md).
 
-贡献者提交内容时，还需遵守 [CONTRIBUTING.md](CONTRIBUTING.md) 中的贡献者授权规则。
+Contributions are also subject to the contributor authorization rules in [CONTRIBUTING.en.md](CONTRIBUTING.en.md).
 
-## 代码
+## Code
 
-除非文件头或所在目录另有说明，本仓库中的脚本、工具代码和自动化代码按 MIT License 授权：
+Unless a file header or directory states otherwise, scripts, tool code, and automation code in this repository are licensed under the MIT License:
 
 ```text
 MIT License

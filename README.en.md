@@ -1,4 +1,4 @@
-# LifeBook Translation Group: Public-Domain Book Translation and EPUB Collaboration
+# LifeBook Shufang: Global Public-Domain Book Translation and EPUB Collaboration
 
 <table align="center">
   <tr>
@@ -9,7 +9,7 @@
   </tr>
 </table>
 
-LifeBook Translation Group is a collaborative project for translating public-domain books and producing readable EPUB editions.
+LifeBook Shufang is a global, multilingual collaboration project for translating public-domain books and producing readable EPUB editions.
 
 The goal is not to publish raw AI output. AI can help with repetitive work: finding and cleaning source text, splitting chapters, drafting translations, creating glossaries, checking omissions, and building EPUB files. But good books still need human judgment. People are needed to read, question, correct, polish, verify names and terms, and test the final book in real reading apps.
 
@@ -34,15 +34,15 @@ Usually you only need to provide:
 
 - The book you want to work on.
 - A public-domain source URL, if known.
-- The translation direction, such as English to Chinese, Chinese to English, or Japanese to Chinese.
+- The translation direction, such as English to Spanish, French to Japanese, Chinese to English, or Japanese to German.
+- The existing language-pair template to use. If that template does not exist yet, add the matching template directory first.
 
-Example prompt:
+Example prompt. This uses French to English as a concrete direction. If `fr-en` does not exist yet, add that language-pair template first:
 
 ```text
-/goal Create a Chinese EPUB for A Negro Explorer at the North Pole using the reference project
-D:\project\49_public-domain-books-translation\books\pg20923_a_negro_explorer_at_the_north_pole.
-Fetch the source text from https://www.gutenberg.org/ebooks/20923.
-Use template/epub_pipeline/common plus template/epub_pipeline/en-zh-Hans, and let 00_orchestrator_zh_en.md run the current full workflow:
+/goal Create an English EPUB from a French public-domain book.
+Fetch the source text from {reliable public-domain source URL}.
+Use template/epub_pipeline/common plus template/epub_pipeline/fr-en, and let the orchestrator prompt run the full workflow:
 source and rights review, book research, pre-translation trials, chapter translation, chapter review,
 chapter gates, preproduction stage 1, sample EPUB review, full EPUB production, independent review,
 revision routing, final output, and retrospective.
@@ -54,20 +54,20 @@ If you only know a title, ask AI to find a reliable public-domain source first:
 ```text
 Please find a reliable public-domain source for {book title}.
 Prioritize Project Gutenberg, Wikisource, and Standard Ebooks.
-After source and rights risks are checked, create a new book project under books/ by copying template/epub_pipeline/common first and overlaying template/epub_pipeline/en-zh-Hans.
+After source and rights risks are checked, choose the matching language-pair template. For French to English, use or add template/epub_pipeline/fr-en; for Japanese to Spanish, use or add template/epub_pipeline/ja-es; for English to Simplified Chinese, use template/epub_pipeline/en-zh-Hans. Then create a new book project under books/ by copying template/epub_pipeline/common first and overlaying the language-pair template.
 ```
 
 ## Repository Structure
 
 ### `template/epub_pipeline/`
 
-This is the reusable book-production template area. `common/` contains shared EPUB workflow contracts, rights checks, state files, scripts, and production rules. `en-zh-Hans/` contains English to Simplified Chinese prompts, glossary/style guidance, and review rules. For a new book, ask AI to copy `common/` into a new folder under `books/`, then overlay the matching language-pair template; do not put real book data into the template folder itself.
+This is the reusable book-production template area. `common/` contains shared EPUB workflow contracts, rights checks, state files, scripts, and production rules. Each language-pair directory contains prompts, glossary/style guidance, typography expectations, and review rules for that direction. For a new book, ask AI to copy `common/` into a new folder under `books/`, then overlay the matching language-pair template; do not put real book data into the template folder itself.
 
 Important files and folders:
 
 - `template/epub_pipeline/README.md`: template layout guide.
 - `template/epub_pipeline/common/PIPELINE_SPEC.md`: pipeline contract and directory rules.
-- `template/epub_pipeline/en-zh-Hans/README.md`: English to Simplified Chinese template guide.
+- `template/epub_pipeline/en-zh-Hans/README.md`: one currently available language-pair template guide.
 - `template/epub_pipeline/en-zh-Hans/MASTER_PROMPT.md`: master prompt for starting a new book project.
 - `prompts/`: step-by-step prompts from ingestion to review, EPUB production, and retrospective.
 - `metadata/`: book metadata, rights checklist, source evidence, style profile.
@@ -133,12 +133,16 @@ AI can run most of the workflow automatically, but people are especially useful 
 
 ## Translation Directions
 
-The first example is English to Chinese, but the project can grow beyond that:
+Templates are organized by concrete translation direction. `common` is shared by all language pairs. Directories such as `en-zh-Hans`, `fr-en`, `ja-es`, and `zh-Hant-de` identify the source and target languages.
 
-- English public-domain books into Chinese.
-- Other foreign-language public-domain books into Chinese.
-- Chinese public-domain books into English.
-- Chinese public-domain books into other languages.
+The project can support concrete directions such as:
+
+- English public-domain novels into Spanish.
+- French essays into Japanese.
+- Chinese public-domain works into English.
+- Japanese travel writing into German.
+- German philosophy into Traditional Chinese.
+- Arabic historical texts into Indonesian.
 
 For every direction, the same principles apply: verify rights, document sources, research before translating, run sample trials first, review chapters carefully, and validate the final EPUB.
 
@@ -163,9 +167,9 @@ By contributing, contributors agree that their contributions may be included in 
 
 See:
 
-- [LICENSE.md](LICENSE.md): public content license and code license.
-- [CONTRIBUTING.md](CONTRIBUTING.md): contributor authorization and participation rules.
-- [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md): third-party commercial use notes.
+- [LICENSE.en.md](LICENSE.en.md): public content license and code license.
+- [CONTRIBUTING.en.md](CONTRIBUTING.en.md): contributor authorization and participation rules.
+- [COMMERCIAL_LICENSE.en.md](COMMERCIAL_LICENSE.en.md): third-party commercial use notes.
 
 ## A Practical Invitation
 
