@@ -224,8 +224,8 @@ Project Gutenberg 的 “Public domain in the USA” 只能证明美国维度，
 
 请输出两个文件：
 
-1. public_domain_book_audit.csv
-2. public_domain_book_audit.md
+1. research/en-zh-Hans/book-discovery/public_domain_book_audit.csv
+2. research/en-zh-Hans/book-discovery/public_domain_book_audit.md
 
 CSV 字段如下：
 

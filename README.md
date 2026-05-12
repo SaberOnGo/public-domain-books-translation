@@ -97,6 +97,10 @@ This folder defines the translation quality workflow. It explains how to researc
 
 This folder stores public notes for candidate books, copyright screening, and source research.
 
+### `research/`
+
+This folder stores language-pair-specific research artifacts and historical exploration files. For example, `research/en-zh-Hans/book-discovery/` contains English-to-Simplified-Chinese candidate-book audits and scripts. Files in this area are not global defaults; other language pairs should create their own research folders.
+
 ## How You Can Help
 
 Useful contributions include:
