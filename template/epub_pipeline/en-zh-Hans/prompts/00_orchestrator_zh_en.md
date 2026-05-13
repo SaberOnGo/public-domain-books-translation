@@ -27,10 +27,12 @@
 6. `references/english_source_notes.md`
 7. `references/english_chapter_title_strategy.md`
 8. `references/chapter_title_policy.md`
-9. `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`
-10. `epub_production_lessons.md`
-11. `state/human_feedback_control.md`
-12. `TEMPLATE_VERSION.md`
+9. `references/literary_refinement_policy.md`
+10. `references/english_to_chinese_literary_refinement.md`
+11. `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`
+12. `epub_production_lessons.md`
+13. `state/human_feedback_control.md`
+14. `TEMPLATE_VERSION.md`
 
 ## 执行顺序 / Execution Order
 
@@ -71,6 +73,8 @@
 - 禁止为了简洁把中文压成动作清单。
 - 禁止把英文旧纸书目录式长标题链机械转换成中文破折号长链。
 - 禁止封面、字体、metadata、版本说明等 EPUB 制作细节粗糙处理。
+- 禁止把某一本书的精修目标放在仓库根目录；必须放在该书工程 `goal/` 下。
+- 禁止发现可复用经验后只修当前书、不回填模板。
 
 ## 状态更新 / State Update
 

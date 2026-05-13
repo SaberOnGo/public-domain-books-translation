@@ -34,6 +34,8 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
    读取英语源语言干扰说明。
 9. `references/english_chapter_title_strategy.md`
    读取英文旧式章节标题链的中文处理规则。
+10. `references/english_to_chinese_literary_refinement.md`
+   读取英文到简体中文文学精修策略。
 
 ## Translation Standard / 翻译标准
 
@@ -72,6 +74,8 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
 - EPUB 构建前必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`；如果发现分号滥用、中文异常空格、旧纸书页码目录或乱码，必须先修复再继续。
 - Before final EPUB output, verify chapter headings against `references/english_chapter_title_strategy.md` and `references/title_punctuation_and_heading_style.md`.
 - 最终 EPUB 输出前，必须按 `references/english_chapter_title_strategy.md` 和 `references/title_punctuation_and_heading_style.md` 检查章节标题。
+- If systematic refinement issues are found in a specific book, create the goal document under that book project and backfill reusable lessons to the template layer.
+- 如果某本书发现系统性精修问题，目标文档必须放到该书工程内，并把可复用经验回填到模板层。
 
 - EPUB output must pass validation before final output.
 - EPUB 必须通过校验后才能进入最终输出。

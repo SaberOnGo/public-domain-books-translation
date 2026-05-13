@@ -31,9 +31,11 @@ Use this skill when an AI agent is asked to create a book project, add or update
    EPUB 制作前，必须在书籍工程内运行 `node scripts/publication_lint.js --target={target-language} --write-report`，并修复所有硬错误。
 10. Before final EPUB output, check long chapter titles against `references/chapter_title_policy.md` and any matching source-to-target title strategy. EPUB navigation must use concise labels, not printed-TOC title chains.
     最终 EPUB 输出前，必须按 `references/chapter_title_policy.md` 及对应语言方向标题策略检查长章节标题。EPUB 目录应使用短题名，不应塞入纸书目录式标题链。
-11. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
+11. If a specific book has systematic refinement issues, place its goal under `books/{book_id_slug}/goal/`, then backfill reusable lessons into common, target-language, or source-target templates.
+    如果某本书有系统性精修问题，目标文档应放在 `books/{book_id_slug}/goal/`，再把可复用经验回填到 common、目标语言或语言方向模板。
+12. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
    特定语言方向的脚本、数据集和探索性调研应放在 `research/{source-target}/...` 或对应语言方向模板中，不要放在仓库根目录。
-12. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
+13. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
     不要在脚本或 prompt 中写死本机绝对路径。路径应基于脚本位置、仓库根目录或用户显式传入的参数解析。
 
 ## Language Requirements / 语言要求
