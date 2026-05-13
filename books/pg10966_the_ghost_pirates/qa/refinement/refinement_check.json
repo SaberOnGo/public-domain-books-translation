@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-13T04:10:39.616Z",
+  "generatedAt": "2026-05-13T04:20:04.936Z",
   "totals": {
-    "textFiles": 260,
+    "textFiles": 262,
     "bomFiles": 1,
     "mojibakeFiles": 1,
     "cjkMultiSpaceFiles": 0,
-    "zhSemicolon": 148,
+    "zhSemicolon": 153,
     "latinInFinal": 1,
     "halfPunctuationInFinal": 0,
     "suspiciousAiPhrases": 0
@@ -142,6 +142,11 @@
     },
     {
       "file": "glossary/terms.csv",
+      "line": 47,
+      "text": "buntline,帆腹索,rigging,用于收拢方帆帆腹；与 gasket（束帆索）区分"
+    },
+    {
+      "file": "glossary/terms.csv",
       "line": 48,
       "text": "gasket,束帆索,rigging,用于扎帆的索带；按动作可译“束帆索”"
     },
@@ -149,6 +154,11 @@
       "file": "glossary/terms.csv",
       "line": 50,
       "text": "jackstay,帆缘索,rigging,沿桁或帆缘的支索；按语境复核"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_full_book_literary_xindaya_review_goal.md",
+      "line": 13,
+      "text": "5. 雅：检查恐怖文学气氛是否克制、渐进、有现场感；不得出现现代网络腔、说明书腔或过度解释。"
     },
     {
       "file": "goal/2026-05-13_pg10966_literary_refinement_goal.md",
@@ -536,6 +546,26 @@
       "text": "- 塔米的几段长对白为保留原文紧张倾诉感，中文仍保持较长段落；可读性通过标点和短句缓解。"
     },
     {
+      "file": "qa/refinement/full_book_literary_xindaya_review.md",
+      "line": 8,
+      "text": "本轮按用户新增 `/goal` 执行全书级文学复核，重点覆盖重要段落、高潮段落、关键动作细节、航海专业名词、人物译名、恐怖递进和中文文学表现。结论是：现有译文整体达到出版级交付要求；本轮仅发现并修复若干术语与旧译名残留，没有发现需要重译章节或重构叙事的大问题。"
+    },
+    {
+      "file": "qa/refinement/full_book_literary_xindaya_review.md",
+      "line": 14,
+      "text": "- 复查 `metadata/book_specific_translation_research.md` 与 `metadata/style_profile.md` 的风格要求：朴素、紧张、准确、有海上现场感；不把未知提前解释成现代惊悚设定。"
+    },
+    {
+      "file": "qa/refinement/full_book_literary_xindaya_review.md",
+      "line": 30,
+      "text": "译文的文学性主要来自克制、观察顺序和迟疑感，而不是外加修辞。夜色、雾、蓝火、灯笼、索具、帆桁和甲板空间构成了持续压迫氛围。需要保留的粗粝感已经保留；需要收束的说明性语句没有扩写成现代恐怖宣传腔。"
+    },
+    {
+      "file": "qa/refinement/full_book_literary_xindaya_review.md",
+      "line": 79,
+      "text": "- `node scripts/refinement_check.js`：PASS，publication totals 全部为 0；仅保留历史 raw source BOM 和脚本探测项，不影响出版文件。"
+    },
+    {
       "file": "qa/refinement/publication_grade_gap_closure_report.md",
       "line": 14,
       "text": "- 旧章节 QA 中出现过的“副题”记录属于初译阶段记录；当前交付以本报告和 `qa/refinement/title_structure_review.md` 为准。"
@@ -594,11 +624,6 @@
       "file": "qa/terminology/009_vi.md",
       "line": 11,
       "text": "- `wheel`：舵轮；`to the wheel` 按语境译为掌舵、接舵。"
-    },
-    {
-      "file": "qa/terminology/009_vi.md",
-      "line": 33,
-      "text": "- `Quoin` 本章出现但不在现有术语表中，按音译为“奎因”；后续章节如再次出现应保持一致或补充术语表。"
     },
     {
       "file": "README.md",

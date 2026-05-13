@@ -29,10 +29,10 @@
 - `Tammy`：塔米。
 - `Stubbins`：斯塔宾斯。
 - `Plummer`：普卢默。
-- `Quoin`：阔因。本章出现但不在当前术语表中，按音译稳定处理。
-- `Jaskett`：贾斯克特。本章出现但不在当前术语表中，按音译稳定处理。
+- `Quoin`：奎因。按全书术语表统一处理。
+- `Jaskett`：贾斯克特。按全书术语表统一处理。
 
 ## 疑点
 
-- `Quoin`、`Jaskett` 尚未列入 `glossary/terms.csv`，本章未修改术语表，QA 中记录为后续统一术语表候选。
+- `Quoin`、`Jaskett` 已列入 `glossary/terms.csv`，本章按术语表统一。
 - 其余术语无未解决疑点。

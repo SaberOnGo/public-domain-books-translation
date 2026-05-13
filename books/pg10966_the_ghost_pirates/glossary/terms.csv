@@ -44,7 +44,7 @@ gantline,吊索,rigging,
 sheet,帆脚索,rigging,
 brace,转桁索,rigging,
 clewline,收帆角索,rigging,
-buntline,束帆索,rigging,
+buntline,帆腹索,rigging,用于收拢方帆帆腹；与 gasket（束帆索）区分
 gasket,束帆索,rigging,用于扎帆的索带；按动作可译“束帆索”
 foot-rope,踏索,rigging,
 jackstay,帆缘索,rigging,沿桁或帆缘的支索；按语境复核
