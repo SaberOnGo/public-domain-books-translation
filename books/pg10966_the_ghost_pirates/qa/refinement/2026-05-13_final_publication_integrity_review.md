@@ -90,4 +90,16 @@ goal: `goal/2026-05-13_pg10966_final_publication_integrity_goal.md`
 
 ## 最终准入结论
 
-本轮未发现需要继续改正文的出版阻断问题。封面、书籍首页、译者名、标题工程、术语、长段落、重要段落和全书“信达雅”均达到当前模板准入要求。后续只需在最终重建 EPUB 后同步 `output/final_manifest.md` 的实际大小、SHA256 和校验结果。
+本轮未发现需要继续改正文的出版阻断问题。封面、书籍首页、译者名、标题工程、术语、长段落、重要段落和全书“信达雅”均达到当前模板准入要求。
+
+## 最终验证结果
+
+- `npm audit`：PASS，0 vulnerabilities。
+- `npm run lint:publication`：PASS，`asciiSemicolon=0`、`zhSemicolon=0`、`cjkMultiSpace=0`、`mojibake=0`、`targetTitleLatinResidue=0`。
+- `node scripts/refinement_check.js`：PASS，出版范围 `bomFiles=0`、`mojibakeFiles=0`、`cjkMultiSpaceFiles=0`、`zhSemicolon=0`。
+- `npm run build:epub`：PASS。
+- `npm run check:epub`：PASS，EPUBCheck `fatal=0`、`error=0`、`warning=0`。
+- EPUB 内部拆包：`EPUB/images/cover.jpg` 存在，`cover.svg` 未打包，OPF `cover-image` 指向 JPG，`book-info.xhtml` 存在，目录含“书籍信息”，OPF 与书籍信息页均含 `LifeBook 书坊 SaberOnGo`。
+- EPUB 章节副标题抽查：海中上来的身影、威廉斯的结局、从暗处攫来的手、幽灵船、巨大的幽灵船、幽灵海盗均在章节 XHTML 中。
+- 最终 EPUB：466977 bytes。
+- SHA256：`1331200CB47D4557D2CE38BE7AED6C909AE52214BF5822E1FB784387610B2D8A`。

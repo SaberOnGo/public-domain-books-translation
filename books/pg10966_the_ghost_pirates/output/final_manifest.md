@@ -15,7 +15,7 @@ build_date: "2026-05-13"
 - 标准输出：`output/book.epub`
 - 中文文件名输出：`output/幽灵海盗.epub`
 - 文件大小：466977 bytes
-- SHA256：`88294DF8BA7906D5719D9D45E4D1CEF9DBBD4FED6919C0610A5B9C4E6AD70254`
+- SHA256：`1331200CB47D4557D2CE38BE7AED6C909AE52214BF5822E1FB784387610B2D8A`
 - 封面图片：`output/cover.jpg`，363786 bytes
 - 译者标识：`LifeBook 书坊 SaberOnGo`
 
