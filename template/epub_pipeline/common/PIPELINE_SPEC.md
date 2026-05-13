@@ -92,6 +92,8 @@
 - `qa/imagery/{NNN_slug}.imagery.md`：意象词/过度发挥/省字式翻译审计。
 - `qa/terminology/{NNN_slug}.md`：术语一致性审校。
 - `qa/gates/{NNN_slug}.gate.md`：章节终稿门禁。
+- `qa/refinement/refinement_check.json`：整书精修扫描报告，重点检查出版文本中的 BOM、乱码、异常空格、标点和残留问题。
+- `qa/refinement/*.md`：整书或章节级精修复查记录。
 
 ### Preproduction
 
@@ -134,6 +136,8 @@ node scripts/publication_lint.js --target={target-language} --write-report
 - 不得在普通正文中保留用于纸书对齐的连续空格。
 - 不得让脚本依赖本机绝对路径；所有路径必须相对 `PROJECT_ROOT`。
 - 不得把旧纸书目录式长标题链直接塞入 EPUB 导航；长标题必须按 `references/chapter_title_policy.md` 拆分为短目录题名、页面主标题和可选副标题。
+- 不得把 AI 或译者概括出的章节说明当成读者可见标题。若源文某章只有编号、罗马数字或简单题名，EPUB 页面标题通常也只应使用对应编号或题名；解释性说明应放入 `title_note`、制作说明或 QA 记录。
+- `source/source_text_raw.txt` 是来源证据，不应为了通过出版文本检查而改写。出版文本硬检查重点覆盖 `frontmatter/`、`chapters/final/`、`metadata/` 和生成 EPUB 内的 XHTML。
 
 目标语言相关检查由 `template/epub_pipeline/targets/{target}/` 追加规则。例如简体中文会限制分号滥用、中文字符之间的异常空格、中文排版标点等。
 
@@ -151,6 +155,8 @@ node scripts/publication_lint.js --target={target-language} --write-report
 - 未通过样章制作检查，不得制作整本 EPUB。
 - 未通过出版文本 lint，不得构建最终 EPUB。
 - 未完成长章节标题的导航题名、页面标题和副标题设计，不得进入最终 EPUB 输出。
+- 整本 EPUB 构建后必须执行精修复查或等效扫描，并在 `qa/refinement/` 下记录结果。
+- 若发现来源不支持的读者可见标题、BOM、乱码、AI 输出残留、异常英文残留或 EPUB metadata 问题，不得进入最终交付。
 - 如果已经发现系统性文学精修问题，必须在 `books/{book_id_slug}/goal/` 建立本书目标，并把可复用经验回填到 common、目标语言或语言方向模板。
 - 整本 EPUB 制作后，必须派生 2 个独立 Agent 评审。
 - 评审失败时必须通过 `reviews/revision_route.md` 回到对应前置阶段。
@@ -167,6 +173,7 @@ node scripts/publication_lint.js --target={target-language} --write-report
 - `preproduction/stage1/production_spec.md` 存在。
 - `preproduction/stage2_sample/sample_review.md` 结论为 `PASS`。
 - `output/publication_lint.json` 存在，且无硬错误。
+- `qa/refinement/` 存在；若使用 `scripts/refinement_check.js`，出版范围内 BOM、乱码、中文连续空格和不当标点应为 0，或在 QA 中记录明确例外。
 - `output/book.epub` 存在。
 - EPUBCheck 无 fatal/error。
 - `reviews/agent_a/review.md` 和 `reviews/agent_b/review.md` 均存在，且评分通过。

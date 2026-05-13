@@ -18,8 +18,9 @@ An English-to-Chinese EPUB is not finished just because the meaning is mostly pr
 - 必须读取完整英文原标题，不得使用被分章脚本截断的标题。
 - 必要时建立 `metadata/chapter_title_map.yaml`，包含 `source_full`、`nav_title`、`display_title`、`subtitle`、`title_note`。
 - `nav.xhtml` 使用短目录题名，页面内再用主标题和副标题承载完整信息。
+- 如果英文原书章节只有罗马数字、阿拉伯数字或简单编号，不得为中文 EPUB 自创读者可见小标题；章节内容概括只能放入 `title_note`、制作说明或 QA 记录。
 
-English printed-title chains with `--` must not be mechanically converted into Chinese em-dash chains. Use a title map when needed.
+English printed-title chains with `--` must not be mechanically converted into Chinese em-dash chains. Use a title map when needed. If the source chapter only has a number or Roman numeral, do not invent a visible Chinese subtitle; keep summaries in notes or QA.
 
 ### 2. 句子 / Sentences
 
@@ -52,7 +53,9 @@ Names and historically loaded terms need a stable first-mention and note policy.
 - 中文分号 `；` 只能用于真实并列分层，不得机械对应英文分号或连接词。
 - 中文字符之间不得保留用于纸书对齐的连续空格。
 - 英文原书分章后，常会在译文正文开头或结尾残留重复标题、running title、下一节书名或目录碎片。精修时必须检查每章首尾，正文中不得保留这类副文本残片。
+- 也要检查 AI 或译者是否把章节内容概括成新的可见小标题；若英文源文没有对应标题，必须从 EPUB 可见正文和目录中移除。
 - Project Gutenberg 等英文数字源常带有 `Transcriber's Notes`、OCR correction notes 或源文件尾注。除非本书版本有意保留来源制作说明，否则不要把这些内容混入中文正文；若保留，必须译为清楚标注的“原文转录说明/来源制作说明”，不能让读者误以为是作者正文。
+- 下载的英文 raw source 是公版来源证据，不能因为其中有 BOM、Project Gutenberg 样板文字或排版残留就随意改写；清理对象应是中文终稿、metadata、frontmatter 和生成 EPUB。
 - 附录、名单、表格、页码目录等旧纸书结构，必须转成适合 EPUB 的列表、表格、注释或导航结构。
 
 Chinese punctuation and EPUB typography are publication issues, not cosmetic details.
