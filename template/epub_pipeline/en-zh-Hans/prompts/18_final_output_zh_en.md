@@ -22,11 +22,13 @@
 4. 无旧品牌名残留。
 5. 标题层级、字体策略、正文排版符合 `production_spec.md`。
 6. 章节标题已按 `references/chapter_title_policy.md` 和 `references/english_chapter_title_strategy.md` 检查：无半截标题、无机械破折号长链，EPUB 目录使用短题名。
+   - 若英文原章只有编号、罗马数字或简单题名，不得出现 AI 自拟的可见中文小标题；解释性概括只能放入 `title_note`、制作说明或 QA。
 7. 文件体积合理，封面和字体未异常膨胀。
 8. 双 Agent 评审分数达到 PASS。
 9. `output/publication_lint.json` 无硬错误；不存在分号滥用、异常连续空格、旧纸书页码目录或乱码，且 `targetTitleLatinResidue=0`。
 10. 如本书存在系统性精修问题，`goal/` 下已有本书目标或完成记录，且可复用经验已回填到 common、zh-Hans 或 en-zh-Hans 模板。
 11. 标题中的人名不计入“正文首次出现”：章节标题、副标题和目录题名只用中文译名；英文原名只可放在正文第一次自然出现该人名的位置。
+12. 若模板包含 `scripts/refinement_check.js`，运行后 `qa/refinement/refinement_check.json` 已保存；出版范围内 BOM、乱码、异常连续空格和不当标点为 0，或已有明确例外说明。
 
 ## 输出 / Output
 

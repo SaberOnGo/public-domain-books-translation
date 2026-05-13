@@ -25,6 +25,9 @@ Every book project must review:
 - Chapter title strategy: navigation labels, displayed headings, subtitles, and heading hierarchy.
 - 章节标题策略：目录题名、页面标题、副标题和标题层级。
 
+- Source-supported visible headings: reader-facing headings, subtitles, and appendix labels must come from source structure or a documented editorial policy, not from an AI summary of chapter content.
+- 有来源依据的可见标题：读者可见的章节标题、副标题和附录标签必须来自源文结构，或来自已记录的编辑策略；不得把 AI 对章节内容的概括当作原书标题。
+
 - Paragraph rhythm: overlong paragraphs, paragraph breaks, scene transitions, and list-like compression.
 - 段落节奏：过长段落、分段、场景转换，以及清单式压缩。
 
@@ -81,6 +84,10 @@ Also inspect the final book blocks for digital-source artifacts such as transcri
 
 还必须检查全书末尾是否残留数字来源工件，例如转录者说明、OCR 勘误、源文件样板文字和转换日志。应明确决定是从面向读者的 EPUB 中删除，还是移入清楚标注的来源制作说明。
 
+Do not rewrite raw source evidence merely to satisfy publication-text checks. Keep downloaded source files such as `source/source_text_raw.txt` as evidence, then clean and verify the reader-facing publication scope: front matter, final chapters, metadata, generated XHTML, and navigation files.
+
+不得仅为了通过出版文本检查而改写原始来源证据。`source/source_text_raw.txt` 等下载原文应作为证据尽量保留原貌；需要清洁和复核的是读者可见出版范围：前言、终稿章节、metadata、生成 XHTML 和导航文件。
+
 Appendices that are primarily name lists, catalogues, indexes, or tabular source material may keep a list-like or preformatted presentation when that best preserves spelling, alignment, and lookup value. Paragraph-length gates should not blindly fail such appendices; instead, record the presentation decision in the book QA file and verify mobile readability in the generated EPUB.
 
 主要由姓名表、目录表、索引或表格型源材料构成的附录，可以在最能保留拼写、对齐和检索价值时继续使用列表式或预格式化呈现。段落长度门禁不应机械判定这类附录失败；应在本书 QA 文件中记录呈现选择，并在生成的 EPUB 中复核移动端可读性。
@@ -120,6 +127,9 @@ The post-generation review must include:
 - Publication lint for punctuation, abnormal spaces, mojibake, and legacy print artifacts.
 - 出版 lint：检查标点、异常空格、乱码和旧纸书残留物。
 
+- Reusable refinement scan, when available, such as `node scripts/refinement_check.js`, with the report preserved under `qa/refinement/`.
+- 可用时运行可复用精修扫描，例如 `node scripts/refinement_check.js`，并把报告保存在 `qa/refinement/` 下。
+
 - Extracted XHTML inspection for navigation titles, chapter headings, subtitles, cover/image references, appendix/list rendering, and body-end artifacts.
 - 抽取 EPUB 内部 XHTML，检查目录题名、章节标题、副标题、封面/图片引用、附录/名单呈现，以及正文末尾来源工件。
 
@@ -143,6 +153,9 @@ A book must not be marked `DONE` if:
 
 - title design, paragraph refinement, terminology, or EPUB presentation issues remain open without a revision route;
 - 标题设计、段落精修、术语或 EPUB 呈现问题仍未关闭，也没有回退路线；
+
+- reader-facing headings or subtitles were invented without source support or documented editorial justification;
+- 读者可见标题或副标题没有源文依据，也没有记录明确的编辑理由；
 
 - validation only proves EPUB structure, while translation quality has not passed editorial review.
 - 只证明了 EPUB 结构合格，但译文质量尚未通过编辑级审查。
