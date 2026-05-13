@@ -1,0 +1,3 @@
+# 第十七章 更多捕获 章节门禁
+
+结论：PASS_WITH_RECORDED_LIMITATIONS
