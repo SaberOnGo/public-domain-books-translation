@@ -15,7 +15,7 @@
 
 1. 生成或更新 EPUB 构建脚本。
 2. 运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`。
-3. 确认 `output/publication_lint.json` 中 `targetTitleLatinResidue=0`；否则不得继续构建或发布。
+3. 确认 `output/publication_lint.json` 中 `targetTitleLatinResidue=0`、`sourceTermBeforeTranslation=0`、`bodySceneSeparator=0`；否则不得继续构建或发布。
 4. 生成 `cover.xhtml`、`book-info.xhtml`、`nav.xhtml`、正文 XHTML、CSS、OPF。
 5. 打包 `output/book.epub`。
 6. 保留必要可审计产物，如 `output/cover.jpg`、`output/publication_lint.json`、`output/epubcheck.json`。
@@ -29,6 +29,7 @@
 - 禁止 metadata、版本说明和封面三处品牌名不一致。
 - 禁止在出版文本 lint 未通过时构建或发布全书 EPUB。
 - 禁止章节标题、副标题或目录题名出现英文原名或英文括注；标题中的人名不计入“正文首次出现”。
+- 禁止普通名词写成 `source term（中文释义）`；禁止旧纸书星号或横线分隔符进入最终正文。
 
 ## 输出 / Output
 

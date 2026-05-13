@@ -139,6 +139,39 @@ function detectTargetTitleLatinResidue(text, file) {
   return issues;
 }
 
+function detectSourceTermBeforeTranslation(text, file) {
+  const normalizedFile = file.split(path.sep).join('/');
+  if (!normalizedFile.startsWith('chapters/final/') && !normalizedFile.startsWith('frontmatter/')) return [];
+  const issues = [];
+  const regex = /(?:_[A-Za-z][A-Za-z'\- ]{1,80}_|[A-Za-z][A-Za-z.'\- ]{2,80})[（(][^）)]*[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff][^）)]*[）)]/g;
+  let match;
+  while ((match = regex.exec(text)) && issues.length < 20) {
+    issues.push({
+      file,
+      line: lineNumberAt(text, match.index),
+      rule: 'source_term_before_translation',
+      sample: match[0].slice(0, 120),
+    });
+  }
+  return issues;
+}
+
+function detectBodySceneSeparator(text, file) {
+  const normalizedFile = file.split(path.sep).join('/');
+  if (!normalizedFile.startsWith('chapters/final/') && !normalizedFile.startsWith('frontmatter/')) return [];
+  return text.replace(/\r\n/g, '\n').split('\n').flatMap((line, idx) => {
+    if (/^\s*(?:(?:\*\s*){3,}|-{3,})\s*$/.test(line)) {
+      return [{
+        file,
+        line: idx + 1,
+        rule: 'body_scene_separator',
+        sample: 'Delete paper-style scene separators instead of replacing them with visible asterisks or hyphen rules.',
+      }];
+    }
+    return [];
+  });
+}
+
 const files = scanRoots.flatMap((dir) => walk(dir));
 const report = {
   projectRoot: '.',
@@ -153,6 +186,8 @@ const report = {
     mojibake: 0,
     legacyPrintToc: 0,
     targetTitleLatinResidue: 0,
+    sourceTermBeforeTranslation: 0,
+    bodySceneSeparator: 0,
   },
   issues: [],
   warnings: [],
@@ -173,6 +208,8 @@ for (const file of files) {
   const mojibake = (text.match(mojibakePattern) || []).length;
   const legacyToc = detectLegacyPrintToc(text, rel);
   const targetTitleLatinResidue = detectTargetTitleLatinResidue(text, rel);
+  const sourceTermBeforeTranslation = target === 'zh-Hans' ? detectSourceTermBeforeTranslation(text, rel) : [];
+  const bodySceneSeparator = detectBodySceneSeparator(text, rel);
 
   report.totals.asciiSemicolon += asciiSemi;
   report.totals.zhSemicolon += zhSemi;
@@ -181,6 +218,8 @@ for (const file of files) {
   report.totals.mojibake += mojibake;
   report.totals.legacyPrintToc += legacyToc.length;
   report.totals.targetTitleLatinResidue += targetTitleLatinResidue.length;
+  report.totals.sourceTermBeforeTranslation += sourceTermBeforeTranslation.length;
+  report.totals.bodySceneSeparator += bodySceneSeparator.length;
 
   if (asciiSemi) report.issues.push(...collectMatches(text, /;/g, rel, 'ascii_semicolon'));
   if (target === 'zh-Hans' && zhSemi > maxZhSemicolons) {
@@ -197,6 +236,8 @@ for (const file of files) {
   if (mojibake) report.issues.push(...collectMatches(text, mojibakePattern, rel, 'mojibake'));
   report.issues.push(...legacyToc);
   report.issues.push(...targetTitleLatinResidue);
+  report.issues.push(...sourceTermBeforeTranslation);
+  report.issues.push(...bodySceneSeparator);
   if (strictSpaces && repeatedSpaces) {
     report.issues.push(...collectMatches(text, /[^\n][ \t]{2,}[^\n]/g, rel, 'repeated_space'));
   } else if (repeatedSpaces) {

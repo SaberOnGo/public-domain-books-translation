@@ -177,8 +177,8 @@ function mdToHtml(md, titleMeta = null) {
   function flushParagraph() {
     if (!paragraph.length) return;
     const text = paragraph.join(' ');
-    if (/^\*\s+\*\s+\*\s+\*\s+\*$/.test(text.trim())) {
-      blocks.push(`<p class="ornament">${esc(text.trim())}</p>`);
+    if (/^(?:\*\s*){3,}$/.test(text.trim()) || /^-{3,}$/.test(text.trim())) {
+      paragraph = [];
     } else {
       blocks.push(`<p>${inline(text)}</p>`);
     }
@@ -372,7 +372,6 @@ h2 { font-size: 1.05em; line-height: 1.4; margin: 1.5em 0 0.8em; }
 .chapter-kicker { display: block; font-size: 1em; color: #334; margin-bottom: 0.35em; }
 .chapter-title { display: block; font-size: 1em; }
 .chapter-subtitle { text-indent: 0; text-align: center; font-size: 0.88em; line-height: 1.45; margin: -0.65em 0 1.4em; color: #445; }
-.ornament { text-indent: 0; text-align: center; letter-spacing: 0.35em; margin: 1.4em 0; }
 pre { white-space: pre-wrap; line-height: 1.5; font-size: 0.92em; }
 a { color: inherit; text-decoration: none; }
 nav#toc ol { padding-left: 1.4em; }

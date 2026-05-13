@@ -1,7 +1,7 @@
 type,source_term,target_term,domain,notes
 proper_noun,Matthew A. Henson,马修·A·亨森,person,author and narrator
 proper_noun,Matthew Alexander Henson,马修·亚历山大·亨森,person,full name
-proper_noun,Matt Henson,Matt Henson（马特·亨森）,person,nickname; first mention may keep English with Chinese note, later use context-dependent Henson or Matt
+proper_noun,Matt Henson,马特·亨森（Matt Henson）,person,nickname; first body mention uses Chinese transliteration with English original in parentheses; later use 亨森 or 马特 by context
 proper_noun,Robert E. Peary,罗伯特·E·皮里,person,expedition commander
 proper_noun,Commander Peary,皮里指挥官,person,title in narrative
 proper_noun,Booker T. Washington,布克·T·华盛顿,person,introduction author
