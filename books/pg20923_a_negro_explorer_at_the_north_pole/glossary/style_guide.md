@@ -1,13 +1,30 @@
-type,source_term,target_term,domain,notes
-proper_noun,,,,
-technical_term,,,,
-industry_term,,,,'@ | Set-Content -Encoding UTF8 $root\glossary\terms.csv;
+# 《黑人北极探险家》术语与文体规则
 
-@'
-# Style Guide
+## 基本声调
 
-- Register/tone:
-- Terminology policy:
-- Number/date style:
-- Quote/punctuation style:
-- Annotation policy:
+- 叙述应保持纪实、朴素、坚韧，有现场感，但不替原文增加新的情绪、比喻或动作。
+- 中文要顺畅，有叙述呼吸；不能把动作密集段压成清单，也不能把探险记录写成说明书。
+
+## 专名策略
+
+- 陌生人名不强制汉译，可以保留英文原名，例如 `Rudolph Franke`、`Harry Whitney`、`Professor Marvin`、`Grant Land`。
+- 如果选择汉译，首次出现必须保留英文原名，格式可用“中文译名（English Name）”；后文保持同一形式。
+- 已在中文读者中较稳定且已查证的名字，可以使用中文译名，例如皮里、亨森、巴特利特、库克；不因人物高频出现就自动汉译。
+- 船名使用中文译名加书名号或斜体策略保持一致；本书正文沿用 `_Roosevelt_` 等 Markdown 斜体形式，由 EPUB 构建转为 `<em>`。
+
+## 历史称谓
+
+- `Esquimo` 在本书中保留历史语境，译为“爱斯基摩人”；必要时用译注说明现代称谓与历史称谓差异。
+- 涉及种族、殖民、时代偏见的表达，不能擅自现代化抹平，也不能强化原文没有的判断。
+
+## 标题策略
+
+- 纸书目录式长标题不进入 EPUB 导航。
+- `nav.xhtml` 使用短目录题名；页面标题使用主标题，副标题承载原题中的次级信息。
+- 陌生人名出现在标题中时，可保留英文，以免读者误认或增加不可靠译名。
+
+## 标点与排版
+
+- 普通中文正文不得出现 ASCII 分号 `;`。
+- 中文分号 `；` 只用于真实并列分层，不机械对应英文连接词。
+- 中文字符之间不得保留用于纸书对齐的连续空格。

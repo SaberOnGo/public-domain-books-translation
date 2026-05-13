@@ -11,6 +11,10 @@ proper_noun,Cape Columbia,哥伦比亚角,place,
 proper_noun,Etah,伊塔,place,
 proper_noun,Smith Sound,史密斯海峡,place,
 proper_noun,Peary Arctic Club,皮里北极俱乐部,organization,
+proper_noun,Rudolph Franke,Rudolph Franke,person,unfamiliar name retained in English unless a later edition adopts a Chinese transliteration with first-use English note
+proper_noun,Harry Whitney,Harry Whitney,person,unfamiliar name retained in English unless a later edition adopts a Chinese transliteration with first-use English note
+proper_noun,Professor Marvin,Marvin 教授,person,unfamiliar name retained in English-title hybrid unless a later edition adopts a Chinese transliteration with first-use English note
+proper_noun,Grant Land,Grant Land,place,unfamiliar place name retained in English unless a later edition adopts a Chinese translation with first-use English note
 technical_term,sledge,雪橇,polar exploration,
 technical_term,dog-team,狗拉雪橇队,polar exploration,
 technical_term,ice-pack,浮冰群,polar exploration,

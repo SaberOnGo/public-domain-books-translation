@@ -7,6 +7,7 @@ const finalDir = path.join(root, 'chapters', 'final');
 const outputDir = path.join(root, 'output');
 const outFile = path.join(outputDir, 'book.epub');
 const cnOutFile = path.join(outputDir, '黑人北极探险家.epub');
+const titleMapPath = path.join(root, 'metadata', 'chapter_title_map.yaml');
 
 const meta = {
   title: '黑人北极探险家',
@@ -51,6 +52,35 @@ function inline(text) {
     s = s.replace(new RegExp(`\\u0000${i}\\u0000`, 'g'), value);
   });
   return s;
+}
+
+function unquoteYamlValue(value) {
+  const trimmed = String(value || '').trim();
+  if (!trimmed) return '';
+  if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+    return trimmed.slice(1, -1).replace(/\\"/g, '"').replace(/\\'/g, "'");
+  }
+  return trimmed;
+}
+
+function readChapterTitleMap(filePath) {
+  if (!fs.existsSync(filePath)) return {};
+  const map = {};
+  let current = null;
+  const lines = fs.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n').split('\n');
+  for (const line of lines) {
+    const chapterMatch = line.match(/^  ([^:\s][^:]*\.md):\s*$/);
+    if (chapterMatch) {
+      current = chapterMatch[1].trim();
+      map[current] = {};
+      continue;
+    }
+    const fieldMatch = line.match(/^    ([A-Za-z_][A-Za-z0-9_]*):\s*(.*)$/);
+    if (current && fieldMatch) {
+      map[current][fieldMatch[1]] = unquoteYamlValue(fieldMatch[2]);
+    }
+  }
+  return map;
 }
 
 function crc32(buf) {
@@ -136,12 +166,13 @@ function zipBuffer(files) {
   return Buffer.concat(chunks);
 }
 
-function mdToHtml(md) {
+function mdToHtml(md, titleMeta = null) {
   const lines = md.replace(/\r\n/g, '\n').split('\n');
   const blocks = [];
   let paragraph = [];
   let pre = [];
   let inPre = false;
+  let firstHeadingRendered = false;
 
   function flushParagraph() {
     if (!paragraph.length) return;
@@ -175,7 +206,12 @@ function mdToHtml(md) {
       pre.push(line);
     } else if (/^# /.test(line)) {
       flushParagraph();
-      blocks.push(formatHeading(line.replace(/^# /, '').trim(), 1));
+      if (!firstHeadingRendered && titleMeta && titleMeta.display_title) {
+        blocks.push(formatChapterHeading(titleMeta));
+      } else {
+        blocks.push(formatHeading(line.replace(/^# /, '').trim(), 1));
+      }
+      firstHeadingRendered = true;
     } else if (/^## /.test(line)) {
       flushParagraph();
       blocks.push(formatHeading(line.replace(/^## /, '').trim(), 2));
@@ -197,6 +233,14 @@ function formatHeading(title, level) {
     return `<h1><span class="chapter-kicker">${esc(m[1])}</span>${m[2] ? `<span class="chapter-title">${inline(m[2])}</span>` : ''}</h1>`;
   }
   return `<${tag}>${inline(title)}</${tag}>`;
+}
+
+function formatChapterHeading(titleMeta) {
+  const displayTitle = titleMeta.display_title || titleMeta.nav_title || '';
+  const subtitle = titleMeta.subtitle || '';
+  const m = displayTitle.match(/^(第[一二三四五六七八九十百]+章|附录[一二三四五六七八九十]+)\s*(.*)$/);
+  const main = m ? `<span class="chapter-kicker">${esc(m[1])}</span>${m[2] ? `<span class="chapter-title">${inline(m[2])}</span>` : ''}` : inline(displayTitle);
+  return `<h1>${main}</h1>${subtitle ? `<p class="chapter-subtitle">${inline(subtitle)}</p>` : ''}`;
 }
 
 function xhtml(title, body, cssHref = 'style.css', extraHead = '') {
@@ -282,11 +326,15 @@ const chapterFiles = fs.readdirSync(finalDir)
 
 if (!chapterFiles.length) throw new Error('No final chapter markdown files found in chapters/final');
 
+const chapterTitleMap = readChapterTitleMap(titleMapPath);
 const chapters = chapterFiles.map((file, idx) => {
   const md = fs.readFileSync(path.join(finalDir, file), 'utf8');
-  const title = readTitle(md, `Chapter ${idx + 1}`);
+  const titleMeta = chapterTitleMap[file] || {};
+  const title = titleMeta.nav_title || readTitle(md, `Chapter ${idx + 1}`);
+  const displayTitle = titleMeta.display_title || title;
+  const subtitle = titleMeta.subtitle || '';
   const href = `chapters/${file.replace(/\.md$/, '.xhtml')}`;
-  return { id: `chap${idx + 1}`, file, title, href, html: xhtml(title, mdToHtml(md), '../style.css') };
+  return { id: `chap${idx + 1}`, file, title, displayTitle, subtitle, href, html: xhtml(displayTitle, mdToHtml(md, titleMeta), '../style.css') };
 });
 
 const navItems = [
@@ -323,6 +371,7 @@ h1 {
 h2 { font-size: 1.05em; line-height: 1.4; margin: 1.5em 0 0.8em; }
 .chapter-kicker { display: block; font-size: 1em; color: #334; margin-bottom: 0.35em; }
 .chapter-title { display: block; font-size: 1em; }
+.chapter-subtitle { text-indent: 0; text-align: center; font-size: 0.88em; line-height: 1.45; margin: -0.65em 0 1.4em; color: #445; }
 .ornament { text-indent: 0; text-align: center; letter-spacing: 0.35em; margin: 1.4em 0; }
 pre { white-space: pre-wrap; line-height: 1.5; font-size: 0.92em; }
 a { color: inherit; text-decoration: none; }

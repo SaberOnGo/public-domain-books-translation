@@ -1,0 +1,157 @@
+chapter_titles:
+  001_front_matter.md:
+    source_full: Front Matter
+    nav_title: 卷首
+    display_title: 卷首
+    subtitle: ""
+    title_note: ""
+  002_foreword_friends_of_arctic_exploration_and_discovery_with_whom_i_have_come_in.md:
+    source_full: FOREWORD
+    nav_title: 前言
+    display_title: 前言
+    subtitle: ""
+    title_note: ""
+  003_introduction_one_of_the_first_questions_which_commander_peary_was_asked_when_he.md:
+    source_full: INTRODUCTION
+    nav_title: 导言
+    display_title: 导言
+    subtitle: 皮里指挥官返乡后首先被问到的问题之一
+    title_note: ""
+  004_chapter_i_the_early_years_schoolboy_cabin_boy_seaman_and_lieutenant_peary_s.md:
+    source_full: CHAPTER I THE EARLY YEARS: SCHOOLBOY, CABIN-BOY, SEAMAN, AND LIEUTENANT PEARY'S BODY-SERVANT--FIRST TRIPS TO THE ARCTIC
+    nav_title: 第一章 早年岁月
+    display_title: 第一章 早年岁月
+    subtitle: 学生、船舱侍童、水手、皮里中尉的贴身仆役，以及初赴北极
+    title_note: 原书纸书目录式长标题拆为页面副标题。
+  005_chapter_ii_off_for_the_pole_how_the_other_explorers_looked_the_lamb_like.md:
+    source_full: CHAPTER II OFF FOR THE POLE--HOW THE OTHER EXPLORERS LOOKED--THE LAMB-LIKE ESQUIMOS--ARRIVAL AT ETAH
+    nav_title: 第二章 向北极点出发
+    display_title: 第二章 向北极点出发
+    subtitle: 探险者群像、温顺的爱斯基摩人，以及抵达伊塔
+    title_note: 原题 lamb-like Esquimos 转为副标题说明，不机械译作破折号链。
+  006_chapter_iii_finding_of_rudolph_franke_whitney_landed_trading_and_coaling_fighting.md:
+    source_full: CHAPTER III FINDING OF RUDOLPH FRANKE--WHITNEY LANDED--TRADING AND COALING--FIGHTING THE ICE-PACKS
+    nav_title: 第三章 发现 Rudolph Franke
+    display_title: 第三章 发现 Rudolph Franke
+    subtitle: Whitney 登陆、交易装煤，以及与浮冰群搏斗
+    title_note: 修复旧标题截断。陌生人名保留英文，避免误读。若正文改用中文译名，首次出现须括注英文原名。
+  007_chapter_iv_preparing_for_winter_at_cape_sheridan_the_arctic_library.md:
+    source_full: CHAPTER IV PREPARING FOR WINTER AT CAPE SHERIDAN--THE ARCTIC LIBRARY
+    nav_title: 第四章 谢里登角过冬
+    display_title: 第四章 在谢里登角准备过冬
+    subtitle: 北极图书馆
+    title_note: ""
+  008_chapter_v_making_peary_sledges_hunting_in_the_arctic_night_the_excitable_dogs.md:
+    source_full: CHAPTER V MAKING PEARY SLEDGES--HUNTING IN THE ARCTIC NIGHT--THE EXCITABLE DOGS AND THEIR HABITS
+    nav_title: 第五章 制作皮里式雪橇
+    display_title: 第五章 制作皮里式雪橇
+    subtitle: 北极之夜的狩猎与躁动的狗群
+    title_note: 原题多段信息转为副标题。
+  009_chapter_vi_the_peary_plan_a_rain_of_rocks_my_friends_the_esquimos.md:
+    source_full: CHAPTER VI THE PEARY PLAN--A RAIN OF ROCKS--MY FRIENDS, THE ESQUIMOS
+    nav_title: 第六章 皮里计划
+    display_title: 第六章 皮里计划
+    subtitle: 石雨与我的爱斯基摩朋友
+    title_note: ""
+  010_chapter_vii_sledging_to_cape_columbia_hot_soldering_in_cold_weather.md:
+    source_full: CHAPTER VII SLEDGING TO CAPE COLUMBIA--HOT SOLDERING IN COLD WEATHER
+    nav_title: 第七章 雪橇行至哥伦比亚角
+    display_title: 第七章 雪橇行至哥伦比亚角
+    subtitle: 寒天里的热焊锡活
+    title_note: ""
+  011_chapter_viii_in_camp_at_columbia_literary_igloos_the_magnificent_desolation_of_the.md:
+    source_full: CHAPTER VIII IN CAMP AT COLUMBIA--LITERARY IGLOOS--THE MAGNIFICENT DESOLATION OF THE ARCTIC
+    nav_title: 第八章 哥伦比亚营地
+    display_title: 第八章 哥伦比亚营地
+    subtitle: 文学冰屋与北极壮阔的荒凉
+    title_note: ""
+  012_chapter_ix_ready_for_the_dash_to_the_pole_the_commander_s_arrival.md:
+    source_full: CHAPTER IX READY FOR THE DASH TO THE POLE--THE COMMANDER'S ARRIVAL
+    nav_title: 第九章 冲刺北极点前
+    display_title: 第九章 准备向北极点冲刺
+    subtitle: 指挥官抵达
+    title_note: ""
+  013_chapter_x_forward_march.md:
+    source_full: CHAPTER X FORWARD! MARCH!
+    nav_title: 第十章 前进！开步走！
+    display_title: 第十章 前进！开步走！
+    subtitle: ""
+    title_note: ""
+  014_chapter_xi_fighting_up_the_polar_sea_held_up_by_the_big_lead.md:
+    source_full: CHAPTER XI FIGHTING UP THE POLAR SEA--HELD UP BY THE "BIG LEAD"
+    nav_title: 第十一章 苦战北冰洋
+    display_title: 第十一章 苦战北冰洋
+    subtitle: 被“大冰间水道”挡住
+    title_note: ""
+  015_chapter_xii_pioneering_the_way_breaking_sledges.md:
+    source_full: CHAPTER XII PIONEERING THE WAY--BREAKING SLEDGES
+    nav_title: 第十二章 开路前行
+    display_title: 第十二章 开路前行
+    subtitle: 雪橇接连损坏
+    title_note: ""
+  016_chapter_xiii_the_supporting_parties_begin_to_turn_back.md:
+    source_full: CHAPTER XIII THE SUPPORTING-PARTIES BEGIN TO TURN BACK
+    nav_title: 第十三章 支援队开始折返
+    display_title: 第十三章 支援队开始折返
+    subtitle: ""
+    title_note: ""
+  017_chapter_xiv_bartlett_s_farthest_north_his_quiet_good_by.md:
+    source_full: CHAPTER XIV BARTLETT'S FARTHEST NORTH--HIS QUIET GOOD-BY
+    nav_title: 第十四章 巴特利特的最北点
+    display_title: 第十四章 巴特利特的最北点
+    subtitle: 他平静的告别
+    title_note: ""
+  018_chapter_xv_the_pole.md:
+    source_full: CHAPTER XV THE POLE!
+    nav_title: 第十五章 北极点！
+    display_title: 第十五章 北极点！
+    subtitle: ""
+    title_note: ""
+  019_chapter_xvi_the_fast_trek_back_to_land.md:
+    source_full: CHAPTER XVI THE FAST TREK BACK TO LAND
+    nav_title: 第十六章 快速返回陆地
+    display_title: 第十六章 快速返回陆地
+    subtitle: ""
+    title_note: ""
+  020_chapter_xvii_safe_on_the_roosevelt_poor_marvin.md:
+    source_full: CHAPTER XVII SAFE ON THE ROOSEVELT--POOR MARVIN
+    nav_title: 第十七章 安抵罗斯福号
+    display_title: 第十七章 安抵 _罗斯福号_
+    subtitle: 可怜的 Marvin
+    title_note: ""
+  021_chapter_xviii_after_musk_oxen_the_doctor_s_scientific_expedition.md:
+    source_full: CHAPTER XVIII AFTER MUSK-OXEN--THE DOCTOR'S SCIENTIFIC EXPEDITION
+    nav_title: 第十八章 追猎麝牛
+    display_title: 第十八章 追猎麝牛
+    subtitle: 医生的科学考察
+    title_note: ""
+  022_chapter_xix_the_roosevelt_starts_for_home_esquimo_villages_new_dogs_and_new_dog.md:
+    source_full: CHAPTER XIX THE ROOSEVELT STARTS FOR HOME--ESQUIMO VILLAGES--NEW DOGS AND NEW DOG FIGHTS
+    nav_title: 第十九章 罗斯福号启程返乡
+    display_title: 第十九章 _罗斯福号_ 启程返乡
+    subtitle: 爱斯基摩村落、新狗和新的狗斗
+    title_note: ""
+  023_chapter_xx_two_narrow_escapes_arrival_at_etah_harry_whitney_dr_cook_s_claims.md:
+    source_full: CHAPTER XX TWO NARROW ESCAPES--ARRIVAL AT ETAH--HARRY WHITNEY--DR. COOK'S CLAIMS
+    nav_title: 第二十章 两次险些遇难
+    display_title: 第二十章 两次险些遇难
+    subtitle: 抵达伊塔、Harry Whitney 与库克医生的主张
+    title_note: ""
+  024_chapter_xxi_etah_to_new_york_coming_of_mail_and_reporters_home.md:
+    source_full: CHAPTER XXI ETAH TO NEW YORK--COMING OF MAIL AND REPORTERS--HOME!
+    nav_title: 第二十一章 从伊塔到纽约
+    display_title: 第二十一章 从伊塔到纽约
+    subtitle: 邮件、记者与归家
+    title_note: ""
+  025_appendix_i_notes_on_the_esquimos.md:
+    source_full: APPENDIX I--NOTES ON THE ESQUIMOS
+    nav_title: 附录一 关于爱斯基摩人的札记
+    display_title: 附录一 关于爱斯基摩人的札记
+    subtitle: ""
+    title_note: ""
+  026_appendix_ii_list_of_smith_sound_esquimos.md:
+    source_full: APPENDIX II--LIST OF SMITH SOUND ESQUIMOS
+    nav_title: 附录二 史密斯海峡爱斯基摩人名录
+    display_title: 附录二 史密斯海峡爱斯基摩人名录
+    subtitle: ""
+    title_note: ""
