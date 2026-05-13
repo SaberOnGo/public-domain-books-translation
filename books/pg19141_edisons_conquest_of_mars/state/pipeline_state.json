@@ -7,7 +7,7 @@
   "chapters_total": 19,
   "chapters_translated": 19,
   "chapters_reviewed": 19,
-  "current_step": "publication_grade_title_terms_paragraphs_validated_done",
+  "current_step": "gpt_image_cover_book_info_and_fullbook_refinement_validated_done",
   "last_error": "",
   "human_required_default": false,
   "quality_gate": {
@@ -27,7 +27,8 @@
     "final_output_status": "PASS",
     "retrospective_status": "PASS",
     "refinement_2026_05_13_status": "PASS",
-    "publication_grade_title_terms_paragraphs_status": "PASS"
+    "publication_grade_title_terms_paragraphs_status": "PASS",
+    "gpt_image_cover_book_info_review_status": "PASS"
   },
   "forbidden_shortcuts": [
     "batch translation before pretranslation PASS",

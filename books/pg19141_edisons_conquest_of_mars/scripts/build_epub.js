@@ -304,8 +304,8 @@ function coverPage(coverImageName) {
 }
 
 function bookInfoPage() {
-  return xhtml('版本说明', `<section epub:type="frontmatter" class="book-info">
-<h1>版本说明</h1>
+  return xhtml('书籍信息', `<section epub:type="frontmatter" class="book-info">
+<h1>书籍信息</h1>
 <dl>
   <dt>中文书名</dt><dd>${esc(meta.title)}</dd>
   <dt>英文原名</dt><dd><em>${esc(meta.originalTitle)}</em></dd>
@@ -342,7 +342,7 @@ const chapters = chapterFiles.map((file, idx) => {
 });
 
 const navItems = [
-  '<li><a href="book-info.xhtml">版本说明</a></li>',
+  '<li><a href="book-info.xhtml">书籍信息</a></li>',
   ...chapters.map((ch) => `<li><a href="${esc(ch.href)}">${esc(ch.title)}</a></li>`)
 ].join('\n');
 const manifestItems = chapters.map((ch) => `<item id="${ch.id}" href="${esc(ch.href)}" media-type="application/xhtml+xml"/>`).join('\n    ');
@@ -434,7 +434,7 @@ const packageOpf = `<?xml version="1.0" encoding="utf-8"?>
 </package>`;
 
 const nav = xhtml('目录', `<nav epub:type="toc" id="toc"><h1>目录</h1><ol>${navItems}</ol></nav>
-<nav epub:type="landmarks" hidden="hidden"><h2>导航</h2><ol><li><a epub:type="cover" href="cover.xhtml">封面</a></li><li><a epub:type="frontmatter" href="book-info.xhtml">版本说明</a></li><li><a epub:type="bodymatter" href="${esc(chapters[0].href)}">正文开始</a></li></ol></nav>`);
+<nav epub:type="landmarks" hidden="hidden"><h2>导航</h2><ol><li><a epub:type="cover" href="cover.xhtml">封面</a></li><li><a epub:type="frontmatter" href="book-info.xhtml">书籍信息</a></li><li><a epub:type="bodymatter" href="${esc(chapters[0].href)}">正文开始</a></li></ol></nav>`);
 
 const files = [];
 files.push({ name: 'mimetype', data: Buffer.from('application/epub+zip'), store: true });

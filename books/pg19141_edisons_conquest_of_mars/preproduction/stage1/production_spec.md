@@ -14,8 +14,8 @@ status: "PASS"
 
 ## EPUB Structure
 
-- 封面页：使用 `scripts/build_epub.js` 生成的火星主题 SVG。
-- 版本说明页：说明中文书名、原名、作者、译者、来源和公版状态。
+- 封面页：使用 GPT-IMAGE 生成的本书情节封面图，工程源图保留为 `assets/cover_source_gpt_image.png`，EPUB 内封面使用压缩后的 `assets/cover.jpg`。
+- 书籍信息页：说明中文书名、原名、作者、译者、来源和公版状态。
 - 正文：`chapters/final/001_front_matter.md` 至 `019_chapter_xviii.md`。
 - 导航：使用 `metadata/chapter_title_map.yaml` 中的短标题，卷首、第一章至第十八章。
 
@@ -27,4 +27,4 @@ status: "PASS"
 
 ## Gate
 
-PASS. 可进入样章 EPUB 检查。
+PASS. 可进入样章 EPUB 检查；封面 JPG 体积控制在模板建议范围内。

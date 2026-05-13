@@ -8,7 +8,7 @@ translator_credit: "LifeBook 书坊 SaberOnGo"
 
 - 全部 `chapters/final/*.md`，共 19 个终稿文件。
 - 重点复查章节：第一章、第七章、第八章、第十三章、第十四章、第十五章、第十六章、第十七章、第十八章。
-- 发布信息范围：`scripts/build_epub.js`、`metadata/book.yaml`、封面 SVG、版本说明页、预制作记录、最终 manifest、EPUBCheck 输出。
+- 发布信息范围：`scripts/build_epub.js`、`metadata/book.yaml`、GPT-IMAGE 封面源图、压缩 JPG 封面、书籍信息页、预制作记录、最终 manifest、EPUBCheck 输出。
 
 ## 全书信达雅结论
 
@@ -46,9 +46,9 @@ translator_credit: "LifeBook 书坊 SaberOnGo"
 ## 发布信息检查
 
 - 封面署名：`LifeBook 书坊 SaberOnGo 译制`。
-- 版本说明页译者：`LifeBook 书坊 SaberOnGo`。
+- 书籍信息页译者：`LifeBook 书坊 SaberOnGo`。
 - `metadata/book.yaml` contributor：`LifeBook 书坊 SaberOnGo`。
-- OPF 主标题策略：只保留中文 `dc:title` 作为主标题，英文原名放入版本说明和 `schema:translationOfWork`。
+- OPF 主标题策略：只保留中文 `dc:title` 作为主标题，英文原名放入书籍信息页和 `schema:translationOfWork`。
 
 ## Decision
 

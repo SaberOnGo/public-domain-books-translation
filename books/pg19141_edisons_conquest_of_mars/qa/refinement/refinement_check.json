@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-13T08:55:22.682Z",
+  "generatedAt": "2026-05-13T09:27:31.666Z",
   "totals": {
-    "textFiles": 253,
+    "textFiles": 255,
     "bomFiles": 0,
     "mojibakeFiles": 1,
     "cjkMultiSpaceFiles": 0,
-    "zhSemicolon": 199,
+    "zhSemicolon": 208,
     "latinInFinal": 4,
     "halfPunctuationInFinal": 0,
     "suspiciousAiPhrases": 0
@@ -519,6 +519,16 @@
       "text": "historical_term,Aryan race,雅利安民族,historical discourse,忠实呈现原文时代术语；不现代化改写"
     },
     {
+      "file": "goal/GOAL_2026-05-13_gpt_image_cover_book_info_fullbook_refinement.md",
+      "line": 19,
+      "text": "- `pg20923_a_negro_explorer_at_the_north_pole`：保留高清源图，EPUB 内使用压缩 JPG；封面页和 OPF `cover-image` 必须存在。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_gpt_image_cover_book_info_fullbook_refinement.md",
+      "line": 42,
+      "text": "- 校验状态：publication lint PASS；EPUBCheck fatal 0，error 0，warning 0；refinement check 出版范围 BOM 0，mojibake 0，中文异常空格 0。"
+    },
+    {
       "file": "goal/GOAL_2026-05-13_publication_grade_title_terms_paragraphs.md",
       "line": 34,
       "text": "1. 标题工程：本书章节主标题已经使用编号策略，符合源文 `Chapter I.` 至 `Chapter XVIII.`；但还需要记录内文小标题均来自原文分节标题，不是 AI 自创概括。"
@@ -597,6 +607,11 @@
       "file": "PIPELINE_SPEC.md",
       "line": 185,
       "text": "- `qa/refinement/` 存在；若使用 `scripts/refinement_check.js`，出版范围内 BOM、乱码、中文连续空格和不当标点应为 0，或在 QA 中记录明确例外。"
+    },
+    {
+      "file": "preproduction/stage1/production_spec.md",
+      "line": 30,
+      "text": "PASS. 可进入样章 EPUB 检查；封面 JPG 体积控制在模板建议范围内。"
     },
     {
       "file": "preproduction/stage1/_TEMPLATE.production_spec.md",
@@ -782,6 +797,36 @@
       "file": "qa/refinement/004_chapter_iii.publication_refinement.md",
       "line": 8,
       "text": "- 拆分中国皇帝讲述的鹏鸟寓言长引文；保留引文身份和寓言完整性。"
+    },
+    {
+      "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
+      "line": 16,
+      "text": "- 文字核验：中文书名、英文原名、作者、译者、Project Gutenberg 来源可读；无 `LifeBook 翻译组` 残留。"
+    },
+    {
+      "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
+      "line": 17,
+      "text": "- 体积核验：`assets/cover.jpg` 约 286KB，符合模板建议范围；大源图不直接打入 EPUB。"
+    },
+    {
+      "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
+      "line": 27,
+      "text": "- “信”：本轮没有新增或改写正文情节；前次术语统一仍有效，Edison 舰队为“电力飞船”，`air-tight suit/dress` 为“气密服”。"
+    },
+    {
+      "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
+      "line": 29,
+      "text": "- “雅”：高潮段落的节奏仍以清楚、紧凑、画面感为准；火星舰队、分解射线、月球遗迹、艾娜与宫殿战斗、最终返航等重点内容未发现新的文学性问题。"
+    },
+    {
+      "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
+      "line": 36,
+      "text": "- 解包抽查：`EPUB/images/cover.jpg` 为 286751 bytes；OPF `cover-image` 指向 `images/cover.jpg`，media-type 为 `image/jpeg`。"
+    },
+    {
+      "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
+      "line": 37,
+      "text": "- 解包抽查：`nav.xhtml` 和 `book-info.xhtml` 均显示“书籍信息”；`book-info.xhtml` 含 `LifeBook 书坊 SaberOnGo`。"
     },
     {
       "file": "qa/refinement/2026-05-13_publication_grade_title_terms_paragraphs.md",

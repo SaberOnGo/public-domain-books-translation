@@ -7,6 +7,8 @@ status: "PASS"
 - `output/book.epub`
 - `output/爱迪生征服火星.epub`
 - `preproduction/stage2_sample/sample_book.epub`
+- 封面源图：`assets/cover_source_gpt_image.png`
+- EPUB 封面图：`assets/cover.jpg` / `output/cover.jpg`
 - 主标题：`爱迪生征服火星`
 - 译者：`LifeBook 书坊 SaberOnGo`
 
@@ -16,7 +18,9 @@ status: "PASS"
 - `output/epubcheck.json`: PASS，fatal 0，error 0，warning 0。
 - `qa/refinement/refinement_check.json`: PASS，出版范围 BOM 0，mojibake 0，中文异常空格 0。
 - `qa/refinement/full_book_literary_review_2026-05-13.md`: PASS，已覆盖全书信达雅和重点高潮段落复查。
+- `qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md`: PASS，已覆盖 GPT-IMAGE 封面、书籍信息页、EPUB 内 cover-image 和最终体积复核。
 - `qa/refinement/2026-05-13_publication_grade_title_terms_paragraphs.md`: PASS，已覆盖标题工程、术语/译注统一、章节精修和长段落处理。
+- EPUB 解包抽查：`EPUB/images/cover.jpg` 为 286751 bytes，OPF `cover-image` 指向 `images/cover.jpg`，书籍首页为“书籍信息”。
 - 长段落复扫：普通叙述段 `gt300=0`，`gt500=0`，最长 300 字。
 
 ## Source And Rights
