@@ -1,9 +1,13 @@
 type,source_term,target_term,domain,notes
 proper_noun,Matthew A. Henson,马修·A·亨森,person,author and narrator
 proper_noun,Matthew Alexander Henson,马修·亚历山大·亨森,person,full name
+proper_noun,Matt Henson,Matt Henson（马特·亨森）,person,nickname; first mention may keep English with Chinese note, later use context-dependent Henson or Matt
 proper_noun,Robert E. Peary,罗伯特·E·皮里,person,expedition commander
 proper_noun,Commander Peary,皮里指挥官,person,title in narrative
 proper_noun,Booker T. Washington,布克·T·华盛顿,person,introduction author
+proper_noun,John W. Goodsell,John W. Goodsell / 古德塞尔医生,person,first appearance keeps English full name; later narrative may use Goodsell 医生 or 古德塞尔医生 consistently by context
+proper_noun,Donald B. MacMillan,Donald B. MacMillan / 麦克米伦教授,person,first appearance keeps English full name; later narrative may use MacMillan 教授 or 麦克米伦教授 consistently by context
+proper_noun,George Borup,George Borup / 博拉普先生,person,first appearance keeps English full name; later narrative may use Borup 先生 or 博拉普先生 consistently by context
 proper_noun,Roosevelt,罗斯福号,ship,Peary expedition ship
 proper_noun,North Pole,北极点,place,
 proper_noun,Cape Sheridan,谢里登角,place,

@@ -243,23 +243,3 @@ We-shark´-oup-si *
 ```
 
 全书完
-
- * * * * *
-
-转录者说明：
-
-插图已从段落中间移出，以免打断阅读。
-
-明显的标点错误已修正。
-
-第 xiii 页，“ESKIMOS”改为“ESQUIMOS”。（NORTH POLE ESQUIMOS）
-
-第 76 页，“Equimos”改为“Esquimos”。（fourteen Esquimos）
-
-以下各有一处保留：
-
-```text
-fiendlike/fiend-like
-forepaws/fore-paws
-readjusting/re-adjusting
-```
