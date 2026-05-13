@@ -1,1 +1,1 @@
-# Translator Note
+# 译者说明 / Translator Note

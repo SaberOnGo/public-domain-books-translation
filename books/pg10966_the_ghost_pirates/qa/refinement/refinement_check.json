@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-13T04:20:04.936Z",
+  "generatedAt": "2026-05-13T06:24:40.633Z",
   "totals": {
-    "textFiles": 262,
+    "textFiles": 264,
     "bomFiles": 1,
     "mojibakeFiles": 1,
     "cjkMultiSpaceFiles": 0,
-    "zhSemicolon": 153,
+    "zhSemicolon": 180,
     "latinInFinal": 1,
     "halfPunctuationInFinal": 0,
     "suspiciousAiPhrases": 0
@@ -154,6 +154,26 @@
       "file": "glossary/terms.csv",
       "line": 50,
       "text": "jackstay,帆缘索,rigging,沿桁或帆缘的支索；按语境复核"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_exhaustive_publication_literary_audit_goal.md",
+      "line": 8,
+      "text": "参考 `books/pg20923_a_negro_explorer_at_the_north_pole` 的 EPUB 制作经验，以及 `template/epub_pipeline`、本书 `books/pg10966_the_ghost_pirates` 的规则，对《幽灵海盗》做二次出版级总审。不得只因 EPUBCheck 通过就结束；必须覆盖标题工程、章节精修、术语/译注统一、长段落处理、重要段落与高潮段落的文学性、“信达雅”与"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_exhaustive_publication_literary_audit_goal.md",
+      "line": 24,
+      "text": "1. 标题工程：目录题名、页面标题、源文标题是否一致；不得有英文原名括注、旧纸书标题链或 AI 自拟小题误入成书。"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_exhaustive_publication_literary_audit_goal.md",
+      "line": 26,
+      "text": "3. 长段落：普通叙事段超过 300 字需复核，超过 500 字需判断是否拆分；诗歌/号子/名单等格式例外需说明。"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_exhaustive_publication_literary_audit_goal.md",
+      "line": 27,
+      "text": "4. 术语与译注：人名、船名、职务、航海索具、帆名、方位词和签名缩写需统一；普通名词不得随意正文括注英文。"
     },
     {
       "file": "goal/2026-05-13_pg10966_full_book_literary_xindaya_review_goal.md",
@@ -411,14 +431,69 @@
       "text": "- 专名术语：莫尔腾号、杰索普、威廉斯、水手长/大副/二副等规则已遵守；本章实际出现二副、转桁索、艏楼、舷墙、主桅等术语。"
     },
     {
+      "file": "qa/chapter_controls/004_i.control.md",
+      "line": 20,
+      "text": "- 标题层级：使用 `# 第一章`；源文正文小题 `The Figure Out of the Sea` 由 `chapter_title_map.yaml` 作为页面副标题“海中上来的身影”承载，导航不含英文。"
+    },
+    {
       "file": "qa/chapter_controls/005_ii.control.md",
       "line": 14,
       "text": "- 标题中的人名不作为正文首次出现处理；本章正文首次自然出现仍使用中文名“塔米”，未加英文括注，符合本章指定术语要求。"
     },
     {
+      "file": "qa/chapter_controls/006_iii.control.md",
+      "line": 20,
+      "text": "- 章节标题和段落层级：PASS。标题为“# 第三章”；源文正文小题 `The Man up the Main` 由 `chapter_title_map.yaml` 作为页面副标题“主桅上的人”承载。"
+    },
+    {
+      "file": "qa/chapter_controls/007_iv.control.md",
+      "line": 16,
+      "text": "6. 段落层级和章节标题：PASS。标题为“第四章”；源文正文小题 `The Fooling with the Sail` 由 `chapter_title_map.yaml` 作为页面副标题“帆上的把戏”承载，正文段落对应原文。"
+    },
+    {
+      "file": "qa/chapter_controls/008_v.control.md",
+      "line": 9,
+      "text": "- 已按原章 `V` 设置中文导航标题“第五章”；源文正文小题 `The End of Williams` 由 `chapter_title_map.yaml` 作为页面副标题“威廉斯的结局”承载，标题未放英文括注。"
+    },
+    {
+      "file": "qa/chapter_controls/009_vi.control.md",
+      "line": 9,
+      "text": "- 章节标题按要求处理为“第六章”；源文正文小题 `Another Man to the Wheel` 由 `chapter_title_map.yaml` 作为页面副标题“换人掌舵”承载，未加入英文括注。"
+    },
+    {
+      "file": "qa/chapter_controls/010_vii.control.md",
+      "line": 9,
+      "text": "- 导航标题处理为“第七章”；源文正文小题 `The Coming of the Mist and That Which It Ushered` 由 `chapter_title_map.yaml` 作为页面副标题“雾来了，以及它带来的东西”承载，未加入英文括注。"
+    },
+    {
+      "file": "qa/chapter_controls/011_viii.control.md",
+      "line": 13,
+      "text": "- 导航标题已按要求处理为“第八章”；源文正文小题 `After the Coming of the Mist` 由 `chapter_title_map.yaml` 作为页面副标题“雾来之后”承载，未加入英文括注。"
+    },
+    {
       "file": "qa/chapter_controls/012_ix.control.md",
       "line": 13,
       "text": "- 机械直译/英文句法：未发现硬搬句式；长动作句已拆分为自然中文。"
+    },
+    {
+      "file": "qa/chapter_controls/012_ix.control.md",
+      "line": 18,
+      "text": "- 标题层级：章节题为“第九章”；源文正文小题 `The Man Who Cried for Help` 由 `chapter_title_map.yaml` 作为页面副标题“呼救的人”承载，未保留英文括注。"
+    },
+    {
+      "file": "qa/chapter_controls/013_x.control.md",
+      "line": 18,
+      "text": "- 标题层级：章节题为“第十章”；源文正文小题 `Hands That Plucked` 由 `chapter_title_map.yaml` 作为页面副标题“从暗处攫来的手”承载。"
+    },
+    {
+      "file": "qa/chapter_controls/014_xi.control.md",
+      "line": 18,
+      "text": "- 标题层级：章节题为“第十一章”；源文正文小题 `The Search for Stubbins` 由 `chapter_title_map.yaml` 作为页面副标题“寻找斯塔宾斯”承载。"
+    },
+    {
+      "file": "qa/chapter_controls/015_xii.control.md",
+      "line": 18,
+      "text": "- 标题层级：章节题为“第十二章”；源文正文小题 `The Council` 由 `chapter_title_map.yaml` 作为页面副标题“会议”承载。"
     },
     {
       "file": "qa/fidelity/001_front_matter.md",
@@ -462,8 +537,38 @@
     },
     {
       "file": "qa/gates/004_i.gate.md",
+      "line": 19,
+      "text": "- 标题：导航使用“第一章”；源文正文小题由 `chapter_title_map.yaml` 作为页面副标题承载，不含英文标题。"
+    },
+    {
+      "file": "qa/gates/004_i.gate.md",
       "line": 22,
       "text": "- 忠实度：无关键情节漏译；航海动作和空间方位保留。"
+    },
+    {
+      "file": "qa/gates/005_ii.gate.md",
+      "line": 26,
+      "text": "| 标题错误 | PASS | 导航使用“第二章”；源文正文小题由 `chapter_title_map.yaml` 作为页面副标题承载。 |"
+    },
+    {
+      "file": "qa/gates/008_v.gate.md",
+      "line": 11,
+      "text": "- 标题规范：导航使用“第五章”；源文正文小题 `The End of Williams` 由 `chapter_title_map.yaml` 作为页面副标题“威廉斯的结局”承载，无英文括注。"
+    },
+    {
+      "file": "qa/gates/009_vi.gate.md",
+      "line": 11,
+      "text": "- 标题规范：导航使用“第六章”；源文正文小题 `Another Man to the Wheel` 由 `chapter_title_map.yaml` 作为页面副标题“换人掌舵”承载，无英文括注。"
+    },
+    {
+      "file": "qa/gates/010_vii.gate.md",
+      "line": 22,
+      "text": "- 标题无英文括注，导航题名为“第七章”；源文正文小题 `The Coming of the Mist and That Which It Ushered` 由 `chapter_title_map.yaml` 作为页面副标题承载。"
+    },
+    {
+      "file": "qa/gates/011_viii.gate.md",
+      "line": 23,
+      "text": "- 标题导航使用“第八章”；源文正文小题 `After the Coming of the Mist` 由 `chapter_title_map.yaml` 作为页面副标题“雾来之后”承载，无英文括注。"
     },
     {
       "file": "qa/gates/012_ix.gate.md",
@@ -527,6 +632,11 @@
     },
     {
       "file": "qa/readability/004_i.md",
+      "line": 24,
+      "text": "- 标题清楚，未放英文括注；源文正文小题由 `chapter_title_map.yaml` 作为页面副标题承载。"
+    },
+    {
+      "file": "qa/readability/004_i.md",
       "line": 25,
       "text": "- 航海术语密度较高，但均在动作场景中自然出现；未把动作改写成说明书。"
     },
@@ -546,6 +656,11 @@
       "text": "- 塔米的几段长对白为保留原文紧张倾诉感，中文仍保持较长段落；可读性通过标点和短句缓解。"
     },
     {
+      "file": "qa/readability/010_vii.md",
+      "line": 13,
+      "text": "- 章节导航题名简洁；源文正文小题由 `chapter_title_map.yaml` 作为页面副标题承载。"
+    },
+    {
       "file": "qa/refinement/full_book_literary_xindaya_review.md",
       "line": 8,
       "text": "本轮按用户新增 `/goal` 执行全书级文学复核，重点覆盖重要段落、高潮段落、关键动作细节、航海专业名词、人物译名、恐怖递进和中文文学表现。结论是：现有译文整体达到出版级交付要求；本轮仅发现并修复若干术语与旧译名残留，没有发现需要重译章节或重构叙事的大问题。"
@@ -562,13 +677,18 @@
     },
     {
       "file": "qa/refinement/full_book_literary_xindaya_review.md",
-      "line": 79,
+      "line": 80,
       "text": "- `node scripts/refinement_check.js`：PASS，publication totals 全部为 0；仅保留历史 raw source BOM 和脚本探测项，不影响出版文件。"
     },
     {
       "file": "qa/refinement/publication_grade_gap_closure_report.md",
+      "line": 12,
+      "text": "- `004_i.md` 至 `019_xvi.md` 正文章节导航均使用“第一章”至“第十六章”；2026-05-13 二次总审确认拆章正文中存在源文真实小题，已转入 `chapter_title_map.yaml` 的页面副标题。"
+    },
+    {
+      "file": "qa/refinement/publication_grade_gap_closure_report.md",
       "line": 14,
-      "text": "- 旧章节 QA 中出现过的“副题”记录属于初译阶段记录；当前交付以本报告和 `qa/refinement/title_structure_review.md` 为准。"
+      "text": "- 旧章节 QA 中出现过的副题需区分来源：源文真实小题应作为页面副标题保留；AI 自拟或未落入标题映射的题名不得进入成书。"
     },
     {
       "file": "qa/refinement/publication_grade_gap_closure_report.md",
@@ -598,12 +718,22 @@
     {
       "file": "qa/refinement/publication_grade_gap_closure_report.md",
       "line": 49,
-      "text": "- 标题扫描：终稿一级标题与 `metadata/chapter_title_map.yaml` 一致；EPUB XHTML 中无已删除自拟小题。"
+      "text": "- 标题扫描：终稿一级标题与 `metadata/chapter_title_map.yaml` 一致；EPUB XHTML 中保留源文真实小题为页面副标题，导航保持短章号。"
+    },
+    {
+      "file": "qa/refinement/title_structure_review.md",
+      "line": 9,
+      "text": "- 中文 EPUB 目录使用“第一章”至“第十六章”等短章号；页面标题使用章号，并通过 `metadata/chapter_title_map.yaml` 的 `subtitle` 承载真实小题。"
     },
     {
       "file": "qa/refinement/title_structure_review.md",
       "line": 14,
-      "text": "- 2026-05-13 出版级查漏补缺复扫：终稿一级标题与 `metadata/chapter_title_map.yaml` 完全一致；旧章节 QA 中的早期副题记录不作为当前交付依据。"
+      "text": "- 2026-05-13 二次总审修正：早前“原书仅罗马数字”的判断只适用于 `source/toc.json`，不适用于拆章正文；当前交付以 `chapter_title_map.yaml` 的短导航题名 + 页面副标题为准。"
+    },
+    {
+      "file": "qa/refinement/title_structure_review.md",
+      "line": 18,
+      "text": "当前目录简洁，不把源文小题塞入导航；页面内保留真实小题，移动端阅读时标题层级由主标题和副标题分担。"
     },
     {
       "file": "qa/terminology/001_front_matter.md",
@@ -614,6 +744,11 @@
       "file": "qa/terminology/003_the_hell_o_o_chaunty.md",
       "line": 24,
       "text": "本章标题无英文人名、英文括注或拉丁残留；`Chaunty` 不保留在标题中。"
+    },
+    {
+      "file": "qa/terminology/005_ii.md",
+      "line": 37,
+      "text": "- 标题：源文正文小题 `What Tammy the 'Prentice Saw` 由 `chapter_title_map.yaml` 作为页面副标题承载；不进入 EPUB 导航长标题。"
     },
     {
       "file": "qa/terminology/005_ii.md",

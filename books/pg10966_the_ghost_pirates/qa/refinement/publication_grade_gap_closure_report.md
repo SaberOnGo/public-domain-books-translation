@@ -9,9 +9,9 @@
 ## 标题工程
 
 - 终稿 `chapters/final/*.md` 的一级标题已重新对照 `metadata/chapter_title_map.yaml`。
-- `004_i.md` 至 `019_xvi.md` 正文章节均只使用“第一章”至“第十六章”，无 AI 自拟可见副题。
+- `004_i.md` 至 `019_xvi.md` 正文章节导航均使用“第一章”至“第十六章”；2026-05-13 二次总审确认拆章正文中存在源文真实小题，已转入 `chapter_title_map.yaml` 的页面副标题。
 - `019_xvi.md` 保留 `## 附录` 与 `## 寂静之船`，因为源文存在 `APPENDIX / The Silent Ship`。
-- 旧章节 QA 中出现过的“副题”记录属于初译阶段记录；当前交付以本报告和 `qa/refinement/title_structure_review.md` 为准。
+- 旧章节 QA 中出现过的副题需区分来源：源文真实小题应作为页面副标题保留；AI 自拟或未落入标题映射的题名不得进入成书。
 
 ## 术语与译注统一
 
@@ -46,7 +46,7 @@
 
 - `npm run lint:publication`：PASS；`asciiSemicolon=0`、`zhSemicolon=0`、`cjkMultiSpace=0`、`mojibake=0`、`targetTitleLatinResidue=0`。
 - `node scripts/refinement_check.js`：出版范围 `bomFiles=0`、`mojibakeFiles=0`、`cjkMultiSpaceFiles=0`、`zhSemicolon=0`；全局 BOM 仅在 `source/source_text_raw.txt`，保留为 raw source evidence；脚本自身包含 mojibake 检测正则，属工具代码命中。
-- 标题扫描：终稿一级标题与 `metadata/chapter_title_map.yaml` 一致；EPUB XHTML 中无已删除自拟小题。
+- 标题扫描：终稿一级标题与 `metadata/chapter_title_map.yaml` 一致；EPUB XHTML 中保留源文真实小题为页面副标题，导航保持短章号。
 - 术语扫描：EPUB XHTML 中无旧译名或 `log-reel` 旧误写残留。
 - `npm run build:epub`：已重新生成 `output/book.epub` 和 `output/幽灵海盗.epub`。
 - `npm run check:epub`：EPUBCheck `fatal=0`、`error=0`、`warning=0`。
