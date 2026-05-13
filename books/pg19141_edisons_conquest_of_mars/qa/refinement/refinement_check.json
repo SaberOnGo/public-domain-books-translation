@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-13T07:47:00.679Z",
+  "generatedAt": "2026-05-13T08:24:22.269Z",
   "totals": {
-    "textFiles": 243,
+    "textFiles": 247,
     "bomFiles": 0,
     "mojibakeFiles": 1,
     "cjkMultiSpaceFiles": 0,
-    "zhSemicolon": 156,
+    "zhSemicolon": 162,
     "latinInFinal": 4,
     "halfPunctuationInFinal": 0,
     "suspiciousAiPhrases": 0
@@ -136,7 +136,7 @@
     {
       "file": "chapters/final/014_chapter_xiii.md",
       "line": 148,
-      "text": "它的玫瑰比大地曾给出的最亮的还明丽；"
+      "text": "那里的玫瑰胜过大地献出的最明丽花色；"
     },
     {
       "file": "chapters/final/014_chapter_xiii.md",
@@ -151,7 +151,7 @@
     {
       "file": "chapters/final/017_chapter_xvi.md",
       "line": 13,
-      "text": "湖泊四周完全被一圈城市包围，那就是火星的首都。火星人的天才在这里发挥到了极致。周围的土地经过精细灌溉，花木繁盛，连巨大的植被和花朵都显得灿烂夺目；运河通过闸门严格调控，水量完全受控；各种宏伟的金属建筑，大小不一，光彩夺目；再加上环城而立、守卫周边土地的无数防御工事，这座城圈看上去近乎固若金汤。"
+      "text": "湖泊四周完全被一圈城市包围，那就是火星的首都。火星人的才智在这里发挥到了极致。周围的土地经过精细灌溉，花木繁盛，连巨大的植被和花朵都显得灿烂夺目；运河通过闸门严格调控，水量完全受控；各种宏伟的金属建筑，大小不一，光彩夺目；再加上环城而立、守卫周边土地的无数防御工事，这座城圈看上去近乎固若金汤。"
     },
     {
       "file": "chapters/final/017_chapter_xvi.md",
@@ -171,7 +171,7 @@
     {
       "file": "chapters/final/018_chapter_xvii.md",
       "line": 21,
-      "text": "“我们已经蹂躏了你们的星球，但这不过是对你们对待我们星球所作所为的公正回报。我们已经准备好彻底完成毁灭，让你们这颗星球上不留一个活物；或者，也可以按你们的选择赐予你们和平。我们的和平条件很简单，就是：‘一切抵抗必须绝对停止。’”"
+      "text": "“我们已经把你们的星球变成废土，但这不过是对你们加诸我们星球之事的公正回报。我们已经准备好彻底完成毁灭，让你们这颗星球上不留一个活物；或者，也可以按你们的选择给予你们和平。我们的和平条件很简单，就是：‘一切抵抗必须绝对停止。’”"
     },
     {
       "file": "chapters/final/018_chapter_xvii.md",
@@ -394,6 +394,11 @@
       "text": "- 地名/人名：章节标题、副标题和目录题名中的人名只使用中文译名；标题不计入“正文首次出现”；英文原名或括注只放在正文第一次自然出现该人名的位置、译注或术语表中。"
     },
     {
+      "file": "goal/GOAL_2026-05-13_refinement_literary_metadata_cover.md",
+      "line": 22,
+      "text": "3. 对重要章节执行人工抽读式复核；发现确定可改善的句子，只做忠实、克制、可回溯的润色。"
+    },
+    {
       "file": "MASTER_PROMPT.md",
       "line": 43,
       "text": "- 必须先制作样章 EPUB；若 state/human_feedback_control.md 中 human_required=false，则自动检查并继续；若 true，则等待用户。"
@@ -411,7 +416,7 @@
     {
       "file": "metadata/book.yaml",
       "line": 7,
-      "text": "rights: \"源文本来自 Project Gutenberg #19141，美国公版文本；中文译本由 LifeBook 书坊依据公版英文原文新译制作。\""
+      "text": "rights: \"源文本来自 Project Gutenberg #19141，美国公版文本；中文译本由 LifeBook 书坊 SaberOnGo 依据公版英文原文新译制作。\""
     },
     {
       "file": "PIPELINE_SPEC.md",
@@ -614,6 +619,21 @@
       "text": "译文自然、简洁，符合卷首页的排版习惯；分行与留白清楚，可直接进入后续版面流程。"
     },
     {
+      "file": "qa/refinement/full_book_literary_review_2026-05-13.md",
+      "line": 17,
+      "text": "- 雅：高潮段落以清楚、紧凑和有画面感为优先，不追求过度文饰。诗句、宫殿战斗、返航段落进行了重点检查；只在能保持原意时微调辞采。"
+    },
+    {
+      "file": "qa/refinement/full_book_literary_review_2026-05-13.md",
+      "line": 23,
+      "text": "| 第一章 | 灾后废墟、再入侵恐慌、爱迪生反击希望 | PASS。叙事基调保持末日新闻纪实感；长段落虽密集，但与原文公共演讲式推进一致。 |"
+    },
+    {
+      "file": "qa/refinement/full_book_literary_review_2026-05-13.md",
+      "line": 42,
+      "text": "- 第一章部分长段落保留。原因：原文是连载式宏观叙述，长段落承载灾难铺陈和公共情绪递进；机械拆短会损害原文气势。"
+    },
+    {
       "file": "README.md",
       "line": 24,
       "text": "英文到简体中文的文学精修规则见 `references/english_to_chinese_literary_refinement.md`。如果某一本书发现系统性标题、段落、术语、译注、排版或文学精修问题，目标文档应放在该书工程的 `goal/` 目录下；可复用经验再分别回填到 common、zh-Hans 目标语言框架和 en-zh-Hans 语言方向模板。"
@@ -769,9 +789,19 @@
       "text": "可以增显原文已经存在的体感、动作、空间关系和象征功能；不能凭空添加原文没有的比喻、物体、声音或情节。"
     },
     {
+      "file": "retrospective/book_retrospective.md",
+      "line": 13,
+      "text": "- 第八章、第十四章、第十七章等高密度章节已在 2026-05-13 精修复查中抽读并记录；公开发布前仍建议真人编辑做最终通读。"
+    },
+    {
       "file": "retrospective/template_update_suggestions.md",
       "line": 13,
       "text": "本书暂无必须立即回填模板的阻塞项；以上为后续优化建议。"
+    },
+    {
+      "file": "reviews/agent_a/review.md",
+      "line": 20,
+      "text": "后续精修已在 `qa/refinement/full_book_literary_review_2026-05-13.md` 抽读并记录第八章、第十四章、第十七章等高密度叙事章节；若公开发布，仍建议真人编辑做最终通读。"
     },
     {
       "file": "reviews/agent_b/review.md",

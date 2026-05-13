@@ -7,7 +7,7 @@ status: "PASS"
 - 中文书名：爱迪生征服火星
 - 原名：Edison's Conquest of Mars
 - 作者：Garrett P. Serviss / 加勒特·P. 瑟维斯
-- 译者：LifeBook 书坊
+- 译者：LifeBook 书坊 SaberOnGo
 - 语言：zh-CN
 - 来源：Project Gutenberg #19141
 - 标识：pg19141-zh-cn-lifebook-v1

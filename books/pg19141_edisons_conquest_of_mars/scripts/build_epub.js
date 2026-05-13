@@ -15,7 +15,7 @@ const meta = {
   originalTitle: "Edison's Conquest of Mars",
   author: 'Garrett P. Serviss',
   authorZh: '加勒特·P. 瑟维斯',
-  translator: 'LifeBook 书坊',
+  translator: 'LifeBook 书坊 SaberOnGo',
   translationDate: '2026-05-13',
   language: 'zh-CN',
   originalLanguage: 'en',
@@ -24,8 +24,8 @@ const meta = {
   sourceUrl: 'https://www.gutenberg.org/ebooks/19141',
   sourceId: 'Project Gutenberg #19141',
   originalPublication: '1898 年英文原著。本译本依据 Project Gutenberg #19141 公版文本制作。',
-  description: '本书是美国早期科幻小说，承接威尔斯《世界大战》的火星入侵想象，写托马斯·爱迪生组织科学家与地球舰队，以电力飞船和分解射线反攻火星。本中文 EPUB 由 LifeBook 书坊依据 Project Gutenberg #19141 公版英文原文新译制作，翻译时间为 2026-05-13。源文本在美国为公版，跨地区发行前仍应按目标国家或地区复核版权状态。',
-  rights: '源文本：Project Gutenberg #19141，美国公版文本。中文译本：LifeBook 书坊译制，发行和授权由项目所有者决定。'
+  description: '本书是美国早期科幻小说，承接威尔斯《世界大战》的火星入侵想象，写托马斯·爱迪生组织科学家与地球舰队，以电力飞船和分解射线反攻火星。本中文 EPUB 由 LifeBook 书坊 SaberOnGo 依据 Project Gutenberg #19141 公版英文原文新译制作，翻译时间为 2026-05-13。源文本在美国为公版，跨地区发行前仍应按目标国家或地区复核版权状态。',
+  rights: '源文本：Project Gutenberg #19141，美国公版文本。中文译本：LifeBook 书坊 SaberOnGo 译制，发行和授权由项目所有者决定。'
 };
 const coverJpgPath = path.join(root, 'assets', 'cover.jpg');
 const coverPngPath = path.join(root, 'assets', 'cover.png');
@@ -294,7 +294,7 @@ function coverSvg() {
   <line x1="410" y1="1055" x2="1190" y2="1055" stroke="#f4d891" stroke-width="5" opacity="0.78"/>
   <text x="800" y="1225" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="54" fill="#f4d891">Edison's Conquest of Mars</text>
   <text x="800" y="1365" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="58" fill="#fff7df">加勒特·P. 瑟维斯 著</text>
-  <text x="800" y="1455" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="52" fill="#f4d891">LifeBook 书坊 译制</text>
+  <text x="800" y="1455" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="44" fill="#f4d891">LifeBook 书坊 SaberOnGo 译制</text>
   <text x="800" y="2110" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="44" fill="#f6ddb2">依据 Project Gutenberg #19141 公版原文制作</text>
 </svg>`;
 }
@@ -393,9 +393,8 @@ const packageOpf = `<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" version="3.0" xml:lang="zh-CN">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <dc:identifier id="bookid">${esc(meta.identifier)}</dc:identifier>
-    <dc:title>${esc(meta.title)}</dc:title>
-    <dc:title id="original-title">${esc(meta.originalTitle)}</dc:title>
-    <meta refines="#original-title" property="title-type">original</meta>
+    <dc:title id="main-title">${esc(meta.title)}</dc:title>
+    <meta refines="#main-title" property="title-type">main</meta>
     <dc:creator id="creator">${esc(meta.author)}</dc:creator>
     <meta refines="#creator" property="role" scheme="marc:relators">aut</meta>
     <meta refines="#creator" property="alternate-script">${esc(meta.authorZh)}</meta>
