@@ -32,6 +32,8 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
    读取 `references/quality_standard.md`。
 8. `references/english_source_notes.md`
    读取英语源语言干扰说明。
+9. `references/english_chapter_title_strategy.md`
+   读取英文旧式章节标题链的中文处理规则。
 
 ## Translation Standard / 翻译标准
 
@@ -49,6 +51,8 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
 
 - Keep names, places, dates, numbers, and recurring terms consistent.
 - 人名、地名、年代、数字和反复出现的术语必须一致。
+- Do not mechanically convert English printed-TOC title chains using `--` into Chinese `——` chains. When needed, split them into a short navigation title, display title, and subtitle.
+- 不得把英文纸书目录式 `--` 标题链机械转换成中文 `——` 链。必要时必须拆成短目录题名、页面主标题和副标题。
 
 ## Required Gates / 必要门禁
 
@@ -66,6 +70,8 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
 
 - Before EPUB build, run `node scripts/publication_lint.js --target=zh-Hans --write-report`; fix semicolon overuse, abnormal Chinese spacing, legacy print page-number tables, and mojibake before continuing.
 - EPUB 构建前必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`；如果发现分号滥用、中文异常空格、旧纸书页码目录或乱码，必须先修复再继续。
+- Before final EPUB output, verify chapter headings against `references/english_chapter_title_strategy.md` and `references/title_punctuation_and_heading_style.md`.
+- 最终 EPUB 输出前，必须按 `references/english_chapter_title_strategy.md` 和 `references/title_punctuation_and_heading_style.md` 检查章节标题。
 
 - EPUB output must pass validation before final output.
 - EPUB 必须通过校验后才能进入最终输出。

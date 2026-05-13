@@ -27,7 +27,7 @@
 4. 原书信息：英文书名、出版年代、来源版本、Project Gutenberg 或其他公版来源。
 5. 字体策略：默认不得锁死难看字体；除非做字体子集化，不得嵌入完整中文字体。
 6. 排版策略：正文行距、段首缩进、目录、封面页、版本说明页、章节标题。
-7. 标题策略：手机窄屏下不得过大；`第X章` 与章节说明字号必须一致或视觉协调。
+7. 标题策略：手机窄屏下不得过大；`第X章` 与章节说明字号必须一致或视觉协调；按 `references/chapter_title_policy.md` 和 `references/english_chapter_title_strategy.md` 处理长标题、短目录题名、页面主标题和副标题。
 8. 文件体积策略：封面建议 JPG/WebP/压缩 PNG；EPUB 总体积不能被封面或字体异常撑大。
 9. EPUB 结构：`cover.xhtml`、`book-info.xhtml`、`nav.xhtml`、`package.opf`、CSS、正文 spine。
 10. 校验策略：EPUBCheck 必须 0 fatal、0 error；警告需解释或修复。
@@ -39,6 +39,7 @@
 - 直接嵌入完整中文字体可能达到几十 MB，不适合批量公版 EPUB；如需指定字体，必须做字体子集化。
 - 写死 `font-family` 可能导致读书 App 无法切换字体；默认应让阅读器字体接管。
 - `LifeBook 翻译组` 这种名称像字幕组，正式出版品牌使用 `LifeBook 书坊`。
+- 英文旧纸书的章节标题可能本来就有多段 `--`，但中文 EPUB 不应机械照搬成破折号长链；应为 `nav.xhtml` 设计短题名，并在页面内用副标题承载次级信息。
 
 ## 输出 / Output
 

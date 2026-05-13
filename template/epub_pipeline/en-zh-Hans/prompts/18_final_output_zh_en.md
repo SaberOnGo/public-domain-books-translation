@@ -21,9 +21,10 @@
 3. 版本说明页存在，并含 `LifeBook 书坊`、译制时间、公版来源 URL、公版说明。
 4. 无旧品牌名残留。
 5. 标题层级、字体策略、正文排版符合 `production_spec.md`。
-6. 文件体积合理，封面和字体未异常膨胀。
-7. 双 Agent 评审分数达到 PASS。
-8. `output/publication_lint.json` 无硬错误；不存在分号滥用、异常连续空格、旧纸书页码目录或乱码。
+6. 章节标题已按 `references/chapter_title_policy.md` 和 `references/english_chapter_title_strategy.md` 检查：无半截标题、无机械破折号长链，EPUB 目录使用短题名。
+7. 文件体积合理，封面和字体未异常膨胀。
+8. 双 Agent 评审分数达到 PASS。
+9. `output/publication_lint.json` 无硬错误；不存在分号滥用、异常连续空格、旧纸书页码目录或乱码。
 
 ## 输出 / Output
 

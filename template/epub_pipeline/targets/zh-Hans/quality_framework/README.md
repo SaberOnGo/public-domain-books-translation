@@ -9,6 +9,7 @@
 - `SKILL.md`：可复用技能说明，给 Codex/其他 AI 执行时读取。
 - `references/research_digest.md`：翻译理论、AI 翻译研究、质量评估方法摘要。
 - `references/quality_standard.md`：本项目的译文质量标准。
+- `references/title_punctuation_and_heading_style.md`：简体中文标题标点、破折号和标题层级规则。
 - `references/workflow.md`：从原文到终稿的强制流程。
 - `templates/chapter_translation_prompt.md`：分章翻译提示词。
 - `templates/style_profile_prompt.md`：正式翻译前生成文体画像。

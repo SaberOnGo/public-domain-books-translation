@@ -8,7 +8,7 @@ This directory contains shared workflow files for all language-pair templates.
 - `automation_contract.md`: automation and template-protection rules.
 - `metadata/rights_checklist.md` and `metadata/source_evidence.md`: source and public-domain evidence templates.
 - `preproduction/`: shared EPUB preproduction templates.
-- `references/`: language-neutral quality gate and benchmark policies.
+- `references/`: language-neutral title, quality gate, and benchmark policies.
 - `scripts/`: reusable chapter, Markdown normalization, and publication lint helpers.
 - `state/`: initial pipeline state and human-feedback control files.
 - `Makefile`: generic EPUB build/check entry points.

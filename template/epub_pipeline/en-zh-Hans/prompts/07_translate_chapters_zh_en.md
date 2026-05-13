@@ -29,6 +29,7 @@
 ## 翻译要求 / Translation Requirements
 
 - 保持标题和段落结构。
+- 章节标题必须按 `references/english_chapter_title_strategy.md` 处理；不得把英文 `--` 标题链机械翻成多个中文 `——`。
 - 忠实事实和语气。
 - 中文必须自然，有叙述气息。
 - 关键句要有画面和记忆点。
