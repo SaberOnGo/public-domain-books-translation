@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2400" viewBox="0 0 1600 2400" role="img" aria-label="环球航海记封面">
+  <defs>
+    <linearGradient id="ice" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5e7c9"/>
+      <stop offset="0.48" stop-color="#b8894f"/>
+      <stop offset="1" stop-color="#16394a"/>
+    </linearGradient>
+    <linearGradient id="night" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#102a35"/>
+      <stop offset="1" stop-color="#3d2616"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="2400" fill="url(#ice)"/>
+  <rect x="110" y="130" width="1380" height="2140" rx="42" fill="url(#night)" opacity="0.94"/>
+  <path d="M110 1740 C320 1640 530 1690 720 1570 C930 1440 1120 1510 1490 1340 L1490 2270 L110 2270 Z" fill="#e9c07a" opacity="0.90"/>
+  <path d="M110 1900 C390 1810 600 1860 790 1740 C980 1620 1190 1670 1490 1535 L1490 2270 L110 2270 Z" fill="#6c8a83" opacity="0.82"/>
+  <circle cx="1230" cy="420" r="120" fill="#fff7d2" opacity="0.88"/>
+  <path d="M300 1180 C430 1080 560 1050 700 1165 C850 1288 1010 1240 1170 1120 C1290 1030 1390 1045 1490 1100 L1490 1510 C1240 1620 1030 1560 820 1660 C590 1768 360 1720 110 1840 L110 1300 C170 1260 230 1225 300 1180 Z" fill="#0e5670" opacity="0.82"/>
+  <path d="M410 1290 L520 720 L620 1300 Z M610 1300 L760 520 L910 1300 Z M800 1290 L1030 760 L1150 1300 Z" fill="#ead7b8" opacity="0.95"/>
+  <path d="M760 520 L760 1340" stroke="#3a2416" stroke-width="10"/>
+  <path d="M430 1295 L1150 1295" stroke="#3a2416" stroke-width="12"/>
+  <text x="800" y="360" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="72" fill="#d6edf7" letter-spacing="8">LifeBook 公版新译</text>
+  <text x="800" y="720" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-weight="700" font-size="150" fill="#ffffff">环球</text>
+  <text x="800" y="910" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-weight="700" font-size="150" fill="#ffffff">航海记</text>
+  <line x1="420" y1="1010" x2="1180" y2="1010" stroke="#d6edf7" stroke-width="5" opacity="0.75"/>
+  <text x="800" y="1210" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="54" fill="#f5dfb7">Anson's Voyage Round the World</text>
+  <text x="800" y="1350" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="58" fill="#ffffff">理查德·沃尔特 著</text>
+  <text x="800" y="1440" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="52" fill="#d6edf7">LifeBook 书坊 译制</text>
+  <text x="800" y="2110" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="44" fill="#1e2b2f">依据 Project Gutenberg #16611 公版原文制作</text>
+</svg>

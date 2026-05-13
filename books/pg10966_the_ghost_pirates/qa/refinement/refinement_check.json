@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-13T06:52:30.181Z",
+  "generatedAt": "2026-05-13T08:25:44.645Z",
   "totals": {
-    "textFiles": 264,
+    "textFiles": 266,
     "bomFiles": 1,
     "mojibakeFiles": 1,
     "cjkMultiSpaceFiles": 0,
-    "zhSemicolon": 180,
+    "zhSemicolon": 181,
     "latinInFinal": 1,
     "halfPunctuationInFinal": 0,
     "suspiciousAiPhrases": 0
@@ -659,6 +659,11 @@
       "file": "qa/readability/010_vii.md",
       "line": 13,
       "text": "- 章节导航题名简洁；源文正文小题由 `chapter_title_map.yaml` 作为页面副标题承载。"
+    },
+    {
+      "file": "qa/refinement/2026-05-13_final_publication_integrity_review.md",
+      "line": 39,
+      "text": "已确认终稿未出现移动端阅读明显压迫的普通叙事长段；此前已拆分的心理推进、雾船成形、塔米遇险和最终沉没段落保持语义阶段清楚。"
     },
     {
       "file": "qa/refinement/full_book_literary_xindaya_review.md",

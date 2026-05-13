@@ -1,0 +1,3 @@
+# 第十八章 攻击派塔 章节门禁
+
+结论：PASS_WITH_RECORDED_LIMITATIONS

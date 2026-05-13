@@ -1,0 +1,3 @@
+# 第五章 火地岛 章节门禁
+
+结论：PASS_WITH_RECORDED_LIMITATIONS

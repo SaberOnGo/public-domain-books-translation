@@ -1,0 +1,3 @@
+# 第四章 准将的训令 章节门禁
+
+结论：PASS_WITH_RECORDED_LIMITATIONS
