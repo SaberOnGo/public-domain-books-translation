@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-13T08:20:38.127Z",
+  "generated_at": "2026-05-13T09:21:16.537Z",
   "totals": {
     "source_files": 42,
     "final_files": 42,
@@ -12,7 +12,7 @@
       "src_paragraphs": 14,
       "final_paragraphs": 12,
       "source_words": 1383,
-      "final_cjk_chars": 2224,
+      "final_cjk_chars": 2217,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -66,7 +66,7 @@
       "src_paragraphs": 21,
       "final_paragraphs": 21,
       "source_words": 2553,
-      "final_cjk_chars": 3568,
+      "final_cjk_chars": 3572,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -75,7 +75,7 @@
       "src_paragraphs": 10,
       "final_paragraphs": 10,
       "source_words": 1094,
-      "final_cjk_chars": 1492,
+      "final_cjk_chars": 1483,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -120,7 +120,7 @@
       "src_paragraphs": 10,
       "final_paragraphs": 7,
       "source_words": 1538,
-      "final_cjk_chars": 2034,
+      "final_cjk_chars": 2020,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -129,7 +129,7 @@
       "src_paragraphs": 10,
       "final_paragraphs": 7,
       "source_words": 1657,
-      "final_cjk_chars": 2232,
+      "final_cjk_chars": 2231,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -147,7 +147,7 @@
       "src_paragraphs": 12,
       "final_paragraphs": 12,
       "source_words": 2363,
-      "final_cjk_chars": 3254,
+      "final_cjk_chars": 3251,
       "final_english_words": 18,
       "title_ok": true
     },
@@ -183,7 +183,7 @@
       "src_paragraphs": 13,
       "final_paragraphs": 9,
       "source_words": 1898,
-      "final_cjk_chars": 2561,
+      "final_cjk_chars": 2563,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -237,7 +237,7 @@
       "src_paragraphs": 10,
       "final_paragraphs": 10,
       "source_words": 1836,
-      "final_cjk_chars": 2472,
+      "final_cjk_chars": 2476,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -246,7 +246,7 @@
       "src_paragraphs": 8,
       "final_paragraphs": 5,
       "source_words": 1266,
-      "final_cjk_chars": 1752,
+      "final_cjk_chars": 1751,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -255,7 +255,7 @@
       "src_paragraphs": 5,
       "final_paragraphs": 5,
       "source_words": 1222,
-      "final_cjk_chars": 1596,
+      "final_cjk_chars": 1593,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -264,7 +264,7 @@
       "src_paragraphs": 9,
       "final_paragraphs": 6,
       "source_words": 1368,
-      "final_cjk_chars": 1803,
+      "final_cjk_chars": 1791,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -300,7 +300,7 @@
       "src_paragraphs": 15,
       "final_paragraphs": 11,
       "source_words": 2344,
-      "final_cjk_chars": 2936,
+      "final_cjk_chars": 2942,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -318,8 +318,8 @@
       "src_paragraphs": 22,
       "final_paragraphs": 17,
       "source_words": 2023,
-      "final_cjk_chars": 2880,
-      "final_english_words": 4,
+      "final_cjk_chars": 2879,
+      "final_english_words": 5,
       "title_ok": true
     },
     {
@@ -345,7 +345,7 @@
       "src_paragraphs": 3,
       "final_paragraphs": 3,
       "source_words": 628,
-      "final_cjk_chars": 864,
+      "final_cjk_chars": 862,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -354,7 +354,7 @@
       "src_paragraphs": 5,
       "final_paragraphs": 3,
       "source_words": 574,
-      "final_cjk_chars": 807,
+      "final_cjk_chars": 804,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -372,7 +372,7 @@
       "src_paragraphs": 8,
       "final_paragraphs": 8,
       "source_words": 1447,
-      "final_cjk_chars": 1772,
+      "final_cjk_chars": 1774,
       "final_english_words": 0,
       "title_ok": true
     },
@@ -381,7 +381,7 @@
       "src_paragraphs": 106,
       "final_paragraphs": 107,
       "source_words": 1828,
-      "final_cjk_chars": 2269,
+      "final_cjk_chars": 2274,
       "final_english_words": 34,
       "title_ok": true
     }
@@ -397,7 +397,7 @@
     {
       "file": "033_chapter_32_letter_to_the_viceroy.md",
       "paragraph": 4,
-      "cjk_chars": 900,
+      "cjk_chars": 902,
       "sample": "这位官员看上去才干颇为出众，且比一般中国人更为坦率诚实。经适当询问，尤其是关于漏水一项，经中国木匠查验后报告说其危险程度与先前所述相符，因而百夫长号若不整修便无"
     },
     {
@@ -409,8 +409,8 @@
     {
       "file": "028_chapter_27_landing_the_sick.md",
       "paragraph": 2,
-      "cjk_chars": 794,
-      "sample": "我们收起船帆以后，余下的夜晚便让船员们休息，以恢复他们所受的疲劳。次日清晨，我们派出一队装备精良的人上岸，其中我也在内，去控制登陆地点，因为我们还不清楚岛上的印"
+      "cjk_chars": 796,
+      "sample": "我们收起船帆以后，余下的夜晚便让船员们休息，以恢复他们所受的疲劳。次日清晨，我们派出一队装备精良的人上岸，其中我也在内，去占住登陆点，因为我们还不清楚岛上的印第"
     },
     {
       "file": "017_chapter_16_commodores_plans.md",
@@ -557,16 +557,16 @@
       "sample": "我们自以为已经这样充分准备妥当，便等待着9月18日的新月，那三天里我们一直安然拖泊，虽然天气时有狂风阵雨，反复不定，但我们还是自我安慰，以为措施得当，已可免于一"
     },
     {
-      "file": "013_chapter_12_wreck_of_the_wager.md",
-      "paragraph": 5,
-      "cjk_chars": 550,
-      "sample": "还有一件更重要的事，使大多数人都与船长意见相左：那就是在眼下这种紧急关头，大家对该采取何种措施的看法不同。船长决意设法尽可能把小艇修整完善，然后乘它们向北航行，"
-    },
-    {
       "file": "026_chapter_25_gloucester_abandoned.md",
       "paragraph": 4,
       "cjk_chars": 550,
       "sample": "这段时间里，我们原以为几乎已经可以到达亚洲最东的地方了，不料竟被那一整个时期持续困扰我们的逆风和多变风弄得团团转，以致我们那时前进的路程，还不到全程的四分之一。"
+    },
+    {
+      "file": "013_chapter_12_wreck_of_the_wager.md",
+      "paragraph": 5,
+      "cjk_chars": 547,
+      "sample": "还有一件更重要的事，使大多数人都与船长意见相左：那就是在眼下这种紧急关头，大家对该采取何种措施的看法不同。船长决意设法尽可能把小艇修整完善，然后乘它们向北航行，"
     },
     {
       "file": "019_chapter_18_attack_on_paita.md",
@@ -659,12 +659,6 @@
       "sample": "西班牙王室派出一支舰队监视我方行动。这支舰队在马德拉岛的背风面巡弋了数日之后，于十一月初离开该处，驶向拉普拉塔河，并于旧历一月五日*抵达。随后它在该河口的马尔多"
     },
     {
-      "file": "029_chapter_28_return_of_the_centurion.md",
-      "paragraph": 3,
-      "cjk_chars": 444,
-      "sample": "在这些阴郁思虑之中，安森先生当然也有他的不安，但他始终保持着惯有的镇定和坚定，不久便想出了一个摆脱当前焦虑处境的方案，先把它告诉身边几位最明白事理的人，待他确信"
-    },
-    {
       "file": "035_chapter_34_capture_of_the_galleon.md",
       "paragraph": 12,
       "cjk_chars": 444,
@@ -681,6 +675,12 @@
       "paragraph": 5,
       "cjk_chars": 440,
       "sample": "当这件重要事务在某种程度上这样解决后，准将邀请他和那两位随行官员共进晚餐，并同时告诉他们，如果食物的种类或分量不合他们预期，那只能怪他们自己把他逼到如此苛刻的供"
+    },
+    {
+      "file": "029_chapter_28_return_of_the_centurion.md",
+      "paragraph": 3,
+      "cjk_chars": 437,
+      "sample": "在这些阴郁思虑之中，安森先生当然也有他的不安，但他始终保持着惯有的镇定和坚定，不久便想出了一个摆脱当前焦虑处境的方案，先把它告诉身边几位最明白事理的人，待他确信"
     },
     {
       "file": "002_chapter_01_purpose_of_the_voyage.md",
