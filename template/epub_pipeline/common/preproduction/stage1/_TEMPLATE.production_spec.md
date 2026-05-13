@@ -8,7 +8,7 @@ human_required: false
 - 中文书名：
 - 英文原名：
 - 作者：
-- 译制：LifeBook 书坊
+- 译制：LifeBook 书坊 + 个人名
 - 翻译/译制时间：
 - 公版来源 URL：
 - 公版说明：
@@ -29,7 +29,7 @@ human_required: false
 1. 中文书名。
 2. 英文原名。
 3. 作者信息。
-4. `LifeBook 书坊` 译制。
+4. `LifeBook 书坊 + 个人名` 译制。
 5. 译制时间。
 6. 公版来源 URL。
 7. 公版/版权说明。
