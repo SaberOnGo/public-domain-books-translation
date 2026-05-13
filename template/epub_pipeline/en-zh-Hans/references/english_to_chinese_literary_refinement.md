@@ -40,7 +40,7 @@ Long paragraphs should be reviewed for mobile readability, but paragraph breaks 
 
 ### 4. 专名、历史称谓与译注 / Names, Historical Terms, and Notes
 
-- 人名、地名、船名、机构名必须统一。陌生人名或陌生地名不强制汉译，可以保留英文原名，例如 `Professor Marvin`、`Harry Whitney`、`Grant Land`；若选择中文译名，首次出现必须保留英文原名，后文保持一致。
+- 人名、地名、船名、机构名必须统一。正文中的陌生人名或陌生地名不强制汉译，可以保留英文原名，例如 `Professor Marvin`、`Grant Land`；但章节标题和副标题中的人名优先使用中文译名，英文原名放在正文首次出现处或术语表中。若正文选择中文译名，首次出现必须保留英文原名，后文保持一致。
 - 历史称谓应忠实呈现原书时代语境，同时用译注帮助现代读者理解。
 - 不得在同一本书里随意切换称谓，例如一处用旧称、一处用现代称，除非译注策略明确。
 

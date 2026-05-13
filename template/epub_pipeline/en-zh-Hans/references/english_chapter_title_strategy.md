@@ -45,8 +45,10 @@ CHAPTER XX TWO NARROW ESCAPES--ARRIVAL AT ETAH--HARRY WHITNEY--DR. COOK'S CLAIMS
 Preferred:
 nav_title: 第二十章 两次险些遇难
 display_title: 第二十章 两次险些遇难
-subtitle: 抵达伊塔、Harry Whitney 与库克医生的声明
+subtitle: 抵达伊塔、哈里·惠特尼与库克医生的声明
 ```
+
+章节标题和副标题中的人物名优先使用中文译名。英文原名应放在正文首次出现处、译注或术语表中，不放入标题。
 
 ## 禁止
 
