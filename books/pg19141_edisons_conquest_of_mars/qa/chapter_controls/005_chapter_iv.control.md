@@ -6,7 +6,7 @@ return_to_stage: "07_translate_chapters"
 
 ## 中文说明
 
-已完成 `chapters/translated/005_chapter_iv.md` 的译后控制。译文保留电气飞船建造、信号系统、气密服、出发入太空和俯瞰地球等全部叙事核心，没有添加副标题，也没有写入原文没有的内容。
+已完成 `chapters/translated/005_chapter_iv.md` 的译后控制。译文保留电力飞船建造、信号系统、气密服、出发入太空和俯瞰地球等全部叙事核心，没有添加副标题，也没有写入原文没有的内容。
 
 ## 自动检查
 - 严重误译：未发现

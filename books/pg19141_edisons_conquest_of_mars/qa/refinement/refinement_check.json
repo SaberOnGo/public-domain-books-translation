@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-13T08:24:22.269Z",
+  "generatedAt": "2026-05-13T08:55:22.682Z",
   "totals": {
-    "textFiles": 247,
+    "textFiles": 253,
     "bomFiles": 0,
     "mojibakeFiles": 1,
     "cjkMultiSpaceFiles": 0,
-    "zhSemicolon": 162,
+    "zhSemicolon": 199,
     "latinInFinal": 4,
     "halfPunctuationInFinal": 0,
     "suspiciousAiPhrases": 0
@@ -15,7 +15,7 @@
     "bomFiles": 0,
     "mojibakeFiles": 0,
     "cjkMultiSpaceFiles": 0,
-    "zhSemicolon": 33
+    "zhSemicolon": 34
   },
   "bomFiles": [],
   "mojibakeFiles": [
@@ -95,37 +95,37 @@
     },
     {
       "file": "chapters/final/002_chapter_i.md",
-      "line": 67,
-      "text": "若要描写爱迪生先生飞行器的机械构造，就会把我带入读者未必感兴趣的技术细节。只需说明，它依赖电的吸引与排斥原理。借助一种极其巧妙而复杂的结构，他解决了如何在有限空间内产生任何所需电势、任何所需极性的电的问题，并且不会危及实验者或受实验的材料。众所周知，正是引力使人成为地球上的囚徒。如果人能够克服或中和引力，他便可以漂浮离去，成为星际空间中的自由生灵。爱迪生先生在他的发明中，使电力同引力相抗衡。事实上，自然早已做过同样的事。每一位天文学家都"
+      "line": 71,
+      "text": "当彗星接近太阳时，它运行的轨道表明，它是在太阳引力的推动下运动。实际上，它正沿着巨大的抛物线或椭圆曲线在空间中下落。但是，当彗星接近太阳时，它开始显示出一条巨大的发光长尾，从背向太阳的一侧伸展出去，长达数百万英里，有时甚至数亿英里。这条长尾向后延伸到彗星正在离开的那片空间。这样，太阳在同一时间既把彗星拉向自己，又从彗星上向相反方向驱走微小的粒子或原子；这些粒子并不服从引力，显然被迫违抗它。太阳用来对抗自身引力的这种能量，其性质是电的，这"
     },
     {
       "file": "chapters/final/002_chapter_i.md",
-      "line": 71,
+      "line": 75,
       "text": "现在，爱迪生先生所做的，实质上就是创造出一个带电粒子，可以同构成彗尾的一个原子相比；虽然事实上它是一种金属车厢，重达数百磅，飞行时还能载着数千磅重量。借助车厢内的发电机产生巨大的电荷，爱迪生先生能够抵消并稍稍超过地球的吸引力，从而使车厢飞离地球，正像带电的木髓球从主导体上飞开一样。"
     },
     {
       "file": "chapters/final/002_chapter_i.md",
-      "line": 73,
+      "line": 77,
       "text": "我们坐在车厢内部那间灯火通明的舱室里。那里备有压缩空气，还有化学装置，可供我们在穿越太空的飞行中取得新鲜的氧气和氮气。爱迪生先生按下一个磨光的按钮，使车厢外部产生所需的电荷；我们立刻开始上升。"
     },
     {
       "file": "chapters/final/002_chapter_i.md",
-      "line": 81,
+      "line": 85,
       "text": "我们并没有留下来考察月球的奇观，尽管我们不可能不在那里看见许多奇异之物。既然已经证明我们不仅能够离开地球，而且能够穿过太空并安全降落在另一颗星球表面，爱迪生先生眼前的目的便已达到。于是我们急忙返回地球；离开月球和重新降落在我们自己的星球上时，我们所用的，仍是我已经描述过的那种控制各星球与我们的车厢之间电吸引和电排斥的方法。"
     },
     {
       "file": "chapters/final/002_chapter_i.md",
-      "line": 87,
+      "line": 91,
       "text": "“让火星人来吧，”人们喊道。“如果有必要，我们可以离开地球，就像雅典人在薛西斯的大军逼近时逃离雅典一样；也像他们一样，躲到我们的船上去，也就是这些新的太空之船，美国人的发明才能已经把它们交给了我们。”"
     },
     {
       "file": "chapters/final/002_chapter_i.md",
-      "line": 91,
+      "line": 95,
       "text": "“我们为什么要等待？为什么要冒着城市再一次被摧毁、土地再一次被蹂躏的风险？让我们到火星去。我们有这种手段。让我们到狮子洞里去揪住狮子的胡须。让我们自己成为征服者，占有那颗可憎的行星；如有必要，就把它毁掉，使地球摆脱这场永远悬在我们头上的威胁，就像达摩克利斯之剑一样。”"
     },
     {
       "file": "chapters/final/006_chapter_v.md",
-      "line": 39,
+      "line": 43,
       "text": "这是一个可怕的景象。一颗死去而残破的世界，恐怖得不忍直视。月球死亡这个想法，对我们中许多人来说当然并不新鲜。我们早就知道，地球的卫星是一个已经越过生命阶段的天体，如果它曾经真是一个能够支持生命的球体的话；可谁也没有准备好迎接现在这幅刺入眼帘的恐怖景象。"
     },
     {
@@ -196,7 +196,7 @@
     {
       "file": "chapters/final/018_chapter_xvii.md",
       "line": 71,
-      "text": "关于火星人为何拥有如此惊人的能力，却没能发明出像爱迪生先生那样的电气飞艇，也没能造出可与我们分解器相比的毁灭装置，也许还需要解释一句。这种失败只是因为，火星上并不存在那几种特殊金属，而爱迪生先生正是靠这些金属的组合才完成了他的奇迹。至于我们发明所涉及的理论，他们完全理解；如果他们拥有那些材料，毫无疑问，他们也能把它们运用得比我们更有效。"
+      "text": "关于火星人为何拥有如此惊人的能力，却没能发明出像爱迪生先生那样的电力飞船，也没能造出可与我们分解器相比的毁灭装置，也许还需要解释一句。这种失败只是因为，火星上并不存在那几种特殊金属，而爱迪生先生正是靠这些金属的组合才完成了他的奇迹。至于我们发明所涉及的理论，他们完全理解；如果他们拥有那些材料，毫无疑问，他们也能把它们运用得比我们更有效。"
     },
     {
       "file": "chapters/final/018_chapter_xvii.md",
@@ -390,8 +390,163 @@
     },
     {
       "file": "glossary/style_guide.md",
+      "line": 8,
+      "text": "- 次声调：科学奇观、战争动员和星际冒险并存；技术说明要清楚，战斗段落要有速度和压迫感。"
+    },
+    {
+      "file": "glossary/style_guide.md",
+      "line": 13,
+      "text": "- 长句：按中文逻辑拆分；超过 300 字普通叙述段必须复核，超过 500 字通常拆段。"
+    },
+    {
+      "file": "glossary/style_guide.md",
+      "line": 17,
+      "text": "- 对话/口语：人物身份清楚；史密斯上校可更粗直，爱迪生保持冷静克制。"
+    },
+    {
+      "file": "glossary/style_guide.md",
       "line": 29,
       "text": "- 地名/人名：章节标题、副标题和目录题名中的人名只使用中文译名；标题不计入“正文首次出现”；英文原名或括注只放在正文第一次自然出现该人名的位置、译注或术语表中。"
+    },
+    {
+      "file": "glossary/style_guide.md",
+      "line": 30,
+      "text": "- 专业术语：`electrical ship/electric ship` 统一为“电力飞船”；Martian `airship` 译“飞艇/火星飞艇”；`disintegrator` 泛称“分解器”，完整称谓“分解射线器”；`air-tight suit/dress` 统一为“气密服”。"
+    },
+    {
+      "file": "glossary/style_guide.md",
+      "line": 31,
+      "text": "- 文化背景：旧式拼写如 Tokio/Pekin 在正文采用现代通行译名“东京/北京”；来源拼写和处理理由进入术语表。"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 2,
+      "text": "proper_noun,Garrett P. Serviss,加勒特·P. 瑟维斯,person,作者信息保留英文名；正文如需出现可用中文译名加英文原名"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 3,
+      "text": "proper_noun,Thomas A. Edison,托马斯·A. 爱迪生,person,首次自然出现写“托马斯·A. 爱迪生（Thomas A. Edison）”；后文用“爱迪生”或“爱迪生先生”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 4,
+      "text": "proper_noun,Lord Kelvin,开尔文勋爵,person,真实科学家作为小说角色；后文保持“开尔文勋爵”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 5,
+      "text": "proper_noun,Professor Röntgen,伦琴教授,person,涉及 X 射线发现者；可按上下文写“伦琴先生/伦琴教授”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 7,
+      "text": "proper_noun,Sylvanus P. Thompson,西尔瓦努斯·P. 汤普森,person,首次自然出现可保留英文原名；后文用“汤普森教授”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 12,
+      "text": "proper_noun,Aina,艾娜,person,火星上被救少女；不另加无来源的汉字解释"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 13,
+      "text": "proper_noun,Tsait'ien,载湉,person,原文“中国皇帝”；按历史身份保留姓名"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 14,
+      "text": "proper_noun,Mutsuhito,睦仁,person,原文日本天皇；按历史身份保留姓名"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 16,
+      "text": "proper_noun,Tokio,东京,place,按现代通行译名；不保留旧拼写"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 17,
+      "text": "proper_noun,Pekin,北京,place,按现代通行译名；不保留旧拼写"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 23,
+      "text": "technical_term,Martian,火星人,science fiction,星球居民；不生造“马斯人”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 25,
+      "text": "technical_term,electrical ship/electric ship,电力飞船,science fiction,指 Edison 舰队；不用“电气飞船/电气飞艇/电气战舰”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 27,
+      "text": "technical_term,flying machine,飞行器,science fiction,泛指飞行机器；按上下文可区别于 Edison 舰队"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 28,
+      "text": "technical_term,airship,飞艇,science fiction,主要指火星人在大气中使用的飞行艇；必要时写“火星飞艇”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 29,
+      "text": "technical_term,projectile car,弹射飞车,science fiction,第一章火星人逃离地球用的发射车辆；第八章可按上下文写“弹射车”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 30,
+      "text": "technical_term,car,车厢,science fiction,指飞船内部舱体或金属车厢；不现代化为“座舱模块”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 31,
+      "text": "technical_term,disintegrator,分解器,science fiction,泛称武器装置；完整称谓可作“分解射线器”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 34,
+      "text": "technical_term,electrical bolt,电光,science fiction,火星飞艇攻击时的闪电式打击；必要时可作“电击”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 36,
+      "text": "technical_term,air-tight suit/dress,气密服,science fiction,不译成现代“宇航服”；本书统一用“气密服”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 40,
+      "text": "historical_term,Aryan race,雅利安民族,historical discourse,忠实呈现原文时代术语；不现代化改写"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_publication_grade_title_terms_paragraphs.md",
+      "line": 34,
+      "text": "1. 标题工程：本书章节主标题已经使用编号策略，符合源文 `Chapter I.` 至 `Chapter XVIII.`；但还需要记录内文小标题均来自原文分节标题，不是 AI 自创概括。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_publication_grade_title_terms_paragraphs.md",
+      "line": 36,
+      "text": "3. 术语不统一：`electrical ships` 在正文中混用“电力飞船”“电气飞船”“电气飞艇”“电气战舰”；本轮统一为“电力飞船”。火星人的 `airships` 继续译为“飞艇/火星飞艇”。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_publication_grade_title_terms_paragraphs.md",
+      "line": 37,
+      "text": "4. 术语不统一：`air-tight suit/dress` 在研究记录里写“密封服”，正文主要使用“气密服”；本轮统一为“气密服”。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_publication_grade_title_terms_paragraphs.md",
+      "line": 45,
+      "text": "3. 统一正文中 Edison 舰队术语：`electrical ships` = “电力飞船”；Martian `airships` = “火星飞艇/飞艇”。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_publication_grade_title_terms_paragraphs.md",
+      "line": 62,
+      "text": "- 出版范围普通叙述段无超过 500 字段落；超过 300 字段落要么已拆分，要么有 QA 保留理由。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_publication_grade_title_terms_paragraphs.md",
+      "line": 63,
+      "text": "- 标题策略有记录：章节主标题遵守源文编号，不自创概括标题；内文小标题来自源文分节标题。"
     },
     {
       "file": "goal/GOAL_2026-05-13_refinement_literary_metadata_cover.md",
@@ -417,6 +572,11 @@
       "file": "metadata/book.yaml",
       "line": 7,
       "text": "rights: \"源文本来自 Project Gutenberg #19141，美国公版文本；中文译本由 LifeBook 书坊 SaberOnGo 依据公版英文原文新译制作。\""
+    },
+    {
+      "file": "metadata/style_profile.md",
+      "line": 17,
+      "text": "- “火星人”“地球人”“舰队”“电力飞船”“分解射线器/分解器”“气密服”等高频词统一；火星人的 `airships` 译为“飞艇/火星飞艇”，不与 Edison 舰队混淆。"
     },
     {
       "file": "PIPELINE_SPEC.md",
@@ -617,6 +777,31 @@
       "file": "qa/readability/001_front_matter.md",
       "line": 7,
       "text": "译文自然、简洁，符合卷首页的排版习惯；分行与留白清楚，可直接进入后续版面流程。"
+    },
+    {
+      "file": "qa/refinement/004_chapter_iii.publication_refinement.md",
+      "line": 8,
+      "text": "- 拆分中国皇帝讲述的鹏鸟寓言长引文；保留引文身份和寓言完整性。"
+    },
+    {
+      "file": "qa/refinement/2026-05-13_publication_grade_title_terms_paragraphs.md",
+      "line": 51,
+      "text": "| `003_chapter_ii.md` | 拆分战争基金、君主赴会、飞船电性控制三个长段；统一“电力飞船”。 | PASS |"
+    },
+    {
+      "file": "qa/refinement/2026-05-13_publication_grade_title_terms_paragraphs.md",
+      "line": 52,
+      "text": "| `004_chapter_iii.md` | 拆分华盛顿大会开场长段和中国寓言长引文；统一“电力飞船”。 | PASS |"
+    },
+    {
+      "file": "qa/refinement/2026-05-13_publication_grade_title_terms_paragraphs.md",
+      "line": 54,
+      "text": "| `006_chapter_v.md` | 拆分流星技术说明长段；统一“电力飞船”。 | PASS |"
+    },
+    {
+      "file": "qa/refinement/2026-05-13_publication_grade_title_terms_paragraphs.md",
+      "line": 78,
+      "text": "- EPUB 解包抽查：`nav.xhtml` 与重点章节 XHTML 标题正常；重点章节 XHTML 未发现旧术语残留。"
     },
     {
       "file": "qa/refinement/full_book_literary_review_2026-05-13.md",
@@ -852,7 +1037,7 @@
     },
     {
       "file": "chapters/final/004_chapter_iii.md",
-      "line": 129,
+      "line": 135,
       "text": "“Make muchee noisee，”他一边说，一边用大拇指指着那些逃跑的乐师，“Allee same muchee flaid noisee。”说完，他圆圆的脸又浮起一个笑涡。"
     }
   ],

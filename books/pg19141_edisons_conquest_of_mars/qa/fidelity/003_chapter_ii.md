@@ -11,7 +11,7 @@ score: 95
 - `Martians` 译为“火星人”
 - `Mars` 译为“火星”
 - `disintegrator` 译为“分解器”
-- `electrical ship` 译为“电气飞船”
+- `electrical ship` 译为“电力飞船”
 
 ## Decision
 

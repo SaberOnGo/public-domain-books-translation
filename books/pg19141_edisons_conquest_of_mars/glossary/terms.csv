@@ -1,7 +1,43 @@
 type,source_term,target_term,domain,notes
-proper_noun,,,,
-technical_term,,,,
-industry_term,,,,
-symbol,,,,
-historical_term,,,,
+proper_noun,Garrett P. Serviss,加勒特·P. 瑟维斯,person,作者信息保留英文名；正文如需出现可用中文译名加英文原名
+proper_noun,Thomas A. Edison,托马斯·A. 爱迪生,person,首次自然出现写“托马斯·A. 爱迪生（Thomas A. Edison）”；后文用“爱迪生”或“爱迪生先生”
+proper_noun,Lord Kelvin,开尔文勋爵,person,真实科学家作为小说角色；后文保持“开尔文勋爵”
+proper_noun,Professor Röntgen,伦琴教授,person,涉及 X 射线发现者；可按上下文写“伦琴先生/伦琴教授”
+proper_noun,Nikola Tesla,尼古拉·特斯拉,person,真实科学家作为小说角色
+proper_noun,Sylvanus P. Thompson,西尔瓦努斯·P. 汤普森,person,首次自然出现可保留英文原名；后文用“汤普森教授”
+proper_noun,Monsieur Moissan,莫瓦桑先生,person,后文保持“莫瓦桑先生”
+proper_noun,Professor Heidelberg,海德堡教授,person,后文保持“海德堡教授”
+proper_noun,Colonel Smith,史密斯上校,person,军事人物称谓保持一致
+proper_noun,Sidney Phillips,西德尼·菲利普斯,person,后文可按上下文用“菲利普斯”
+proper_noun,Aina,艾娜,person,火星上被救少女；不另加无来源的汉字解释
+proper_noun,Tsait'ien,载湉,person,原文“中国皇帝”；按历史身份保留姓名
+proper_noun,Mutsuhito,睦仁,person,原文日本天皇；按历史身份保留姓名
+proper_noun,Fujiyama,富士山,place,返航段地名
+proper_noun,Tokio,东京,place,按现代通行译名；不保留旧拼写
+proper_noun,Pekin,北京,place,按现代通行译名；不保留旧拼写
+proper_noun,Lake of the Sun,太阳湖,place,火星首都核心湖泊
+proper_noun,Syrtis Major,西尔提斯大海,place,保留旧天文学想象语境
+proper_noun,Thaumasia,陶玛西亚,place,火星地名音译
+proper_noun,Aeria,阿里亚,place,火星地名音译
+proper_noun,Ceres,谷神星,place,按天体通行译名
+technical_term,Martian,火星人,science fiction,星球居民；不生造“马斯人”
+technical_term,earthmen,地球人,science fiction,与火星人对应
+technical_term,electrical ship/electric ship,电力飞船,science fiction,指 Edison 舰队；不用“电气飞船/电气飞艇/电气战舰”
+technical_term,ship of space,太空飞船,science fiction,强调星际航行时使用
+technical_term,flying machine,飞行器,science fiction,泛指飞行机器；按上下文可区别于 Edison 舰队
+technical_term,airship,飞艇,science fiction,主要指火星人在大气中使用的飞行艇；必要时写“火星飞艇”
+technical_term,projectile car,弹射飞车,science fiction,第一章火星人逃离地球用的发射车辆；第八章可按上下文写“弹射车”
+technical_term,car,车厢,science fiction,指飞船内部舱体或金属车厢；不现代化为“座舱模块”
+technical_term,disintegrator,分解器,science fiction,泛称武器装置；完整称谓可作“分解射线器”
+technical_term,disintegrating ray,分解射线,science fiction,指射线/振动束本身
+technical_term,vibration engine,振动发动机,science fiction,保留原文时代电学想象
+technical_term,electrical bolt,电光,science fiction,火星飞艇攻击时的闪电式打击；必要时可作“电击”
+technical_term,ether,以太,historical science,保留十九世纪物理学语境
+technical_term,air-tight suit/dress,气密服,science fiction,不译成现代“宇航服”；本书统一用“气密服”
+technical_term,asteroid,小行星,astronomy,金色小行星等场景保持一致
+technical_term,Deimos,德摩斯,astronomy,火星卫星
+technical_term,Phobos,福波斯,astronomy,火星卫星
+historical_term,Aryan race,雅利安民族,historical discourse,忠实呈现原文时代术语；不现代化改写
+historical_term,Old Glory,星条旗,national symbol,若正文出现优先译“星条旗”
+symbol,Stars and Stripes,星条旗,national symbol,不机械译“星与条”
 

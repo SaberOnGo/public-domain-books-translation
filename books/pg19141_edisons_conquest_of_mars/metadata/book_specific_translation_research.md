@@ -25,10 +25,10 @@
 ## 术语策略
 
 - disintegrator：分解射线器或分解器。具体武器可译“分解射线器”，泛称装置时用“分解器”。
-- electric ship：电力飞船。保持十九世纪电学奇观语感，不改成“宇宙飞船”。
+- electric ship / electrical ship：电力飞船。保持十九世纪电学奇观语感，不改成“宇宙飞船”，也不混用“电力飞船”“电力飞船”。
 - projectile car：弹射车或飞车。按上下文处理为火星人用于离开地球的“弹射飞车”。
 - asteroid：小行星。
-- air-tight suit：密封服。若上下文更接近太空出舱，可译“密封宇航服”，但不默认现代化。
+- air-tight suit / air-tight dress：气密服。不默认现代化为“宇航服”。
 - ether：以太。保留十九世纪物理学语境。
 
 ## 风险点
