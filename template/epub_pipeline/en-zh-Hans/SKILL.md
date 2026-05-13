@@ -55,6 +55,8 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
 - 人名、地名、年代、数字和反复出现的术语必须一致。
 - Do not mechanically convert English printed-TOC title chains using `--` into Chinese `——` chains. When needed, split them into a short navigation title, display title, and subtitle.
 - 不得把英文纸书目录式 `--` 标题链机械转换成中文 `——` 链。必要时必须拆成短目录题名、页面主标题和副标题。
+- Names in chapter titles, subtitles, and navigation titles must use Chinese translated names only. Title occurrences do not count as first body occurrences; keep the English original name at the first natural body occurrence, in a note, or in the glossary.
+- 章节标题、副标题和目录题名中的人名只使用中文译名。标题中的出现不计入“正文首次出现”；英文原名应放在正文第一次自然出现处、译注或术语表中。
 
 ## Required Gates / 必要门禁
 
@@ -71,7 +73,7 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
 - 每章译文必须通过译后控制、忠实度审校、可读性审校、术语审校、必要时的意象词审计，以及最终章节门禁。
 
 - Before EPUB build, run `node scripts/publication_lint.js --target=zh-Hans --write-report`; fix semicolon overuse, abnormal Chinese spacing, legacy print page-number tables, and mojibake before continuing.
-- EPUB 构建前必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`；如果发现分号滥用、中文异常空格、旧纸书页码目录或乱码，必须先修复再继续。
+- EPUB 构建前必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`；如果发现分号滥用、中文异常空格、旧纸书页码目录、乱码或 `targetTitleLatinResidue`，必须先修复再继续。
 - Before final EPUB output, verify chapter headings against `references/english_chapter_title_strategy.md` and `references/title_punctuation_and_heading_style.md`.
 - 最终 EPUB 输出前，必须按 `references/english_chapter_title_strategy.md` 和 `references/title_punctuation_and_heading_style.md` 检查章节标题。
 - If systematic refinement issues are found in a specific book, create the goal document under that book project and backfill reusable lessons to the template layer.

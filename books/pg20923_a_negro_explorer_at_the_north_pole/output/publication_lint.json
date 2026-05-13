@@ -9,7 +9,8 @@
     "cjkMultiSpace": 0,
     "repeatedSpace": 0,
     "mojibake": 0,
-    "legacyPrintToc": 0
+    "legacyPrintToc": 0,
+    "targetTitleLatinResidue": 0
   },
   "issues": [],
   "warnings": []
