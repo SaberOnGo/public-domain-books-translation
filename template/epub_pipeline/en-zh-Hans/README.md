@@ -21,6 +21,8 @@
 
 目标不是“能翻出来”，而是产出优秀、可读、有中文生命力、EPUB 制作质量合格的正本书。
 
+英文到简体中文的文学精修规则见 `references/english_to_chinese_literary_refinement.md`。如果某一本书发现系统性标题、段落、术语、译注、排版或文学精修问题，目标文档应放在该书工程的 `goal/` 目录下；可复用经验再分别回填到 common、zh-Hans 目标语言框架和 en-zh-Hans 语言方向模板。
+
 ## 唯一必须输入 / Required Inputs
 
 - `TEMPLATE_ROOT`：语言方向模板目录，即 `template/epub_pipeline/en-zh-Hans`。
@@ -93,3 +95,5 @@
 - 未完成双 Agent 独立评审，不得宣布完成。
 - 评审未通过，必须回退返工。
 - 未完成复盘和经验沉淀，不得标记 `DONE`。
+- 已发现系统性精修问题但没有书籍专属 `goal/` 目标文档，不得标记 `DONE`。
+- 已发现可复用经验但没有回填模板，不得标记 `DONE`。

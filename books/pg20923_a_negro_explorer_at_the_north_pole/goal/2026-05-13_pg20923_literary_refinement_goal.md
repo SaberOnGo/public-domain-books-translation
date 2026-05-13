@@ -2,6 +2,8 @@
 
 日期：2026-05-13
 
+文件位置说明：本文件是《黑人北极探险家》这一具体书籍工程的精修目标，因此放在本书目录 `books/pg20923_a_negro_explorer_at_the_north_pole/goal/` 下。项目级、语言中立、语言方向专用的可复用规则，分别回填到 `template/epub_pipeline/common/`、`template/epub_pipeline/targets/zh-Hans/` 和 `template/epub_pipeline/en-zh-Hans/`。
+
 ## 目标
 
 在现有可读 EPUB 的基础上，把《黑人北极探险家》推进到更接近正式出版的版本。重点不是重新生成一遍，而是按可复用标准做编辑级精修：
@@ -147,7 +149,9 @@ chapter_titles:
 
 本次分析已回填以下模板规则：
 
+- `template/epub_pipeline/common/references/literary_refinement_policy.md`
 - `template/epub_pipeline/common/references/chapter_title_policy.md`
+- `template/epub_pipeline/en-zh-Hans/references/english_to_chinese_literary_refinement.md`
 - `template/epub_pipeline/targets/zh-Hans/quality_framework/references/title_punctuation_and_heading_style.md`
 - `template/epub_pipeline/en-zh-Hans/references/english_chapter_title_strategy.md`
 

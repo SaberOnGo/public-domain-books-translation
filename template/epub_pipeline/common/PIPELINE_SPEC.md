@@ -72,6 +72,7 @@
 - `references/translation_research_universal.md`：由目标语言模板或语言方向模板提供的翻译研究规则。
 - `references/quality_standard.md`：由目标语言模板或语言方向模板提供的质量标准。
 - `references/chapter_title_policy.md`：通用章节标题、目录短题名和副标题策略。
+- `references/literary_refinement_policy.md`：通用文学精修、书籍目标和模板经验回填策略。
 - `automation_contract.md`：自动化执行合约。
 
 ### Chapters
@@ -150,6 +151,7 @@ node scripts/publication_lint.js --target={target-language} --write-report
 - 未通过样章制作检查，不得制作整本 EPUB。
 - 未通过出版文本 lint，不得构建最终 EPUB。
 - 未完成长章节标题的导航题名、页面标题和副标题设计，不得进入最终 EPUB 输出。
+- 如果已经发现系统性文学精修问题，必须在 `books/{book_id_slug}/goal/` 建立本书目标，并把可复用经验回填到 common、目标语言或语言方向模板。
 - 整本 EPUB 制作后，必须派生 2 个独立 Agent 评审。
 - 评审失败时必须通过 `reviews/revision_route.md` 回到对应前置阶段。
 - 未完成复盘和经验沉淀，不得标记 `DONE`。
@@ -170,4 +172,5 @@ node scripts/publication_lint.js --target={target-language} --write-report
 - `reviews/agent_a/review.md` 和 `reviews/agent_b/review.md` 均存在，且评分通过。
 - `reviews/revision_route.md` 中无未关闭 P0/P1/P2 必修项。
 - `retrospective/book_retrospective.md` 和 `retrospective/template_update_suggestions.md` 存在。
+- 重大精修问题已有书籍专属目标或修复记录，可复用经验已回填到对应模板层。
 - `state/pipeline_state.json.status == DONE`。
