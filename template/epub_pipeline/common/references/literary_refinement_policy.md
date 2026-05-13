@@ -104,6 +104,31 @@ Book-specific findings may overlap with template rules. This is acceptable and o
 
 本书专属发现可以与模板规则有一定重复。这是允许且必要的，因为书籍工程指导某一本书，模板指导未来所有同类书。
 
+### Phase 4: Post-Generation Layout Review / 阶段 4：生成后版式复查
+
+After generating the EPUB, do not stop at file creation. Run a reader-facing layout and format review before handing the book to users.
+
+生成 EPUB 后，不能只确认文件已经生成。交付给用户前，必须做一次面向读者的版式与格式复查。
+
+The post-generation review must include:
+
+生成后复查至少包括：
+
+- EPUB structural validation, such as EPUBCheck.
+- EPUB 结构校验，例如 EPUBCheck。
+
+- Publication lint for punctuation, abnormal spaces, mojibake, and legacy print artifacts.
+- 出版 lint：检查标点、异常空格、乱码和旧纸书残留物。
+
+- Extracted XHTML inspection for navigation titles, chapter headings, subtitles, cover/image references, appendix/list rendering, and body-end artifacts.
+- 抽取 EPUB 内部 XHTML，检查目录题名、章节标题、副标题、封面/图片引用、附录/名单呈现，以及正文末尾来源工件。
+
+- Spot checks of high-risk chapters in the generated XHTML, not only in Markdown source files.
+- 对高风险章节检查生成后的 XHTML，而不是只看 Markdown 源文件。
+
+- A short QA record under `books/{book_id_slug}/qa/` when the review affects publication quality or confirms a delivery build.
+- 如果复查影响出版质量，或用于确认交付版本，必须在 `books/{book_id_slug}/qa/` 下留下简短 QA 记录。
+
 ## Hard Gate / 硬门禁
 
 A book must not be marked `DONE` if:
