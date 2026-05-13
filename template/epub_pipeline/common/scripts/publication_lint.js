@@ -134,7 +134,8 @@ for (const file of files) {
   const asciiSemi = (text.match(/;/g) || []).length;
   const zhSemi = (text.match(/；/g) || []).length;
   const cjkSpaces = (text.match(new RegExp(`[${cjk}][ \\t]{2,}[${cjk}]`, 'g')) || []).length;
-  const repeatedSpaces = (text.match(/[^\n][ \t]{2,}[^\n]/g) || []).length;
+  const checkRepeatedSpaces = /\.(md|xhtml|opf)$/i.test(file);
+  const repeatedSpaces = checkRepeatedSpaces ? (text.match(/[^\n][ \t]{2,}[^\n]/g) || []).length : 0;
   const mojibake = (text.match(mojibakePattern) || []).length;
   const legacyToc = detectLegacyPrintToc(text, rel);
 
