@@ -5,7 +5,6 @@
   "description": "Shared Node.js tooling for book projects under books/.",
   "license": "UNLICENSED",
   "dependencies": {
-    "epub-gen": "^0.1.0",
     "epubchecker": "^5.2.1"
   }
 }

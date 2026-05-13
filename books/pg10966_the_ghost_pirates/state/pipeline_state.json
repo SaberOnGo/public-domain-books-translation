@@ -7,7 +7,7 @@
   "chapters_total": 19,
   "chapters_translated": 19,
   "chapters_reviewed": 19,
-  "current_step": "exhaustive_publication_literary_audit_pass",
+  "current_step": "cover_jpg_book_info_translator_and_dependency_audit_fix_pass",
   "last_error": "",
   "human_required_default": false,
   "quality_gate": {
@@ -29,7 +29,8 @@
     "literary_refinement_status": "PASS qa/refinement/multi_pass_refinement_report.md",
     "publication_grade_gap_closure_status": "PASS qa/refinement/publication_grade_gap_closure_report.md",
     "full_book_literary_xindaya_review_status": "PASS qa/refinement/full_book_literary_xindaya_review.md",
-    "exhaustive_publication_literary_audit_status": "PASS qa/refinement/exhaustive_publication_literary_audit.md"
+    "exhaustive_publication_literary_audit_status": "PASS qa/refinement/exhaustive_publication_literary_audit.md",
+    "cover_book_info_translator_fix_status": "PASS qa/refinement/2026-05-13_cover_book_info_translator_tooling_fix.md"
   },
   "forbidden_shortcuts": [
     "batch translation before pretranslation PASS",

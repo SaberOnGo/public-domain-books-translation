@@ -15,7 +15,7 @@ const meta = {
   originalTitle: 'The Ghost Pirates',
   author: 'William Hope Hodgson',
   authorZh: '威廉·霍普·霍奇森',
-  translator: 'LifeBook 书坊',
+  translator: 'LifeBook 书坊 SaberOnGo',
   translationDate: '2026-05-13',
   language: 'zh-CN',
   originalLanguage: 'en',
@@ -24,8 +24,8 @@ const meta = {
   sourceUrl: 'https://www.gutenberg.org/ebooks/10966',
   sourceId: 'Project Gutenberg #10966',
   originalPublication: '1909 年英文原著。本译本依据 Project Gutenberg #10966 公版文本制作。',
-  description: '本书是威廉·霍普·霍奇森的海洋恐怖小说，以幸存者杰索普的口吻记录帆船“莫尔腾号”在海上逐渐遭受未知影子生物侵扰的过程。本中文 EPUB 由 LifeBook 书坊依据 Project Gutenberg #10966 公版英文原文新译制作，翻译时间为 2026-05-13。源文本在美国为公版，跨地区发行前仍应按目标国家或地区复核版权状态。',
-  rights: '源文本：Project Gutenberg #10966，美国公版文本。中文译本：LifeBook 书坊译制，发行和授权由项目所有者决定。'
+  description: '本书是威廉·霍普·霍奇森的海洋恐怖小说，以幸存者杰索普的口吻记录帆船“莫尔腾号”在海上逐渐遭受未知影子生物侵扰的过程。本中文 EPUB 由 LifeBook 书坊 SaberOnGo 依据 Project Gutenberg #10966 公版英文原文新译制作，翻译时间为 2026-05-13。源文本在美国为公版，跨地区发行前仍应按目标国家或地区复核版权状态。',
+  rights: '源文本：Project Gutenberg #10966，美国公版文本。中文译本：LifeBook 书坊 SaberOnGo 译制，发行和授权由项目所有者决定。'
 };
 const coverJpgPath = path.join(root, 'assets', 'cover.jpg');
 const coverPngPath = path.join(root, 'assets', 'cover.png');
@@ -292,7 +292,7 @@ function coverSvg() {
   <line x1="405" y1="825" x2="1195" y2="825" stroke="#cbd7d3" stroke-width="5" opacity="0.75"/>
   <text x="800" y="1000" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="62" fill="#d2ddda">The Ghost Pirates</text>
   <text x="800" y="1138" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="58" fill="#ffffff">威廉·霍普·霍奇森 著</text>
-  <text x="800" y="1225" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="52" fill="#d2ddda">LifeBook 书坊 译制</text>
+  <text x="800" y="1225" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="52" fill="#d2ddda">LifeBook 书坊 SaberOnGo 译制</text>
   <text x="800" y="2110" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="44" fill="#cbd7d3">依据 Project Gutenberg #10966 公版原文制作</text>
 </svg>`;
 }
@@ -302,8 +302,8 @@ function coverPage(coverImageName) {
 }
 
 function bookInfoPage() {
-  return xhtml('版本说明', `<section epub:type="frontmatter" class="book-info">
-<h1>版本说明</h1>
+  return xhtml('书籍信息', `<section epub:type="frontmatter" class="book-info">
+<h1>书籍信息</h1>
 <dl>
   <dt>中文书名</dt><dd>${esc(meta.title)}</dd>
   <dt>英文原名</dt><dd><em>${esc(meta.originalTitle)}</em></dd>
@@ -340,7 +340,7 @@ const chapters = chapterFiles.map((file, idx) => {
 });
 
 const navItems = [
-  '<li><a href="book-info.xhtml">版本说明</a></li>',
+  '<li><a href="book-info.xhtml">书籍信息</a></li>',
   ...chapters.map((ch) => `<li><a href="${esc(ch.href)}">${esc(ch.title)}</a></li>`)
 ].join('\n');
 const manifestItems = chapters.map((ch) => `<item id="${ch.id}" href="${esc(ch.href)}" media-type="application/xhtml+xml"/>`).join('\n    ');
@@ -435,7 +435,7 @@ const packageOpf = `<?xml version="1.0" encoding="utf-8"?>
 </package>`;
 
 const nav = xhtml('目录', `<nav epub:type="toc" id="toc"><h1>目录</h1><ol>${navItems}</ol></nav>
-<nav epub:type="landmarks" hidden="hidden"><h2>导航</h2><ol><li><a epub:type="cover" href="cover.xhtml">封面</a></li><li><a epub:type="frontmatter" href="book-info.xhtml">版本说明</a></li><li><a epub:type="bodymatter" href="${esc(chapters[0].href)}">正文开始</a></li></ol></nav>`);
+<nav epub:type="landmarks" hidden="hidden"><h2>导航</h2><ol><li><a epub:type="cover" href="cover.xhtml">封面</a></li><li><a epub:type="frontmatter" href="book-info.xhtml">书籍信息</a></li><li><a epub:type="bodymatter" href="${esc(chapters[0].href)}">正文开始</a></li></ol></nav>`);
 
 const files = [];
 files.push({ name: 'mimetype', data: Buffer.from('application/epub+zip'), store: true });

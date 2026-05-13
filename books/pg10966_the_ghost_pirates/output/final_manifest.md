@@ -14,8 +14,10 @@ build_date: "2026-05-13"
 
 - 标准输出：`output/book.epub`
 - 中文文件名输出：`output/幽灵海盗.epub`
-- 文件大小：122382 bytes
-- SHA256：`2A7BDC0369383EE628DB6C0B9A388468C41ABF6EC182ECEB063B4869330AD6B3`
+- 文件大小：466977 bytes
+- SHA256：`88294DF8BA7906D5719D9D45E4D1CEF9DBBD4FED6919C0610A5B9C4E6AD70254`
+- 封面图片：`output/cover.jpg`，363786 bytes
+- 译者标识：`LifeBook 书坊 SaberOnGo`
 
 ## 章节与 QA
 
@@ -36,7 +38,7 @@ build_date: "2026-05-13"
 - EPUB 标题：幽灵海盗
 - EPUB 语言：zh-CN
 - spine 项：21
-- 字符统计：80668
+- 字符统计：80486
 
 ## 结论
 
