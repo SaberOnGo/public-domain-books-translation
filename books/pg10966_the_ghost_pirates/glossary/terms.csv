@@ -1,0 +1,39 @@
+source,translation,category,note
+The Ghost Pirates,幽灵海盗,title,中文书名
+William Hope Hodgson,威廉·霍普·霍奇森,person,作者
+Mortzestus,莫尔腾号,ship,本书核心船名；首次正文出现括注英文
+Jessop,杰索普,person,叙述者
+Tammy,塔米,person,水手
+Williams,威廉斯,person,船员
+Stubbins,斯塔宾斯,person,船员
+Plummer,普卢默,person,船员
+Captain,船长,rank,船上职务
+mate,大副,rank,按上下文也可作“副手”；职务处统一大副
+Second Mate,二副,rank,船上职务
+bo'sun,水手长,rank,boatswain 的缩写
+Sails,帆匠,rank_or_nickname,按上下文可能是负责帆具的称呼
+watch,值班,shipboard,船上轮值
+forecastle,艏楼,ship_part,也可按语境译“水手舱”
+deck-house,甲板室,ship_part,
+poop,艉楼,ship_part,
+bulwarks,舷墙,ship_part,
+rail,栏杆,ship_part,
+mast,桅杆,ship_part,
+royal mast,顶桅,ship_part,按上下文复核
+yard,桁,ship_part,帆桁
+topsail,中桅帆,sail,按具体帆位复核
+royal,顶帆,sail,按上下文复核
+halyards,升降索,rigging,
+gantline,吊索,rigging,
+sheet,帆脚索,rigging,
+brace,转桁索,rigging,
+clewline,收帆角索,rigging,
+lee,下风,nautical,
+weather side,上风侧,nautical,
+starboard,右舷,nautical,
+port,左舷,nautical,
+aloft,上桅,action,
+aft,向船尾,nautical,
+for'ard,向船头,nautical,
+capstan,绞盘,ship_part,
+chaunty,号子,genre,保留海员劳动歌意味
