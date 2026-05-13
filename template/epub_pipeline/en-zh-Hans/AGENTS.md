@@ -50,6 +50,12 @@ This file is for AI agents using the `en-zh-Hans` template.
 - Names in chapter titles, subtitles, and EPUB navigation labels must use Chinese translated names only. A title occurrence does not count as the first body occurrence for a name. Do not put English original names or parenthetical English names in titles; place them at the first natural body occurrence, in a note, or in the glossary.
 - 章节标题、副标题和 EPUB 目录题名中的人名只使用中文译名。标题中的出现不计入该人名的“正文首次出现”。不得把英文原名或英文括注放进标题；英文原名应放在正文第一次自然出现处、译注或术语表中。
 
+- Common nouns, object names, clothing names, material names, and action terms must be translated into Chinese. Do not write `source term（中文释义）` in the body. If an original term is genuinely needed, use Chinese-first format at first mention, such as `火盆（_koodlah_）`.
+- 普通名词、器物名、衣物名、材料名和动作名必须译成中文。正文不得写成 `source term（中文释义）`。确需保留原文词时，只在首次出现处用中文优先格式，例如 `火盆（_koodlah_）`。
+
+- Delete printed-book separators such as `* * * * *`, `*****`, `----`, or `---` from body text. Do not replace them with another visible separator.
+- 删除旧纸书正文分隔符，例如 `* * * * *`、`*****`、`----` 或 `---`。不得替换成另一种可见分隔符。
+
 ## Human Checkpoints / 人类可选检查点
 
 - `metadata/book_specific_translation_research.md`

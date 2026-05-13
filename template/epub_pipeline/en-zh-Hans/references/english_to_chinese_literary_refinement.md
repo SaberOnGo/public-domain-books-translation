@@ -42,6 +42,7 @@ Long paragraphs should be reviewed for mobile readability, but paragraph breaks 
 ### 4. 专名、历史称谓与译注 / Names, Historical Terms, and Notes
 
 - 人名、地名、船名、机构名必须统一。正文中的陌生人名或陌生地名不强制汉译，可以保留英文原名，例如 `Professor Marvin`、`Grant Land`；但章节标题和副标题中的人名优先使用中文译名，英文原名放在正文首次出现处或术语表中。若正文选择中文译名，正文首次出现必须保留英文原名，后文保持一致。章节标题、目录、页眉、图注索引等标题性位置不计入“正文首次出现”；如果人名第一次出现在章节标题里，标题仍只用中文译名，英文原名应延后到正文第一次自然出现处。
+- 普通名词、器物名、衣物名、材料名和动作名应译成中文，不得默认写成 `source term（中文释义）`。如果确有民族语言词、历史词或技术词需要保留原文，应采用中文正文优先的写法，例如 `火盆（_koodlah_）`，并且通常只在首次出现处保留原文。
 - 历史称谓应忠实呈现原书时代语境，同时用译注帮助现代读者理解。
 - 不得在同一本书里随意切换称谓，例如一处用旧称、一处用现代称，除非译注策略明确。
 
@@ -57,6 +58,7 @@ Names and historically loaded terms need a stable first-mention and note policy.
 - Project Gutenberg 等英文数字源常带有 `Transcriber's Notes`、OCR correction notes 或源文件尾注。除非本书版本有意保留来源制作说明，否则不要把这些内容混入中文正文；若保留，必须译为清楚标注的“原文转录说明/来源制作说明”，不能让读者误以为是作者正文。
 - 下载的英文 raw source 是公版来源证据，不能因为其中有 BOM、Project Gutenberg 样板文字或排版残留就随意改写；清理对象应是中文终稿、metadata、frontmatter 和生成 EPUB。
 - 附录、名单、表格、页码目录等旧纸书结构，必须转成适合 EPUB 的列表、表格、注释或导航结构。
+- 旧纸书正文中的 `* * * * *`、`*****`、`----` 等分隔符不得进入成书正文，也不要替换成另一种可见符号。若只是排版分隔，直接删除；若确实表示内容转换，应由段落自然承接或另写小标题。
 
 Chinese punctuation and EPUB typography are publication issues, not cosmetic details.
 
