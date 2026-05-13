@@ -5,11 +5,12 @@
 ## 复核范围
 
 - 对照 `chapters/src/006_*` 与 `chapters/final/006_*`。
-- 重点检查 Rudolph Franke、Harry Whitney、Cook、Goodsell、装煤和破冰航行段。
+- 重点检查鲁道夫·弗兰克（Rudolph Franke）、哈里·惠特尼（Harry Whitney）、Cook、Goodsell、装煤和破冰航行段。
 
 ## 已修改
 
-- 将 `Franke 情况很糟` 调整为 `Franke 状况很糟`，更贴合身体状态。
+- 将标题改为中文译名“第三章 发现鲁道夫·弗兰克”，英文原名移到正文首次出现处括注。
+- 将 `Franke 情况很糟` 调整为 `弗兰克状况很糟`，更贴合身体状态，也与中文标题一致。
 - 将 `Goodsell 博士` 调整为 `Goodsell 医生`，与第二章人物身份一致。
 - 将交易段“这么收钱真不应该”改为“这样开价，真像占了便宜”，保留原文自嘲，但避免误导为真实货币交易。
 - 将标本剥制段“这件工作”改为“这活儿”，更符合 Henson 第一人称日志口吻。
@@ -17,10 +18,10 @@
 
 ## 质量判断
 
-- 信：未改变 Cook、Franke、Whitney、Murphy、Billy Pritchard 等事实关系。
+- 信：未改变 Cook、弗兰克、惠特尼、Murphy、Billy Pritchard 等事实关系。
 - 达：修复了几处直译、生硬搭配和职业称谓不一致。
 - 雅：保留船与浮冰搏斗的朴素力量，不额外增加原文没有的抒情。
 
 ## 后续注意
 
-- `Rudolph Franke`、`Harry Whitney`、`Grant Land` 保留英文，符合本书陌生专名策略。
+- 章节标题中的人名采用中文译名；正文首次出现处保留英文原名括注，后文用中文简称。

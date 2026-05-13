@@ -31,10 +31,10 @@ chapter_titles:
     title_note: 原题 lamb-like Esquimos 转为副标题说明，不机械译作破折号链。
   006_chapter_iii_finding_of_rudolph_franke_whitney_landed_trading_and_coaling_fighting.md:
     source_full: CHAPTER III FINDING OF RUDOLPH FRANKE--WHITNEY LANDED--TRADING AND COALING--FIGHTING THE ICE-PACKS
-    nav_title: 第三章 发现 Rudolph Franke
-    display_title: 第三章 发现 Rudolph Franke
-    subtitle: Whitney 登陆、交易装煤，以及与浮冰群搏斗
-    title_note: 修复旧标题截断。陌生人名保留英文，避免误读。若正文改用中文译名，首次出现须括注英文原名。
+    nav_title: 第三章 发现鲁道夫·弗兰克
+    display_title: 第三章 发现鲁道夫·弗兰克
+    subtitle: 惠特尼登陆、交易装煤，以及与浮冰群搏斗
+    title_note: 修复旧标题截断。章节标题使用中文译名，英文原名放在正文首次出现或术语表，不放入标题。
   007_chapter_iv_preparing_for_winter_at_cape_sheridan_the_arctic_library.md:
     source_full: CHAPTER IV PREPARING FOR WINTER AT CAPE SHERIDAN--THE ARCTIC LIBRARY
     nav_title: 第四章 谢里登角过冬
@@ -117,7 +117,7 @@ chapter_titles:
     source_full: CHAPTER XVII SAFE ON THE ROOSEVELT--POOR MARVIN
     nav_title: 第十七章 安抵罗斯福号
     display_title: 第十七章 安抵 _罗斯福号_
-    subtitle: 可怜的 Marvin
+    subtitle: 可怜的马文
     title_note: ""
   021_chapter_xviii_after_musk_oxen_the_doctor_s_scientific_expedition.md:
     source_full: CHAPTER XVIII AFTER MUSK-OXEN--THE DOCTOR'S SCIENTIFIC EXPEDITION
@@ -135,7 +135,7 @@ chapter_titles:
     source_full: CHAPTER XX TWO NARROW ESCAPES--ARRIVAL AT ETAH--HARRY WHITNEY--DR. COOK'S CLAIMS
     nav_title: 第二十章 两次险些遇难
     display_title: 第二十章 两次险些遇难
-    subtitle: 抵达伊塔、Harry Whitney 与库克医生的主张
+    subtitle: 抵达伊塔、哈里·惠特尼与库克医生的主张
     title_note: ""
   024_chapter_xxi_etah_to_new_york_coming_of_mail_and_reporters_home.md:
     source_full: CHAPTER XXI ETAH TO NEW YORK--COMING OF MAIL AND REPORTERS--HOME!
