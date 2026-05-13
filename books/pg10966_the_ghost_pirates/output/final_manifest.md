@@ -14,8 +14,8 @@ build_date: "2026-05-13"
 
 - 标准输出：`output/book.epub`
 - 中文文件名输出：`output/幽灵海盗.epub`
-- 文件大小：122002 bytes
-- SHA256：`E1467849F8BD0E86C5FF40E81C11FC0576BF4CC0F7CC4A1378C846D8BE358C42`
+- 文件大小：122068 bytes
+- SHA256：`86C509ECCAC82E0A4483CB985090274F38BDB7AB24C5387E0A21AD660AF460F2`
 
 ## 章节与 QA
 
@@ -36,7 +36,7 @@ build_date: "2026-05-13"
 - EPUB 标题：幽灵海盗
 - EPUB 语言：zh-CN
 - spine 项：21
-- 字符统计：80671
+- 字符统计：80562
 
 ## 结论
 

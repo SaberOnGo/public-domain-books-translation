@@ -7,7 +7,7 @@
   "chapters_total": 19,
   "chapters_translated": 19,
   "chapters_reviewed": 19,
-  "current_step": "final_output_pass_retrospective_done",
+  "current_step": "literary_refinement_pass",
   "last_error": "",
   "human_required_default": false,
   "quality_gate": {
@@ -25,7 +25,8 @@
     "independent_review_status": "PASS reviews/agent_a/review.md + reviews/agent_b/review.md",
     "revision_route_status": "PASS reviews/revision_route.md",
     "final_output_status": "PASS output/final_manifest.md",
-    "retrospective_status": "PASS retrospective/book_retrospective.md"
+    "retrospective_status": "PASS retrospective/book_retrospective.md",
+    "literary_refinement_status": "PASS qa/refinement/multi_pass_refinement_report.md"
   },
   "forbidden_shortcuts": [
     "batch translation before pretranslation PASS",
