@@ -14,6 +14,8 @@ This file is for AI agents working from a downloaded copy of this repository.
 
 - For every new book project, copy `template/epub_pipeline/common` first, then overlay the matching language-pair template, and write all book-specific output only under `books/{book_id_slug}/`.
 - 制作每一本新书时，必须先复制 `template/epub_pipeline/common`，再覆盖复制匹配的语言方向模板；所有具体书籍产物只能写入 `books/{book_id_slug}/`。
+- Shared build dependencies are installed once under `books/` (`books/package.json`, `books/package-lock.json`, ignored `books/node_modules/`). Do not create per-book `node_modules/` directories unless a book records a justified private-toolchain exception.
+- 构建依赖统一安装在 `books/`（`books/package.json`、`books/package-lock.json`、被忽略的 `books/node_modules/`）。不要为每本书重复创建 `node_modules/`；除非某本书记录了确有必要的私有工具链例外。
 - Target-language quality rules live under `template/epub_pipeline/targets/{target}/`; source-to-target-specific rules live under `template/epub_pipeline/{source-target}/`.
 - 目标语言质量规则放在 `template/epub_pipeline/targets/{target}/`；源语言到目标语言的专用规则放在 `template/epub_pipeline/{source-target}/`。
 

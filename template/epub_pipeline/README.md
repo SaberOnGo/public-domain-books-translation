@@ -16,6 +16,8 @@ For a new book project, read the matching target-language framework when it exis
 
 All source text, translations, QA files, and EPUB output belong in the book project, never in `template/`.
 
+Shared Node.js build dependencies belong at `books/`, not inside every book project. Run `npm install` once from `books/`; book-local npm scripts should find shared tools through `../node_modules`.
+
 ## Naming
 
 Language-pair directories use BCP 47-style direction names:

@@ -23,6 +23,8 @@
 
 英文到简体中文的文学精修规则见 `references/english_to_chinese_literary_refinement.md`。如果某一本书发现系统性标题、段落、术语、译注、排版或文学精修问题，目标文档应放在该书工程的 `goal/` 目录下；可复用经验再分别回填到 common、zh-Hans 目标语言框架和 en-zh-Hans 语言方向模板。
 
+Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `npm install`，再进入具体书籍目录运行 `npm run lint:publication`、`npm run build:epub`、`npm run check:epub`。本模板的 `package.json` 只提供本书脚本，依赖统一来自共享的 `books/node_modules/`。
+
 ## 唯一必须输入 / Required Inputs
 
 - `TEMPLATE_ROOT`：语言方向模板目录，即 `template/epub_pipeline/en-zh-Hans`。

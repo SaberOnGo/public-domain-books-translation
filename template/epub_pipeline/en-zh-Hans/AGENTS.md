@@ -41,6 +41,9 @@ This file is for AI agents using the `en-zh-Hans` template.
 - Before building or publishing an EPUB, run `node scripts/publication_lint.js --target=zh-Hans --write-report` and fix all hard errors.
 - 构建或发布 EPUB 前，必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`，并修复所有硬错误。
 
+- Node.js dependencies are shared under `books/node_modules/`. Install once from `books/`; do not create duplicate per-book `node_modules/` directories.
+- Node.js 依赖统一共享在 `books/node_modules/`。应在 `books/` 下安装一次；不要为每本书重复创建 `node_modules/`。
+
 - Do not allow semicolon overuse, visible abnormal spaces between Chinese text, legacy print page-number tables, or garbled characters into final output.
 - 不得让分号滥用、中文可见异常空格、旧纸书页码目录或乱码进入最终成书。
 
