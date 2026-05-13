@@ -25,10 +25,12 @@
 4. `references/translation_research_universal.md`
 5. `references/quality_standard.md`
 6. `references/english_source_notes.md`
-7. `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`
-8. `epub_production_lessons.md`
-9. `state/human_feedback_control.md`
-10. `TEMPLATE_VERSION.md`
+7. `references/english_chapter_title_strategy.md`
+8. `references/chapter_title_policy.md`
+9. `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`
+10. `epub_production_lessons.md`
+11. `state/human_feedback_control.md`
+12. `TEMPLATE_VERSION.md`
 
 ## 执行顺序 / Execution Order
 
@@ -67,6 +69,7 @@
 - 禁止把“通顺但无味”的第一版当终稿。
 - 禁止为了生动添加原文没有的比喻物、声音或情节。
 - 禁止为了简洁把中文压成动作清单。
+- 禁止把英文旧纸书目录式长标题链机械转换成中文破折号长链。
 - 禁止封面、字体、metadata、版本说明等 EPUB 制作细节粗糙处理。
 
 ## 状态更新 / State Update

@@ -29,9 +29,11 @@ Use this skill when an AI agent is asked to create a book project, add or update
    按来源证据、版权核查、研究、试译、章节翻译、审校、门禁、EPUB 制作、校验、独立评审和复盘流程执行。
 9. Before EPUB production, run `node scripts/publication_lint.js --target={target-language} --write-report` inside the book project and fix all hard errors.
    EPUB 制作前，必须在书籍工程内运行 `node scripts/publication_lint.js --target={target-language} --write-report`，并修复所有硬错误。
-10. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
+10. Before final EPUB output, check long chapter titles against `references/chapter_title_policy.md` and any matching source-to-target title strategy. EPUB navigation must use concise labels, not printed-TOC title chains.
+    最终 EPUB 输出前，必须按 `references/chapter_title_policy.md` 及对应语言方向标题策略检查长章节标题。EPUB 目录应使用短题名，不应塞入纸书目录式标题链。
+11. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
    特定语言方向的脚本、数据集和探索性调研应放在 `research/{source-target}/...` 或对应语言方向模板中，不要放在仓库根目录。
-11. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
+12. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
     不要在脚本或 prompt 中写死本机绝对路径。路径应基于脚本位置、仓库根目录或用户显式传入的参数解析。
 
 ## Language Requirements / 语言要求
@@ -57,6 +59,8 @@ Use this skill when an AI agent is asked to create a book project, add or update
 - 预翻译报告、章节门禁、EPUB 校验或独立评审失败。
 - Publication lint reports hard errors such as mojibake, legacy print page-number tables, abnormal spacing, or target-language punctuation violations.
 - 出版文本 lint 报出硬错误，例如乱码、旧纸书页码目录、异常空格或目标语言标点违规。
+- Long printed-TOC chapter titles are still being used as EPUB navigation labels without title design.
+- 旧纸书目录式长章节标题仍被直接用作 EPUB 目录题名，尚未完成标题设计。
 
 ## Public Policy / 公开政策
 

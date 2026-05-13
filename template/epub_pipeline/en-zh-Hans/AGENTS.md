@@ -44,6 +44,9 @@ This file is for AI agents using the `en-zh-Hans` template.
 - Do not allow semicolon overuse, visible abnormal spaces between Chinese text, legacy print page-number tables, or garbled characters into final output.
 - 不得让分号滥用、中文可见异常空格、旧纸书页码目录或乱码进入最终成书。
 
+- Old English printed tables of contents often use `--` to chain several topics into one chapter title. Do not mechanically translate those chains into multiple Chinese em dashes; create a short navigation title, a readable display title, and an optional subtitle when needed.
+- 英文旧纸书目录常用 `--` 把多个主题连成一个章节标题。不得机械翻成一串中文破折号；必要时应设计短目录题名、页面主标题和可选副标题。
+
 ## Human Checkpoints / 人类可选检查点
 
 - `metadata/book_specific_translation_research.md`
