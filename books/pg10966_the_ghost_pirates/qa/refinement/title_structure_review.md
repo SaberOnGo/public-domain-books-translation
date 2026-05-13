@@ -11,6 +11,7 @@ review_date: "2026-05-13"
 - `nav.xhtml` 使用中文目录项。
 - OPF 中唯一 `dc:title` 为“幽灵海盗”。
 - EPUB 内部未残留已删除的自拟小题。
+- 2026-05-13 出版级查漏补缺复扫：终稿一级标题与 `metadata/chapter_title_map.yaml` 完全一致；旧章节 QA 中的早期副题记录不作为当前交付依据。
 
 ## 读者体验判断
 

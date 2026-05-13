@@ -7,6 +7,19 @@ Tammy,塔米,person,水手
 Williams,威廉斯,person,船员
 Stubbins,斯塔宾斯,person,船员
 Plummer,普卢默,person,船员
+Tom,汤姆,person,二等水手
+Jock,乔克,person,船员
+Quoin,奎因,person,船员
+Jaskett,贾斯克特,person,老水手；全书统一译名
+Jacobs,雅各布斯,person,大副班里的普通水手
+Toppin,托平,person,见习生
+Mr. Tulipson,塔利普森先生,person,二副姓氏
+Mr. Grainge,格兰奇先生,person,大副姓氏
+Sangier,桑吉尔号,ship,救起杰索普的船
+William Nawston,威廉·诺斯顿,person,桑吉尔号船长署名
+J.E.G. Adams,J. E. G. 亚当斯,person,桑吉尔号大副署名
+Ed. Brown,埃德·布朗,person,桑吉尔号二副署名
+Jack T. Evan,杰克·T. 埃文,person,桑吉尔号三副署名
 Captain,船长,rank,船上职务
 mate,大副,rank,按上下文也可作“副手”；职务处统一大副
 Second Mate,二副,rank,船上职务
@@ -23,11 +36,22 @@ royal mast,顶桅,ship_part,按上下文复核
 yard,桁,ship_part,帆桁
 topsail,中桅帆,sail,按具体帆位复核
 royal,顶帆,sail,按上下文复核
+t'gallant,上桅帆,sail,topgallant 的缩写；按上下文可具体到前/主/后桅
+fore royal,前顶帆,sail,前桅顶帆
+courses,大横帆,sail,下桅横帆总称
 halyards,升降索,rigging,
 gantline,吊索,rigging,
 sheet,帆脚索,rigging,
 brace,转桁索,rigging,
 clewline,收帆角索,rigging,
+buntline,束帆索,rigging,
+gasket,束帆索,rigging,用于扎帆的索带；按动作可译“束帆索”
+foot-rope,踏索,rigging,
+jackstay,帆缘索,rigging,沿桁或帆缘的支索；按语境复核
+log-reel,测程绳盘,ship_part,
+crosstrees,横桁架,ship_part,
+jibboom,艏斜桁,ship_part,
+taffrail,船尾栏杆,ship_part,
 lee,下风,nautical,
 weather side,上风侧,nautical,
 starboard,右舷,nautical,

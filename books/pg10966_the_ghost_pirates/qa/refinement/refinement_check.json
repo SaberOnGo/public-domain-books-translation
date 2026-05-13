@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-13T03:53:45.740Z",
+  "generatedAt": "2026-05-13T04:10:39.616Z",
   "totals": {
-    "textFiles": 258,
+    "textFiles": 260,
     "bomFiles": 1,
     "mojibakeFiles": 1,
     "cjkMultiSpaceFiles": 0,
-    "zhSemicolon": 126,
+    "zhSemicolon": 148,
     "latinInFinal": 1,
     "halfPunctuationInFinal": 0,
     "suspiciousAiPhrases": 0
@@ -112,6 +112,11 @@
     },
     {
       "file": "glossary/style_guide.md",
+      "line": 15,
+      "text": "采用音译并保持稳定：杰索普、塔米、威廉斯、斯塔宾斯、普卢默、乔克、奎因、贾斯克特、雅各布斯、托平。若某名仅出现一次且语境不重要，可按术语表固定译法处理；已经进入终稿的人名必须补入 `glossary/terms.csv`。"
+    },
+    {
+      "file": "glossary/style_guide.md",
       "line": 19,
       "text": "本书术语密度高。翻译时优先使用术语表；遇到无法确定的帆装细节，应在 QA 术语文件中记录，而不是改写成泛词。"
     },
@@ -122,8 +127,28 @@
     },
     {
       "file": "glossary/terms.csv",
-      "line": 11,
+      "line": 13,
+      "text": "Jaskett,贾斯克特,person,老水手；全书统一译名"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 24,
       "text": "mate,大副,rank,按上下文也可作“副手”；职务处统一大副"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 39,
+      "text": "t'gallant,上桅帆,sail,topgallant 的缩写；按上下文可具体到前/主/后桅"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 48,
+      "text": "gasket,束帆索,rigging,用于扎帆的索带；按动作可译“束帆索”"
+    },
+    {
+      "file": "glossary/terms.csv",
+      "line": 50,
+      "text": "jackstay,帆缘索,rigging,沿桁或帆缘的支索；按语境复核"
     },
     {
       "file": "goal/2026-05-13_pg10966_literary_refinement_goal.md",
@@ -134,6 +159,41 @@
       "file": "goal/2026-05-13_pg10966_literary_refinement_goal.md",
       "line": 34,
       "text": "- 不把 Project Gutenberg raw 原文的原始空白当作错误清理掉；raw 文件用于来源证据保留。"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_publication_grade_gap_closure_goal.md",
+      "line": 21,
+      "text": "1. 标题工程：复核终稿 Markdown、EPUB nav/OPF/XHTML 与 `chapter_title_map.yaml` 是否一致；原书仅罗马数字章节不得出现自拟可见副标题。"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_publication_grade_gap_closure_goal.md",
+      "line": 23,
+      "text": "3. 术语/译注统一：复核人名、船名、职务、航海器具、帆位、索具、值班术语；修复终稿与 QA 中发现的不一致。"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_publication_grade_gap_closure_goal.md",
+      "line": 24,
+      "text": "4. 长段落处理：普通叙述段超过 500 字应拆段或记录明确例外；诗歌、号子、签名表等特殊格式可保留，但必须说明理由。"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_publication_grade_gap_closure_goal.md",
+      "line": 32,
+      "text": "- 第十六章高潮段落超过 500 字，应按动作阶段拆分；第三章船歌长段落属于号子排版例外，需在 QA 中记录。"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_publication_grade_gap_closure_goal.md",
+      "line": 37,
+      "text": "- 终稿章节标题与 `chapter_title_map.yaml` 一致；EPUB 中无来源不支持的可见章节副题。"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_publication_grade_gap_closure_goal.md",
+      "line": 38,
+      "text": "- 终稿中 `Jaskett` 译名统一为“贾斯克特”；术语表补齐后续关键人物和高风险航海术语。"
+    },
+    {
+      "file": "goal/2026-05-13_pg10966_publication_grade_gap_closure_goal.md",
+      "line": 39,
+      "text": "- 普通叙述段不再出现超过 500 字的未处理长段；格式性长文本有 QA 例外说明。"
     },
     {
       "file": "MASTER_PROMPT.md",
@@ -476,6 +536,46 @@
       "text": "- 塔米的几段长对白为保留原文紧张倾诉感，中文仍保持较长段落；可读性通过标点和短句缓解。"
     },
     {
+      "file": "qa/refinement/publication_grade_gap_closure_report.md",
+      "line": 14,
+      "text": "- 旧章节 QA 中出现过的“副题”记录属于初译阶段记录；当前交付以本报告和 `qa/refinement/title_structure_review.md` 为准。"
+    },
+    {
+      "file": "qa/refinement/publication_grade_gap_closure_report.md",
+      "line": 34,
+      "text": "- 第三章 `The Hell O! O! Chaunty` 的长块由短行号子组成，不按普通散文段落拆分；保留为诗歌/船歌格式例外。"
+    },
+    {
+      "file": "qa/refinement/publication_grade_gap_closure_report.md",
+      "line": 38,
+      "text": "- 已清理批量改写时产生的 UTF-8 BOM；原始来源证据 `source/source_text_raw.txt` 不作为出版文本清理目标。"
+    },
+    {
+      "file": "qa/refinement/publication_grade_gap_closure_report.md",
+      "line": 43,
+      "text": "本次查漏补缺修复了实质性术语不一致和一个普通叙述长段落问题。剩余长文本为船歌格式例外；剩余拉丁字符为正文首次船名括注或附录署名缩写。"
+    },
+    {
+      "file": "qa/refinement/publication_grade_gap_closure_report.md",
+      "line": 47,
+      "text": "- `npm run lint:publication`：PASS；`asciiSemicolon=0`、`zhSemicolon=0`、`cjkMultiSpace=0`、`mojibake=0`、`targetTitleLatinResidue=0`。"
+    },
+    {
+      "file": "qa/refinement/publication_grade_gap_closure_report.md",
+      "line": 48,
+      "text": "- `node scripts/refinement_check.js`：出版范围 `bomFiles=0`、`mojibakeFiles=0`、`cjkMultiSpaceFiles=0`、`zhSemicolon=0`；全局 BOM 仅在 `source/source_text_raw.txt`，保留为 raw source evidence；脚本自身包含 mojibake 检测正则，属工具代码命中。"
+    },
+    {
+      "file": "qa/refinement/publication_grade_gap_closure_report.md",
+      "line": 49,
+      "text": "- 标题扫描：终稿一级标题与 `metadata/chapter_title_map.yaml` 一致；EPUB XHTML 中无已删除自拟小题。"
+    },
+    {
+      "file": "qa/refinement/title_structure_review.md",
+      "line": 14,
+      "text": "- 2026-05-13 出版级查漏补缺复扫：终稿一级标题与 `metadata/chapter_title_map.yaml` 完全一致；旧章节 QA 中的早期副题记录不作为当前交付依据。"
+    },
+    {
       "file": "qa/terminology/001_front_matter.md",
       "line": 16,
       "text": "本章标题为“题名页”，无英文人名残留；标题不承担正文首次出现英文原名功能。"
@@ -614,6 +714,16 @@
       "file": "references/translation_research_universal.md",
       "line": 27,
       "text": "可以增显原文已经存在的体感、动作、空间关系和象征功能；不能凭空添加原文没有的比喻、物体、声音或情节。"
+    },
+    {
+      "file": "retrospective/template_update_suggestions.md",
+      "line": 17,
+      "text": "《幽灵海盗》原书多数章节只有罗马数字编号。精修时发现 AI 初稿为这些章节补入了解释性中文小标题，虽然便于理解，但会让读者误以为这些标题来自原书。已回填到 common 和 en-zh-Hans 模板：若源文只有编号或简单题名，不得自创 EPUB 可见副标题；章节概括只能进入 `title_note`、制作说明或 QA。"
+    },
+    {
+      "file": "retrospective/template_update_suggestions.md",
+      "line": 21,
+      "text": "Project Gutenberg 原始文件是版权和来源证据，应尽量保留下载原貌；出版文本检查不应以改写 `source/source_text_raw.txt` 为目标。已回填到模板：BOM、乱码、异常空格和不当标点的清理重点是 `frontmatter/`、`chapters/final/`、`metadata/` 和生成 EPUB XHTML。"
     },
     {
       "file": "scripts/publication_lint.js",
