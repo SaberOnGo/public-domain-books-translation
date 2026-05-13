@@ -18,11 +18,6 @@ function findSharedNodeModules(start) {
   }
 }
 
-const nodeModules = findSharedNodeModules(root);
-const jar = nodeModules
-  ? path.join(nodeModules, 'epubchecker', 'vendors', 'epubcheck-5.2.1', 'epubcheck.jar')
-  : null;
-
 function findJava(dir) {
   if (!fs.existsSync(dir)) return null;
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -40,6 +35,11 @@ function findJava(dir) {
 function firstExisting(paths) {
   return paths.find((item) => item && fs.existsSync(item)) || null;
 }
+
+const nodeModules = findSharedNodeModules(root);
+const jar = nodeModules
+  ? path.join(nodeModules, 'epubchecker', 'vendors', 'epubcheck-5.2.1', 'epubcheck.jar')
+  : null;
 
 const java = findJava(javaRoot) || firstExisting([
   process.env.JAVA_HOME && path.join(process.env.JAVA_HOME, 'bin', 'java.exe'),

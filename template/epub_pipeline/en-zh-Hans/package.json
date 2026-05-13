@@ -1,6 +1,7 @@
 {
-  "name": "pg10966_the_ghost_pirates",
+  "name": "book-epub-project-en-zh-hans",
   "version": "1.0.0",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "lint:publication": "node scripts/publication_lint.js --target=zh-Hans --write-report",
@@ -8,8 +9,6 @@
     "build:epub": "npm run lint:publication && node scripts/build_epub.js",
     "check:epub": "node scripts/run_epubcheck.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "Book-local npm scripts. Shared Node dependencies are installed once under ../node_modules."
+  "description": "Book-local npm scripts for English to Simplified Chinese EPUB production. Shared Node dependencies are installed once under ../node_modules.",
+  "license": "UNLICENSED"
 }

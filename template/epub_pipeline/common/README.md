@@ -12,12 +12,33 @@ This directory contains shared workflow files for all language-pair templates.
 - `preproduction/`: shared EPUB preproduction templates.
 - `references/`: language-neutral title, literary refinement, quality gate, and benchmark policies.
 - `scripts/`: reusable chapter splitting, Markdown normalization, publication lint, and refinement-check helpers.
+- `package.json`: book-local npm script template only; shared dependencies are installed once under `books/`.
 - `state/`: initial pipeline state and human-feedback control files.
 - `Makefile`: generic EPUB build/check entry points.
 
 目标语言质量框架放在 `template/epub_pipeline/targets/{target}/`。源语言到目标语言的专用模板只应在确实需要不同翻译、排版或评审规则时覆盖或扩展 common 文件。
 
 Target-language quality frameworks live under `template/epub_pipeline/targets/{target}/`. Source-to-target-specific templates should override or extend common files only when the direction needs different translation, typography, or review rules.
+
+## Shared Tooling / 共享工具
+
+Node.js dependencies for EPUB building and validation are repository-level book tooling. Install them once from `books/`:
+
+```powershell
+cd books
+npm install
+```
+
+Do not install a duplicate `node_modules/` inside every `books/{book_id_slug}/` directory. Book-local `package.json` files keep only scripts; scripts such as `scripts/run_epubcheck.js` must resolve tools by walking up to the shared `books/node_modules/`.
+
+Node.js 依赖属于书籍区共享工具，应在 `books/` 下统一安装一次：
+
+```powershell
+cd books
+npm install
+```
+
+不要在每个 `books/{book_id_slug}/` 目录里重复安装 `node_modules/`。具体书籍的 `package.json` 只保留脚本；`scripts/run_epubcheck.js` 等脚本必须向上查找共享的 `books/node_modules/`。
 
 ## Publication Lint / 出版文本检查
 

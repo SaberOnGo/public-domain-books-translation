@@ -13,6 +13,7 @@
 - 实际做书时，AI 必须先复制模板为独立书籍工程目录，例如 `books/{book_id_slug}/`。
 - 复制完成后，后续 `PROJECT_ROOT` 指向独立书籍工程目录。
 - AI 只能写入 `PROJECT_ROOT` 内文件。
+- 例外：`books/package.json`、`books/package-lock.json` 和被 Git 忽略的 `books/node_modules/` 是所有书籍共享的构建工具目录，不属于任何单本书的原文、译文、QA 或 EPUB 输出。
 - 如果检测到当前目录仍在 `template/epub_pipeline/common` 或某个 `template/epub_pipeline/{source-target}` 语言模板内，必须停止并先复制模板到书籍工程。
 
 ## 3. 状态机 / State Machine
@@ -120,6 +121,14 @@
 - `output/epubcheck.log` 或 `output/epubcheck.json`：EPUB 校验结果。
 - `output/publication_lint.json`：出版文本 lint 结果，检查编码污染、异常空格、旧纸书页码目录等问题。
 - `output/final_manifest.md`：最终产物清单。
+
+### Shared Tooling
+
+- `books/package.json`：所有书籍共享的 Node.js 工具依赖声明。
+- `books/package-lock.json`：共享工具依赖锁文件。
+- `books/node_modules/`：共享工具安装目录，必须被 Git 忽略。
+- 每本书的 `package.json` 只保留本书脚本，不得声明与共享工具重复的通用依赖。
+- EPUBCheck 等脚本必须向上查找共享 `node_modules/`，不得硬编码 `PROJECT_ROOT/node_modules/`。
 
 ## 5. 出版文本硬检查 / Publication Text Lint
 

@@ -90,6 +90,8 @@ It is based on Project Gutenberg #20923, Matthew A. Henson's *A Negro Explorer a
 
 The example proves that the workflow can run end to end. It does not mean every chapter has already received final human editorial approval.
 
+Node.js tooling is shared at `books/`: run `npm install` once from `books/`, then run `npm run ...` inside each book project. Do not create a duplicate `node_modules/` inside every book directory unless a specific book records a justified exception.
+
 ### `template/epub_pipeline/targets/`
 
 This folder stores target-language quality frameworks. For example, `template/epub_pipeline/targets/zh-Hans/quality_framework/` contains Simplified Chinese translation quality standards, trial-translation rules, benchmark policy, and chapter gates.

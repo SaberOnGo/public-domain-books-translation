@@ -20,3 +20,9 @@
 - `glossary/style_guide.md`：文风规范
 - `metadata/book.yaml`：书籍元数据
 - `state/pipeline_state.json`：当前状态
+
+## 工具依赖 / Tooling
+
+Node.js 依赖统一安装在 `../node_modules`。如缺失，请先在 `books/` 目录运行 `npm install`，再回到本书目录执行 `npm run build:epub` 或 `npm run check:epub`。
+
+Node.js dependencies are shared at `../node_modules`. If they are missing, run `npm install` from `books/` before running this book's npm scripts.

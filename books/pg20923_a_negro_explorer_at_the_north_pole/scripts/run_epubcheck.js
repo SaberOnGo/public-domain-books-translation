@@ -4,9 +4,24 @@ const { spawnSync } = require('child_process');
 
 const root = path.resolve(__dirname, '..');
 const javaRoot = path.join(root, 'tools', 'zulu17-jre');
-const jar = path.join(root, 'node_modules', 'epubchecker', 'vendors', 'epubcheck-5.2.1', 'epubcheck.jar');
 const epub = path.join(root, 'output', 'book.epub');
 const report = path.join(root, 'output', 'epubcheck.json');
+
+function findSharedNodeModules(start) {
+  let dir = start;
+  while (true) {
+    const candidate = path.join(dir, 'node_modules');
+    if (fs.existsSync(candidate)) return candidate;
+    const parent = path.dirname(dir);
+    if (parent === dir) return null;
+    dir = parent;
+  }
+}
+
+const nodeModules = findSharedNodeModules(root);
+const jar = nodeModules
+  ? path.join(nodeModules, 'epubchecker', 'vendors', 'epubcheck-5.2.1', 'epubcheck.jar')
+  : null;
 
 function findJava(dir) {
   if (!fs.existsSync(dir)) return null;
@@ -31,9 +46,9 @@ const java = findJava(javaRoot) || firstExisting([
   'C:\\Program Files\\Android\\Android Studio\\jbr\\bin\\java.exe',
 ]) || 'java';
 
-if (!fs.existsSync(jar)) {
-  console.error(`Missing epubcheck jar: ${jar}`);
-  console.error('Run npm install, or download epubcheck-5.2.1.zip into node_modules/epubchecker/vendors/.');
+if (!jar || !fs.existsSync(jar)) {
+  console.error(`Missing epubcheck jar: ${jar || '(node_modules not found)'}`);
+  console.error('Run npm install from the books/ directory, or run: npm --prefix .. install');
   process.exit(1);
 }
 

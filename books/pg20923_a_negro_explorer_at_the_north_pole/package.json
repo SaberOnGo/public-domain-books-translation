@@ -11,9 +11,5 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "epub-gen": "^0.1.0",
-    "epubchecker": "^5.2.1"
-  }
+  "description": "Book-local npm scripts. Shared Node dependencies are installed once under ../node_modules."
 }
