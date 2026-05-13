@@ -34,6 +34,12 @@ Every book project must review:
 - Typography and punctuation: target-language punctuation, abnormal spacing, legacy print artifacts, notes, appendices, lists, tables, and emphasis.
 - 排版和标点：目标语言标点、异常空格、旧纸书遗留物、注释、附录、列表、表格和强调形式。
 
+- Source paratext leakage: repeated chapter headings, running titles, next-section titles, page numbers, or table-of-contents fragments that remain in body text after segmentation.
+- 原书副文本泄漏：分章后仍残留在正文里的重复章节标题、页眉题名、下一节标题、页码或目录碎片。
+
+- Digital-source artifacts: Project Gutenberg transcriber notes, OCR correction notes, scanner comments, source-file boilerplate, or conversion logs that remain in the literary body.
+- 数字来源工件：Project Gutenberg 转录者说明、OCR 修正说明、扫描者备注、源文件样板文字或转换日志误入文学正文。
+
 - Terminology and names: people, places, ships, organizations, technical terms, historical terms, and first-mention notes.
 - 术语和专名：人名、地名、船名、组织名、专业术语、历史称谓和首次出现说明。
 
@@ -66,6 +72,18 @@ For each high-risk chapter, create or update:
 The refinement record must explain what changed and why. It should distinguish source-faithfulness corrections from target-language polish and EPUB-format fixes.
 
 精修记录必须说明修改了什么、为什么修改。应区分忠实度修正、目标语言润色和 EPUB 格式修复。
+
+Before marking a chapter refined, compare the first and last body blocks against the source segmentation. Remove duplicated headings, running-title residue, or the next chapter/book title if those fragments entered the translated body by mistake.
+
+标记某章精修完成前，必须对照源文分章检查正文开头和结尾。若重复标题、页眉残留或下一章/下一书名误入译文正文，必须删除。
+
+Also inspect the final book blocks for digital-source artifacts such as transcriber notes, OCR errata, source-file boilerplate, and conversion logs. Decide whether to omit them from the reader-facing EPUB or move them to a clearly labeled source-production note.
+
+还必须检查全书末尾是否残留数字来源工件，例如转录者说明、OCR 勘误、源文件样板文字和转换日志。应明确决定是从面向读者的 EPUB 中删除，还是移入清楚标注的来源制作说明。
+
+Appendices that are primarily name lists, catalogues, indexes, or tabular source material may keep a list-like or preformatted presentation when that best preserves spelling, alignment, and lookup value. Paragraph-length gates should not blindly fail such appendices; instead, record the presentation decision in the book QA file and verify mobile readability in the generated EPUB.
+
+主要由姓名表、目录表、索引或表格型源材料构成的附录，可以在最能保留拼写、对齐和检索价值时继续使用列表式或预格式化呈现。段落长度门禁不应机械判定这类附录失败；应在本书 QA 文件中记录呈现选择，并在生成的 EPUB 中复核移动端可读性。
 
 ### Phase 3: Template Backfill / 阶段 3：模板回填
 

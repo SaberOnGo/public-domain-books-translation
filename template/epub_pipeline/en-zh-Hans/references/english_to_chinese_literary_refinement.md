@@ -51,6 +51,8 @@ Names and historically loaded terms need a stable first-mention and note policy.
 - 普通中文正文不得出现 ASCII 分号 `;`。
 - 中文分号 `；` 只能用于真实并列分层，不得机械对应英文分号或连接词。
 - 中文字符之间不得保留用于纸书对齐的连续空格。
+- 英文原书分章后，常会在译文正文开头或结尾残留重复标题、running title、下一节书名或目录碎片。精修时必须检查每章首尾，正文中不得保留这类副文本残片。
+- Project Gutenberg 等英文数字源常带有 `Transcriber's Notes`、OCR correction notes 或源文件尾注。除非本书版本有意保留来源制作说明，否则不要把这些内容混入中文正文；若保留，必须译为清楚标注的“原文转录说明/来源制作说明”，不能让读者误以为是作者正文。
 - 附录、名单、表格、页码目录等旧纸书结构，必须转成适合 EPUB 的列表、表格、注释或导航结构。
 
 Chinese punctuation and EPUB typography are publication issues, not cosmetic details.
