@@ -33,6 +33,12 @@ Older public-domain books often use printed-table-of-contents chapter titles tha
 - A title that wraps over many lines on a narrow mobile screen must be redesigned before final output.
 - 如果标题在手机窄屏上折成多行、压迫正文，最终输出前必须重设标题结构。
 
+- If a chapter title contains a personal name, the title should follow the target-language title style and should not be overloaded with source-name annotations just because it is the first visible occurrence.
+- 如果章节标题包含人名，应按目标语言标题习惯处理，不要因为它是读者第一次看见该人名，就把原文名、括注或解释塞进标题。
+
+- Title occurrences do not count as first body occurrences for terminology notes. Apply first-mention notes when the name first appears naturally in the body text.
+- 标题中的出现不计入术语译注的“正文首次出现”。首次出现括注或译注应放在该人名第一次自然进入正文的位置。
+
 ## Recommended Data Model / 推荐数据模型
 
 When a book has long source titles, maintain a title map:
