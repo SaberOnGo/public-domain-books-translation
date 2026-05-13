@@ -156,6 +156,24 @@ function detectSourceTermBeforeTranslation(text, file) {
   return issues;
 }
 
+function detectBodyOriginalTermGloss(text, file) {
+  if (target !== 'zh-Hans') return [];
+  const normalizedFile = file.split(path.sep).join('/');
+  if (!normalizedFile.startsWith('chapters/final/') && !normalizedFile.startsWith('frontmatter/')) return [];
+  const issues = [];
+  const regex = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff][\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff、，的]{0,20}[（(]_[A-Za-z][A-Za-z.'\- ]{1,80}_[）)]/g;
+  let match;
+  while ((match = regex.exec(text)) && issues.length < 20) {
+    issues.push({
+      file,
+      line: lineNumberAt(text, match.index),
+      rule: 'body_original_term_gloss',
+      sample: match[0].slice(0, 120),
+    });
+  }
+  return issues;
+}
+
 function detectBodySceneSeparator(text, file) {
   const normalizedFile = file.split(path.sep).join('/');
   if (!normalizedFile.startsWith('chapters/final/') && !normalizedFile.startsWith('frontmatter/')) return [];
@@ -187,6 +205,7 @@ const report = {
     legacyPrintToc: 0,
     targetTitleLatinResidue: 0,
     sourceTermBeforeTranslation: 0,
+    bodyOriginalTermGloss: 0,
     bodySceneSeparator: 0,
   },
   issues: [],
@@ -209,6 +228,7 @@ for (const file of files) {
   const legacyToc = detectLegacyPrintToc(text, rel);
   const targetTitleLatinResidue = detectTargetTitleLatinResidue(text, rel);
   const sourceTermBeforeTranslation = target === 'zh-Hans' ? detectSourceTermBeforeTranslation(text, rel) : [];
+  const bodyOriginalTermGloss = detectBodyOriginalTermGloss(text, rel);
   const bodySceneSeparator = detectBodySceneSeparator(text, rel);
 
   report.totals.asciiSemicolon += asciiSemi;
@@ -219,6 +239,7 @@ for (const file of files) {
   report.totals.legacyPrintToc += legacyToc.length;
   report.totals.targetTitleLatinResidue += targetTitleLatinResidue.length;
   report.totals.sourceTermBeforeTranslation += sourceTermBeforeTranslation.length;
+  report.totals.bodyOriginalTermGloss += bodyOriginalTermGloss.length;
   report.totals.bodySceneSeparator += bodySceneSeparator.length;
 
   if (asciiSemi) report.issues.push(...collectMatches(text, /;/g, rel, 'ascii_semicolon'));
@@ -237,6 +258,7 @@ for (const file of files) {
   report.issues.push(...legacyToc);
   report.issues.push(...targetTitleLatinResidue);
   report.issues.push(...sourceTermBeforeTranslation);
+  report.issues.push(...bodyOriginalTermGloss);
   report.issues.push(...bodySceneSeparator);
   if (strictSpaces && repeatedSpaces) {
     report.issues.push(...collectMatches(text, /[^\n][ \t]{2,}[^\n]/g, rel, 'repeated_space'));
