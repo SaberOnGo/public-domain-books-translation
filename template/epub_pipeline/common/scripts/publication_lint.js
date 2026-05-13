@@ -106,6 +106,39 @@ function detectLegacyPrintToc(text, file) {
   return issues;
 }
 
+function detectTargetTitleLatinResidue(text, file) {
+  if (target !== 'zh-Hans') return [];
+  const normalized = text.replace(/\r\n/g, '\n');
+  const lines = normalized.split('\n');
+  const issues = [];
+  const isFinalChapter = file.split(path.sep).join('/').startsWith('chapters/final/');
+  const isChapterTitleMap = file.split(path.sep).join('/').endsWith('metadata/chapter_title_map.yaml');
+  const hasLatin = /[A-Za-z]/;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    let title = null;
+
+    if (isFinalChapter) {
+      const heading = line.match(/^#{1,6}\s+(.+?)\s*$/);
+      if (heading) title = heading[1];
+    } else if (isChapterTitleMap) {
+      const titleField = line.match(/^\s*(nav_title|display_title|subtitle):\s*(.+?)\s*$/);
+      if (titleField) title = titleField[2].replace(/^['"]|['"]$/g, '');
+    }
+
+    if (title && cjkChar.test(title) && hasLatin.test(title)) {
+      issues.push({
+        file,
+        line: i + 1,
+        rule: 'target_title_latin_residue',
+        sample: 'Chapter titles, nav titles, display titles, and subtitles must use the target-language name; first body mention notes belong in body text.',
+      });
+    }
+  }
+  return issues;
+}
+
 const files = scanRoots.flatMap((dir) => walk(dir));
 const report = {
   projectRoot: '.',
@@ -119,6 +152,7 @@ const report = {
     repeatedSpace: 0,
     mojibake: 0,
     legacyPrintToc: 0,
+    targetTitleLatinResidue: 0,
   },
   issues: [],
   warnings: [],
@@ -138,6 +172,7 @@ for (const file of files) {
   const repeatedSpaces = checkRepeatedSpaces ? (text.match(/[^\n][ \t]{2,}[^\n]/g) || []).length : 0;
   const mojibake = (text.match(mojibakePattern) || []).length;
   const legacyToc = detectLegacyPrintToc(text, rel);
+  const targetTitleLatinResidue = detectTargetTitleLatinResidue(text, rel);
 
   report.totals.asciiSemicolon += asciiSemi;
   report.totals.zhSemicolon += zhSemi;
@@ -145,6 +180,7 @@ for (const file of files) {
   report.totals.repeatedSpace += repeatedSpaces;
   report.totals.mojibake += mojibake;
   report.totals.legacyPrintToc += legacyToc.length;
+  report.totals.targetTitleLatinResidue += targetTitleLatinResidue.length;
 
   if (asciiSemi) report.issues.push(...collectMatches(text, /;/g, rel, 'ascii_semicolon'));
   if (target === 'zh-Hans' && zhSemi > maxZhSemicolons) {
@@ -160,6 +196,7 @@ for (const file of files) {
   }
   if (mojibake) report.issues.push(...collectMatches(text, mojibakePattern, rel, 'mojibake'));
   report.issues.push(...legacyToc);
+  report.issues.push(...targetTitleLatinResidue);
   if (strictSpaces && repeatedSpaces) {
     report.issues.push(...collectMatches(text, /[^\n][ \t]{2,}[^\n]/g, rel, 'repeated_space'));
   } else if (repeatedSpaces) {

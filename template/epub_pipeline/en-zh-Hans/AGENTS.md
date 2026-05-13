@@ -47,6 +47,9 @@ This file is for AI agents using the `en-zh-Hans` template.
 - Old English printed tables of contents often use `--` to chain several topics into one chapter title. Do not mechanically translate those chains into multiple Chinese em dashes; create a short navigation title, a readable display title, and an optional subtitle when needed.
 - 英文旧纸书目录常用 `--` 把多个主题连成一个章节标题。不得机械翻成一串中文破折号；必要时应设计短目录题名、页面主标题和可选副标题。
 
+- Names in chapter titles, subtitles, and EPUB navigation labels must use Chinese translated names only. A title occurrence does not count as the first body occurrence for a name. Do not put English original names or parenthetical English names in titles; place them at the first natural body occurrence, in a note, or in the glossary.
+- 章节标题、副标题和 EPUB 目录题名中的人名只使用中文译名。标题中的出现不计入该人名的“正文首次出现”。不得把英文原名或英文括注放进标题；英文原名应放在正文第一次自然出现处、译注或术语表中。
+
 ## Human Checkpoints / 人类可选检查点
 
 - `metadata/book_specific_translation_research.md`
