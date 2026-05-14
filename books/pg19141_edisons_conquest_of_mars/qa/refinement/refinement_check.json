@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-13T09:27:31.666Z",
+  "generatedAt": "2026-05-14T08:07:28.645Z",
   "totals": {
-    "textFiles": 255,
+    "textFiles": 258,
     "bomFiles": 0,
     "mojibakeFiles": 1,
     "cjkMultiSpaceFiles": 0,
-    "zhSemicolon": 208,
+    "zhSemicolon": 217,
     "latinInFinal": 4,
     "halfPunctuationInFinal": 0,
     "suspiciousAiPhrases": 0
@@ -520,8 +520,23 @@
     },
     {
       "file": "goal/GOAL_2026-05-13_gpt_image_cover_book_info_fullbook_refinement.md",
+      "line": 15,
+      "text": "- 历史记录：本轮曾保留脚本生成的 `output/cover.svg` 作为工程备用产物；此规则已被 2026-05-14 最新封面规则取代，最终输出不再保留 `output/cover.svg`。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_gpt_image_cover_book_info_fullbook_refinement.md",
       "line": 19,
       "text": "- `pg20923_a_negro_explorer_at_the_north_pole`：保留高清源图，EPUB 内使用压缩 JPG；封面页和 OPF `cover-image` 必须存在。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_gpt_image_cover_book_info_fullbook_refinement.md",
+      "line": 38,
+      "text": "- 历史记录：本轮封面可见文字曾包含个人名；此规则已被 2026-05-14 最新封面规则取代，最终封面只包含书名、原名、作者、`LifeBook 书坊 译制` 和一句公版来源说明。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_gpt_image_cover_book_info_fullbook_refinement.md",
+      "line": 41,
+      "text": "- 历史记录：本轮解包抽查的旧封面尺寸记录已作废；2026-05-14 重制后 `EPUB/images/cover.jpg` 为 456011 bytes，OPF `cover-image` 指向 `images/cover.jpg`。"
     },
     {
       "file": "goal/GOAL_2026-05-13_gpt_image_cover_book_info_fullbook_refinement.md",
@@ -560,8 +575,23 @@
     },
     {
       "file": "goal/GOAL_2026-05-13_refinement_literary_metadata_cover.md",
+      "line": 12,
+      "text": "- 历史记录：本轮当时要求封面署名写入“LifeBook 书坊 + 个人名”的译制署名；此规则已被 2026-05-14 最新封面规则取代，最终封面只写 `LifeBook 书坊 译制`。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_refinement_literary_metadata_cover.md",
       "line": 22,
       "text": "3. 对重要章节执行人工抽读式复核；发现确定可改善的句子，只做忠实、克制、可回溯的润色。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-13_refinement_literary_metadata_cover.md",
+      "line": 31,
+      "text": "- 历史记录：本轮曾生成 `output/cover.svg`；此产物已被 2026-05-14 最新封面规则取代，最终 EPUB 使用 `output/cover.jpg`，且不再保留 `output/cover.svg`。"
+    },
+    {
+      "file": "goal/GOAL_2026-05-14_cover_policy_rebuild.md",
+      "line": 12,
+      "text": "- 图像模型只生成无字主视觉；封面文字后期确定性排版。"
     },
     {
       "file": "MASTER_PROMPT.md",
@@ -610,7 +640,7 @@
     },
     {
       "file": "preproduction/stage1/production_spec.md",
-      "line": 30,
+      "line": 32,
       "text": "PASS. 可进入样章 EPUB 检查；封面 JPG 体积控制在模板建议范围内。"
     },
     {
@@ -622,6 +652,11 @@
       "file": "preproduction/stage1/_TEMPLATE.production_spec.md",
       "line": 61,
       "text": "- 旧纸书页码目录不得作为正文输出；EPUB 应使用 `nav.xhtml` 表达目录。"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_review.md",
+      "line": 11,
+      "text": "- 封面：PASS。2026-05-14 重做为 GPT-IMAGE-2 主视觉 + 确定性文字排版；封面仅保留中文题名、英文题名、作者、`LifeBook 书坊 译制` 和底部公版来源。"
     },
     {
       "file": "prompts/00_orchestrator_zh_en.md",
@@ -800,32 +835,32 @@
     },
     {
       "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
-      "line": 16,
+      "line": 18,
       "text": "- 文字核验：中文书名、英文原名、作者、译者、Project Gutenberg 来源可读；无 `LifeBook 翻译组` 残留。"
     },
     {
       "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
-      "line": 17,
+      "line": 19,
       "text": "- 体积核验：`assets/cover.jpg` 约 286KB，符合模板建议范围；大源图不直接打入 EPUB。"
     },
     {
       "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
-      "line": 27,
+      "line": 29,
       "text": "- “信”：本轮没有新增或改写正文情节；前次术语统一仍有效，Edison 舰队为“电力飞船”，`air-tight suit/dress` 为“气密服”。"
     },
     {
       "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
-      "line": 29,
+      "line": 31,
       "text": "- “雅”：高潮段落的节奏仍以清楚、紧凑、画面感为准；火星舰队、分解射线、月球遗迹、艾娜与宫殿战斗、最终返航等重点内容未发现新的文学性问题。"
     },
     {
       "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
-      "line": 36,
-      "text": "- 解包抽查：`EPUB/images/cover.jpg` 为 286751 bytes；OPF `cover-image` 指向 `images/cover.jpg`，media-type 为 `image/jpeg`。"
+      "line": 38,
+      "text": "- 历史记录：本轮解包抽查的旧封面尺寸记录已作废；2026-05-14 重制后以最新封面规则和 `qa/refinement/2026-05-14_cover_policy_rebuild_review.md` 为准。"
     },
     {
       "file": "qa/refinement/2026-05-13_gpt_image_cover_and_book_info_review.md",
-      "line": 37,
+      "line": 39,
       "text": "- 解包抽查：`nav.xhtml` 和 `book-info.xhtml` 均显示“书籍信息”；`book-info.xhtml` 含 `LifeBook 书坊 SaberOnGo`。"
     },
     {
@@ -849,6 +884,11 @@
       "text": "- EPUB 解包抽查：`nav.xhtml` 与重点章节 XHTML 标题正常；重点章节 XHTML 未发现旧术语残留。"
     },
     {
+      "file": "qa/refinement/2026-05-14_cover_policy_rebuild_review.md",
+      "line": 9,
+      "text": "- 本轮补充规则：中文题名一行、英文题名一行、作者、`LifeBook 书坊 译制`、底部公版来源；封面不写其他内容；个人名只在书籍信息页写详细。"
+    },
+    {
       "file": "qa/refinement/full_book_literary_review_2026-05-13.md",
       "line": 17,
       "text": "- 雅：高潮段落以清楚、紧凑和有画面感为优先，不追求过度文饰。诗句、宫殿战斗、返航段落进行了重点检查；只在能保持原意时微调辞采。"
@@ -862,6 +902,11 @@
       "file": "qa/refinement/full_book_literary_review_2026-05-13.md",
       "line": 42,
       "text": "- 第一章部分长段落保留。原因：原文是连载式宏观叙述，长段落承载灾难铺陈和公共情绪递进；机械拆短会损害原文气势。"
+    },
+    {
+      "file": "qa/refinement/full_book_literary_review_2026-05-13.md",
+      "line": 48,
+      "text": "- 封面署名历史记录：本轮曾使用“LifeBook 书坊 + 个人名”的译制署名；此规则已被 2026-05-14 最新封面规则取代，最终封面只写 `LifeBook 书坊 译制`。"
     },
     {
       "file": "README.md",

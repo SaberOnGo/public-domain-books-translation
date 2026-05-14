@@ -45,7 +45,7 @@ translator_credit: "LifeBook 书坊 SaberOnGo"
 
 ## 发布信息检查
 
-- 封面署名：`LifeBook 书坊 SaberOnGo 译制`。
+- 封面署名历史记录：本轮曾使用“LifeBook 书坊 + 个人名”的译制署名；此规则已被 2026-05-14 最新封面规则取代，最终封面只写 `LifeBook 书坊 译制`。
 - 书籍信息页译者：`LifeBook 书坊 SaberOnGo`。
 - `metadata/book.yaml` contributor：`LifeBook 书坊 SaberOnGo`。
 - OPF 主标题策略：只保留中文 `dc:title` 作为主标题，英文原名放入书籍信息页和 `schema:translationOfWork`。

@@ -8,6 +8,8 @@ sample_basis: "cover, book-info, 001_front_matter.md, 002_chapter_i.md"
 - 标题策略：PASS。目录短题名为“卷首”“第一章”等，未添加原文不支持的概括标题。
 - 中文排版：PASS。段落缩进、标题层级和中文标点符合目标语言规则。
 - 元数据：PASS。书名、作者、译者 `LifeBook 书坊 SaberOnGo`、来源和 rights 已写入构建脚本与 `metadata/book.yaml`。
+- 封面：PASS。2026-05-14 重做为 GPT-IMAGE-2 主视觉 + 确定性文字排版；封面仅保留中文题名、英文题名、作者、`LifeBook 书坊 译制` 和底部公版来源。
+- 书籍信息页：PASS。已包含作者简介、创作背景和简短阅读背景，目录入口为“书籍信息”。
 - 文本质量：PASS。样章已通过章节 QA，第一章经出版 lint 修正分号阈值问题。
 
 ## Decision

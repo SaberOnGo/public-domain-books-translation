@@ -3,6 +3,8 @@
 status: "PASS"
 date: "2026-05-13"
 
+2026-05-14 更新：本文件记录的是前一版 GPT-IMAGE 封面复核。最新封面已按 `cover_design_policy.md` 补充规则重做，详见 `qa/refinement/2026-05-14_cover_policy_rebuild_review.md`。
+
 ## 复核目标
 
 本轮针对用户指出的封面质量差距，按 `pg20923_a_negro_explorer_at_the_north_pole`、`pg10966_the_ghost_pirates` 的制作经验补齐栅格封面，并重新检查书籍信息页、译者署名、EPUB 封面引用和全书精修闭环。
@@ -33,7 +35,7 @@ date: "2026-05-13"
 - 构建脚本优先读取 `assets/cover.jpg`。
 - EPUB 应包含 `EPUB/cover.xhtml`、`EPUB/book-info.xhtml`、`EPUB/images/cover.jpg`。
 - OPF manifest 中 `cover-image` 应指向 `images/cover.jpg` 且带 `properties="cover-image"`。
-- 解包抽查：`EPUB/images/cover.jpg` 为 286751 bytes；OPF `cover-image` 指向 `images/cover.jpg`，media-type 为 `image/jpeg`。
+- 历史记录：本轮解包抽查的旧封面尺寸记录已作废；2026-05-14 重制后以最新封面规则和 `qa/refinement/2026-05-14_cover_policy_rebuild_review.md` 为准。
 - 解包抽查：`nav.xhtml` 和 `book-info.xhtml` 均显示“书籍信息”；`book-info.xhtml` 含 `LifeBook 书坊 SaberOnGo`。
 - `npm run lint:publication`：PASS，硬错误 0。
 - `npm run check:epub`：PASS，fatal 0，error 0，warning 0。

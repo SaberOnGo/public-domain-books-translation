@@ -9,7 +9,7 @@ status: "PASS"
 ## 固定要求
 
 - 译者名统一为 `LifeBook 书坊 SaberOnGo`。
-- 封面必须按本书模板生成，并在可见封面署名处写入 `LifeBook 书坊 SaberOnGo 译制`。
+- 历史记录：本轮当时要求封面署名写入“LifeBook 书坊 + 个人名”的译制署名；此规则已被 2026-05-14 最新封面规则取代，最终封面只写 `LifeBook 书坊 译制`。
 - 书籍首页信息页必须包含中文书名、英文原名、作者、译者、翻译时间、Project Gutenberg 来源 URL、公版说明、本书简介和原书信息。
 - EPUB OPF 主标题必须是中文书名《爱迪生征服火星》，英文原名只能作为原书信息、来源信息或辅助 metadata，不得覆盖主标题。
 - 重要段落和高潮段落必须逐项检查，包括第一章灾后与反击动员、第七章俘获火星人、第十三章艾娜身世与克什米尔诗句、第十五至十七章洪水、首都、宫殿战斗和谈判、第十八章返航与结尾。
@@ -28,7 +28,7 @@ status: "PASS"
 ## 完成定义
 
 - `scripts/build_epub.js`、`metadata/book.yaml`、相关制作记录中的译者署名均为 `LifeBook 书坊 SaberOnGo`。
-- 新生成 `output/cover.svg`、`output/book.epub`、`output/爱迪生征服火星.epub` 和 `preproduction/stage2_sample/sample_book.epub`。
+- 历史记录：本轮曾生成 `output/cover.svg`；此产物已被 2026-05-14 最新封面规则取代，最终 EPUB 使用 `output/cover.jpg`，且不再保留 `output/cover.svg`。
 - `output/epubcheck.json` 显示 title 为 `爱迪生征服火星`，contributors 包含 `LifeBook 书坊 SaberOnGo`。
 - `node scripts/publication_lint.js --target=zh-Hans --write-report` 无 hard errors。
 - `npm run check:epub` fatal/error/warning 均为 0。

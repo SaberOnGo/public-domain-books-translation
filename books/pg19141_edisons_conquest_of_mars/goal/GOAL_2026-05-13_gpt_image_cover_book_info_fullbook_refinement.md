@@ -12,7 +12,7 @@ status: "PASS"
 - 译者署名：`LifeBook 书坊 SaberOnGo`
 - 图像生成：使用 GPT-IMAGE 生成符合本书情节的源图，不再使用脚本绘制的几何 SVG 作为最终封面主体。
 - EPUB 内封面：使用压缩后的 `assets/cover.jpg`，控制体积，不把大源图直接打入 EPUB。
-- 仍保留脚本生成的 `output/cover.svg` 作为工程备用产物，但最终 EPUB 应优先引用 `cover.jpg`。
+- 历史记录：本轮曾保留脚本生成的 `output/cover.svg` 作为工程备用产物；此规则已被 2026-05-14 最新封面规则取代，最终输出不再保留 `output/cover.svg`。
 
 ## 参考经验
 
@@ -35,10 +35,10 @@ status: "PASS"
 - GPT-IMAGE 源图已保存：`assets/cover_source_gpt_image.png`。
 - EPUB 封面图已保存：`assets/cover.jpg`，约 286KB，符合模板 200KB-800KB 建议区间。
 - 封面内容与本书情节相符：火星、地球、爱迪生式电力飞船舰队、分解射线、电气火花。
-- 封面可见文字包含：`爱迪生征服火星`、`Edison's Conquest of Mars`、`加勒特·P. 瑟维斯 著`、`LifeBook 书坊 SaberOnGo 译制`、`Project Gutenberg #19141`。
+- 历史记录：本轮封面可见文字曾包含个人名；此规则已被 2026-05-14 最新封面规则取代，最终封面只包含书名、原名、作者、`LifeBook 书坊 译制` 和一句公版来源说明。
 - 书籍首页已统一为“书籍信息”，并包含译者、译制时间、公版来源和公版说明。
 - 重新构建后 EPUB 内封面使用 `cover.jpg`，不是 SVG 占位封面。
-- 解包抽查：`EPUB/images/cover.jpg` 为 286751 bytes，OPF `cover-image` 指向 `images/cover.jpg`。
+- 历史记录：本轮解包抽查的旧封面尺寸记录已作废；2026-05-14 重制后 `EPUB/images/cover.jpg` 为 456011 bytes，OPF `cover-image` 指向 `images/cover.jpg`。
 - 校验状态：publication lint PASS；EPUBCheck fatal 0，error 0，warning 0；refinement check 出版范围 BOM 0，mojibake 0，中文异常空格 0。
 
 ## Decision

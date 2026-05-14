@@ -1,0 +1,7 @@
+GPT-IMAGE-2 cover background prompt, 2026-05-14.
+
+Book cover background art only, no text, no letters, no logos.
+
+Book: Edison's Conquest of Mars / 爱迪生征服火星, Garrett P. Serviss, 1898 public-domain scientific romance.
+Core scene: after the Martian invasion, Edison organizes Earth's counterattack; Victorian electrical ships rise from rebuilt New York harbor toward Mars, with blue-white electric arcs and a golden disintegrator ray.
+Constraints: no typography, no logos, no modern rockets, no astronauts, no franchise imagery; leave dark negative space for deterministic title layout.
