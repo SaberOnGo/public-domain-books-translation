@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2400" viewBox="0 0 1600 2400" role="img" aria-label="金属巨兽封面">
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#11151a"/>
+      <stop offset="0.45" stop-color="#38434a"/>
+      <stop offset="1" stop-color="#07090c"/>
+    </linearGradient>
+    <radialGradient id="core" cx="50%" cy="45%" r="55%">
+      <stop offset="0" stop-color="#f5f8ef" stop-opacity="0.9"/>
+      <stop offset="0.45" stop-color="#b8d4d2" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#0b0f12" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="2400" fill="url(#metal)"/>
+  <rect x="120" y="140" width="1360" height="2120" rx="28" fill="#090d10" stroke="#c9d2cc" stroke-width="4" opacity="0.94"/>
+  <circle cx="800" cy="1320" r="620" fill="url(#core)"/>
+  <path d="M800 825 L1180 1045 L1180 1485 L800 1705 L420 1485 L420 1045 Z" fill="#1b2327" stroke="#d7ded6" stroke-width="9"/>
+  <path d="M800 995 L1030 1128 L1030 1392 L800 1525 L570 1392 L570 1128 Z" fill="#9fb1ad" opacity="0.48" stroke="#f4f6ee" stroke-width="5"/>
+  <path d="M800 825 L800 1705 M420 1045 L1180 1485 M1180 1045 L420 1485" stroke="#eef3ea" stroke-width="6" opacity="0.58"/>
+  <path d="M278 1740 C500 1595 1115 1605 1340 1760" fill="none" stroke="#5d716f" stroke-width="16" opacity="0.62"/>
+  <path d="M310 1835 C545 1710 1060 1715 1300 1840" fill="none" stroke="#bccbc4" stroke-width="7" opacity="0.44"/>
+  <text x="800" y="350" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="70" fill="#cbd7d3">LifeBook 公版新译</text>
+  <text x="800" y="700" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-weight="700" font-size="176" fill="#ffffff">金属巨兽</text>
+  <line x1="405" y1="825" x2="1195" y2="825" stroke="#cbd7d3" stroke-width="5" opacity="0.75"/>
+  <text x="800" y="1000" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="62" fill="#d2ddda">The Metal Monster</text>
+  <text x="800" y="1138" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="58" fill="#ffffff">亚伯拉罕·梅里特 著</text>
+  <text x="800" y="1225" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="52" fill="#d2ddda">LifeBook 书坊 SaberOnGo 译制</text>
+  <text x="800" y="2110" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="44" fill="#cbd7d3">依据 Project Gutenberg #3479 公版原文制作</text>
+</svg>
