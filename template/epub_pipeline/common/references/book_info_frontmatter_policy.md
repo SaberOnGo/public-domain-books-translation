@@ -55,7 +55,7 @@ Here, “book info” means reader-visible pages added by the translation projec
 - 翻译/译制时间。
 - 公版来源名称与 URL，例如 Project Gutenberg 编号和链接。
 - 公版/版权说明：说明源文本公版依据，并提醒跨地区发行需复核目标地区版权状态。
-- 本书简介：面向读者的简短介绍，不写成广告文案。
+- 本书简介：只介绍作品内容、叙事方式、题材气质和核心看点，不写成广告文案。
 - 作者简介：国籍、生卒年、基本人生经历、代表作。
 - 本书创作基本背景：创作背景、时代背景、题材背景，帮助读者理解作者和本书。
 
@@ -69,6 +69,7 @@ Here, “book info” means reader-visible pages added by the translation projec
 长度要求：
 
 - 书籍信息页应短而完整，提供基本背景即可。
+- “本书简介”不得混入本项目制作信息、译者署名、EPUB 制作说明、公版来源 URL、版权/地域复核提醒；这些内容应分别放在译者、原文来源、公版说明或 metadata 中。
 - 作者简介和创作背景不应写成长篇研究文章。
 - 额外内容必须克制，不能变成百科条目、宣传文案或制作日志。
 
@@ -164,7 +165,7 @@ Inputs:
 - Public-domain source: {source_name_and_url}
 - Rights evidence summary: {rights_evidence_summary}
 - Original publication information: {original_publication_info}
-- Book description: {book_description}
+- Book description: {book_description_only_about_the_work}
 - Author background: {author_nationality_life_dates_life_experience_major_works}
 - Composition and historical background: {composition_and_period_background}
 - Optional other book context: {optional_other_book_context}
@@ -175,6 +176,7 @@ Rules:
 - Prioritize project version information before original-book information.
 - Use the translator naming rule exactly: LifeBook 书坊 + personal name, with the personal name spelling exactly as provided.
 - Keep the first book-info page concise and reader-facing.
+- Keep the book description strictly about the work itself; do not include EPUB production notes, translator credits, source URLs, public-domain notices, or regional rights reminders in the description.
 - Include enough author and book background for readers to understand the work, but keep it brief.
 - If explanations are long, split them into an optional second frontmatter page.
 - Do not write marketing copy.
@@ -195,6 +197,7 @@ Output:
 - 目录是否有“书籍信息”或目标语言等效入口。
 - 是否包含 `LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明。
 - 是否包含作者简介和本书创作/时代背景，且长度克制。
+- “本书简介”是否只介绍作品本身，没有混入 EPUB 制作、译者署名、来源 URL 或版权复核提醒。
 - 是否仍有旧品牌名。
 - 页面是否过长、像 README 或像制作日志。
 - 手机窄屏下 `h1`、`dl`、URL、段落是否可读。

@@ -14,8 +14,8 @@ build_date: "2026-05-14"
 
 - 标准输出：`output/book.epub`
 - 中文文件名输出：`output/幽灵海盗.epub`
-- 文件大小：636998 bytes
-- SHA256：`1CC886F2B61B567AEB5F1DCC11B4903EC142EB063D13DE9AE14C24915135B0C9`
+- 文件大小：637490 bytes
+- SHA256：`D990BCC2A68CD8C93DCE149A2EFAB8D81B20BB67A2AD10EBC4204CD38E282EF9`
 - 封面图片：`output/cover.jpg`，519920 bytes
 - 译者标识：`LifeBook 书坊 SaberOnGo`
 
@@ -44,3 +44,4 @@ build_date: "2026-05-14"
 
 本书已完成模板要求的来源保存、版权核查、研究、试译、章节译审、质量门禁、预制作检查、双代理评审、EPUB 构建、EPUBCheck 校验和复盘记录。
 2026-05-14 已按新版封面规则使用 GPT-IMAGE-2 重制封面，并重新构建 EPUB。
+2026-05-14 已按新版书籍信息页规则修正“本书简介”，并补充作者简介与创作背景。

@@ -23,8 +23,10 @@ const meta = {
   publisher: 'LifeBook 书坊',
   sourceUrl: 'https://www.gutenberg.org/ebooks/10966',
   sourceId: 'Project Gutenberg #10966',
-  originalPublication: '1909 年英文原著。本译本依据 Project Gutenberg #10966 公版文本制作。',
-  description: '本书是威廉·霍普·霍奇森的海洋恐怖小说，以幸存者杰索普的口吻记录帆船“莫尔腾号”在海上逐渐遭受未知影子生物侵扰的过程。本中文 EPUB 由 LifeBook 书坊 SaberOnGo 依据 Project Gutenberg #10966 公版英文原文新译制作，翻译时间为 2026-05-13。源文本在美国为公版，跨地区发行前仍应按目标国家或地区复核版权状态。',
+  originalPublication: '1909 年英文原著，属于 20 世纪初英语怪奇小说与海洋小说交界文本。',
+  description: '一艘名为“莫尔腾号”的帆船在航行中逐渐遭遇来自雾、阴影和海面之外的未知侵扰。小说以幸存水手杰索普的证言展开，把精确的航海细节、船员间的恐惧传闻和逐步失控的甲板事故编织成冷峻而压迫的海洋恐怖叙事。',
+  authorBio: '威廉·霍普·霍奇森（William Hope Hodgson，1877-1918）是英国作家，早年有海上经历，后来从事写作。他的作品常结合航海经验、怪奇恐怖和对未知空间的想象，代表作包括《“格伦·卡里格”号的小艇》《边境屋》和《幽灵海盗》。第一次世界大战期间，他在西线阵亡。',
+  compositionBackground: '《幽灵海盗》出版于 1909 年，是霍奇森海洋怪奇小说的重要作品之一。作品延续了他对船上空间、航海劳动和未知恐怖的关注，用普通水手的第一人称回忆制造可信的现场感。恐怖并非来自直接解释，而是从夜班瞭望、帆桁异动、雾中船影和人员失踪中逐层累积。',
   rights: '源文本：Project Gutenberg #10966，美国公版文本。中文译本：LifeBook 书坊 SaberOnGo 译制，发行和授权由项目所有者决定。'
 };
 const coverJpgPath = path.join(root, 'assets', 'cover.jpg');
@@ -313,6 +315,10 @@ function bookInfoPage() {
 </dl>
 <h2>本书简介</h2>
 <p>${inline(meta.description)}</p>
+<h2>作者简介</h2>
+<p>${inline(meta.authorBio)}</p>
+<h2>创作背景</h2>
+<p>${inline(meta.compositionBackground)}</p>
 <h2>原书信息</h2>
 <p>${inline(meta.originalPublication)}</p>
 </section>`);
