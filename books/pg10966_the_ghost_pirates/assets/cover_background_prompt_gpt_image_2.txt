@@ -1,0 +1,33 @@
+Use case: historical-scene
+Asset type: public-domain EPUB cover background art
+Primary request: Create background art only for a Chinese EPUB cover of William Hope Hodgson's "The Ghost Pirates".
+
+Scene/backdrop:
+An early twentieth-century sailing ship at night on a dark ocean, wrapped in cold sea mist. A second ghostly full-rigged ship shape is half-visible through fog in the distance. The scene should suggest the novel's climax: grey shadow-like boarders, an uncanny silent deck, sails and spars emerging from mist, and a doomed ship sinking bow-first. Keep it atmospheric, maritime, and concrete rather than abstract.
+
+Subject:
+A dark full-rigged sailing vessel seen from a dramatic low-to-mid distance, with rigging, yards, sails, mast silhouettes, sea spray, and fog. Grey human-like shadow forms may be implied along the rail or in the mist, but they should be subtle and not cartoonish.
+
+Style/medium:
+Publication-quality painted illustration, literary horror, nautical Gothic, historically plausible maritime detail, no modern ships, no fantasy armor, no skull-and-crossbones pirate cliché.
+
+Composition/framing:
+Vertical 2:3 book-cover composition. Leave clean dark negative space in the upper third and upper-middle area for later title typography. Main ship and strongest visual action should sit in the lower half or lower-middle area so later centered title text will not overlap important visual detail. Strong single focal scene, readable at bookshelf thumbnail size.
+
+Lighting/mood:
+Moonless or dim moonlit night, cold blue-green and black palette, fog glow, wet wood, dark water, restrained supernatural menace, claustrophobic dread.
+
+Color palette:
+Deep black, cold blue-green, muted slate, sea grey, pale fog highlights. Avoid bright neon, purple gradients, orange flames, or decorative geometric shapes.
+
+Materials/textures:
+Wet rigging, canvas sails, old wooden hull, ocean mist, spray, weathered nautical surfaces.
+
+Text:
+No text. No letters. No title. No author name. No logos. No watermark.
+
+Constraints:
+The image must not contain any typography because all cover text will be added later with deterministic layout. Avoid geometric poster shapes, abstract triangles, generic pirate symbols, skulls, modern horror clichés, modern ships, modern clothing, bright graphic overlays, and centered objects that would collide with the title area.
+
+Output:
+1600 x 2400 px or larger, portrait, suitable for downsampling to EPUB JPG.

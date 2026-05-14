@@ -16,10 +16,11 @@ human_required: false
 
 ## 封面
 
-- 封面来源：自制 JPG 封面，工程文件为 `assets/cover.jpg`。
+- 封面来源：GPT-IMAGE-2 生成无文字主视觉 `assets/cover_background_gpt_image_2.png`，再由 `scripts/generate_cover.py` 确定性叠加封面文字，最终工程文件为 `assets/cover.jpg`。
 - EPUB 内封面：`cover.xhtml` + `EPUB/images/cover.jpg`。
 - OPF 要求：manifest 必须含 `properties="cover-image"`。
-- 封面策略：深色海面、帆船、幽影主题，避免使用受版权限制的现代图像。
+- 封面策略：夜雾、全帆装船、幽灵船和灰色影子登船的海洋恐怖情境；上方留负空间，中文大标题和英文标题居中且各占一行。
+- 封面文字：仅包含《幽灵海盗》、`The Ghost Pirates`、`威廉·霍普·霍奇森 著`、`LifeBook 书坊 译制`、底部一行“依据 Project Gutenberg #10966 公版原文制作”。
 
 ## 版本说明页
 

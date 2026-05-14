@@ -287,13 +287,11 @@ function coverSvg() {
   <path d="M770 430 L770 1320 M620 910 L1060 780 M620 910 L765 510 M1060 780 L775 510 M770 640 L525 1225 M770 640 L1115 1190" stroke="#d8e0dc" stroke-width="9" opacity="0.86"/>
   <path d="M775 520 C675 730 595 930 535 1215 C675 1140 795 1000 1060 790 C955 690 880 595 775 520 Z" fill="url(#mist)"/>
   <path d="M1120 1030 C1215 1045 1295 1085 1360 1160 C1260 1140 1175 1138 1085 1168 Z" fill="#dce5df" opacity="0.16"/>
-  <text x="800" y="350" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="70" fill="#cbd7d3">LifeBook 公版新译</text>
-  <text x="800" y="700" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-weight="700" font-size="176" fill="#ffffff">幽灵海盗</text>
-  <line x1="405" y1="825" x2="1195" y2="825" stroke="#cbd7d3" stroke-width="5" opacity="0.75"/>
-  <text x="800" y="1000" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="62" fill="#d2ddda">The Ghost Pirates</text>
-  <text x="800" y="1138" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="58" fill="#ffffff">威廉·霍普·霍奇森 著</text>
-  <text x="800" y="1225" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="52" fill="#d2ddda">LifeBook 书坊 SaberOnGo 译制</text>
-  <text x="800" y="2110" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="44" fill="#cbd7d3">依据 Project Gutenberg #10966 公版原文制作</text>
+  <text x="800" y="620" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-weight="700" font-size="176" fill="#ffffff">幽灵海盗</text>
+  <text x="800" y="800" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="62" fill="#d2ddda">The Ghost Pirates</text>
+  <text x="800" y="950" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="58" fill="#ffffff">威廉·霍普·霍奇森 著</text>
+  <text x="800" y="1040" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="52" fill="#d2ddda">LifeBook 书坊 译制</text>
+  <text x="800" y="2110" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="40" fill="#cbd7d3">依据 Project Gutenberg #10966 公版原文制作</text>
 </svg>`;
 }
 
@@ -454,7 +452,12 @@ for (const ch of chapters) files.push({ name: `EPUB/${ch.href}`, data: ch.html }
 files.push({ name: 'EPUB/package.opf', data: packageOpf });
 
 const buffer = zipBuffer(files);
-fs.writeFileSync(path.join(outputDir, 'cover.svg'), coverSvg());
+const coverSvgOut = path.join(outputDir, 'cover.svg');
+if (coverImageName === 'cover.svg') {
+  fs.writeFileSync(coverSvgOut, coverSvg());
+} else if (fs.existsSync(coverSvgOut)) {
+  fs.rmSync(coverSvgOut);
+}
 if (coverImageName === 'cover.jpg') fs.copyFileSync(coverJpgPath, path.join(outputDir, 'cover.jpg'));
 if (coverImageName === 'cover.png') fs.copyFileSync(coverPngPath, path.join(outputDir, 'cover.png'));
 fs.writeFileSync(outFile, buffer);

@@ -1,7 +1,7 @@
 # 《幽灵海盗》最终输出清单
 
 final_output_status: "PASS"
-build_date: "2026-05-13"
+build_date: "2026-05-14"
 
 ## 原文来源
 
@@ -14,9 +14,9 @@ build_date: "2026-05-13"
 
 - 标准输出：`output/book.epub`
 - 中文文件名输出：`output/幽灵海盗.epub`
-- 文件大小：466977 bytes
-- SHA256：`1331200CB47D4557D2CE38BE7AED6C909AE52214BF5822E1FB784387610B2D8A`
-- 封面图片：`output/cover.jpg`，363786 bytes
+- 文件大小：636998 bytes
+- SHA256：`1CC886F2B61B567AEB5F1DCC11B4903EC142EB063D13DE9AE14C24915135B0C9`
+- 封面图片：`output/cover.jpg`，519920 bytes
 - 译者标识：`LifeBook 书坊 SaberOnGo`
 
 ## 章节与 QA
@@ -43,3 +43,4 @@ build_date: "2026-05-13"
 ## 结论
 
 本书已完成模板要求的来源保存、版权核查、研究、试译、章节译审、质量门禁、预制作检查、双代理评审、EPUB 构建、EPUBCheck 校验和复盘记录。
+2026-05-14 已按新版封面规则使用 GPT-IMAGE-2 重制封面，并重新构建 EPUB。
