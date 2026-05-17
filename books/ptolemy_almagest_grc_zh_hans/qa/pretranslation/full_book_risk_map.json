@@ -1,0 +1,2789 @@
+{
+  "risk_map_status": "DRAFT_FROM_PAL_TOC__PRE_RESEARCH_GATE_ONLY",
+  "created_at_utc": "2026-05-17T07:27:56+00:00",
+  "source": "source/full_toc_draft.json",
+  "source_authority": {
+    "heiberg_pdf": "primary facsimile authority for formal split",
+    "pal_greek_xml": "auxiliary Ancient Greek transcription",
+    "english_translations": "reference witness only"
+  },
+  "chapter_count": 146,
+  "risk_counts": {
+    "FOUNDATION_GEOMETRY_HIGH": 26,
+    "MODEL_NUMERIC_HIGH": 95,
+    "STAR_CATALOG_HIGH": 9,
+    "TABLE_NUMERIC_HIGH": 16
+  },
+  "book_summaries": [
+    {
+      "book": "I",
+      "book_number": 1,
+      "module": "mathematical foundations, chord geometry, first tables",
+      "chapter_count": 16,
+      "risk_counts": {
+        "FOUNDATION_GEOMETRY_HIGH": 14,
+        "TABLE_NUMERIC_HIGH": 2
+      },
+      "next_pre_research_action": "finish Book I formal source split readiness, especially I.11 table strategy"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "module": "spherical astronomy, latitude, rising times",
+      "chapter_count": 13,
+      "risk_counts": {
+        "FOUNDATION_GEOMETRY_HIGH": 12,
+        "TABLE_NUMERIC_HIGH": 1
+      },
+      "next_pre_research_action": "build spherical-astronomy diagram/table inventory and PDF boundary sampling"
+    },
+    {
+      "book": "III",
+      "book_number": 3,
+      "module": "solar year and solar anomaly",
+      "chapter_count": 9,
+      "risk_counts": {
+        "MODEL_NUMERIC_HIGH": 7,
+        "TABLE_NUMERIC_HIGH": 2
+      },
+      "next_pre_research_action": "prepare solar/lunar model registry, numeric controls, and table routes"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "module": "first lunar model and mean lunar motions",
+      "chapter_count": 11,
+      "risk_counts": {
+        "MODEL_NUMERIC_HIGH": 9,
+        "TABLE_NUMERIC_HIGH": 2
+      },
+      "next_pre_research_action": "prepare solar/lunar model registry, numeric controls, and table routes"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "module": "lunar double anomaly, parallax, sizes/distances",
+      "chapter_count": 19,
+      "risk_counts": {
+        "MODEL_NUMERIC_HIGH": 16,
+        "TABLE_NUMERIC_HIGH": 3
+      },
+      "next_pre_research_action": "prepare solar/lunar model registry, numeric controls, and table routes"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "module": "syzygies and eclipses",
+      "chapter_count": 13,
+      "risk_counts": {
+        "MODEL_NUMERIC_HIGH": 11,
+        "TABLE_NUMERIC_HIGH": 2
+      },
+      "next_pre_research_action": "prepare solar/lunar model registry, numeric controls, and table routes"
+    },
+    {
+      "book": "VII",
+      "book_number": 7,
+      "module": "fixed stars and northern star catalogue",
+      "chapter_count": 5,
+      "risk_counts": {
+        "STAR_CATALOG_HIGH": 4,
+        "TABLE_NUMERIC_HIGH": 1
+      },
+      "next_pre_research_action": "prepare star-catalogue table, star-name, coordinate, and magnitude controls"
+    },
+    {
+      "book": "VIII",
+      "book_number": 8,
+      "module": "southern star catalogue, globe, star phenomena",
+      "chapter_count": 6,
+      "risk_counts": {
+        "STAR_CATALOG_HIGH": 5,
+        "TABLE_NUMERIC_HIGH": 1
+      },
+      "next_pre_research_action": "prepare star-catalogue table, star-name, coordinate, and magnitude controls"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "module": "planetary order and Mercury model",
+      "chapter_count": 11,
+      "risk_counts": {
+        "MODEL_NUMERIC_HIGH": 10,
+        "TABLE_NUMERIC_HIGH": 1
+      },
+      "next_pre_research_action": "prepare planetary model registry, diagram inventory, and numeric/table controls"
+    },
+    {
+      "book": "X",
+      "book_number": 10,
+      "module": "Venus and Mars models",
+      "chapter_count": 10,
+      "risk_counts": {
+        "MODEL_NUMERIC_HIGH": 10
+      },
+      "next_pre_research_action": "prepare planetary model registry, diagram inventory, and numeric/table controls"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "module": "Jupiter and Saturn models, anomaly tables",
+      "chapter_count": 12,
+      "risk_counts": {
+        "MODEL_NUMERIC_HIGH": 12
+      },
+      "next_pre_research_action": "prepare planetary model registry, diagram inventory, and numeric/table controls"
+    },
+    {
+      "book": "XII",
+      "book_number": 12,
+      "module": "planetary stations and elongations",
+      "chapter_count": 10,
+      "risk_counts": {
+        "MODEL_NUMERIC_HIGH": 9,
+        "TABLE_NUMERIC_HIGH": 1
+      },
+      "next_pre_research_action": "prepare planetary model registry, diagram inventory, and numeric/table controls"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "module": "planetary latitude models",
+      "chapter_count": 11,
+      "risk_counts": {
+        "MODEL_NUMERIC_HIGH": 11
+      },
+      "next_pre_research_action": "prepare planetary model registry, diagram inventory, and numeric/table controls"
+    }
+  ],
+  "rows": [
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 1,
+      "anchor": "I.1",
+      "pal_title": "αʹ. Προοίμιον.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 2,
+      "anchor": "I.2",
+      "pal_title": "βʹ. Περὶ τῆς τάξεως τῶν θεωρημάτων.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 3,
+      "anchor": "I.3",
+      "pal_title": "γʹ. Ὅτι σφαιροειδῶς ὁ οὐρανὸς φέρεται.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 4,
+      "anchor": "I.4",
+      "pal_title": "δʹ. Ὅτι καὶ ἡ γῆ σφραιροειδής ἐστιν πρὸς αἴσθησιν ὡς καθʼ ὅλα μέρη.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 5,
+      "anchor": "I.5",
+      "pal_title": "εʹ. Ὅτι μέση τοῦ οὐρανοῦ ἐστιν ἡ γῆ.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 6,
+      "anchor": "I.6",
+      "pal_title": "ϛʹ. Ὅτι σημείου λόγον ἔχει πρὸς τὰ οὐράνια ἡ γῆ.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 7,
+      "anchor": "I.7",
+      "pal_title": "ζʹ. Ὅτι οὐδὲ κίνησίν τινα μεταβατικὴν ποιεῖται",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 8,
+      "anchor": "I.8",
+      "pal_title": "ηʹ. Ὅτι δύο διαφοραὶ τῶν πρώτων κινήσεών",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 9,
+      "anchor": "I.9",
+      "pal_title": "θʹ. Περὶ τῶν κατὰ μέρος καταλήψεων.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 10,
+      "anchor": "I.10",
+      "pal_title": "ιʹ. Περὶ τῆς πηλικότητος τῶν ἐν τῷ κύκλῳ εὐθειῶν.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 11,
+      "anchor": "I.11",
+      "pal_title": "ιαʹ. Κανόνιον τῶν ἐν κύκλῳ εὐθειῶν.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 12,
+      "anchor": "I.12",
+      "pal_title": "ιβʹ. Περὶ τῆς μεταξὺ τῶν τροπικῶν περιφερείας.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 13,
+      "anchor": "I.13",
+      "pal_title": "ιγʹ. Προλαμβανόμενα εἰς τὰς σφαιρικὰς δείξεις.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 14,
+      "anchor": "I.14",
+      "pal_title": "ιδʹ. Περὶ τῶν μεταξὺ τοῦ ἰσημερινοῦ καὶ τοῦ λοξοῦ κύκλου περιφερειῶν.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 15,
+      "anchor": "I.15",
+      "pal_title": "ιεʹ. Κανόνιον λοξώσεως.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "I",
+      "book_number": 1,
+      "chapter": 16,
+      "anchor": "I.16",
+      "pal_title": "ιϛʹ. Περὶ τῶν ἐπʼ ὀρθῆς τῆς σφαίρας ἀναφορῶν.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "mathematical foundations, chord geometry, first tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 1,
+      "anchor": "II.1",
+      "pal_title": "αʹ. Περὶ τῆς καθόλου θέσεως τῆς καθʼ ἡμᾶς οἰκουμένης.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 2,
+      "anchor": "II.2",
+      "pal_title": "βʹ. Πῶς δοθέντος τοῦ τῆς μεγίστης ἡμέρας μεγέθους αἱ ἀπολαμβανόμεναι τοῦ ὁρίζοντος περιφέρειαι ὑπό τε τοῦ ἰσημερινοῦ καὶ τοῦ λοξοῦ κύκλου δίδονται.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 3,
+      "anchor": "II.3",
+      "pal_title": "γʹ. Πῶς τῶν αὐτῶν ὑποκειμένων τὸ ἔξαρμα τοῦ πόλου δίδοται καὶ τὸ ἀνάπαλιν.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 4,
+      "anchor": "II.4",
+      "pal_title": "δʹ. Πῶς ἐπιλογιστέον,τίσιν καὶ πότε καὶ ποσάκις ὁ ἥλιος γίνεται κατὰ κορυφήν.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 5,
+      "anchor": "II.5",
+      "pal_title": "εʹ. Πῶς ἀπὸ τῶν ἐκκειμένων οἱ λόγοι τῶν γνωμόνων πρὸς τὰς ἰσημερινὰς καὶ τροπικὰς ἐν ταῖς μεσημβρίαις σκιὰς λαμβάνονται.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 6,
+      "anchor": "II.6",
+      "pal_title": "ϛʹ. Ἔκθεσις τῶν κατὰ παράλληλον ἰδιωμάτων.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 7,
+      "anchor": "II.7",
+      "pal_title": "ζʹ. Περὶ τῶν ἐπὶ τῆς ἐγκεκλιμένης σφαίρας τοῦ διὰ μέσων τῶν ζῳδίων κύκλου καὶ τοῦ ἰσημερινοῦ συναναφορῶν.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 8,
+      "anchor": "II.8",
+      "pal_title": "ηʹ. Κανόνιον τῶν κατὰ δεκαμοιρίαν ἀναφορῶν.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 9,
+      "anchor": "II.9",
+      "pal_title": "θʹ. Περὶ τῶν κατὰ μέρος ταῖς ἀναφοραῖς παρακολουθούντων.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 10,
+      "anchor": "II.10",
+      "pal_title": "ιʹ. Περὶ τῶν ὑπὸ τοῦ διὰ μέσων τῶν ζῳδίων κύκλου καὶ τοῦ μεσημβρινοῦ γινομένων γωνιῶν.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 11,
+      "anchor": "II.11",
+      "pal_title": "ιαʹ. Περὶ τῶν ὑπὸ τοῦ αὐτοῦ λοξοῦ κύκλου καὶ τοῦ ὁρίζοντος γινομένων γωνιῶν.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 12,
+      "anchor": "II.12",
+      "pal_title": "ιβʹ. Περὶ τῶν πρὸς τὸν αὐτὸν κύκλον τοῦ διὰ τῶν πόλων τοῦ ὁρίζοντος γινομένων γωνιῶν καὶ περιφερειῶν.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "II",
+      "book_number": 2,
+      "chapter": 13,
+      "anchor": "II.13",
+      "pal_title": "ιγʹ. Ἔκθεσις τῶν κατὰ παράλληλον γωνιῶν καὶ περιφερειῶν.",
+      "risk": "FOUNDATION_GEOMETRY_HIGH",
+      "book_module": "spherical astronomy, latitude, rising times",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "proof dependency map",
+        "diagram/label audit when figures occur",
+        "ancient/modern concept boundary note",
+        "Chinese readability review for compressed geometrical prose"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "III",
+      "book_number": 3,
+      "chapter": 1,
+      "anchor": "III.1",
+      "pal_title": "αʹ. Περὶ τοῦ μεγέθους τοῦ ἐνιαυσίου χρόνου.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "solar year and solar anomaly",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "III",
+      "book_number": 3,
+      "chapter": 2,
+      "anchor": "III.2",
+      "pal_title": "βʹ. Κανόνιον τῆς ὁμαλῆς τοῦ ἡλίου κινήσεως κινησεως Heiberg..",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "solar year and solar anomaly",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "III",
+      "book_number": 3,
+      "chapter": 3,
+      "anchor": "III.3",
+      "pal_title": "γʹ. Περὶ τῶν καθʼ ὁμαλὴν καὶ ἐγκύκλιον κίνησιν ὑποθέσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "solar year and solar anomaly",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "III",
+      "book_number": 3,
+      "chapter": 4,
+      "anchor": "III.4",
+      "pal_title": "δʹ. Περὶ τῆς τοῦ ἡλίου φαινομένης ἀνωμαλίας.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "solar year and solar anomaly",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "III",
+      "book_number": 3,
+      "chapter": 5,
+      "anchor": "III.5",
+      "pal_title": "εʹ. Περὶ τῆς πρὸς τὰ κατὰ μέρος τμήματα τῆς ἀνωμαλίας ἐπισκέψεως.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "solar year and solar anomaly",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "III",
+      "book_number": 3,
+      "chapter": 6,
+      "anchor": "III.6",
+      "pal_title": "ϛʹ. Κανόνιον τῆς ἡλιακῆς ἀνωμαλίας.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "solar year and solar anomaly",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "III",
+      "book_number": 3,
+      "chapter": 7,
+      "anchor": "III.7",
+      "pal_title": "ζʹ. Περὶ τῆς κατὰ τὴν μέσην τοῦ ἡλίου πάροδον ἐποχῆς.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "solar year and solar anomaly",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "III",
+      "book_number": 3,
+      "chapter": 8,
+      "anchor": "III.8",
+      "pal_title": "ηʹ. Περὶ τῆς ἡλιακῆς ψηφοφορίας.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "solar year and solar anomaly",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "III",
+      "book_number": 3,
+      "chapter": 9,
+      "anchor": "III.9",
+      "pal_title": "θʹ. Περὶ τῆς τῶν νυχθημέρων ἀνισότητος.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "solar year and solar anomaly",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "chapter": 1,
+      "anchor": "IV.1",
+      "pal_title": "αʹ. Ἀπὸ ποίων δεῖ τηρήσεων τὰ περὶ τὴν σελήνην ἐξετάζειν.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "first lunar model and mean lunar motions",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "chapter": 2,
+      "anchor": "IV.2",
+      "pal_title": "βʹ. Περὶ τῶν περιοδικῶν χρόνων τῆς σελήνης.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "first lunar model and mean lunar motions",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "chapter": 3,
+      "anchor": "IV.3",
+      "pal_title": "γʹ. Περὶ τῶν κατὰ μέρος ὁμαλῶν κινήσεων τῆς σελήνης.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "first lunar model and mean lunar motions",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "chapter": 4,
+      "anchor": "IV.4",
+      "pal_title": "δʹ. Κανόνες τῶν τῆς σελήνης μέσων κινήσεων.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "first lunar model and mean lunar motions",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "chapter": 5,
+      "anchor": "IV.5",
+      "pal_title": "εʹ. Ὅτι καὶ ἐπὶ τῆς ἁπλῆς ὑποθέσεως τῆς σελήνης τὰ αὐτὰ φαινόμενα ποιοῦσιν ἥ τε κατʼ ἐκκεντρότητα καὶ ἡ κατὰ ἐπίκυκλον.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "first lunar model and mean lunar motions",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "chapter": 6,
+      "anchor": "IV.6",
+      "pal_title": "ϛʹ. Απόδειξις τῆς πρώτης καὶ ἁπλῆς ἀνωμαλίας τῆς σελήνης.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "first lunar model and mean lunar motions",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "chapter": 7,
+      "anchor": "IV.7",
+      "pal_title": "ζʹ. Περὶ τῆς διορθώσεως τῶν μέσων παρόδων τῆς σελήνης μήκους τε καὶ ἀνωμαλίας.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "first lunar model and mean lunar motions",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "chapter": 8,
+      "anchor": "IV.8",
+      "pal_title": "ηʹ. Περὶ τῆς ἐποχῆς τῶν ὁμαλῶν τῆς σελήνης κινήσεων μήκους τε καὶ ἀνωμαλίας.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "first lunar model and mean lunar motions",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "chapter": 9,
+      "anchor": "IV.9",
+      "pal_title": "θʹ. Περὶ τῆς διορθώσεως τῶν κατὰ πλάτος μέσων παρόδων τῆς σελήνης καὶ τῶν ἐποχῶν αὐτῶν.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "first lunar model and mean lunar motions",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "chapter": 10,
+      "anchor": "IV.10",
+      "pal_title": "ιʹ. Κανόνιον τῆς πρώτης καὶ ἁπλῆς ἀνωμαλίας τῆς σελήνης.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "first lunar model and mean lunar motions",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IV",
+      "book_number": 4,
+      "chapter": 11,
+      "anchor": "IV.11",
+      "pal_title": "ιαʹ. Ὅτι οὐ παρὰ τὰς διαφορὰς τῶν ὑποθέσεων, ἀλλὰ παρὰ τοὺς ἐπιλογισμοὺς διήνεγκεν κατὰ τὸν Ἵππαρχον ἡ πηλικότης τῆς σεληνιακῆς ἀνωμαλίας.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "first lunar model and mean lunar motions",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 1,
+      "anchor": "V.1",
+      "pal_title": "αʹ. Περὶ κατασκευῆς ἀστρολάβου ὀργάνου.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 2,
+      "anchor": "V.2",
+      "pal_title": "βʹ. Περὶ τῆς πρὸς τὴν διπλῆν ἀνωμαλίαν τῆς σελήνης ὑποθέσεως.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 3,
+      "anchor": "V.3",
+      "pal_title": "γʹ. Περὶ τῆς πηλικότητος τῆς παρὰ τὸν ἥλιον ἀνωμαλίας τῆς σελήνης.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 4,
+      "anchor": "V.4",
+      "pal_title": "δʹ. Περὶ τοῦ λόγου τῆς ἐκκεντρότητος τοῦ σεληνιακοῦ κύκλου.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 5,
+      "anchor": "V.5",
+      "pal_title": "εʹ. Περὶ τῆς προσνεύσεως τοῦ τῆς σελήνης ἐπικύκλου.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 6,
+      "anchor": "V.6",
+      "pal_title": "ϛʹ. Πῶς διὰ τῶν γραμμῶν ἀπὸ τῶν περιοδικῶν κινήσεων ἡ ἀκριβὴς τῆς σελήνης πάροδος λαμβάνεται.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 7,
+      "anchor": "V.7",
+      "pal_title": "ζʹ. Κανόνος πραγματεία τῆς καθόλου σεληνιακῆς ἀνωμαλίας.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 8,
+      "anchor": "V.8",
+      "pal_title": "ηʹ. Κανόνιον τῆς καθόλου σεληνιακῆς ἀνωμαλίας.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 9,
+      "anchor": "V.9",
+      "pal_title": "θʹ. Περὶ τῆς καθόλου σεληνιακῆς ψηφοφορίας.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 10,
+      "anchor": "V.10",
+      "pal_title": "ιʹ. Ὅτι μηδὲν ἀξιόλογον γίνεται διάφορον ἐν ταῖς συζυγίαις παρὰ τὸν ἔκκεντρον τῆς σελήνης κύκλον.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 11,
+      "anchor": "V.11",
+      "pal_title": "ιαʹ. Περὶ τῶν τῆς σελήνης παραλλάξεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 12,
+      "anchor": "V.12",
+      "pal_title": "ιβʹ. Περὶ κατασκευῆς ὀργάνου παραλλακτικοῦ.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 13,
+      "anchor": "V.13",
+      "pal_title": "ιγʹ. Ἀπόδειξις τῶν τῆς σελήνης ἀποστημάτων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 14,
+      "anchor": "V.14",
+      "pal_title": "ιδʹ. Περὶ τῆς πηλικότητος τῶν ἐν ταῖς συζυγίαις φαινομένων διαμέτρων ἡλίου καὶ σελήνης καὶ σκιᾶς.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 15,
+      "anchor": "V.15",
+      "pal_title": "ιεʹ. Περὶ τοῦ ἡλιακοῦ ἀποστήματος καὶ τῶν συναποδεικνυμένων αὐτῷ.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 16,
+      "anchor": "V.16",
+      "pal_title": "ιϛʹ. Περὶ μεγεθῶν ἡλίου καὶ σελήνης καὶ γῆς.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 17,
+      "anchor": "V.17",
+      "pal_title": "ιζʹ. Περὶ τῶν κατὰ μέρος παραλλάξεων ἡλίου καὶ σελήνης.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 18,
+      "anchor": "V.18",
+      "pal_title": "ιηʹ. Κανὼν παραλλακτικός.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "V",
+      "book_number": 5,
+      "chapter": 19,
+      "anchor": "V.19",
+      "pal_title": "ιθʹ. Περὶ τῆς τῶν παραλλάξεων διακρίσεως.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "lunar double anomaly, parallax, sizes/distances",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 1,
+      "anchor": "VI.1",
+      "pal_title": "αʹ. Περὶ συνόδων καὶ πανσελήνων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 2,
+      "anchor": "VI.2",
+      "pal_title": "βʹ. Πραγματεία κανονίων μέσων συζυγιῶν.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 3,
+      "anchor": "VI.3",
+      "pal_title": "γʹ. Συνόδων κανόνιον.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 4,
+      "anchor": "VI.4",
+      "pal_title": "δʹ. Ὡς δεῖ τάς τε περιοδικὰς καὶ τὰς ἀκριβεῖς συζυγίας ἐπισκέπτεσθαι.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 5,
+      "anchor": "VI.5",
+      "pal_title": "εʹ. Περὶ τῶν ἐκλειπτικῶν ὅρων ἡλίου καὶ σελήνης.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 6,
+      "anchor": "VI.6",
+      "pal_title": "ϛʹ. Περὶ τῆς διαστάσεως τῶν ἐκλειπτικῶν μηνῶν.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 7,
+      "anchor": "VI.7",
+      "pal_title": "ζʹ. Πραγματεία κανονίων ἐκλειπτικῶν.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 8,
+      "anchor": "VI.8",
+      "pal_title": "ηʹ. Κανόνιον ἡλίου ἐκλείψεων.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 9,
+      "anchor": "VI.9",
+      "pal_title": "θʹ. Σεληνιακῶν ἐκλείψεων διάκρισις.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 10,
+      "anchor": "VI.10",
+      "pal_title": "ιʹ. Ἡλιακῶν ἐκλείψεων διάκρισις.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 11,
+      "anchor": "VI.11",
+      "pal_title": "ιαʹ. Περὶ τῶν ἐν ταῖς ἐκλείψεσι προσνεύσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 12,
+      "anchor": "VI.12",
+      "pal_title": "ιβʹ. Ἔκθεσις τῶν πρὸς τὰς προσνεύσεις διαγραφῶν.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VI",
+      "book_number": 6,
+      "chapter": 13,
+      "anchor": "VI.13",
+      "pal_title": "ιγʹ. Διάκρισις προσνεύσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "syzygies and eclipses",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VII",
+      "book_number": 7,
+      "chapter": 1,
+      "anchor": "VII.1",
+      "pal_title": "αʹ. Ὅτι οἱ ἀπλανεῖς ἀστέρες τὴν αὐτὴν ἀεὶ θέσιν συντηροῦσιν πρὸς ἀλλήλους.",
+      "risk": "STAR_CATALOG_HIGH",
+      "book_module": "fixed stars and northern star catalogue",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "star-name and constellation terminology registry",
+        "coordinate/magnitude table validation",
+        "catalogue table EPUB layout strategy",
+        "ancient coordinate system boundary note"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VII",
+      "book_number": 7,
+      "chapter": 2,
+      "anchor": "VII.2",
+      "pal_title": "βʹ. Ὅτι καὶ ἡ τῶν ἀπλανῶν σφαῖρα εἰς τὰ ἑπόμενα τοῦ διὰ μέσων τῶν ζῳδίων κύκλου κίνησίν τινα ποιεῖται.",
+      "risk": "STAR_CATALOG_HIGH",
+      "book_module": "fixed stars and northern star catalogue",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "star-name and constellation terminology registry",
+        "coordinate/magnitude table validation",
+        "catalogue table EPUB layout strategy",
+        "ancient coordinate system boundary note"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VII",
+      "book_number": 7,
+      "chapter": 3,
+      "anchor": "VII.3",
+      "pal_title": "γʹ. Ὅτι καὶ περὶ τοὺς τοῦ διὰ μέσων πόλους ἡ τῆς τῶν ἀπλανῶν σφαίρας εἰς τὰ ἑπόμενα κίνησις ἀποτελεῖται.",
+      "risk": "STAR_CATALOG_HIGH",
+      "book_module": "fixed stars and northern star catalogue",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "star-name and constellation terminology registry",
+        "coordinate/magnitude table validation",
+        "catalogue table EPUB layout strategy",
+        "ancient coordinate system boundary note"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VII",
+      "book_number": 7,
+      "chapter": 4,
+      "anchor": "VII.4",
+      "pal_title": "δʹ. Περὶ τοῦ τρόπου τῆς ἀναγραφῆς τῶν ἀπλανῶν ἀστέρων.",
+      "risk": "STAR_CATALOG_HIGH",
+      "book_module": "fixed stars and northern star catalogue",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "star-name and constellation terminology registry",
+        "coordinate/magnitude table validation",
+        "catalogue table EPUB layout strategy",
+        "ancient coordinate system boundary note"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VII",
+      "book_number": 7,
+      "chapter": 5,
+      "anchor": "VII.5",
+      "pal_title": "εʹ. Ἔκθεσις κανονικὴ τοῦ κατὰ τὸ βόρειον ἡμισφαίριον ἀστερισμοῦ.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "fixed stars and northern star catalogue",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VIII",
+      "book_number": 8,
+      "chapter": 1,
+      "anchor": "VIII.1",
+      "pal_title": "αʹ. Ἔκθεσις κανονικὴ τοῦ κατὰ τὸ νότιον ἡμισφαίριον ἀστερισμοῦ.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "southern star catalogue, globe, star phenomena",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VIII",
+      "book_number": 8,
+      "chapter": 2,
+      "anchor": "VIII.2",
+      "pal_title": "βʹ. Περὶ τῆς θέσεως τοῦ γαλακτίου κύκλου.",
+      "risk": "STAR_CATALOG_HIGH",
+      "book_module": "southern star catalogue, globe, star phenomena",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "star-name and constellation terminology registry",
+        "coordinate/magnitude table validation",
+        "catalogue table EPUB layout strategy",
+        "ancient coordinate system boundary note"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VIII",
+      "book_number": 8,
+      "chapter": 3,
+      "anchor": "VIII.3",
+      "pal_title": "γʹ. Περὶ κατασκευῆς στερεᾶς σφαίρας.",
+      "risk": "STAR_CATALOG_HIGH",
+      "book_module": "southern star catalogue, globe, star phenomena",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "star-name and constellation terminology registry",
+        "coordinate/magnitude table validation",
+        "catalogue table EPUB layout strategy",
+        "ancient coordinate system boundary note"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VIII",
+      "book_number": 8,
+      "chapter": 4,
+      "anchor": "VIII.4",
+      "pal_title": "δʹ. Περὶ τῶν οἰκείων τοῖς ἀπλανέσι σχηματισμῶν.",
+      "risk": "STAR_CATALOG_HIGH",
+      "book_module": "southern star catalogue, globe, star phenomena",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "star-name and constellation terminology registry",
+        "coordinate/magnitude table validation",
+        "catalogue table EPUB layout strategy",
+        "ancient coordinate system boundary note"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VIII",
+      "book_number": 8,
+      "chapter": 5,
+      "anchor": "VIII.5",
+      "pal_title": "εʹ. Περὶ συνανατολῶν καὶ συμμεσουρανήσεων καὶ συγκαταδύσεων τῶν ἀπλανῶν.",
+      "risk": "STAR_CATALOG_HIGH",
+      "book_module": "southern star catalogue, globe, star phenomena",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "star-name and constellation terminology registry",
+        "coordinate/magnitude table validation",
+        "catalogue table EPUB layout strategy",
+        "ancient coordinate system boundary note"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "VIII",
+      "book_number": 8,
+      "chapter": 6,
+      "anchor": "VIII.6",
+      "pal_title": "ϛʹ. Περὶ φάσεων καὶ κρύψεων τῶν ἀπλανῶν.",
+      "risk": "STAR_CATALOG_HIGH",
+      "book_module": "southern star catalogue, globe, star phenomena",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "star-name and constellation terminology registry",
+        "coordinate/magnitude table validation",
+        "catalogue table EPUB layout strategy",
+        "ancient coordinate system boundary note"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "chapter": 1,
+      "anchor": "IX.1",
+      "pal_title": "αʹ. Περὶ τῆς τάξεως τῶν σφαιρῶν ἡλίου καὶ σελήνης καὶ τῶν ε πλανωμένων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary order and Mercury model",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "chapter": 2,
+      "anchor": "IX.2",
+      "pal_title": "βʹ. Περὶ τῆς κατὰ τὰς ὑποθέσεις τῶν πλανωμένων προθέσεως.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary order and Mercury model",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "chapter": 3,
+      "anchor": "IX.3",
+      "pal_title": "γʹ. Περὶ τῶν περιοδικῶν ἀποκαταστάσεων τῶν πέντε πλανωμένων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary order and Mercury model",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "chapter": 4,
+      "anchor": "IX.4",
+      "pal_title": "δʹ. Κανόνες μέσων κινήσεων μήκους τε καὶ ἀνωμαλίας τῶν πέντε ἀστέρων.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "planetary order and Mercury model",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "chapter": 5,
+      "anchor": "IX.5",
+      "pal_title": "εʹ. Προλαμβανόμενα εἰς τὰς ὑποθέσεις τῶν ε πλανωμένων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary order and Mercury model",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "chapter": 6,
+      "anchor": "IX.6",
+      "pal_title": "ϛʹ. Περὶ τοῦ τρόπου καὶ τῆς διαφορᾶς τῶν ὑποθέσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary order and Mercury model",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "chapter": 7,
+      "anchor": "IX.7",
+      "pal_title": "ζʹ. Ἀπόδειξις τοῦ ἀπογείου τοῦ τοῦ Ἑρμοῦ ἀστέρος καὶ τῆς μεταπτώσεως αὐτοῦ.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary order and Mercury model",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "chapter": 8,
+      "anchor": "IX.8",
+      "pal_title": "ηʹ. Ὅτι δὶς καὶ ὁ τοῦ Ἑρμοῦ ἀστὴρ περιγειότατος ἐν τῷ ἑνὶ κύκλῳ γίνεται.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary order and Mercury model",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "chapter": 9,
+      "anchor": "IX.9",
+      "pal_title": "θʹ. Περὶ τοῦ λόγου καὶ τῆς πηλικότητος τῶν τοῦ τοῦ Ἑρμοῦ ἀνωμαλιῶν.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary order and Mercury model",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "chapter": 10,
+      "anchor": "IX.10",
+      "pal_title": "ιʹ. Περὶ τῆς διορθώσεως τῶν περιοδικῶν τοῦ τοῦ Ἑρμοῦ κινήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary order and Mercury model",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "IX",
+      "book_number": 9,
+      "chapter": 11,
+      "anchor": "IX.11",
+      "pal_title": "ιαʹ. Περὶ τῆς ἐποχῆς τῶν περιοδικῶν αὐτοῦ κινήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary order and Mercury model",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "X",
+      "book_number": 10,
+      "chapter": 1,
+      "anchor": "X.1",
+      "pal_title": "αʹ. Ἀπόδειξις τοῦ ἀπογείου τοῦ τῆς Ἀφροδίτης ἀστέρος.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Venus and Mars models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "X",
+      "book_number": 10,
+      "chapter": 2,
+      "anchor": "X.2",
+      "pal_title": "βʹ. Περὶ τῆς τοῦ ἐπικύκλου αὐτοῦ πηλικότητος.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Venus and Mars models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "X",
+      "book_number": 10,
+      "chapter": 3,
+      "anchor": "X.3",
+      "pal_title": "γʹ. Περὶ τῶν λόγων τῆς ἐκκεντρότητος τοῦ ἀστέρος.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Venus and Mars models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "X",
+      "book_number": 10,
+      "chapter": 4,
+      "anchor": "X.4",
+      "pal_title": "δʹ. Περὶ τῆς διορθώσεως τῶν περιοδικῶν τοῦ ἀστέρος κινήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Venus and Mars models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "X",
+      "book_number": 10,
+      "chapter": 5,
+      "anchor": "X.5",
+      "pal_title": "εʹ. Περὶ τῆς ἐποχῆς τῶν περιοδικῶν αὐτοῦ κινήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Venus and Mars models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "X",
+      "book_number": 10,
+      "chapter": 6,
+      "anchor": "X.6",
+      "pal_title": "ϛʹ. Προλαμβανόμενα εἰς τὰς περὶ τῶν λοιπῶν ἀστέρων ἀποδείξεις.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Venus and Mars models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "X",
+      "book_number": 10,
+      "chapter": 7,
+      "anchor": "X.7",
+      "pal_title": "ζʹ. Ἀπόδειξις τῆς τοῦ τοῦ Ἄρεως ἐκκεντρότητος καὶ τοῦ ἀπογείου.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Venus and Mars models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "X",
+      "book_number": 10,
+      "chapter": 8,
+      "anchor": "X.8",
+      "pal_title": "ηʹ. Ἀπόδειξις τῆς τοῦ ἐπικύκλου τοῦ τοῦ Ἄρεως πηλικότητος.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Venus and Mars models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "X",
+      "book_number": 10,
+      "chapter": 9,
+      "anchor": "X.9",
+      "pal_title": "θʹ. Περὶ τῆς διορθώσεως τῶν περιοδικῶν τοῦ τοῦ Ἄρεως κινήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Venus and Mars models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "X",
+      "book_number": 10,
+      "chapter": 10,
+      "anchor": "X.10",
+      "pal_title": "ιʹ. Περὶ τῆς ἐποχῆς τῶν περιοδικῶν αὐτοῦ κινήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Venus and Mars models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 1,
+      "anchor": "XI.1",
+      "pal_title": "αʹ. Ἀπόδειξις τῆς τοῦ τοῦ Διὸς ἐκκεντρότητος.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 2,
+      "anchor": "XI.2",
+      "pal_title": "βʹ. Ἀπόδειξις τῆς τοῦ ἐπικύκλου τοῦ τοῦ Διὸς πηλικότητος.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 3,
+      "anchor": "XI.3",
+      "pal_title": "γʹ. Περὶ τῆς διορθώσεως τῶν περιοδικῶν τοῦ τοῦ Διὸς κινήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 4,
+      "anchor": "XI.4",
+      "pal_title": "δʹ. Περὶ τῆς ἐποχῆς τῶν περιοδικῶν τοῦ τοῦ Διὸς κινήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 5,
+      "anchor": "XI.5",
+      "pal_title": "εʹ. Ἀπόδειξις τῆς τοῦ τοῦ Κρόνου ἐκκεντρότητος καὶ τοῦ ἀπογείου.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 6,
+      "anchor": "XI.6",
+      "pal_title": "ϛʹ. Ἀπόδειξις τῆς τοῦ ἐπικύκλου τοῦ τοῦ Κρόνου πηλικότητος.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 7,
+      "anchor": "XI.7",
+      "pal_title": "ζʹ. Περὶ τῆς διορθώσεως τῶν περιοδικῶν τοῦ τοῦ Κρόνου κινήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 8,
+      "anchor": "XI.8",
+      "pal_title": "ηʹ. Ηερὶ τῆς ἐποχῆς τῶν περιοδικῶν τοῦ τοῦ Κρόνου κινήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 9,
+      "anchor": "XI.9",
+      "pal_title": "θʹ. Πῶς ἀπὸ τῶν περιοδικῶν κινήσεων αἱ ἀκριβεῖς πάροδοι γραμμικῶς λαμβάνονται.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 10,
+      "anchor": "XI.10",
+      "pal_title": "ιʹ. Πραγματεία τῆς τῶν ἀνωμαλιῶν κανονοποιίας.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 11,
+      "anchor": "XI.11",
+      "pal_title": "ιαʹ. Κρόνου.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XI",
+      "book_number": 11,
+      "chapter": 12,
+      "anchor": "XI.12",
+      "pal_title": "ιβʹ. Περὶ τῆς κατὰ μῆκος τῶν ε πλανωμένων ψηφοφορίας.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "Jupiter and Saturn models, anomaly tables",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XII",
+      "book_number": 12,
+      "chapter": 1,
+      "anchor": "XII.1",
+      "pal_title": "αʹ. Περὶ τῶν εἰς τὰς προηγήσεις προλαμβανομένων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary stations and elongations",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XII",
+      "book_number": 12,
+      "chapter": 2,
+      "anchor": "XII.2",
+      "pal_title": "βʹ. Ἀπόδειξις τῶν τοῦ τοῦ Κρόνου προηγήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary stations and elongations",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XII",
+      "book_number": 12,
+      "chapter": 3,
+      "anchor": "XII.3",
+      "pal_title": "γʹ. Ἀπόδειξις τῶν τοῦ τοῦ Διὸς προηγήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary stations and elongations",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XII",
+      "book_number": 12,
+      "chapter": 4,
+      "anchor": "XII.4",
+      "pal_title": "δʹ. Ἀπόδειξις τῶν τοῦ τοῦ Ἄρεως προηγήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary stations and elongations",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XII",
+      "book_number": 12,
+      "chapter": 5,
+      "anchor": "XII.5",
+      "pal_title": "εʹ. Ἀπόδειξις τῶν τοῦ τῆς Ἀφροδίτης προηγήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary stations and elongations",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XII",
+      "book_number": 12,
+      "chapter": 6,
+      "anchor": "XII.6",
+      "pal_title": "ϛʹ. Ἀπόδειξις τῶν τοῦ τοῦ Ἑρμοῦ προηγήσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary stations and elongations",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XII",
+      "book_number": 12,
+      "chapter": 7,
+      "anchor": "XII.7",
+      "pal_title": "ζʹ. Πραγματεία κανόνος εἰς τοὺς στηριγμούς.",
+      "risk": "TABLE_NUMERIC_HIGH",
+      "book_module": "planetary stations and elongations",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "structured table extraction plan",
+        "sexagesimal and unit-preserving numeric validation",
+        "XHTML/EPUB responsive table strategy",
+        "table facsimile or redraw asset inventory"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XII",
+      "book_number": 12,
+      "chapter": 8,
+      "anchor": "XII.8",
+      "pal_title": "ηʹ. Ἀριθμοὶ διευκρινημένης ἀνωμαλίας.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary stations and elongations",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XII",
+      "book_number": 12,
+      "chapter": 9,
+      "anchor": "XII.9",
+      "pal_title": "θʹ. Ἀπόδειξις τῶν μεγίστων πρὸς τὸν ἥλιον διαστάσεων Ἀφροδίτης καὶ Ἑρμοῦ.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary stations and elongations",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XII",
+      "book_number": 12,
+      "chapter": 10,
+      "anchor": "XII.10",
+      "pal_title": "ιʹ. Μέγισται ἀποστάσεις πρὸς τὸν ἀκριβῆ ἥλιον.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary stations and elongations",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "chapter": 1,
+      "anchor": "XIII.1",
+      "pal_title": "αʹ. Περὶ τῶν εἰς τὰς κατὰ πλάτος παρόδους τῶν ε πλανωμένων ὑποθέσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary latitude models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "chapter": 2,
+      "anchor": "XIII.2",
+      "pal_title": "βʹ. Περὶ τοῦ τρόπου τῆς κινήσεως τῶν κατὰ τὰς ὑποθέσεις ἐγκλίσεων καὶ λοξώσεων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary latitude models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "chapter": 3,
+      "anchor": "XIII.3",
+      "pal_title": "γʹ. Περὶ τῆς καθʼ ἑκάστην τῶν ἐγκλίσεων καὶ λοξώσεων πηλικότητος.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary latitude models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "chapter": 4,
+      "anchor": "XIII.4",
+      "pal_title": "δʹ. Πραγματεία κανονίων εἰς τὰς κατὰ μέρος τοῦ πλάτους παρόδους.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary latitude models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "chapter": 5,
+      "anchor": "XIII.5",
+      "pal_title": "εʹ. Ἔκθεσις κανονίων τῆς κατὰ πλάτος πραγματείας.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary latitude models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "chapter": 6,
+      "anchor": "XIII.6",
+      "pal_title": "ϛʹ. Ψηφοφορία τῆς κατὰ πλάτος τῶν ε πλανωμένων παραχωρήσεως.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary latitude models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "chapter": 7,
+      "anchor": "XIII.7",
+      "pal_title": "ζʹ. Περὶ φάσεων καὶ κρύψεων τῶν ε πλανωμένων.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary latitude models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "chapter": 8,
+      "anchor": "XIII.8",
+      "pal_title": "ηʹ. Ὅτι συμφωνεῖ ταῖς ὑποθέσεσιν καὶ τὰ ἰδιάζοντα περὶ τὰς φάσεις Ἀφροδίτης καὶ Ἑρμοῦ.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary latitude models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "chapter": 9,
+      "anchor": "XIII.9",
+      "pal_title": "θʹ. Ἔφοδος εἰς τὰς κατὰ μέρος τῶν φάσεων καὶ κρύψεων διαστάσεις ἀπὸ τοῦ ἡλίου.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary latitude models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "chapter": 10,
+      "anchor": "XIII.10",
+      "pal_title": "ιʹ. Ἔκθεσις κανονίων περιεχόντων τὰς τῶν ε πλανωμένων φάσεις καὶ κρύψεις.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary latitude models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    },
+    {
+      "book": "XIII",
+      "book_number": 13,
+      "chapter": 11,
+      "anchor": "XIII.11",
+      "pal_title": "ιαʹ. Ἐπίλογος τῆς συντάξεως.",
+      "risk": "MODEL_NUMERIC_HIGH",
+      "book_module": "planetary latitude models",
+      "required_controls": [
+        "formal source split against Heiberg PDF and PAL Greek",
+        "astronomical model registry update",
+        "parameter and sexagesimal numeric validation",
+        "diagram/line-label audit for model geometry",
+        "reference witness difference log for model interpretation only"
+      ],
+      "translation_gate": "SOURCE_SPLIT_AND_TECHNICAL_QA_REQUIRED",
+      "final_gate": "FORBIDDEN_UNTIL_CHAPTER_REVIEW_AND_FULL_BOOK_QA_PASS"
+    }
+  ]
+}

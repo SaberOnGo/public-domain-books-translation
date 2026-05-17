@@ -1,0 +1,56 @@
+{
+  "status": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+  "created_at_utc": "2026-05-17T22:13:15+00:00",
+  "chapter": "Book I.4",
+  "translation_allowed": false,
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_file_exists",
+      "path": "chapters/src/004_book_i_04_earth_is_spherical.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "4cac906c317c09226ad6b5bdd656b446e30dc1a6e89b0675bd070e7382a87bf7"
+    },
+    {
+      "id": "source_extraction_check_exists",
+      "path": "qa/pretranslation/004_book_i_04_source_extraction_check.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "80f1baab006d5d382afddc2d15d755c6b52fbdc87ea8615fac9154b64c3dccf7"
+    },
+    {
+      "id": "pdf_contact_sheet_exists",
+      "path": "qa/technical/page_screenshots/book_i04_pages_011_012_contact_sheet.jpg",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "42c0e3e90de09daf3265e6e677518ccc13a97c01c2b3930b9f6433a8dbfc05ac"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/004_book_i_04_earth_is_spherical.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "e886e3451949675035bbfffe19e9ab8bd6d03ee66fa4adca617612a1c4831ba4"
+    },
+    {
+      "id": "term_lock_updated",
+      "path": "qa/technical/mathematical_term_lock.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "1066e99caad25386984337d6db996609a52f9dfba28fbccc2e08a570982e42a0"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/004_book_i_04_earth_is_spherical.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

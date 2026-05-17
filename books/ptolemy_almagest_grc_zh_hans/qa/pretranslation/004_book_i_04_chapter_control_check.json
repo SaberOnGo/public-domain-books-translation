@@ -1,0 +1,42 @@
+{
+  "status": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+  "created_at_utc": "2026-05-17T22:13:19+00:00",
+  "chapter": "Book I.4",
+  "translation_file_allowed_next": "chapters/translated/004_book_i_04_earth_is_spherical.md",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "control_exists",
+      "path": "qa/chapter_controls/004_book_i_04_earth_is_spherical.control.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "b5b31c2a93ca81267b140f614da2eacb7f2f086d62af8414257842d8f40a4f41"
+    },
+    {
+      "id": "source_recheck_exists",
+      "path": "qa/pretranslation/004_book_i_04_formal_source_recheck.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "e0d82033dd04f7dcdd3bde1be685104bcf499e5e7bb984865a5906b9862d64e5"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/004_book_i_04_earth_is_spherical.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "e886e3451949675035bbfffe19e9ab8bd6d03ee66fa4adca617612a1c4831ba4"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/004_book_i_04_earth_is_spherical.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

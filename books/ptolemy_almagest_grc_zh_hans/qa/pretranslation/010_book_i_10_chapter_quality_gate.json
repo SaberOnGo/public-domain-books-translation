@@ -1,0 +1,82 @@
+{
+  "status": "PASS_CHAPTER_QUALITY_GATE__FINAL_PROMOTION_PENDING",
+  "created_at_utc": "2026-05-17T22:13:38+00:00",
+  "chapter": "Book I.10",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_extraction",
+      "path": "qa/pretranslation/010_book_i_10_source_extraction_check.json",
+      "status": "PASS",
+      "expected": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "actual": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "sha256": "2d22119a6df12a91183b41a2f86f01c6b7ae0a01b252d0ec78f41e88bb8cf711"
+    },
+    {
+      "id": "formal_source_recheck",
+      "path": "qa/pretranslation/010_book_i_10_formal_source_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_FOR_FORMAL_SOURCE_RECHECK__NOT_FINAL_GATE",
+      "actual": "PASS_FOR_FORMAL_SOURCE_RECHECK__NOT_FINAL_GATE",
+      "sha256": "df4ad9f78f63789aa0f69471c6d74999987e9ad6c667d4118fbb7c726105483f"
+    },
+    {
+      "id": "chapter_control",
+      "path": "qa/pretranslation/010_book_i_10_chapter_control_check.json",
+      "status": "PASS",
+      "expected": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "actual": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "sha256": "cac241f2fd6f14e3f6252a662f0f7422c0feeee3115af0b035c01c032a075d71"
+    },
+    {
+      "id": "translation_draft",
+      "path": "qa/pretranslation/010_book_i_10_translation_check.json",
+      "status": "PASS",
+      "expected": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "actual": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "sha256": "947ced6e56a1cb0a592f8566434dc85efadc2bfcf85d2e1ccebc33b836e7c1f6"
+    },
+    {
+      "id": "draft_review",
+      "path": "qa/pretranslation/010_book_i_10_review_check.json",
+      "status": "PASS",
+      "expected": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "actual": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "sha256": "22d4f33e0b1af116bd68a52853054737b2bdd656bbd40a6833b3c5805ae997a8"
+    },
+    {
+      "id": "post_translation_technical_recheck",
+      "path": "qa/pretranslation/010_book_i_10_post_translation_technical_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "actual": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "sha256": "90471cc58a71b76889f73845beb0a6405e3d52c1957016e596a568dbca805e85"
+    },
+    {
+      "id": "chapter_quality_gate_record",
+      "path": "qa/chapter_controls/010_book_i_10_chords.quality_gate.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "0b008d5154ee10397b418b5787e8ded2f001865f5d4cd3db971d3d14bf42a80f"
+    },
+    {
+      "id": "translation_file",
+      "path": "chapters/translated/010_book_i_10_chords.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "71a08a8206de2b546b5af68031e700eaa07db0920371fddc07132267be46e6eb"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "chapters/final/010_book_i_10_chords.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

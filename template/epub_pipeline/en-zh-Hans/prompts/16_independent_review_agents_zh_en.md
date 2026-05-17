@@ -13,6 +13,8 @@ AI 必须派生两个评审 Agent：
 
 两个 Agent 必须独立阅读模板要求、产物和评分表，不得互相参考，不得只复述主执行 AI 的结论。
 
+精校后还必须执行随机段落抽检。随机抽检不是可选补充，而是进入最终独立评审前的硬门禁：每一轮精校完成后，都必须重新生成抽检样本，并由至少 2 个独立 Agent 各自检查不少于 10 个随机段落。
+
 ## 输入 / Input
 
 - `output/book.epub`
@@ -23,12 +25,57 @@ AI 必须派生两个评审 Agent：
 - `qa/gates/*.gate.md`
 - `qa/chapter_controls/*.control.md`
 - `reviews/scorecards/_TEMPLATE_scorecard.md`
+- `reviews/scorecards/_TEMPLATE_random_spotcheck_score.md`
+- `reviews/random_spotcheck/random_sample_manifest.json`
+- `reviews/random_spotcheck/agent_a_samples.md`
+- `reviews/random_spotcheck/agent_b_samples.md`
 
 ## 输出 / Output
 
 - `reviews/agent_a/review.md`
 - `reviews/agent_b/review.md`
+- `reviews/agent_a/random_spotcheck_review.md`
+- `reviews/agent_b/random_spotcheck_review.md`
+- `reviews/scorecards/random_spotcheck_score.md`
 - `reviews/scorecards/final_quality_score.md`
+
+## 随机抽检硬门禁 / Random Spot-Check Gate
+
+主执行 AI 在每一轮精校完成后，必须先生成随机抽检样本：
+
+```powershell
+npm run review:random-samples
+```
+
+若项目没有 npm 脚本，则运行等效命令：
+
+```powershell
+python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 10
+```
+
+抽检规则：
+
+- 至少 2 个独立 Agent。
+- 每个 Agent 至少 10 个随机正文段落。
+- 样本必须来自读者可见终稿文本；不得由主执行 AI 人工挑选“看起来没问题”的段落。
+- `random_sample_manifest.json` 必须记录 seed、候选段落数、每个 Agent 的样本编号。
+- 两个 Agent 不得互相参考结论；不得只复述主执行 AI 的判断。
+
+每个抽检 Agent 必须假设自己是认真阅读本书的中文读者，并逐段检查：
+
+- 这一段中文是否能自然读懂。
+- 是否忠实于英文公版原文，不借现代中文译本或其他译本改写。
+- 英文长句、称谓、人物关系、历史语境、动作强度和叙述立场是否被正确转成自然中文。
+- 术语、专名、译注、标题策略和段落节奏是否符合本模板设计。
+- EPUB 手机阅读时是否会因长段、注释、标题、图表或排版影响理解。
+
+评分规则：
+
+- 每段 0-100 分。
+- 每个 Agent 的平均分必须 >= 75。
+- 任一单段 < 70，则该 Agent 抽检失败。
+- 任一段出现读者读不懂、事实或叙述关系误解、英文句法硬搬、无依据润饰、术语/专名/译注错误，必须判为失败，即使平均分达标。
+- 任一 Agent 抽检失败时，必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复；修复后重新生成随机样本，重新执行两个 Agent 抽检。
 
 ## Agent A 重点 / Agent A Focus
 
@@ -56,5 +103,6 @@ AI 必须派生两个评审 Agent：
 
 - Agent A 总分 >= 85。
 - Agent B 总分 >= 85。
+- 随机段落抽检已通过：Agent A/B 抽检平均分均 >= 75，且无单段 < 70。
 - 任一 P0/P1 问题必须返工。
 - 任一 Agent 明确指出严重问题时，主执行 AI 必须进入回退路由，不得忽略。

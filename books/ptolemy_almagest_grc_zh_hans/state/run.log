@@ -1,0 +1,475 @@
+2026-05-17 FULL_BOOK_PRE_RESEARCH_STARTED
+- Created active full-book /goal contract in goal/2026-05-17_almagest_full_book_translation_goal.md.
+- Added deterministic PAL TOC extraction script scripts/extract_pal_full_toc.py and npm script source:toc.
+- Generated source/full_toc_draft.json and source/full_book_translation_outline.md from PAL Heiberg auxiliary Greek transcription.
+- Recorded 13 books and 146 chapters as a draft TOC, not a formal chapters/src split.
+- Added qa/pretranslation/full_book_pre_research_plan.md.
+- Updated state/pipeline_state.json to full_book_goal_authorized=true while keeping formal_translation_allowed=false until full-book pre-research PASS.
+- Did not batch-translate chapters, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I_PAL_SEGMENTATION_BOUNDARIES_IDENTIFIED
+- Added scripts/extract_pal_book_segmentation.py and npm script source:book-i.
+- Generated source/book_i_segmentation.json and source/book_i_segmentation.md.
+- Recorded 16 Book I chapter boundaries from PAL anchors and page markers.
+- Marked Book I PDF page verification as pending except Book I.10 trial-level evidence requiring formal recheck.
+- Did not batch-translate chapters, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I_PDF_SAMPLING_DRAFT_COMPLETE
+- Added scripts/render_pdf_contact_sheet.py using local PyMuPDF rendering.
+- Generated Book I contact sheets for PDF viewer pages 4-50 under qa/technical/page_screenshots/.
+- Updated qa/technical/book_i_page_verification.md with Book I page-image sampling evidence and the working viewer-page formula.
+- Book I chapter-specific PDF verification is still pending before formal chapters/src extraction.
+- Did not batch-translate chapters, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I_SOURCE_SPLIT_READINESS_MATRIX_CREATED
+- Added scripts/build_book_i_readiness_matrix.py and npm script source:book-i-readiness.
+- Generated qa/pretranslation/book_i_source_split_readiness.json and qa/pretranslation/book_i_source_split_readiness.md.
+- Matrix result: 16 Book I chapters, 1 ready for formal recheck only, 15 still source extraction pending.
+- Book I.11 and I.15 remain table/numeric high-risk chapters requiring structured table and numeric validation strategy before translation.
+- Did not batch-translate chapters, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I_PDF_SAMPLING_PROMOTED_TO_PRE_RESEARCH_EVIDENCE
+- Updated scripts/extract_pal_book_segmentation.py so Book I chapters record PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED instead of unresolved PDF pending.
+- Updated scripts/build_book_i_readiness_matrix.py so blockers now distinguish pre-research PDF sampling from formal chapter evidence.
+- Regenerated source/book_i_segmentation.md and qa/pretranslation/book_i_source_split_readiness.md.
+- Formal source extraction remains pending for all Book I chapters except I.10 formal recheck preparation.
+- Did not batch-translate chapters, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I10_FORMAL_SOURCE_RECHECK_PASS_RECORDED
+- Added scripts/check_book_i10_formal_source_recheck.py and npm script source:i10-formal-recheck.
+- Generated qa/pretranslation/010_book_i_10_formal_source_recheck.json and .md.
+- Recheck status: PASS_FOR_FORMAL_SOURCE_RECHECK__NOT_FINAL_GATE.
+- Updated scripts/build_book_i_readiness_matrix.py so I.10 readiness is driven by the recheck JSON.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.10 is now FORMAL_SOURCE_RECHECK_PASS__CHAPTER_TRANSLATION_STILL_GATED.
+- Updated state/pipeline_state.json and qa/pretranslation/full_book_pre_research_plan.md.
+- Did not batch-translate chapters, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 FULL_BOOK_RISK_MAP_CREATED
+- Added scripts/build_full_book_risk_map.py plus npm scripts source:risk-map and source:full-prep.
+- Generated qa/pretranslation/full_book_risk_map.json and .md from source/full_toc_draft.json.
+- Risk counts: FOUNDATION_GEOMETRY_HIGH=26, MODEL_NUMERIC_HIGH=95, STAR_CATALOG_HIGH=9, TABLE_NUMERIC_HIGH=16.
+- Recorded per-risk required controls and per-book next pre-research actions.
+- Reconfirmed source roles: Heiberg PDF is primary facsimile authority, PAL Greek XML is auxiliary transcription, English translations are reference witnesses only.
+- Did not batch-translate chapters, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 FULL_BOOK_PRETRANSLATION_GATE_ADDED
+- Added scripts/check_full_book_pretranslation_gate.py.
+- Added npm script quality:pretranslation-gate and included it in quality:all.
+- Generated qa/pretranslation/full_book_pretranslation_gate.json and .md.
+- Gate status: PASS_PRE_RESEARCH_ACTIVE__FORMAL_TRANSLATION_GATED.
+- The gate allows pre-research/source-split preparation and checks that chapters/final plus formal output/book.epub remain absent while formal_translation_allowed=false.
+- Did not batch-translate chapters, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I11_CHORD_TABLE_STRATEGY_PASS
+- Confirmed PAL XML preserves Book I.11 heading/page markers only and does not include chord-table body rows.
+- Rendered qa/technical/page_screenshots/book_i11_chord_table_pages_028_035_contact_sheet.jpg for PDF viewer pages 28-35.
+- Added qa/technical/011_book_i_11_chord_table_strategy.md.
+- Updated qa/technical/table_validation_log.md, diagram_table_inventory.md, and chord_angle_calculation_policy.md.
+- Added scripts/check_book_i11_table_strategy.py plus npm scripts source:i11-table-strategy and quality:i11-table-strategy.
+- Included quality:i11-table-strategy in quality:all.
+- Generated qa/pretranslation/011_book_i_11_table_strategy_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.11 is now TABLE_STRATEGY_PASS__SOURCE_EXTRACTION_PENDING.
+- Did not translate Book I.11, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I1_SOURCE_EXTRACTION_CANDIDATE_CREATED
+- Added scripts/extract_pal_chapter_source.py as the reusable PAL chapter source extractor, initially mapped for Book I.1.
+- Generated chapters/src/001_book_i_01_proem.md from PAL Greek auxiliary transcription.
+- Added scripts/check_chapter_source_extraction.py plus npm scripts source:i1-extract and quality:i1-source.
+- Included quality:i1-source in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/001_book_i_01_source_extraction_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.1 is now SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING.
+- Did not translate Book I.1, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I1_FORMAL_SOURCE_RECHECK_PASS
+- Rendered qa/technical/page_screenshots/book_i01_pages_006_008_contact_sheet.jpg for PDF viewer pages 6-8.
+- Added qa/technical/001_book_i_01_proem.technical_audit.md for Book I.1 concept/discipline-boundary risks.
+- Updated qa/technical/mathematical_term_lock.md with Book I.1 disciplinary terms.
+- Added scripts/check_book_i1_formal_source_recheck.py plus npm scripts source:i1-formal-recheck and quality:i1-formal-recheck.
+- Included quality:i1-formal-recheck in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/001_book_i_01_formal_source_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.1 is now FORMAL_SOURCE_RECHECK_PASS__CHAPTER_CONTROL_PENDING.
+- Did not translate Book I.1, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I1_CHAPTER_CONTROL_PASS
+- Added qa/chapter_controls/001_book_i_01_proem.control.md.
+- Added scripts/check_book_i1_chapter_control.py plus npm scripts source:i1-control and quality:i1-control.
+- Included quality:i1-control in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/001_book_i_01_chapter_control_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.1 is now CHAPTER_CONTROL_PASS__CONTROLLED_TRANSLATION_PREP_ALLOWED.
+- Did not translate Book I.1, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I1_CONTROLLED_TRANSLATION_DRAFT_CREATED
+- Added chapters/translated/001_book_i_01_proem.md as a controlled draft translation from the Greek source.
+- Added scripts/check_book_i1_translation.py plus npm scripts source:i1-translation-check and quality:i1-translation.
+- Included quality:i1-translation in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/001_book_i_01_translation_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.1 is now TRANSLATION_DRAFT_PASS__REVIEW_AND_TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I1_DRAFT_REVIEW_PASS
+- Added reviews/chapters/001_book_i_01_proem.review.md.
+- Added scripts/check_book_i1_review.py plus npm scripts source:i1-review and quality:i1-review.
+- Included quality:i1-review in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/001_book_i_01_review_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.1 is now REVIEW_PASS__TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I1_POST_TRANSLATION_TECHNICAL_RECHECK_PASS
+- Added qa/technical/001_book_i_01_proem.post_translation_technical_recheck.md.
+- Added scripts/check_book_i1_post_translation_technical_recheck.py plus npm scripts source:i1-post-technical-recheck and quality:i1-post-technical-recheck.
+- Included quality:i1-post-technical-recheck in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/001_book_i_01_post_translation_technical_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.1 is now TECHNICAL_RECHECK_PASS__CHAPTER_QUALITY_GATE_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I1_CHAPTER_QUALITY_GATE_PASS
+- Added qa/chapter_controls/001_book_i_01_proem.quality_gate.md.
+- Added scripts/check_book_i1_chapter_quality_gate.py plus npm scripts source:i1-chapter-gate and quality:i1-chapter-gate.
+- Included quality:i1-chapter-gate in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/001_book_i_01_chapter_quality_gate.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.1 is now CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I2_SOURCE_EXTRACTION_CANDIDATE_CREATED
+- Extended scripts/extract_pal_chapter_source.py and scripts/check_chapter_source_extraction.py for I.2.
+- Added npm scripts source:i2-extract, source:i2-check, and quality:i2-source.
+- Included quality:i2-source in quality:all and full-book pretranslation gate required files.
+- Generated chapters/src/002_book_i_02_order_of_the_theorems.md from PAL Greek auxiliary transcription.
+- Generated qa/pretranslation/002_book_i_02_source_extraction_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.2 is now SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING.
+- Did not translate Book I.2, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I2_FORMAL_SOURCE_RECHECK_PASS
+- Rendered qa/technical/page_screenshots/book_i02_pages_008_009_contact_sheet.jpg for PDF viewer pages 8-9.
+- Added qa/technical/002_book_i_02_order_of_the_theorems.technical_audit.md for Book I.2 ordering/model-method risks.
+- Updated qa/technical/mathematical_term_lock.md with Book I.2 ordering and astronomical object terms.
+- Added scripts/check_book_i2_formal_source_recheck.py plus npm scripts source:i2-formal-recheck and quality:i2-formal-recheck.
+- Included quality:i2-formal-recheck in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/002_book_i_02_formal_source_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.2 is now FORMAL_SOURCE_RECHECK_PASS__CHAPTER_CONTROL_PENDING.
+- Did not translate Book I.2, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I2_CHAPTER_CONTROL_PASS
+- Added qa/chapter_controls/002_book_i_02_order_of_the_theorems.control.md.
+- Added scripts/check_book_i2_chapter_control.py plus npm scripts source:i2-control and quality:i2-control.
+- Included quality:i2-control in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/002_book_i_02_chapter_control_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.2 is now CHAPTER_CONTROL_PASS__CONTROLLED_TRANSLATION_PREP_ALLOWED.
+- Did not translate Book I.2, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I2_CONTROLLED_TRANSLATION_DRAFT_CREATED
+- Added chapters/translated/002_book_i_02_order_of_the_theorems.md as a controlled draft translation from the Greek source.
+- Added scripts/check_book_i2_translation.py plus npm scripts source:i2-translation-check and quality:i2-translation.
+- Included quality:i2-translation in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/002_book_i_02_translation_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.2 is now TRANSLATION_DRAFT_PASS__REVIEW_AND_TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I2_DRAFT_REVIEW_PASS
+- Added reviews/chapters/002_book_i_02_order_of_the_theorems.review.md.
+- Added scripts/check_book_i2_review.py plus npm scripts source:i2-review and quality:i2-review.
+- Included quality:i2-review in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/002_book_i_02_review_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.2 is now REVIEW_PASS__TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I2_POST_TRANSLATION_TECHNICAL_RECHECK_PASS
+- Added qa/technical/002_book_i_02_order_of_the_theorems.post_translation_technical_recheck.md.
+- Added scripts/check_book_i2_post_translation_technical_recheck.py plus npm scripts source:i2-post-technical-recheck and quality:i2-post-technical-recheck.
+- Included quality:i2-post-technical-recheck in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/002_book_i_02_post_translation_technical_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.2 is now TECHNICAL_RECHECK_PASS__CHAPTER_QUALITY_GATE_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I2_CHAPTER_QUALITY_GATE_PASS
+- Added qa/chapter_controls/002_book_i_02_order_of_the_theorems.quality_gate.md.
+- Added scripts/check_book_i2_chapter_quality_gate.py plus npm scripts source:i2-chapter-gate and quality:i2-chapter-gate.
+- Included quality:i2-chapter-gate in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/002_book_i_02_chapter_quality_gate.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.2 is now CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I3_FORMAL_SOURCE_RECHECK_PASS
+- Extended scripts/extract_pal_chapter_source.py and scripts/check_chapter_source_extraction.py for I.3.
+- Added npm scripts source:i3-extract, source:i3-check, quality:i3-source, source:i3-formal-recheck, and quality:i3-formal-recheck.
+- Generated chapters/src/003_book_i_03_heaven_moves_spherically.md from PAL Greek auxiliary transcription.
+- Generated qa/pretranslation/003_book_i_03_source_extraction_check.json and .md.
+- Rendered qa/technical/page_screenshots/book_i03_pages_009_011_contact_sheet.jpg for PDF viewer pages 9-11.
+- Added qa/technical/003_book_i_03_heaven_moves_spherically.technical_audit.md.
+- Updated qa/technical/mathematical_term_lock.md with Book I.3 heavenly motion and observation/refutation terms.
+- Generated qa/pretranslation/003_book_i_03_formal_source_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.3 is now FORMAL_SOURCE_RECHECK_PASS__CHAPTER_CONTROL_PENDING.
+- Did not translate Book I.3, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I3_CHAPTER_CONTROL_PASS
+- Added qa/chapter_controls/003_book_i_03_heaven_moves_spherically.control.md.
+- Added scripts/check_book_i3_chapter_control.py plus npm scripts source:i3-control and quality:i3-control.
+- Included quality:i3-control in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/003_book_i_03_chapter_control_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.3 is now CHAPTER_CONTROL_PASS__CONTROLLED_TRANSLATION_PREP_ALLOWED.
+- Did not translate Book I.3, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I3_CONTROLLED_TRANSLATION_DRAFT_CREATED
+- Added chapters/translated/003_book_i_03_heaven_moves_spherically.md as a controlled draft translation from the Greek source.
+- Added scripts/check_book_i3_translation.py plus npm scripts source:i3-translation-check and quality:i3-translation.
+- Included quality:i3-translation in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/003_book_i_03_translation_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.3 is now TRANSLATION_DRAFT_PASS__REVIEW_AND_TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I3_DRAFT_REVIEW_PASS
+- Added reviews/chapters/003_book_i_03_heaven_moves_spherically.review.md.
+- Added scripts/check_book_i3_review.py plus npm scripts source:i3-review and quality:i3-review.
+- Included quality:i3-review in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/003_book_i_03_review_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.3 is now REVIEW_PASS__TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I3_POST_TRANSLATION_TECHNICAL_RECHECK_PASS
+- Added qa/technical/003_book_i_03_heaven_moves_spherically.post_translation_technical_recheck.md.
+- Added scripts/check_book_i3_post_translation_technical_recheck.py plus npm scripts source:i3-post-technical-recheck and quality:i3-post-technical-recheck.
+- Included quality:i3-post-technical-recheck in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/003_book_i_03_post_translation_technical_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.3 is now TECHNICAL_RECHECK_PASS__CHAPTER_QUALITY_GATE_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I3_CHAPTER_QUALITY_GATE_PASS
+- Added qa/chapter_controls/003_book_i_03_heaven_moves_spherically.quality_gate.md.
+- Added scripts/check_book_i3_chapter_quality_gate.py plus npm scripts source:i3-chapter-gate and quality:i3-chapter-gate.
+- Included quality:i3-chapter-gate in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/003_book_i_03_chapter_quality_gate.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.3 is now CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I4_SOURCE_EXTRACTION_CANDIDATE
+- Extended scripts/extract_pal_chapter_source.py and scripts/check_chapter_source_extraction.py for I.4.
+- Added npm scripts source:i4-extract, source:i4-check, and quality:i4-source.
+- Included quality:i4-source in quality:all and full-book pretranslation gate required files.
+- Generated chapters/src/004_book_i_04_earth_is_spherical.md from PAL Greek auxiliary transcription.
+- Generated qa/pretranslation/004_book_i_04_source_extraction_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.4 is now SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING.
+- Did not translate Book I.4, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I4_FORMAL_SOURCE_RECHECK_PASS
+- Rendered qa/technical/page_screenshots/book_i04_pages_011_012_contact_sheet.jpg for PDF viewer pages 11-12.
+- Added qa/technical/004_book_i_04_earth_is_spherical.technical_audit.md.
+- Updated qa/technical/mathematical_term_lock.md with Book I.4 earth-sphericity and observation terms.
+- Added scripts/check_book_i4_formal_source_recheck.py plus npm scripts source:i4-formal-recheck and quality:i4-formal-recheck.
+- Included quality:i4-formal-recheck in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/004_book_i_04_formal_source_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.4 is now FORMAL_SOURCE_RECHECK_PASS__CHAPTER_CONTROL_PENDING.
+- Did not translate Book I.4, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I4_CHAPTER_CONTROL_PASS
+- Added qa/chapter_controls/004_book_i_04_earth_is_spherical.control.md.
+- Added scripts/check_book_i4_chapter_control.py plus npm scripts source:i4-control and quality:i4-control.
+- Included quality:i4-control in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/004_book_i_04_chapter_control_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.4 is now CHAPTER_CONTROL_PASS__CONTROLLED_TRANSLATION_PREP_ALLOWED.
+- Did not translate Book I.4, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I4_CONTROLLED_TRANSLATION_DRAFT_CREATED
+- Added chapters/translated/004_book_i_04_earth_is_spherical.md as a controlled draft translation from the Greek source.
+- Added scripts/check_book_i4_translation.py plus npm scripts source:i4-translation-check and quality:i4-translation.
+- Included quality:i4-translation in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/004_book_i_04_translation_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.4 is now TRANSLATION_DRAFT_PASS__REVIEW_AND_TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I4_DRAFT_REVIEW_PASS
+- Added reviews/chapters/004_book_i_04_earth_is_spherical.review.md.
+- Added scripts/check_book_i4_review.py plus npm scripts source:i4-review and quality:i4-review.
+- Included quality:i4-review in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/004_book_i_04_review_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.4 is now REVIEW_PASS__TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I4_POST_TRANSLATION_TECHNICAL_RECHECK_PASS
+- Added qa/technical/004_book_i_04_earth_is_spherical.post_translation_technical_recheck.md.
+- Added scripts/check_book_i4_post_translation_technical_recheck.py plus npm scripts source:i4-post-technical-recheck and quality:i4-post-technical-recheck.
+- Included quality:i4-post-technical-recheck in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/004_book_i_04_post_translation_technical_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.4 is now TECHNICAL_RECHECK_PASS__CHAPTER_QUALITY_GATE_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I4_CHAPTER_QUALITY_GATE_PASS
+- Added qa/chapter_controls/004_book_i_04_earth_is_spherical.quality_gate.md.
+- Added scripts/check_book_i4_chapter_quality_gate.py plus npm scripts source:i4-chapter-gate and quality:i4-chapter-gate.
+- Included quality:i4-chapter-gate in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/004_book_i_04_chapter_quality_gate.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.4 is now CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I5_SOURCE_EXTRACTION_CANDIDATE
+- Extended scripts/extract_pal_chapter_source.py and scripts/check_chapter_source_extraction.py for I.5.
+- Added npm scripts source:i5-extract, source:i5-check, and quality:i5-source.
+- Included quality:i5-source in quality:all and full-book pretranslation gate required files.
+- Generated chapters/src/005_book_i_05_earth_is_central.md from PAL Greek auxiliary transcription.
+- Generated qa/pretranslation/005_book_i_05_source_extraction_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.5 is now SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING.
+- Did not translate Book I.5, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I5_FORMAL_SOURCE_RECHECK_PASS
+- Rendered qa/technical/page_screenshots/book_i05_pages_012_014_contact_sheet.jpg for PDF viewer pages 12-14.
+- Added qa/technical/005_book_i_05_earth_is_central.technical_audit.md.
+- Updated qa/technical/mathematical_term_lock.md with Book I.5 earth-centrality and observational refutation terms.
+- Added scripts/check_book_i5_formal_source_recheck.py plus npm scripts source:i5-formal-recheck and quality:i5-formal-recheck.
+- Included quality:i5-formal-recheck in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/005_book_i_05_formal_source_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.5 is now FORMAL_SOURCE_RECHECK_PASS__CHAPTER_CONTROL_PENDING.
+- Did not translate Book I.5, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I5_CHAPTER_CONTROL_PASS
+- Added qa/chapter_controls/005_book_i_05_earth_is_central.control.md.
+- Added scripts/check_book_i5_chapter_control.py plus npm scripts source:i5-control and quality:i5-control.
+- Included quality:i5-control in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/005_book_i_05_chapter_control_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.5 is now CHAPTER_CONTROL_PASS__CONTROLLED_TRANSLATION_PREP_ALLOWED.
+- Did not translate Book I.5, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I5_CONTROLLED_TRANSLATION_DRAFT_CREATED
+- Added chapters/translated/005_book_i_05_earth_is_central.md as a controlled draft translation from the Greek source.
+- Added scripts/check_book_i5_translation.py plus npm scripts source:i5-translation-check and quality:i5-translation.
+- Included quality:i5-translation in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/005_book_i_05_translation_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.5 is now TRANSLATION_DRAFT_PASS__REVIEW_AND_TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I5_DRAFT_REVIEW_PASS
+- Added reviews/chapters/005_book_i_05_earth_is_central.review.md.
+- Added scripts/check_book_i5_review.py plus npm scripts source:i5-review and quality:i5-review.
+- Included quality:i5-review in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/005_book_i_05_review_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.5 is now REVIEW_PASS__TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I5_POST_TRANSLATION_TECHNICAL_RECHECK_PASS
+- Added qa/technical/005_book_i_05_earth_is_central.post_translation_technical_recheck.md.
+- Added scripts/check_book_i5_post_translation_technical_recheck.py plus npm scripts source:i5-post-technical-recheck and quality:i5-post-technical-recheck.
+- Included quality:i5-post-technical-recheck in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/005_book_i_05_post_translation_technical_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.5 is now TECHNICAL_RECHECK_PASS__CHAPTER_QUALITY_GATE_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I5_CHAPTER_QUALITY_GATE_PASS
+- Added qa/chapter_controls/005_book_i_05_earth_is_central.quality_gate.md.
+- Added scripts/check_book_i5_chapter_quality_gate.py plus npm scripts source:i5-chapter-gate and quality:i5-chapter-gate.
+- Included quality:i5-chapter-gate in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/005_book_i_05_chapter_quality_gate.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.5 is now CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I6_SOURCE_EXTRACTION_CANDIDATE
+- Added Book I.6 to scripts/extract_pal_chapter_source.py and scripts/check_chapter_source_extraction.py.
+- Added npm scripts source:i6-extract, source:i6-check, and quality:i6-source.
+- Included quality:i6-source in quality:all and full-book pretranslation gate required files.
+- Generated chapters/src/006_book_i_06_earth_as_point_to_heavens.md from PAL Greek auxiliary transcription.
+- Generated qa/pretranslation/006_book_i_06_source_extraction_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.6 is now SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING.
+- Did not translate Book I.6, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I6_FORMAL_SOURCE_RECHECK_PASS
+- Added qa/technical/page_screenshots/book_i06_page_014_contact_sheet.jpg.
+- Added qa/technical/006_book_i_06_earth_as_point_to_heavens.technical_audit.md.
+- Updated qa/technical/mathematical_term_lock.md with Book I.6 earth-scale and observational-plane terms.
+- Added scripts/check_book_i6_formal_source_recheck.py plus npm scripts source:i6-formal-recheck and quality:i6-formal-recheck.
+- Included quality:i6-formal-recheck in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/006_book_i_06_formal_source_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.6 is now FORMAL_SOURCE_RECHECK_PASS__CHAPTER_CONTROL_PENDING.
+- Did not translate Book I.6, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I6_CHAPTER_CONTROL_PASS
+- Added qa/chapter_controls/006_book_i_06_earth_as_point_to_heavens.control.md.
+- Added scripts/check_book_i6_chapter_control.py plus npm scripts source:i6-control and quality:i6-control.
+- Included quality:i6-control in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/006_book_i_06_chapter_control_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.6 is now CHAPTER_CONTROL_PASS__CONTROLLED_TRANSLATION_PREP_ALLOWED.
+- Did not translate Book I.6, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I6_CONTROLLED_TRANSLATION_DRAFT_CREATED
+- Added chapters/translated/006_book_i_06_earth_as_point_to_heavens.md as a controlled draft translation from the Greek source.
+- Added scripts/check_book_i6_translation.py plus npm scripts source:i6-translation-check and quality:i6-translation.
+- Included quality:i6-translation in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/006_book_i_06_translation_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.6 is now TRANSLATION_DRAFT_PASS__REVIEW_AND_TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I6_DRAFT_REVIEW_PASS
+- Added reviews/chapters/006_book_i_06_earth_as_point_to_heavens.review.md.
+- Added scripts/check_book_i6_review.py plus npm scripts source:i6-review and quality:i6-review.
+- Included quality:i6-review in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/006_book_i_06_review_check.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.6 is now REVIEW_PASS__TECHNICAL_RECHECK_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I6_POST_TRANSLATION_TECHNICAL_RECHECK_PASS
+- Added qa/technical/006_book_i_06_earth_as_point_to_heavens.post_translation_technical_recheck.md.
+- Added scripts/check_book_i6_post_translation_technical_recheck.py plus npm scripts source:i6-post-technical-recheck and quality:i6-post-technical-recheck.
+- Included quality:i6-post-technical-recheck in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/006_book_i_06_post_translation_technical_recheck.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.6 is now TECHNICAL_RECHECK_PASS__CHAPTER_QUALITY_GATE_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I6_CHAPTER_QUALITY_GATE_PASS
+- Added qa/chapter_controls/006_book_i_06_earth_as_point_to_heavens.quality_gate.md.
+- Added scripts/check_book_i6_chapter_quality_gate.py plus npm scripts source:i6-chapter-gate and quality:i6-chapter-gate.
+- Included quality:i6-chapter-gate in quality:all and full-book pretranslation gate required files.
+- Generated qa/pretranslation/006_book_i_06_chapter_quality_gate.json and .md.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.6 is now CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I7_CHAPTER_QUALITY_GATE_PASS
+- Added chapters/src/007_book_i_07_earth_has_no_translational_motion.md and qa/technical/page_screenshots/book_i07_pages_015_017_contact_sheet.jpg.
+- Added qa/technical/007_book_i_07_earth_has_no_translational_motion.technical_audit.md.
+- Added chapter control, controlled translation draft, draft review, post-translation technical recheck, and chapter quality gate for Book I.7.
+- Added scripts/check_book_i7_formal_source_recheck.py, check_book_i7_chapter_control.py, check_book_i7_translation.py, check_book_i7_review.py, check_book_i7_post_translation_technical_recheck.py, and check_book_i7_chapter_quality_gate.py.
+- Added source:i7-* and quality:i7-* npm scripts and included quality:i7-* in quality:all plus full-book pretranslation gate required files.
+- Regenerated qa/pretranslation/book_i_source_split_readiness.md; I.7 is now CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I_SCOPE_REDUCED_BY_USER
+- User clarified the active goal should complete Book I only, not all 13 books.
+- Updated goal/2026-05-17_almagest_full_book_translation_goal.md, qa/pretranslation/full_book_pre_research_plan.md, qa/pretranslation/pretranslation_report.md, and state/pipeline_state.json to record Book I as the active scope.
+- Kept full-book TOC/risk artifacts as background references only; they are no longer current exit criteria.
+
+2026-05-17 BOOK_I8_CHAPTER_QUALITY_GATE_PASS
+- Added chapters/src/008_book_i_08_two_primary_motions.md and qa/technical/page_screenshots/book_i08_pages_017_019_contact_sheet.jpg.
+- Added qa/technical/008_book_i_08_two_primary_motions.technical_audit.md and Book I.8 term locks.
+- Added chapter control, controlled translation draft, draft review, post-translation technical recheck, and chapter quality gate for Book I.8.
+- Added scripts/check_book_i8_formal_source_recheck.py, check_book_i8_chapter_control.py, check_book_i8_translation.py, check_book_i8_review.py, check_book_i8_post_translation_technical_recheck.py, and check_book_i8_chapter_quality_gate.py.
+- Added source:i8-* and quality:i8-* npm scripts and included quality:i8-* in quality:all plus full-book pretranslation gate required files.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I9_CHAPTER_QUALITY_GATE_PASS
+- Added chapters/src/009_book_i_09_on_individual_preliminaries.md and qa/technical/page_screenshots/book_i09_page_019_contact_sheet.jpg.
+- Added qa/technical/009_book_i_09_on_individual_preliminaries.technical_audit.md and Book I.9 term locks.
+- Added chapter control, controlled translation draft, draft review, post-translation technical recheck, and chapter quality gate for Book I.9.
+- Added scripts/check_book_i9_formal_source_recheck.py, check_book_i9_chapter_control.py, check_book_i9_translation.py, check_book_i9_review.py, check_book_i9_post_translation_technical_recheck.py, and check_book_i9_chapter_quality_gate.py.
+- Added source:i9-* and quality:i9-* npm scripts and included quality:i9-* in quality:all plus full-book pretranslation gate required files.
+- Did not write chapters/final and did not generate output/book.epub.
+
+2026-05-17 BOOK_I10_CHAPTER_QUALITY_GATE_PASS
+- Promoted existing Book I.10 controlled trial materials into Book I chapter-gate queue without granting final output.
+- Updated chapters/src/010_book_i_10_chords.md source-control status and chapters/translated/010_book_i_10_chords.md draft status.
+- Added reviews/chapters/010_book_i_10_chords.review.md, qa/technical/010_book_i_10_chords.post_translation_technical_recheck.md, and qa/chapter_controls/010_book_i_10_chords.quality_gate.md.
+- Added scripts/check_book_i10_chapter_control.py, check_book_i10_translation.py, check_book_i10_review.py, check_book_i10_post_translation_technical_recheck.py, and check_book_i10_chapter_quality_gate.py.
+- Added source:i10-* and quality:i10-* npm scripts and included quality:i10-* in quality:all plus full-book pretranslation gate required files.
+- Did not write chapters/final, did not translate Book I.11 chord table, and did not generate output/book.epub.
+
+2026-05-17 BOOK_I11_REGIONS_AND_I12_I16_SOURCE_EXTRACTION
+- Added deterministic Book I.11 chord-table region crop script and table-region check gate.
+- Generated source/tables/book_i_11_chord_table_regions.csv and 16 Heiberg PDF table-region crops for printed pages 48-63.
+- Updated table validation log, diagram/table inventory, and Book I readiness matrix to mark I.11 as REGION_CROPPED__ROW_TRANSCRIPTION_PENDING.
+- Extended PAL chapter extraction and source checks for Book I.12-I.16, then generated chapters/src/012 through chapters/src/016 and their source-extraction check reports.
+- Added quality/source npm scripts for I.11 table regions and I.12-I.16 source checks; quality:all passes.
+- Did not complete I.11 row-level chord-table transcription, did not translate I.12-I.16, did not write chapters/final, and did not generate output/book.epub.
+
+2026-05-18 BOOK_I_GOAL_AND_I11_RAW_TABLE_WORKSHEET
+- Created goal/2026-05-18_almagest_book_i_translation_epub_goal.md for Book I.1-I.16 translation, Book I EPUB preview, refinement, and two independent random-review agents.
+- Clarified I.11 EPUB display rule: structured text tables only, segmented with horizontal scrolling and simple CSS; no original facsimile images in the reader EPUB body.
+- Added scripts/generate_book_i11_chord_table_modern_check.py to generate 360 modern numeric QA witness rows from 0°30′ through 180°.
+- Added scripts/init_book_i11_chord_table_raw.py to initialize source/tables/book_i_11_chord_table_raw.csv as a 360-row PDF transcription worksheet.
+- Added scripts/check_book_i11_chord_table_raw.py; it intentionally fails until rows are actually transcribed from Heiberg PDF and numerically checked.
+- Added source:i11-modern-check, source:i11-raw-init, quality:i11-raw-table, and source:i11-raw-check scripts.
+- quality:all passes; raw table check currently fails by design because 0/360 rows are PDF-transcribed.
+- Corrected naming so modern formula values are not described as expected Ptolemy source values; they are QA witnesses only.

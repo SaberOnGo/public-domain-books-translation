@@ -48,6 +48,16 @@ Long paragraphs should be reviewed for mobile readability, but paragraph breaks 
 
 Names and historically loaded terms need a stable first-mention and note policy. Less familiar personal names and place names may stay in English; if translated, the first occurrence must preserve the original English name.
 
+### 4a. 精校后随机抽检 / Post-Refinement Random Spot Checks
+
+- 每轮 EPUB 后精校完成后，必须运行 `npm run review:random-samples` 或等效脚本，从 `chapters/final` 生成随机正文段落样本。
+- 至少 2 个独立 Agent 各抽检不少于 10 个随机段落，不能由主执行 AI 人工挑选段落。
+- 抽检 Agent 必须假设自己是认真阅读本书的中文读者，逐段判断：中文是否读得懂、是否忠实于英文公版原文、是否有英文句法硬搬、是否无依据润饰、专名/称谓/译注/标题策略是否一致。
+- 每段 0-100 分；每个 Agent 平均分必须 >= 75，且不得有单段 < 70。
+- 任一段存在读不懂、事实误解、叙述关系误判、英文腔明显、术语/专名/译注错误，即使平均分达标，也必须回到精校或更早阶段修复；修复后重新生成随机样本，不能复用旧样本。
+
+Random spot checks are a hard post-refinement gate. They test whether the book reads as Chinese to a real reader, not merely whether the main agent believes the refinement is complete.
+
 ### 5. 标点和排版 / Punctuation and Typography
 
 - 普通中文正文不得出现 ASCII 分号 `;`。

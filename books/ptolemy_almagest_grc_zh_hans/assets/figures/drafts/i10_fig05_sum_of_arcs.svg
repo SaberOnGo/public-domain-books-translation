@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Book I.10 Figure 5: sum of two arcs</title>
+  <desc id="desc">Trial SVG redraw for Book I.10, figure 5. Circle ABGD with diameter AD and center Z; successive arcs AB and BG are used to obtain AG.</desc>
+  <style>
+    .circle{stroke:#1f2933;stroke-width:3;fill:none}
+    .line{stroke:#1f2933;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .aux{stroke:#5b6770;stroke-width:2;fill:none;stroke-dasharray:8 7}
+    .label{font-family:"Times New Roman",serif;font-size:30px;fill:#111827}
+    .point{fill:#111827}
+  </style>
+  <circle class="circle" cx="315" cy="210" r="165"/>
+  <path class="line" d="M 150 210 L 480 210"/>
+  <path class="line" d="M 150 210 L 210 85 L 405 75 L 480 210 L 390 345 L 210 85"/>
+  <path class="line" d="M 210 85 L 315 210 L 390 345"/>
+  <path class="line" d="M 405 75 L 390 345"/>
+  <path class="line" d="M 405 75 L 150 210"/>
+  <circle class="point" cx="150" cy="210" r="5"/>
+  <circle class="point" cx="210" cy="85" r="5"/>
+  <circle class="point" cx="405" cy="75" r="5"/>
+  <circle class="point" cx="480" cy="210" r="5"/>
+  <circle class="point" cx="390" cy="345" r="5"/>
+  <circle class="point" cx="315" cy="210" r="5"/>
+  <text class="label" x="118" y="223">Α</text>
+  <text class="label" x="188" y="75">Β</text>
+  <text class="label" x="412" y="68">Γ</text>
+  <text class="label" x="491" y="223">Δ</text>
+  <text class="label" x="394" y="374">Ε</text>
+  <text class="label" x="305" y="246">Ζ</text>
+</svg>

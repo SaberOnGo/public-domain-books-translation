@@ -1,0 +1,43 @@
+{
+  "status": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+  "created_at_utc": "2026-05-17T22:13:13+00:00",
+  "chapter": "I.15",
+  "checks": [
+    {
+      "id": "source_file_exists",
+      "status": "PASS",
+      "path": "chapters/src/015_book_i_15_obliquity_table.md"
+    },
+    {
+      "id": "source_control_wording",
+      "status": "PASS",
+      "missing": []
+    },
+    {
+      "id": "marker_count_matches_segmentation",
+      "status": "PASS",
+      "expected": 2,
+      "actual": 2
+    },
+    {
+      "id": "pdf_viewer_pages_recorded",
+      "status": "PASS",
+      "expected": "44"
+    },
+    {
+      "id": "translated_absent_or_allowed_by_control",
+      "status": "PASS",
+      "path": "chapters/translated/015_book_i_15_obliquity_table.md"
+    },
+    {
+      "id": "final_absent",
+      "status": "PASS",
+      "path": "chapters/final/015_book_i_15_obliquity_table.md"
+    },
+    {
+      "id": "formal_translation_still_gated",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

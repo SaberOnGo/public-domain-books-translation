@@ -1,0 +1,56 @@
+{
+  "project_stage": "trial_source_extraction_only",
+  "source_ingested": true,
+  "formal_translation_allowed": false,
+  "candidate_primary_source_url": "https://commons.wikimedia.org/wiki/File:Almagest_Complete,_Heiberg.pdf",
+  "candidate_primary_source_note": "Wikimedia Commons listing for Heiberg Greek edition PDF. PDF facsimile downloaded and locally hashed on 2026-05-16. PDF remains the facsimile base for page, diagram, table, and final image checks. PAL Heiberg transcription has been ingested as CC BY auxiliary Greek source control.",
+  "reference_search_urls": [
+    "https://archive.org/search?query=Almagest%20Heiberg",
+    "https://press.princeton.edu/books/paperback/9780691002606/ptolemys-almagest"
+  ],
+  "facsimile_local_path": "source/facsimile/Almagest_Complete_Heiberg_1898.pdf",
+  "facsimile_sha1": "e7c2a35f90202e8f23103e54a8fb3c90fd303b0b",
+  "facsimile_sha256": "b5115c91265e7997236d54bb6e421eff6308ef3639681e4a6ab6bcfc37a1c32b",
+  "facsimile_bytes": 18277108,
+  "facsimile_pdf_page_count": 589,
+  "facsimile_page_count_method": "PDF internal page tree maximum /Count value; /Type /Page marker scan returned 590 including page-tree noise, so /Count=589 is the recorded control value.",
+  "facsimile_hash_note": "A previously noted Wikimedia SHA1 value did not match the file delivered through Special:Redirect/file on 2026-05-16. Treat local SHA1/SHA256 as the repository preservation hash and re-check against Wikimedia file history before publication.",
+  "pal_transcription_ingested": true,
+  "pal_transcription_role": "auxiliary Greek transcription for source text extraction and OCR/transcription error control; not a replacement for PDF facsimile checks",
+  "source_role_hierarchy": {
+    "primary_facsimile": "Heiberg PDF scan: base-image authority for Greek text verification, page layout, figures, tables, apparatus areas, and final facsimile figures",
+    "auxiliary_greek_transcription": "PAL Heiberg XML: searchable Greek transcription for extraction, segmentation, page markers, participle-chain and sentence control, and OCR/transcription discrepancy checks",
+    "reference_translation": "English translations: reference witness only for difficult understanding and difference summaries; not a pivot source and not OCR/transcription authority"
+  },
+  "pal_git_repository": "https://gitlab.lrz.de/badw-data/pal-texts.git",
+  "pal_git_commit": "368c5f1f6555679f2d7ab84062839e921a6293cb",
+  "pal_local_xml": "source/transcriptions/pal_heiberg/pal_heiberg_mathematike_syntaxis_1.xml",
+  "pal_xml_sha256": "3f4dd5e0bf3a52255ac7cd1c719cffe4b26a706b75ae4100b23e74fc729a300d",
+  "pal_license_local_path": "source/transcriptions/pal_heiberg/LICENSE.md",
+  "pal_license_sha256": "4f0ab3bddffd5b1c2fe4b12f9213d22ca032d86a391419486290de355a4d1c90",
+  "pal_license_note": "LICENSE.md says CC BY 4.0 applies to all transcriptions except the listed Quadripartitum exception; Mathematike Syntaxis #1/#19 is not that exception.",
+  "trial_chapter_source": {
+    "id": "010_book_i_10_chords",
+    "file": "chapters/src/010_book_i_10_chords.md",
+    "chapter": "Book I.10",
+    "pal_start_marker": "I_31_7",
+    "pal_end_before": "I_48",
+    "sha256": "732ed54592460a77320896bffb0f14667ffa40f71735d3a92b3cd9cc83d475da",
+    "translation_status": "TRIAL_TRANSLATED_REVIEWED_SAMPLE_EPUB_BUILT__FULL_BOOK_BLOCKED",
+    "pdf_page_mapping_status": "PASS_FOR_BOOK_I10_TRIAL",
+    "pdf_viewer_pages": "19-27",
+    "boundary_page": "28 starts Book I.11",
+    "screenshot_contact_sheet": "qa/technical/page_screenshots/book_i10_pdf_pages_019_028_contact_sheet.jpg"
+  },
+  "trial_toc": {
+    "file": "source/trial_toc.json",
+    "sha256": "b4a71c386a07f82b0db4ef1011a897517213c5217f34e703369068077d8e57e8",
+    "status": "TRIAL_ONLY_NOT_FULL_SOURCE_SPLIT"
+  },
+  "raw_sha256": "",
+  "clean_sha256": "",
+  "raw_bytes": 0,
+  "clean_bytes": 0,
+  "retrieved_at_utc": "2026-05-16T15:18:01Z",
+  "status": "TRIAL_CHAPTER_TRANSLATED_REVIEWED_SAMPLE_EPUB_BUILT__FULL_BOOK_BLOCKED"
+}

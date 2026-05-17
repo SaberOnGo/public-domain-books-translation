@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1800" viewBox="0 0 1200 1800" role="img" aria-label="Book I.10 trial sample cover">
+  <rect width="1200" height="1800" fill="#f7f4ec" />
+  <rect x="100" y="120" width="1000" height="1560" fill="none" stroke="#202020" stroke-width="6" />
+  <circle cx="600" cy="760" r="260" fill="none" stroke="#202020" stroke-width="7" />
+  <line x1="340" y1="760" x2="860" y2="760" stroke="#202020" stroke-width="7" />
+  <line x1="600" y1="500" x2="760" y2="960" stroke="#202020" stroke-width="5" />
+  <line x1="440" y1="960" x2="760" y2="960" stroke="#202020" stroke-width="5" />
+  <text x="600" y="1180" text-anchor="middle" font-size="74" font-family="serif" fill="#202020">天文学大成</text>
+  <text x="600" y="1280" text-anchor="middle" font-size="46" font-family="serif" fill="#202020">Book I.10 试译样本</text>
+  <text x="600" y="1370" text-anchor="middle" font-size="34" font-family="serif" fill="#202020">圆内弦长之论</text>
+  <text x="600" y="1510" text-anchor="middle" font-size="30" font-family="serif" fill="#202020">TRIAL SAMPLE EPUB</text>
+</svg>

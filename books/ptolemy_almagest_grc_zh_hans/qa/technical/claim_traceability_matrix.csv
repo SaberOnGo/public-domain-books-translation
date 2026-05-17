@@ -1,0 +1,5 @@
+id,chapter,claim_type,source_location,target_location,depends_on_terms,depends_on_figures,depends_on_tables,verification_record,status,notes
+BookI-cosmology,Book I,astronomical_model,TBD,,astronomical_model_registry,TBD,TBD,verification_plan,TODO,ancient model must not be modernized
+BookI-geometry,Book I,mathematical_proof,TBD,,mathematical_term_lock,TBD,TBD,proof_dependency_map,TODO,proof chain required before translation
+BookI-chords,Book I,numeric_table,TBD,,technical_terms,TBD,chord-table,numeric_validation_log,TODO,chord/angle values require validation
+

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Book I.10 Figure 4: half-arc construction</title>
+  <desc id="desc">Trial SVG redraw for Book I.10, figure 4. Semicircle ABG with arc GB bisected at D, perpendicular DZ to diameter AG, AE set equal to AB, and joined DE.</desc>
+  <style>
+    .line{stroke:#1f2933;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .aux{stroke:#5b6770;stroke-width:2;fill:none;stroke-dasharray:8 7}
+    .label{font-family:"Times New Roman",serif;font-size:30px;fill:#111827}
+    .point{fill:#111827}
+  </style>
+  <path class="line" d="M 95 285 A 220 220 0 0 1 535 285"/>
+  <path class="line" d="M 95 285 L 535 285"/>
+  <path class="line" d="M 95 285 L 330 85 L 480 165 L 535 285"/>
+  <path class="line" d="M 330 85 L 408 285"/>
+  <path class="line" d="M 330 85 L 250 285"/>
+  <path class="line" d="M 480 165 L 408 285"/>
+  <path class="line" d="M 480 165 L 535 285"/>
+  <path class="aux" d="M 480 165 L 250 285"/>
+  <circle class="point" cx="95" cy="285" r="5"/>
+  <circle class="point" cx="330" cy="85" r="5"/>
+  <circle class="point" cx="535" cy="285" r="5"/>
+  <circle class="point" cx="480" cy="165" r="5"/>
+  <circle class="point" cx="250" cy="285" r="5"/>
+  <circle class="point" cx="408" cy="285" r="5"/>
+  <text class="label" x="66" y="297">Α</text>
+  <text class="label" x="320" y="73">Β</text>
+  <text class="label" x="548" y="297">Γ</text>
+  <text class="label" x="486" y="157">Δ</text>
+  <text class="label" x="232" y="320">Ε</text>
+  <text class="label" x="398" y="320">Ζ</text>
+</svg>

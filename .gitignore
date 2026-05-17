@@ -5,3 +5,6 @@
 # Local Codex/agent instructions and environment notes.
 # Keep project-specific operational preferences here instead of global memory.
 .codex/
+
+# Local private docs should never be tracked.
+doc/private/

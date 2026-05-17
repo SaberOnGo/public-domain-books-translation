@@ -1,0 +1,41 @@
+{
+  "status": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+  "created_at_utc": "2026-05-17T22:13:29+00:00",
+  "chapter": "Book I.8",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "review_exists",
+      "path": "reviews/chapters/008_book_i_08_two_primary_motions.review.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "04c8d3fcc57c0646ddebedf4a2d9bc2cb5423f985c904d5935b6530d21540c20"
+    },
+    {
+      "id": "translation_check_exists",
+      "path": "qa/pretranslation/008_book_i_08_translation_check.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "1bb020199172fd259decd177ef232cd42a684e507559571ceea81083af727b4e"
+    },
+    {
+      "id": "translation_exists",
+      "path": "chapters/translated/008_book_i_08_two_primary_motions.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "21d66a0dac69e5202cdee04c2d930734a2a29334b82cbc14f7bcde8d2472404e"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/008_book_i_08_two_primary_motions.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

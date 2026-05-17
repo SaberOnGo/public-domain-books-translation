@@ -1,0 +1,315 @@
+{
+  "readiness_status": "BOOK_I_PRE_RESEARCH_MATRIX_CREATED__SOURCE_SPLIT_PENDING",
+  "created_at_utc": "2026-05-17T15:34:01+00:00",
+  "source": "source/book_i_segmentation.json",
+  "chapter_count": 16,
+  "rows": [
+    {
+      "chapter": 1,
+      "anchor": "I.1",
+      "pal_title": "αʹ. Προοίμιον.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "6-8",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING",
+      "required_controls": [
+        "philosophical framing check",
+        "title/person-name policy"
+      ],
+      "blockers": [
+        "chapter quality gate passed",
+        "final promotion and full-book consistency review remain pending",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 2,
+      "anchor": "I.2",
+      "pal_title": "βʹ. Περὶ τῆς τάξεως τῶν θεωρημάτων.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "8-9",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING",
+      "required_controls": [
+        "whole-work order terminology",
+        "astronomical discipline vocabulary"
+      ],
+      "blockers": [
+        "chapter quality gate passed",
+        "final promotion and full-book consistency review remain pending",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 3,
+      "anchor": "I.3",
+      "pal_title": "γʹ. Ὅτι σφαιροειδῶς ὁ οὐρανὸς φέρεται.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "9-11",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING",
+      "required_controls": [
+        "spherical motion concept boundary",
+        "observational argument check"
+      ],
+      "blockers": [
+        "chapter quality gate passed",
+        "final promotion and full-book consistency review remain pending",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 4,
+      "anchor": "I.4",
+      "pal_title": "δʹ. Ὅτι καὶ ἡ γῆ σφραιροειδής ἐστιν πρὸς αἴσθησιν ὡς καθʼ ὅλα μέρη.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "11-12",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING",
+      "required_controls": [
+        "earth-sphericity proof chain",
+        "observation terminology"
+      ],
+      "blockers": [
+        "chapter quality gate passed",
+        "final promotion and full-book consistency review remain pending",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 5,
+      "anchor": "I.5",
+      "pal_title": "εʹ. Ὅτι μέση τοῦ οὐρανοῦ ἐστιν ἡ γῆ.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "12-14",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING",
+      "required_controls": [
+        "geocentric premise check",
+        "proof dependency record"
+      ],
+      "blockers": [
+        "chapter quality gate passed",
+        "final promotion and full-book consistency review remain pending",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 6,
+      "anchor": "I.6",
+      "pal_title": "ϛʹ. Ὅτι σημείου λόγον ἔχει πρὸς τὰ οὐράνια ἡ γῆ.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "14",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING",
+      "required_controls": [
+        "scale argument check",
+        "point/ratio terminology"
+      ],
+      "blockers": [
+        "chapter quality gate passed",
+        "final promotion and full-book consistency review remain pending",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 7,
+      "anchor": "I.7",
+      "pal_title": "ζʹ. Ὅτι οὐδὲ κίνησίν τινα μεταβατικὴν ποιεῖται",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "15-17",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING",
+      "required_controls": [
+        "ancient physics vocabulary",
+        "modern concept boundary note"
+      ],
+      "blockers": [
+        "chapter quality gate passed",
+        "final promotion and full-book consistency review remain pending",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 8,
+      "anchor": "I.8",
+      "pal_title": "ηʹ. Ὅτι δύο διαφοραὶ τῶν πρώτων κινήσεών",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "17-19",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING",
+      "required_controls": [
+        "celestial motion vocabulary",
+        "two-motion distinction"
+      ],
+      "blockers": [
+        "chapter quality gate passed",
+        "final promotion and full-book consistency review remain pending",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 9,
+      "anchor": "I.9",
+      "pal_title": "θʹ. Περὶ τῶν κατὰ μέρος καταλήψεων.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "19",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING",
+      "required_controls": [
+        "geometric prerequisite terminology",
+        "Euclidean dependency scan"
+      ],
+      "blockers": [
+        "chapter quality gate passed",
+        "final promotion and full-book consistency review remain pending",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 10,
+      "anchor": "I.10",
+      "pal_title": "ιʹ. Περὶ τῆς πηλικότητος τῶν ἐν τῷ κύκλῳ εὐθειῶν.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "20-27",
+      "source_split_status": "TRIAL_SOURCE_EXISTS__FORMAL_SPLIT_RECHECK_REQUIRED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I10_TRIAL__FORMAL_RECHECK_REQUIRED",
+      "readiness": "CHAPTER_QUALITY_GATE_PASS__FINAL_PROMOTION_PENDING",
+      "required_controls": [
+        "trial source formal recheck",
+        "figure label audit already exists"
+      ],
+      "blockers": [
+        "chapter quality gate passed",
+        "final promotion and full-book consistency review remain pending",
+        "Book I.11 chord table remains excluded",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 11,
+      "anchor": "I.11",
+      "pal_title": "ιαʹ. Κανόνιον τῶν ἐν κύκλῳ εὐθειῶν.",
+      "initial_risk": "TABLE_NUMERIC_HIGH",
+      "estimated_pdf_viewer_pages": "28-35",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "TABLE_REGIONS_CROPPED__ROW_TRANSCRIPTION_PENDING",
+      "required_controls": [
+        "structured chord table extraction",
+        "sexagesimal numeric validation",
+        "XHTML table strategy"
+      ],
+      "blockers": [
+        "chord-table page regions are cropped from Heiberg PDF",
+        "row-level source transcription and numeric validation are still pending",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 12,
+      "anchor": "I.12",
+      "pal_title": "ιβʹ. Περὶ τῆς μεταξὺ τῶν τροπικῶν περιφερείας.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "36-38",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "required_controls": [
+        "spherical astronomy diagram audit",
+        "tropic/ecliptic terminology"
+      ],
+      "blockers": [
+        "source extraction candidate exists, but formal PDF recheck is still required",
+        "chapter control and technical audit must pass before translation",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 13,
+      "anchor": "I.13",
+      "pal_title": "ιγʹ. Προλαμβανόμενα εἰς τὰς σφαιρικὰς δείξεις.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "38-42",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "required_controls": [
+        "spherical proof dependency map",
+        "diagram/table audit"
+      ],
+      "blockers": [
+        "source extraction candidate exists, but formal PDF recheck is still required",
+        "chapter control and technical audit must pass before translation",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 14,
+      "anchor": "I.14",
+      "pal_title": "ιδʹ. Περὶ τῶν μεταξὺ τοῦ ἰσημερινοῦ καὶ τοῦ λοξοῦ κύκλου περιφερειῶν.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "42-43",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "required_controls": [
+        "equator/ecliptic arc relation check",
+        "numeric/diagram audit"
+      ],
+      "blockers": [
+        "source extraction candidate exists, but formal PDF recheck is still required",
+        "chapter control and technical audit must pass before translation",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 15,
+      "anchor": "I.15",
+      "pal_title": "ιεʹ. Κανόνιον λοξώσεως.",
+      "initial_risk": "TABLE_NUMERIC_HIGH",
+      "estimated_pdf_viewer_pages": "44",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "required_controls": [
+        "obliquity table extraction",
+        "ancient value preservation",
+        "numeric validation"
+      ],
+      "blockers": [
+        "source extraction candidate exists, but formal PDF recheck is still required",
+        "chapter control and technical audit must pass before translation",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    },
+    {
+      "chapter": 16,
+      "anchor": "I.16",
+      "pal_title": "ιϛʹ. Περὶ τῶν ἐπʼ ὀρθῆς τῆς σφαίρας ἀναφορῶν.",
+      "initial_risk": "FOUNDATION_GEOMETRY_HIGH",
+      "estimated_pdf_viewer_pages": "45-46",
+      "source_split_status": "PAL_BOUNDARY_IDENTIFIED__CHAPTER_SOURCE_NOT_EXTRACTED",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I_PRE_RESEARCH_SAMPLE__FORMAL_RECHECK_REQUIRED",
+      "readiness": "SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "required_controls": [
+        "right-sphere rising terminology",
+        "cross-reference check"
+      ],
+      "blockers": [
+        "source extraction candidate exists, but formal PDF recheck is still required",
+        "chapter control and technical audit must pass before translation",
+        "chapters/final and output/book.epub remain forbidden"
+      ]
+    }
+  ]
+}

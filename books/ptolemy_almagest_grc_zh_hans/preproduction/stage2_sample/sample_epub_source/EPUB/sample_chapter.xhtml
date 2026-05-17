@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Book I.10 圆内弦长之论</title>
+  <link rel="stylesheet" type="text/css" href="styles/book.css" />
+</head>
+<body>
+<h1>Book I.10 圆内弦长之论</h1>
+<p class="metadata"><strong>translation_status:</strong> <code>TRIAL_TRANSLATION</code></p>
+<p class="metadata"><strong>source_file:</strong> <code>../src/010_book_i_10_chords.md</code></p>
+<p class="metadata"><strong>scope:</strong> <code>Book I.10 only</code></p>
+<p class="metadata"><strong>figure_assets:</strong> <code>../../assets/figures/drafts/</code></p>
+<h2>试译控制说明</h2>
+<p>本章试译依据 <code>chapters/src/010_book_i_10_chords.md</code> 的古希腊文底稿。图中点名保留希腊大写字母。读者版正文把原文中“某弧所对的直线”按现代习惯译为“弦”，并在章末注说明。数值仍按 <code>qa/technical/numeric_validation_log.md</code> 校验，但正文使用现代可读的六十进制显示法。本章末尾只引出弦表的编排方法；弦表本体从 Book I.11 开始，不属于本试译范围。</p>
+<h2>正文试译</h2>
+<p>为便于随时查用，下面要列出一张弦表：把圆周分成 <code>360°</code>，每隔半度列出相应弧的弦长，并说明在直径取 <code>120</code> 份时，这些弦各有多长。直径这样取值，是因为后面的计算会显示它很便于使用。〔1〕</p>
+<p>不过，在列出弦表以前，需要先说明计算方法：怎样用尽量少、且可以反复使用的一组定理，快速求出这些弦长。这样一来，表中的数值就不是凭空列出，而是可以从几何构造中逐步检查。以下数值均按六十进制处理；乘除时也采用近似值，只要误差小到感觉上不可辨即可。〔2〕</p>
+<h3>十边形边与五边形边</h3>
+<p>先设半圆 <code>ΑΒΓ</code>，其直径为 <code>ΑΔΓ</code>，圆心为 <code>Δ</code>。从 <code>Δ</code> 向 <code>ΑΓ</code> 作垂线 <code>ΔΒ</code>。又把 <code>ΔΓ</code> 在 <code>Ε</code> 处平分，连结 <code>ΕΒ</code>；令 <code>ΕΖ</code> 等于 <code>ΕΒ</code>，再连结 <code>ΖΒ</code>。我说：<code>ΖΔ</code> 是十边形的边，<code>ΒΖ</code> 是五边形的边。</p>
+<figure class="facsimile-figure"><img src="images/i10_fig01_decagon_pentagon_facsimile.png" alt="Book I.10 图 1：十边形与五边形边长构造" /><figcaption>Book I.10 图 1：十边形与五边形边长构造</figcaption></figure>
+<p>因为直线 <code>ΔΓ</code> 在 <code>Ε</code> 处被平分，又有直线 <code>ΔΖ</code> 附加在它上面，所以由 <code>ΓΖ</code> 与 <code>ΖΔ</code> 所成的矩形，加上以 <code>ΕΔ</code> 为边的正方形，等于以 <code>ΕΖ</code> 为边的正方形<span class="source-ref">（依据《几何原本》II.6〔4〕）</span>，也就是等于以 <code>ΒΕ</code> 为边的正方形，因为 <code>ΕΒ</code> 等于 <code>ΖΕ</code>。而以 <code>ΕΒ</code> 为边的正方形，又等于以 <code>ΕΔ</code> 与 <code>ΔΒ</code> 为边的两个正方形之和<span class="source-ref">（依据《几何原本》I.47〔5〕）</span>。所以，由 <code>ΓΖ</code> 与 <code>ΖΔ</code> 所成的矩形，加上以 <code>ΔΕ</code> 为边的正方形，等于以 <code>ΕΔ</code> 与 <code>ΔΒ</code> 为边的两个正方形之和。减去共同的以 <code>ΕΔ</code> 为边的正方形，余下由 <code>ΓΖ</code> 与 <code>ΖΔ</code> 所成的矩形，等于以 <code>ΔΒ</code> 为边的正方形，也就是等于以 <code>ΔΓ</code> 为边的正方形。于是 <code>ΖΓ</code> 在 <code>Δ</code> 处分成外中比<span class="source-ref">（依据《几何原本》VI 定义 3〔6〕）</span>。</p>
+<p>既然同一圆内所作六边形的边和十边形的边，在同一直线上按外中比分割<span class="source-ref">（依据《几何原本》XIII.9〔7〕）</span>，而 <code>ΓΔ</code> 是从圆心所出之线，包含六边形的边<span class="source-ref">（依据《几何原本》IV.15 系〔8〕）</span>，所以 <code>ΔΖ</code> 等于十边形的边。同样，既然同一圆内所作五边形的边，其平方等于六边形边与十边形边的平方之和<span class="source-ref">（依据《几何原本》XIII.10〔9〕）</span>，而在直角三角形 <code>ΒΔΖ</code> 中，以 <code>ΒΖ</code> 为边的正方形等于以 <code>ΒΔ</code> 为边的正方形与以 <code>ΔΖ</code> 为边的正方形之和<span class="source-ref">（依据《几何原本》I.47〔5〕）</span>，其中 <code>ΒΔ</code> 是六边形边，<code>ΔΖ</code> 是十边形边，所以 <code>ΒΖ</code> 等于五边形的边。</p>
+<p>现在取圆的直径为 <code>120</code> 份。这样，<code>ΔΕ</code> 是半径的一半，长 <code>30</code> 份，平方为 <code>900</code>；<code>ΒΔ</code> 是半径，长 <code>60</code> 份，平方为 <code>3600</code>。所以，以 <code>ΕΒ</code> 为边的正方形，也就是以 <code>ΕΖ</code> 为边的正方形，面积合计为 <code>4500</code>。由此得到 <code>ΕΖ</code> 约为 <code>67p04′55″</code>，余下的 <code>ΔΖ</code> 约为 <code>37p04′55″</code>。因此，十边形的边对应的弧，在全圆 <code>360°</code> 中为 <code>36°</code>；当直径取 <code>120</code> 份时，这条边长约 <code>37p04′55″</code>。</p>
+<p>又因为 <code>ΔΖ</code> 约为 <code>37p04′55″</code>，它的平方为 <code>1375p04′15″</code>；<code>ΔΒ</code> 的平方仍为 <code>3600</code>。二者相加，得到以 <code>ΒΖ</code> 为边的正方形，为 <code>4975p04′15″</code>。所以 <code>ΒΖ</code> 约为 <code>70p32′03″</code>。因此，五边形的边对应的弧为 <code>72°</code>；当直径取 <code>120</code> 份时，这条边长约 <code>70p32′03″</code>。由此也可看出，六边形的边对应的弧为 <code>60°</code>，并且这条边等于半径，即 <code>60</code> 份。</p>
+<p>同样，四边形的边对应 <code>90°</code> 的弧，它的平方是半径平方的两倍；三角形的边对应 <code>120°</code> 的弧，它的平方是同一半径平方的三倍。半径平方为 <code>3600</code>，所以四边形边的平方为 <code>7200</code>，三角形边的平方为 <code>10800</code>。于是，<code>90°</code> 弧的弦长约为 <code>84p51′10″</code>，<code>120°</code> 弧的弦长约为 <code>103p55′23″</code>。</p>
+<p>这些基本弦长可先由现成几何关系求得。由此还可看出：一旦知道某一弧的弦长，它补足到半圆的那段弧的弦长也容易求出，因为这两条弦的平方相加，等于直径平方。例如，<code>36°</code> 弧的弦已证明约为 <code>37p04′55″</code>，平方为 <code>1375p04′15″</code>；直径平方为 <code>14400</code>，所以补足到半圆的 <code>144°</code> 弧，其弦的平方为 <code>13024p55′45″</code>，弦长约为 <code>114p07′37″</code>。其他情形同理。</p>
+<p>下面要说明怎样从这些直线推出其余各个直线；先列一个对本论题非常有用的小引理。</p>
+<h3>圆内四边形的乘积引理</h3>
+<p>设有一个圆，内接任意四边形 <code>ΑΒΓΔ</code>，并连结 <code>ΑΓ</code> 与 <code>ΒΔ</code>。需要证明：由 <code>ΑΓ</code> 与 <code>ΒΔ</code> 所成的矩形，等于由 <code>ΑΒ</code> 与 <code>ΔΓ</code> 所成的矩形，加上由 <code>ΑΔ</code> 与 <code>ΒΓ</code> 所成的矩形。</p>
+<figure class="facsimile-figure"><img src="images/i10_fig02_cyclic_quadrilateral_lemma_facsimile.png" alt="Book I.10 图 2：圆内四边形乘积引理" /><figcaption>Book I.10 图 2：圆内四边形乘积引理</figcaption></figure>
+<p>令角 <code>ΑΒΕ</code> 等于角 <code>ΔΒΓ</code>。若再加上共同的角 <code>ΕΒΔ</code>，则角 <code>ΑΒΔ</code> 也等于角 <code>ΕΒΓ</code>。又角 <code>ΒΔΑ</code> 等于角 <code>ΒΓΕ</code><span class="source-ref">（依据《几何原本》III.21〔10〕）</span>，因为它们所对的是同一弓形。因此三角形 <code>ΑΒΔ</code> 与三角形 <code>ΒΓΕ</code> 等角。于是成比例：<code>ΒΓ</code> 比 <code>ΓΕ</code>，如 <code>ΒΔ</code> 比 <code>ΔΑ</code><span class="source-ref">（依据《几何原本》VI.4〔11〕）</span>；所以由 <code>ΒΓ</code> 与 <code>ΑΔ</code> 所成的矩形，等于由 <code>ΒΔ</code> 与 <code>ΓΕ</code> 所成的矩形<span class="source-ref">（依据《几何原本》VI.16〔12〕）</span>。</p>
+<p>再者，因为角 <code>ΑΒΕ</code> 等于角 <code>ΔΒΓ</code>，又角 <code>ΒΑΕ</code> 等于角 <code>ΒΔΓ</code>，所以三角形 <code>ΑΒΕ</code> 与三角形 <code>ΒΓΔ</code> 等角。于是成比例：<code>ΒΑ</code> 比 <code>ΑΕ</code>，如 <code>ΒΔ</code> 比 <code>ΔΓ</code>；所以由 <code>ΒΑ</code> 与 <code>ΔΓ</code> 所成的矩形，等于由 <code>ΒΔ</code> 与 <code>ΑΕ</code> 所成的矩形。前面又已证明，由 <code>ΒΓ</code> 与 <code>ΑΔ</code> 所成的矩形等于由 <code>ΒΔ</code> 与 <code>ΓΕ</code> 所成的矩形；合起来<span class="source-ref">（依据《几何原本》II.1〔13〕）</span>，由 <code>ΑΓ</code> 与 <code>ΒΔ</code> 所成的整个矩形，就等于由 <code>ΑΒ</code> 与 <code>ΔΓ</code> 所成的矩形，加上由 <code>ΑΔ</code> 与 <code>ΒΓ</code> 所成的矩形。此即所要证明。</p>
+<h3>已知两弧时，求差弧的弦</h3>
+<p>有了这个引理以后，设半圆 <code>ΑΒΓΔ</code>，直径为 <code>ΑΔ</code>。从 <code>Α</code> 引出两条直线 <code>ΑΒ</code>、<code>ΑΓ</code>，并设二者的大小已知，直径同样给定为 <code>120</code>。连结 <code>ΒΓ</code>。我说：<code>ΒΓ</code> 也给定。</p>
+<figure class="facsimile-figure"><img src="images/i10_fig03_difference_of_arcs_facsimile.png" alt="Book I.10 图 3：由两弧之差求弦" /><figcaption>Book I.10 图 3：由两弧之差求弦</figcaption></figure>
+<p>因为连结 <code>ΒΔ</code>、<code>ΓΔ</code>，它们显然也给定，因为它们分别补足前两条直线到半圆。既然 <code>ΑΒΓΔ</code> 是圆内四边形，所以由 <code>ΑΒ</code> 与 <code>ΓΔ</code> 所成的矩形，加上由 <code>ΑΔ</code> 与 <code>ΒΓ</code> 所成的矩形，等于由 <code>ΑΓ</code> 与 <code>ΒΔ</code> 所成的矩形。而由 <code>ΑΓ</code> 与 <code>ΒΔ</code> 所成的矩形给定，由 <code>ΑΒ</code> 与 <code>ΓΔ</code> 所成的矩形也给定；余下由 <code>ΑΔ</code> 与 <code>ΒΓ</code> 所成的矩形也给定。又 <code>ΑΔ</code> 是直径，所以直线 <code>ΒΓ</code> 也给定。</p>
+<p>于是可以看出：如果两条弧及其弦长已知，那么两弧之差的弦长也可求得。借这个定理，还可以从已有的差弧推出许多新的弦长，特别是 <code>12°</code> 弧的弦，因为我们已经知道 <code>60°</code> 弧和 <code>72°</code> 弧的弦。</p>
+<h3>已知一条弦时，求半弧的弦</h3>
+<p>再看另一个问题：已知圆内一条弦，怎样求出它所对应弧的一半所对应的弦。设半圆为 <code>ΑΒΓ</code>，直径为 <code>ΑΓ</code>，已知弦为 <code>ΓΒ</code>。把弧 <code>ΓΒ</code> 在 <code>Δ</code> 处平分，连结 <code>ΑΒ</code>、<code>ΑΔ</code>、<code>ΒΔ</code>、<code>ΔΓ</code>，并从 <code>Δ</code> 向 <code>ΑΓ</code> 作垂线 <code>ΔΖ</code>。我说：<code>ΖΓ</code> 等于 <code>ΑΓ</code> 与 <code>ΑΒ</code> 两条线之差的一半。〔3〕</p>
+<figure class="facsimile-figure"><img src="images/i10_fig04_half_arc_facsimile.png" alt="Book I.10 图 4：半弧构造" /><figcaption>Book I.10 图 4：半弧构造</figcaption></figure>
+<p>令 <code>ΑΕ</code> 等于 <code>ΑΒ</code>，并连结 <code>ΔΕ</code>。因为 <code>ΑΒ</code> 等于 <code>ΑΕ</code>，而 <code>ΑΔ</code> 共同，所以两条线 <code>ΑΒ</code>、<code>ΑΔ</code> 分别等于两条线 <code>ΑΕ</code>、<code>ΑΔ</code>。又角 <code>ΒΑΔ</code> 等于角 <code>ΕΑΔ</code><span class="source-ref">（依据《几何原本》III.27〔14〕）</span>；所以底边 <code>ΒΔ</code> 等于底边 <code>ΔΕ</code><span class="source-ref">（依据《几何原本》I.4〔15〕）</span>。而 <code>ΒΔ</code> 又等于 <code>ΔΓ</code>；所以 <code>ΔΓ</code> 也等于 <code>ΔΕ</code>。既然三角形 <code>ΔΕΓ</code> 是等腰三角形，从顶点向底边所作垂线 <code>ΔΖ</code> 使 <code>ΕΖ</code> 等于 <code>ΖΓ</code><span class="source-ref">（依据《几何原本》I.26〔16〕）</span>。但整条 <code>ΕΓ</code> 是 <code>ΑΒ</code> 与 <code>ΑΓ</code> 两直线的差；所以 <code>ΖΓ</code> 是同二者差的一半。</p>
+<p>这样，弦 <code>ΒΓ</code> 已知；它补足到半圆的另一条弦 <code>ΑΒ</code> 也随之可知。因此，作为 <code>ΑΓ</code> 与 <code>ΑΒ</code> 之差的一半，<code>ΖΓ</code> 也可知。又在直角三角形 <code>ΑΓΔ</code> 中，从直角向斜边作垂线 <code>ΔΖ</code> 后，三角形 <code>ΑΔΓ</code> 与 <code>ΔΓΖ</code> 等角<span class="source-ref">（依据《几何原本》VI.8〔17〕）</span>。所以 <code>ΑΓ : ΓΔ = ΓΔ : ΓΖ</code>，也就是由 <code>ΑΓ</code> 与 <code>ΓΖ</code> 所成的矩形，等于以 <code>ΓΔ</code> 为边的正方形。既然 <code>ΑΓ</code> 和 <code>ΓΖ</code> 都已知，<code>ΓΔ</code> 的平方也已知，因此 <code>ΓΔ</code> 的长度可求得。它正是弧 <code>ΒΓ</code> 的半弧所对应的弦。</p>
+<p>借这个定理，又能从已知弧不断取半，得到许多其他弦长。特别是从 <code>12°</code> 弧的弦出发，可以依次求得 <code>6°</code>、<code>3°</code>、<code>1°30′</code> 和 <code>0°45′</code> 弧的弦。计算得到：当直径取 <code>120</code> 份时，<code>1°30′</code> 弧的弦约为 <code>1p34′15″</code>；<code>0°45′</code> 弧的弦约为 <code>0p47′08″</code>。</p>
+<h3>已知两弧时，求和弧的弦</h3>
+<p>再设圆为 <code>ΑΒΓΔ</code>，直径为 <code>ΑΔ</code>，圆心为 <code>Ζ</code>。从 <code>Α</code> 起依次截取两个已知弧 <code>ΑΒ</code>、<code>ΒΓ</code>，并连结它们对应的弦 <code>ΑΒ</code>、<code>ΒΓ</code>；这两条弦也已知。我要说明：连结 <code>ΑΓ</code> 后，<code>ΑΓ</code> 也可求得。</p>
+<figure class="facsimile-figure"><img src="images/i10_fig05_sum_of_arcs_facsimile.png" alt="Book I.10 图 5：由两弧之和求弦" /><figcaption>Book I.10 图 5：由两弧之和求弦</figcaption></figure>
+<p>通过 <code>Β</code> 作圆的直径 <code>ΒΖΕ</code>，并连结 <code>ΒΔ</code>、<code>ΔΓ</code>、<code>ΓΕ</code>、<code>ΔΕ</code>。因为 <code>ΒΓ</code> 已知，所以它补足到半圆的弦 <code>ΓΕ</code> 也可知；因为 <code>ΑΒ</code> 已知，所以 <code>ΒΔ</code> 与 <code>ΔΕ</code> 也可知。仍用前面的圆内四边形引理：在四边形 <code>ΒΓΔΕ</code> 中，对角线 <code>ΒΔ</code>、<code>ΓΕ</code> 所成的矩形，等于两组对边矩形之和。于是，既然 <code>ΒΔ × ΓΕ</code> 和 <code>ΒΓ × ΔΕ</code> 都已知，<code>ΒΕ × ΓΔ</code> 也已知。又 <code>ΒΕ</code> 是直径，所以 <code>ΓΔ</code> 可知；它补足到半圆的弦 <code>ΓΑ</code> 也随之可知。因此，若两条弧及其弦长已知，两弧合成后的弦长也可求得。</p>
+<p>显然，只要把 <code>1°30′</code> 弧的弦不断同前面已经求得的弦配合，计算相邻弧的和，就可以登记许多弧长位置。由于弦表按半度排列，剩下的只是每个 <code>1°30′</code> 间隔中的两个中间位置。因此，只要能求出半度弧的弦，就可以再用弧的和与差，把其余中间弦长补齐。</p>
+<p>不过，如果只知道一条弦，例如 <code>1°30′</code> 弧的弦，要用纯几何构造直接求出同一弧三分之一的弦，并不方便；若能做到，我们就能立刻得到半度弧的弦。因此，先从 <code>1°30′</code> 弧的弦和 <code>0°45′</code> 弧的弦出发，求 <code>1°</code> 弧的弦。为此需要一个小引理：它不能在一般情形下精确确定弦长，但用于这样很小的弧时，误差不会达到可察觉的程度。</p>
+<h3>弦与弧之比的小引理</h3>
+<p>我说：若在圆中作出两条不相等的弦，那么较大弦与较小弦的比，小于它们对应弧的比。</p>
+<figure class="facsimile-figure"><img src="images/i10_fig06_chord_arc_ratio_facsimile.png" alt="Book I.10 图 6：弦弧比不等式" /><figcaption>Book I.10 图 6：弦弧比不等式</figcaption></figure>
+<p>设圆 <code>ΑΒΓΔ</code>，其中引出两条不相等的直线，较小者为 <code>ΑΒ</code>，较大者为 <code>ΒΓ</code>。我说：直线 <code>ΓΒ</code> 对直线 <code>ΒΑ</code> 的比，小于弧 <code>ΒΓ</code> 对弧 <code>ΒΑ</code> 的比。因为把角 <code>ΑΒΓ</code> 由 <code>ΒΔ</code> 平分，并连结 <code>ΑΕΓ</code>、<code>ΑΔ</code>、<code>ΓΔ</code>。既然角 <code>ΑΒΓ</code> 由直线 <code>ΒΕΔ</code> 平分，则直线 <code>ΓΔ</code> 等于 <code>ΑΔ</code><span class="source-ref">（依据《几何原本》III.26、III.29〔18〕）</span>，而 <code>ΓΕ</code> 大于 <code>ΕΑ</code><span class="source-ref">（依据《几何原本》VI.3〔19〕）</span>。</p>
+<p>从 <code>Δ</code> 向 <code>ΑΕΓ</code> 作垂线 <code>ΔΖ</code>。既然 <code>ΑΔ</code> 大于 <code>ΕΔ</code>，而 <code>ΕΔ</code> 又大于 <code>ΔΖ</code>，就以 <code>Δ</code> 为圆心、<code>ΔΕ</code> 为半径作圆，使它交 <code>ΑΔ</code> 于 <code>Η</code>，并在 <code>ΔΖ</code> 的延长线上交于 <code>Θ</code>；记此圆为 <code>ΗΕΘ</code>。这样，扇形 <code>ΔΕΘ</code> 包含三角形 <code>ΔΕΖ</code>，所以比它大；而三角形 <code>ΔΕΑ</code> 又包含扇形 <code>ΔΕΗ</code>，所以也比它大。由此可知，三角形 <code>ΔΕΖ</code> 对三角形 <code>ΔΕΑ</code> 的比，小于扇形 <code>ΔΕΘ</code> 对扇形 <code>ΔΕΗ</code> 的比。</p>
+<p>而三角形 <code>ΔΕΖ</code> 对三角形 <code>ΔΕΑ</code> 的比，如直线 <code>ΕΖ</code> 对 <code>ΕΑ</code><span class="source-ref">（依据《几何原本》VI.1〔20〕）</span>；扇形 <code>ΔΕΘ</code> 对扇形 <code>ΔΕΗ</code> 的比，如角 <code>ΖΔΕ</code> 对角 <code>ΕΔΑ</code>。所以直线 <code>ΖΕ</code> 对 <code>ΕΑ</code> 的比，小于角 <code>ΖΔΕ</code> 对角 <code>ΕΔΑ</code> 的比。合比之后，直线 <code>ΖΑ</code> 对 <code>ΕΑ</code> 的比，小于角 <code>ΖΔΑ</code> 对角 <code>ΑΔΕ</code> 的比；前项加倍之后，直线 <code>ΓΑ</code> 对 <code>ΑΕ</code> 的比，小于角 <code>ΓΔΑ</code> 对角 <code>ΕΔΑ</code> 的比；分比之后，直线 <code>ΓΕ</code> 对 <code>ΕΑ</code> 的比，小于角 <code>ΓΔΕ</code> 对角 <code>ΕΔΑ</code> 的比。</p>
+<p>但是，直线 <code>ΓΕ</code> 对 <code>ΕΑ</code>，如直线 <code>ΓΒ</code> 对 <code>ΒΑ</code><span class="source-ref">（依据《几何原本》VI.3〔19〕）</span>；而角 <code>ΓΔΒ</code> 对角 <code>ΒΔΑ</code>，如弧 <code>ΓΒ</code> 对弧 <code>ΒΑ</code><span class="source-ref">（依据《几何原本》VI.33〔21〕）</span>。所以直线 <code>ΓΒ</code> 对直线 <code>ΒΑ</code> 的比，小于弧 <code>ΓΒ</code> 对弧 <code>ΒΑ</code> 的比。</p>
+<h3>一度与半度弧的弦长近似</h3>
+<p>有了这个结果，设圆 <code>ΑΒΓ</code> 中有两条弦 <code>ΑΒ</code> 与 <code>ΑΓ</code>。先假定 <code>ΑΒ</code> 对应 <code>0°45′</code> 的弧，<code>ΑΓ</code> 对应 <code>1°</code> 的弧。由于弦 <code>ΑΓ</code> 与弦 <code>ΒΑ</code> 的比，小于弧 <code>ΑΓ</code> 与弧 <code>ΑΒ</code> 的比，而 <code>1°</code> 是 <code>0°45′</code> 的三分之四倍，所以弦 <code>ΓΑ</code> 小于弦 <code>ΒΑ</code> 的三分之四倍。弦 <code>ΑΒ</code> 已证明约为 <code>0p47′08″</code>，所以弦 <code>ΓΑ</code> 小于 <code>1p02′50″</code>；这是 <code>0p47′08″</code> 的三分之四倍近似值。</p>
+<figure class="facsimile-figure"><img src="images/i10_fig07_one_degree_bracket_facsimile.png" alt="Book I.10 图 7：一度直线的夹逼" /><figcaption>Book I.10 图 7：一度直线的夹逼</figcaption></figure>
+<p>再在同一图中，设弦 <code>ΑΒ</code> 对应 <code>1°</code> 的弧，弦 <code>ΑΓ</code> 对应 <code>1°30′</code> 的弧。同理，因为 <code>1°30′</code> 是 <code>1°</code> 的一倍半，所以弦 <code>ΓΑ</code> 小于弦 <code>ΒΑ</code> 的一倍半。可是我们已经证明，<code>ΑΓ</code> 在直径取 <code>120</code> 份时约为 <code>1p34′15″</code>；因此弦 <code>ΑΒ</code> 大于 <code>1p02′50″</code>，因为 <code>1p34′15″</code> 正是 <code>1p02′50″</code> 的一倍半近似值。</p>
+<p>这样，<code>1°</code> 弧的弦既被证明小于、又被证明大于同一个近似值；因此在直径取 <code>120</code> 份时，可把它取为 <code>1p02′50″</code>。由前面的结果，还可求得半度弧的弦约为 <code>0p31′25″</code>。其余各个间隔也可按前述方法补齐：例如，先把半度弧的弦同 <code>1°30′</code> 弧的弦相合，求出 <code>2°</code> 弧的弦；再用它同 <code>3°</code> 弧的弦作差，求出 <code>2°30′</code> 弧的弦。其他位置同理。</p>
+<h3>弦表的引出</h3>
+<p>我认为，圆内弦长大体可以这样最简便地处理。为了在实际计算时随时查用，我们将在下面列出若干小表。为便于排布，每张小表列 <code>45</code> 行：第一栏列出按半度递增的弧，第二栏列出相应弦长，并以直径 <code>120</code> 份为准，第三栏列出每半度弦长增量的三十分之一。这样就得到每 <code>1′</code> 弧的平均增量；它与精确值的差别小到感觉上不可辨，足以用来计算半度之间的各个位置。</p>
+<p>还可以看出，凭借前述同一组定理，若怀疑表中某一条弦数值有书写错误，也能比较容易地检查和校正：可以从它的二倍弧对应的弦入手，也可以从它与其他已知弦的差入手，还可以从补足到半圆的那条弧对应的弦入手。小表的写法如下。</p>
+<h2>本章注释</h2>
+<ol>
+<li>本章原文常用“某弧所对的直线”来表达现代几何中的“弦”。为便于现代中文阅读，正文多译为“弦”或“某弧对应的弦”；图中点名和证明关系仍按原文保留。</li>
+<li><code>37p04′55″</code> 这类写法保留原文的六十进制结构，不是十进制小数。这里 <code>p</code> 表示整数部/单位部，后面的 <code>′</code>、<code>″</code> 表示六十进制第一、第二小分；它们不是角分秒。弧和角仍用 <code>°′″</code> 表示，例如 <code>1°30′</code>。</li>
+<li>“半弧的弦”指：先把某条弦所对应的弧平分，再求这个半弧对应的新弦。它不是把原来的弦长直接除以二。</li>
+<li>《几何原本》II.6：若一条线段被平分，又沿同一直线延长一段，则可把“全线与延长段所成矩形”和“半线平方”的关系转成一个平方关系。本章用它把 <code>ΓΖ × ΖΔ</code>、<code>ΕΔ</code> 的平方和 <code>ΕΖ</code> 的平方联系起来。</li>
+<li>《几何原本》I.47：直角三角形中，斜边上的正方形等于两条直角边上的正方形之和，即通常所说的勾股定理。</li>
+<li>《几何原本》VI 定义 3：所谓外中比，是指全线比大段，等于大段比小段。本章用它辨认十边形边。</li>
+<li>《几何原本》XIII.9：同一圆内，六边形边和十边形边按特定方式放在同一直线上时，会形成外中比分割。</li>
+<li>《几何原本》IV.15 系：正六边形内接于圆时，它的边等于圆的半径。</li>
+<li>《几何原本》XIII.10：同一圆内，五边形边上的正方形，等于六边形边和十边形边上的两个正方形之和。</li>
+<li>《几何原本》III.21：同一圆弓形中的角相等；也就是说，站在同一弓形上的圆周角相等。</li>
+<li>《几何原本》VI.4：等角三角形的对应边成比例。本章用它从等角关系推出线段比例。</li>
+<li>《几何原本》VI.16：四条线段成比例时，外项所成的矩形等于内项所成的矩形。本章用它把比例式改写成矩形相等。</li>
+<li>《几何原本》II.1：一条线段分成若干段时，整段与另一条线所成的矩形，等于各分段分别与那条线所成矩形的和。</li>
+<li>《几何原本》III.27：同圆中，相等的弧所对的角相等。</li>
+<li>《几何原本》I.4：两个三角形若两边及其夹角分别相等，则底边和其余对应角也相等。</li>
+<li>《几何原本》I.26：两个三角形若有两个角和一条对应边相等，则其余边和角也对应相等。</li>
+<li>《几何原本》VI.8：直角三角形中，从直角向斜边作垂线后，分出的两个小三角形彼此相似，也与原三角形相似。</li>
+<li>《几何原本》III.26、III.29：同圆或等圆中，相等的角对应相等的弧；相等的弧又对应相等的弦。本章用这两步得到 <code>ΓΔ = ΑΔ</code>。</li>
+<li>《几何原本》VI.3：三角形的角平分线把对边分成两段，这两段与夹角两边成比例。</li>
+<li>《几何原本》VI.1：同高的三角形或平行四边形，面积之比等于底边之比。</li>
+<li>《几何原本》VI.33：同圆或等圆中，角的比等于它们所对弧的比；本章用它把角的比例转成弧的比例。</li>
+</ol>
+<blockquote>
+<p>试译范围注：原文在此转入 Book I.11 的弦表。Book I.10 试译到此为止；弦表本体不在本轮范围内。</p>
+</blockquote>
+</body>
+</html>

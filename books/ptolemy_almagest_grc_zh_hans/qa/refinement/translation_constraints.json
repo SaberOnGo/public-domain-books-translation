@@ -1,0 +1,19 @@
+{
+  "scope": "all",
+  "files_checked": [
+    "chapters/translated/001_book_i_01_proem.md",
+    "chapters/translated/002_book_i_02_order_of_the_theorems.md",
+    "chapters/translated/003_book_i_03_heaven_moves_spherically.md",
+    "chapters/translated/004_book_i_04_earth_is_spherical.md",
+    "chapters/translated/005_book_i_05_earth_is_central.md",
+    "chapters/translated/006_book_i_06_earth_as_point_to_heavens.md",
+    "chapters/translated/007_book_i_07_earth_has_no_translational_motion.md",
+    "chapters/translated/008_book_i_08_two_primary_motions.md",
+    "chapters/translated/009_book_i_09_on_individual_preliminaries.md",
+    "chapters/translated/010_book_i_10_chords.md",
+    "frontmatter/preface.md",
+    "frontmatter/translator_note.md"
+  ],
+  "issue_count": 0,
+  "issues": []
+}

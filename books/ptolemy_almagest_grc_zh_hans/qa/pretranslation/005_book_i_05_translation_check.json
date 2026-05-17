@@ -1,0 +1,51 @@
+{
+  "status": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+  "created_at_utc": "2026-05-17T22:13:24+00:00",
+  "chapter": "Book I.5",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "translation_file_exists",
+      "path": "chapters/translated/005_book_i_05_earth_is_central.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "5bf43979605de77bf717b4231fcefee787491969e7de5c616da1ddc5f2c40c2f"
+    },
+    {
+      "id": "chapter_control_exists",
+      "path": "qa/chapter_controls/005_book_i_05_earth_is_central.control.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "d33bf57c7fb0abe3200e29124d456a7991dfb0f63bd32bc2af711fb8627a7bca"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/005_book_i_05_earth_is_central.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "7edeadfda2265230cc88f33074990ac3eae268cfb91f7b0fa6fa9d42d8ca303f"
+    },
+    {
+      "id": "forbidden_modernizing_wording_absent",
+      "status": "PASS",
+      "hits": []
+    },
+    {
+      "id": "chapter_notes_present",
+      "status": "PASS",
+      "note_count": 6
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "chapters/final/005_book_i_05_earth_is_central.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

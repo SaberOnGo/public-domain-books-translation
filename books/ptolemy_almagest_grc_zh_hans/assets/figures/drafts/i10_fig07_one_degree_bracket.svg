@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Book I.10 Figure 7: one-degree chord bracketing</title>
+  <desc id="desc">Trial SVG redraw for Book I.10, figure 7. Circle ABG with two straight lines AB and AG used to bracket the chord subtending one degree.</desc>
+  <style>
+    .circle{stroke:#1f2933;stroke-width:3;fill:none}
+    .line{stroke:#1f2933;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .label{font-family:"Times New Roman",serif;font-size:30px;fill:#111827}
+    .point{fill:#111827}
+  </style>
+  <circle class="circle" cx="320" cy="210" r="165"/>
+  <path class="line" d="M 145 220 L 335 88 L 505 175"/>
+  <path class="line" d="M 145 220 L 505 175"/>
+  <circle class="point" cx="145" cy="220" r="5"/>
+  <circle class="point" cx="335" cy="88" r="5"/>
+  <circle class="point" cx="505" cy="175" r="5"/>
+  <text class="label" x="113" y="232">Α</text>
+  <text class="label" x="326" y="76">Β</text>
+  <text class="label" x="519" y="187">Γ</text>
+</svg>

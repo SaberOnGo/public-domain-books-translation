@@ -1,0 +1,14 @@
+# Book I.9 章节控制检查 / Chapter Control Check
+
+check_status: `PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED`
+created_at_utc: `2026-05-17T22:13:21+00:00`
+
+## 检查项
+
+| id | status | path | missing | sha256 |
+|---|---|---|---|---|
+| control_exists | PASS | `qa/chapter_controls/009_book_i_09_on_individual_preliminaries.control.md` |  | `3b40bc2a26cc0a89de98fd9a900cdbc99569f01df1cbc1d81b34c9ef047f2b96` |
+| source_recheck_exists | PASS | `qa/pretranslation/009_book_i_09_formal_source_recheck.md` |  | `9d5815b31552425ef43ba738558d8175960f95cbe0065786bc131e08a3bd50d4` |
+| technical_audit_exists | PASS | `qa/technical/009_book_i_09_on_individual_preliminaries.technical_audit.md` |  | `e7c531dbc23277749e9dec206bf703592746cc9bedd96951e5cc5791c2baf0e6` |
+| forbidden_absent | PASS | `chapters/final/009_book_i_09_on_individual_preliminaries.md` |  | `` |
+| forbidden_absent | PASS | `output/book.epub` |  | `` |

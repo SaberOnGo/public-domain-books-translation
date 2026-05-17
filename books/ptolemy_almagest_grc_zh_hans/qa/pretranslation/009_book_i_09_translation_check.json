@@ -1,0 +1,50 @@
+{
+  "status": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+  "created_at_utc": "2026-05-17T22:13:25+00:00",
+  "chapter": "Book I.9",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "translation_file_exists",
+      "path": "chapters/translated/009_book_i_09_on_individual_preliminaries.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "7c270fdda053c3693781e8f1cb20f607d36bc00dec986f8f38802c052f2c44c1"
+    },
+    {
+      "id": "chapter_control_exists",
+      "path": "qa/chapter_controls/009_book_i_09_on_individual_preliminaries.control.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "3b40bc2a26cc0a89de98fd9a900cdbc99569f01df1cbc1d81b34c9ef047f2b96"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/009_book_i_09_on_individual_preliminaries.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "e7c531dbc23277749e9dec206bf703592746cc9bedd96951e5cc5791c2baf0e6"
+    },
+    {
+      "id": "forbidden_wording_absent",
+      "status": "PASS",
+      "hits": []
+    },
+    {
+      "id": "chapter_note_present",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "chapters/final/009_book_i_09_on_individual_preliminaries.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

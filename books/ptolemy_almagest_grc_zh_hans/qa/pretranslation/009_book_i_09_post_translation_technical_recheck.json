@@ -1,0 +1,59 @@
+{
+  "status": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+  "created_at_utc": "2026-05-17T22:13:33+00:00",
+  "chapter": "Book I.9",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "next_gate": "chapter quality gate",
+  "checks": [
+    {
+      "id": "post_translation_recheck_exists",
+      "path": "qa/technical/009_book_i_09_on_individual_preliminaries.post_translation_technical_recheck.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "f25d7f6a92ebe2571ccfbaa74f5c85cbc4483b4b8f64af92e875a526d71bb02b"
+    },
+    {
+      "id": "translation_exists",
+      "path": "chapters/translated/009_book_i_09_on_individual_preliminaries.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "7c270fdda053c3693781e8f1cb20f607d36bc00dec986f8f38802c052f2c44c1"
+    },
+    {
+      "id": "review_exists",
+      "path": "reviews/chapters/009_book_i_09_on_individual_preliminaries.review.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "76f5eea5626aec8d6186688fefa5532bfdd8d432f04ce6813148d0ab78ed97dd"
+    },
+    {
+      "id": "term_lock_contains_book_i9_terms",
+      "path": "qa/technical/mathematical_term_lock.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "1066e99caad25386984337d6db996609a52f9dfba28fbccc2e08a570982e42a0"
+    },
+    {
+      "id": "translation_body_forbidden_terms_absent",
+      "status": "PASS",
+      "hits": []
+    },
+    {
+      "id": "geometry_table_numeric_markers_absent_for_i9",
+      "status": "PASS",
+      "hits": []
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "chapters/final/009_book_i_09_on_individual_preliminaries.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

@@ -1,0 +1,60 @@
+{
+  "status": "FAIL_RAW_TABLE_INCOMPLETE",
+  "created_at_utc": "2026-05-17T22:12:24+00:00",
+  "chapter": "Book I.11",
+  "stats": {
+    "raw_count": 360,
+    "modern_check_count": 360,
+    "pending_pdf_transcription": 360,
+    "pdf_transcribed": 0,
+    "numeric_pass": 0,
+    "numeric_disputed": 0
+  },
+  "checks": [
+    {
+      "id": "raw_csv_exists",
+      "status": "PASS",
+      "path": "source/tables/book_i_11_chord_table_raw.csv"
+    },
+    {
+      "id": "modern_check_csv_exists",
+      "status": "PASS",
+      "path": "source/tables/book_i_11_chord_table_modern_check.csv"
+    },
+    {
+      "id": "raw_row_count_360",
+      "status": "PASS",
+      "actual": 360
+    },
+    {
+      "id": "modern_check_row_count_360",
+      "status": "PASS",
+      "actual": 360
+    },
+    {
+      "id": "some_rows_pdf_transcribed",
+      "status": "FAIL",
+      "actual": 0
+    },
+    {
+      "id": "all_rows_numeric_checked",
+      "status": "FAIL",
+      "actual": 0
+    },
+    {
+      "id": "disputed_rows_recorded",
+      "status": "PASS",
+      "actual": 0
+    },
+    {
+      "id": "arc_coverage_half_degree_to_180",
+      "status": "PASS",
+      "first": "0°30′",
+      "last": "180°"
+    }
+  ],
+  "failures": [
+    "no rows have been transcribed from Heiberg PDF yet",
+    "numeric checks incomplete: 0/360 PASS"
+  ]
+}

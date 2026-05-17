@@ -1,0 +1,1163 @@
+{
+  "status": "PASS_PRE_RESEARCH_ACTIVE__FORMAL_TRANSLATION_GATED",
+  "created_at_utc": "2026-05-17T22:13:39+00:00",
+  "formal_translation_gate": "gated until full-book pretranslation PASS",
+  "checks": [
+    {
+      "id": "formal_translation_allowed_flag",
+      "status": "INFO",
+      "value": false,
+      "note": "false means pre-research may continue, but formal translation/final EPUB remain gated"
+    },
+    {
+      "id": "required_file",
+      "path": "goal/2026-05-17_almagest_full_book_translation_goal.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/full_book_pre_research_plan.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/pretranslation_report.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "source/full_toc_draft.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "source/full_book_translation_outline.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/full_book_risk_map.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/full_book_risk_map.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "source/book_i_segmentation.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "source/book_i_segmentation.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/src/001_book_i_01_proem.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_source_extraction_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_source_extraction_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/src/002_book_i_02_order_of_the_theorems.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_source_extraction_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_source_extraction_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/src/003_book_i_03_heaven_moves_spherically.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_source_extraction_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_source_extraction_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/src/004_book_i_04_earth_is_spherical.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_source_extraction_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_source_extraction_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/004_book_i_04_earth_is_spherical.technical_audit.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_formal_source_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_formal_source_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/004_book_i_04_earth_is_spherical.control.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_chapter_control_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_chapter_control_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/translated/004_book_i_04_earth_is_spherical.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_translation_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_translation_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "reviews/chapters/004_book_i_04_earth_is_spherical.review.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_review_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_review_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/004_book_i_04_earth_is_spherical.post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_post_translation_technical_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/004_book_i_04_earth_is_spherical.quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_chapter_quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/004_book_i_04_chapter_quality_gate.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/src/005_book_i_05_earth_is_central.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_source_extraction_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_source_extraction_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/page_screenshots/book_i05_pages_012_014_contact_sheet.jpg",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/005_book_i_05_earth_is_central.technical_audit.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_formal_source_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_formal_source_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/005_book_i_05_earth_is_central.control.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_chapter_control_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_chapter_control_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/translated/005_book_i_05_earth_is_central.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_translation_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_translation_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "reviews/chapters/005_book_i_05_earth_is_central.review.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_review_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_review_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/005_book_i_05_earth_is_central.post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_post_translation_technical_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/005_book_i_05_earth_is_central.quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_chapter_quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/005_book_i_05_chapter_quality_gate.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/src/006_book_i_06_earth_as_point_to_heavens.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_source_extraction_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_source_extraction_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/page_screenshots/book_i06_page_014_contact_sheet.jpg",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/006_book_i_06_earth_as_point_to_heavens.technical_audit.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_formal_source_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_formal_source_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/006_book_i_06_earth_as_point_to_heavens.control.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_chapter_control_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_chapter_control_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/translated/006_book_i_06_earth_as_point_to_heavens.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_translation_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_translation_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "reviews/chapters/006_book_i_06_earth_as_point_to_heavens.review.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_review_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_review_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/006_book_i_06_earth_as_point_to_heavens.post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_post_translation_technical_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/006_book_i_06_earth_as_point_to_heavens.quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_chapter_quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/006_book_i_06_chapter_quality_gate.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/src/007_book_i_07_earth_has_no_translational_motion.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_source_extraction_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_source_extraction_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/page_screenshots/book_i07_pages_015_017_contact_sheet.jpg",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/007_book_i_07_earth_has_no_translational_motion.technical_audit.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_formal_source_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_formal_source_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/007_book_i_07_earth_has_no_translational_motion.control.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_chapter_control_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_chapter_control_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/translated/007_book_i_07_earth_has_no_translational_motion.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_translation_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_translation_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "reviews/chapters/007_book_i_07_earth_has_no_translational_motion.review.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_review_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_review_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/007_book_i_07_earth_has_no_translational_motion.post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_post_translation_technical_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/007_book_i_07_earth_has_no_translational_motion.quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_chapter_quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/007_book_i_07_chapter_quality_gate.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/src/008_book_i_08_two_primary_motions.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_source_extraction_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_source_extraction_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/page_screenshots/book_i08_pages_017_019_contact_sheet.jpg",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/008_book_i_08_two_primary_motions.technical_audit.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_formal_source_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_formal_source_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/008_book_i_08_two_primary_motions.control.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_chapter_control_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_chapter_control_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/translated/008_book_i_08_two_primary_motions.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_translation_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_translation_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "reviews/chapters/008_book_i_08_two_primary_motions.review.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_review_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_review_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/008_book_i_08_two_primary_motions.post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_post_translation_technical_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/008_book_i_08_two_primary_motions.quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_chapter_quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/008_book_i_08_chapter_quality_gate.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/src/009_book_i_09_on_individual_preliminaries.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_source_extraction_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_source_extraction_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/page_screenshots/book_i09_page_019_contact_sheet.jpg",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/009_book_i_09_on_individual_preliminaries.technical_audit.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_formal_source_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_formal_source_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/009_book_i_09_on_individual_preliminaries.control.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_chapter_control_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_chapter_control_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/translated/009_book_i_09_on_individual_preliminaries.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_translation_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_translation_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "reviews/chapters/009_book_i_09_on_individual_preliminaries.review.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_review_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_review_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/009_book_i_09_on_individual_preliminaries.post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_post_translation_technical_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/009_book_i_09_on_individual_preliminaries.quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_chapter_quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/009_book_i_09_chapter_quality_gate.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/003_book_i_03_heaven_moves_spherically.technical_audit.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_formal_source_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_formal_source_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/003_book_i_03_heaven_moves_spherically.control.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_chapter_control_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_chapter_control_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/translated/003_book_i_03_heaven_moves_spherically.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_translation_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_translation_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "reviews/chapters/003_book_i_03_heaven_moves_spherically.review.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_review_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_review_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/003_book_i_03_heaven_moves_spherically.post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_post_translation_technical_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/003_book_i_03_heaven_moves_spherically.quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_chapter_quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/003_book_i_03_chapter_quality_gate.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/002_book_i_02_order_of_the_theorems.technical_audit.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_formal_source_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_formal_source_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/002_book_i_02_order_of_the_theorems.control.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_chapter_control_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_chapter_control_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/translated/002_book_i_02_order_of_the_theorems.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_translation_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_translation_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "reviews/chapters/002_book_i_02_order_of_the_theorems.review.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_review_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_review_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/002_book_i_02_order_of_the_theorems.post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_post_translation_technical_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/002_book_i_02_order_of_the_theorems.quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_chapter_quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/002_book_i_02_chapter_quality_gate.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/001_book_i_01_proem.technical_audit.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_formal_source_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_formal_source_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/001_book_i_01_proem.control.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_chapter_control_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_chapter_control_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "chapters/translated/001_book_i_01_proem.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_translation_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_translation_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "reviews/chapters/001_book_i_01_proem.review.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_review_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_review_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/001_book_i_01_proem.post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_post_translation_technical_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/001_book_i_01_proem.quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_chapter_quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/001_book_i_01_chapter_quality_gate.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/book_i_source_split_readiness.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/book_i_source_split_readiness.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_source_extraction_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_source_extraction_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_formal_source_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_formal_source_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_chapter_control_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_chapter_control_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_translation_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_translation_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "reviews/chapters/010_book_i_10_chords.review.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_review_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_review_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/010_book_i_10_chords.post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_post_translation_technical_recheck.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_post_translation_technical_recheck.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/chapter_controls/010_book_i_10_chords.quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_chapter_quality_gate.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/010_book_i_10_chapter_quality_gate.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/011_book_i_11_chord_table_strategy.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/011_book_i_11_table_strategy_check.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/pretranslation/011_book_i_11_table_strategy_check.json",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "metadata/source_witness_manifest.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "metadata/reference_witness_policy.md",
+      "status": "PASS"
+    },
+    {
+      "id": "no_chapters_final_while_gated",
+      "status": "PASS",
+      "files": []
+    },
+    {
+      "id": "forbidden_output_absent_while_gated",
+      "path": "output/book.epub",
+      "status": "PASS"
+    },
+    {
+      "id": "pretranslation_report_gated_status",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

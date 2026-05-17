@@ -1,0 +1,51 @@
+{
+  "status": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+  "created_at_utc": "2026-05-17T22:13:24+00:00",
+  "chapter": "Book I.6",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "translation_file_exists",
+      "path": "chapters/translated/006_book_i_06_earth_as_point_to_heavens.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "f119dadf12ae458af97d6271f775872d2c63b6bc4587b5230c52f4b50e6eb5fb"
+    },
+    {
+      "id": "chapter_control_exists",
+      "path": "qa/chapter_controls/006_book_i_06_earth_as_point_to_heavens.control.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "121f43f6f8458f73a05abe66d1dde5e76702f06a18cae1ab2d5f453be8ea5935"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/006_book_i_06_earth_as_point_to_heavens.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "3b242c358c99f55d86f0a8391eb07f734b267b16b30978288a7705be42b8d199"
+    },
+    {
+      "id": "forbidden_modernizing_wording_absent",
+      "status": "PASS",
+      "hits": []
+    },
+    {
+      "id": "chapter_notes_present",
+      "status": "PASS",
+      "note_count": 5
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "chapters/final/006_book_i_06_earth_as_point_to_heavens.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

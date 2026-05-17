@@ -1,0 +1,12 @@
+type,source_term,transliteration,target_term,model_role,definition,first_location,locked_status,notes
+deferent,,,"均轮",main circle carrying epicycle,exact Greek term and Book location not yet verified,,PROVISIONAL,do not use before source term confirmed
+epicycle,ἐπίκυκλος,epikyklos,"本轮",small circle carried by deferent,exact usage to verify,,PROVISIONAL,likely not central in Book I but must lock before planetary books
+eccentric_circle,,,"偏心圆",circle whose center differs from Earth/model center,exact Greek term and context to verify,,PROVISIONAL,avoid modern simplification
+equant_point,,,"等分点",point used for uniform angular motion in model,exact Greek term/context to verify,,PROVISIONAL,later planetary theory; must annotate ancient model boundary
+ecliptic,,,"黄道",great circle/path of apparent solar motion,exact Greek term to verify,,PROVISIONAL,Book I likely
+celestial_equator,,,"天赤道",celestial equator,exact Greek term to verify,,PROVISIONAL,Book I likely
+longitude,,,"黄经",astronomical longitude,exact Greek term to verify,,PROVISIONAL,requires coordinate policy
+latitude,,,"黄纬",astronomical latitude,exact Greek term to verify,,PROVISIONAL,requires coordinate policy
+apogee_perigee,,,"远地点/近地点",apsidal terms,exact Greek terms to verify,,PROVISIONAL,do not modernize silently
+mean_motion,,,"平运动",mean motion candidate term,exact Greek term to verify,,PROVISIONAL,requires astronomy reviewer
+

@@ -1,0 +1,56 @@
+{
+  "status": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+  "created_at_utc": "2026-05-17T22:13:17+00:00",
+  "chapter": "Book I.7",
+  "translation_allowed": false,
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_file_exists",
+      "path": "chapters/src/007_book_i_07_earth_has_no_translational_motion.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "15fa6326cca88f5ff9c0d2430e3ea34896a9b84ff09813439c5dbff61ec25eae"
+    },
+    {
+      "id": "source_extraction_check_exists",
+      "path": "qa/pretranslation/007_book_i_07_source_extraction_check.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "9b57a2edebd12f39212a9d68a544a7163048df63aede38502414779de08bb3dc"
+    },
+    {
+      "id": "pdf_contact_sheet_exists",
+      "path": "qa/technical/page_screenshots/book_i07_pages_015_017_contact_sheet.jpg",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "6942dcaff3caafcf174cc850da2a8dac54b22ff522216c3468376186e9dee279"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/007_book_i_07_earth_has_no_translational_motion.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "0ca6663d4ca6a716234fc6ef59b10fd18de8b8b39f3c867d30b6be06076a3fd1"
+    },
+    {
+      "id": "term_lock_updated",
+      "path": "qa/technical/mathematical_term_lock.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "1066e99caad25386984337d6db996609a52f9dfba28fbccc2e08a570982e42a0"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/007_book_i_07_earth_has_no_translational_motion.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

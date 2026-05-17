@@ -1,0 +1,43 @@
+{
+  "status": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+  "created_at_utc": "2026-05-17T22:13:11+00:00",
+  "chapter": "I.8",
+  "checks": [
+    {
+      "id": "source_file_exists",
+      "status": "PASS",
+      "path": "chapters/src/008_book_i_08_two_primary_motions.md"
+    },
+    {
+      "id": "source_control_wording",
+      "status": "PASS",
+      "missing": []
+    },
+    {
+      "id": "marker_count_matches_segmentation",
+      "status": "PASS",
+      "expected": 109,
+      "actual": 109
+    },
+    {
+      "id": "pdf_viewer_pages_recorded",
+      "status": "PASS",
+      "expected": "17-19"
+    },
+    {
+      "id": "translated_absent_or_allowed_by_control",
+      "status": "PASS",
+      "path": "chapters/translated/008_book_i_08_two_primary_motions.md"
+    },
+    {
+      "id": "final_absent",
+      "status": "PASS",
+      "path": "chapters/final/008_book_i_08_two_primary_motions.md"
+    },
+    {
+      "id": "formal_translation_still_gated",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

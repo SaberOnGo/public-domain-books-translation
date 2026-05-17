@@ -1,0 +1,82 @@
+{
+  "status": "PASS_CHAPTER_QUALITY_GATE__FINAL_PROMOTION_PENDING",
+  "created_at_utc": "2026-05-17T22:13:34+00:00",
+  "chapter": "Book I.2",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_extraction",
+      "path": "qa/pretranslation/002_book_i_02_source_extraction_check.json",
+      "status": "PASS",
+      "expected": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "actual": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "sha256": "e4b19229e4d88b9969f7cff37f0db627c4600e7f8269a492f238599bf215011f"
+    },
+    {
+      "id": "formal_source_recheck",
+      "path": "qa/pretranslation/002_book_i_02_formal_source_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+      "actual": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+      "sha256": "82d2c9c7f486a6948f45e217c8cc7b2a597bc5bb361a21a8c0d4071694296918"
+    },
+    {
+      "id": "chapter_control",
+      "path": "qa/pretranslation/002_book_i_02_chapter_control_check.json",
+      "status": "PASS",
+      "expected": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "actual": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "sha256": "39ae97a0799734696dc9bfc1077391e9977e3363b2fe29fe4652ca107b223ead"
+    },
+    {
+      "id": "translation_draft",
+      "path": "qa/pretranslation/002_book_i_02_translation_check.json",
+      "status": "PASS",
+      "expected": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "actual": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "sha256": "de2e97e8782571c138932ce79d4cc2be49b0d40dc1d13863266fc3a189715dea"
+    },
+    {
+      "id": "draft_review",
+      "path": "qa/pretranslation/002_book_i_02_review_check.json",
+      "status": "PASS",
+      "expected": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "actual": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "sha256": "95b7030c898e9871bca9a5db36ba096077090e50521807871f3f7976680c88f7"
+    },
+    {
+      "id": "post_translation_technical_recheck",
+      "path": "qa/pretranslation/002_book_i_02_post_translation_technical_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "actual": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "sha256": "58f9f81e78bd4c3d60a5801387533d6448495bbb2d54c94ad27f60cc559fb32c"
+    },
+    {
+      "id": "chapter_quality_gate_record",
+      "path": "qa/chapter_controls/002_book_i_02_order_of_the_theorems.quality_gate.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "68a521a59c3f075b7f7c92f777c2a78cbc1657e584f15bf8c39cc010dee79569"
+    },
+    {
+      "id": "translation_file",
+      "path": "chapters/translated/002_book_i_02_order_of_the_theorems.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "2cc9ab0f7adb05a3c56a58dea6f78678850ad3cc0115f8b7c36fb29afa1efe96"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "chapters/final/002_book_i_02_order_of_the_theorems.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

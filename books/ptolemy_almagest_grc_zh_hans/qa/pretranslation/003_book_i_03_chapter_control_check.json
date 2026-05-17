@@ -1,0 +1,42 @@
+{
+  "status": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+  "created_at_utc": "2026-05-17T22:13:19+00:00",
+  "chapter": "Book I.3",
+  "translation_file_allowed_next": "chapters/translated/003_book_i_03_heaven_moves_spherically.md",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "control_exists",
+      "path": "qa/chapter_controls/003_book_i_03_heaven_moves_spherically.control.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "08a1f634c5b83274ffffc2b3c4ec20f91e17203f65839a5cc37c758d194c246e"
+    },
+    {
+      "id": "source_recheck_exists",
+      "path": "qa/pretranslation/003_book_i_03_formal_source_recheck.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "3a86e363e4c28811d29cb413cd481931a93a4554f66c53b90339eaaa1aeaab4c"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/003_book_i_03_heaven_moves_spherically.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "e67bea80f6fdd3268ebdea37fafcc110d04d6e06f4f128b0e75f69048fe465f8"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/003_book_i_03_heaven_moves_spherically.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

@@ -1,0 +1,252 @@
+{
+  "projectRoot": ".",
+  "opfFiles": [
+    "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf"
+  ],
+  "totals": {
+    "files": 14,
+    "assetRefs": 34,
+    "issues": 0
+  },
+  "assetRefs": [
+    {
+      "file": "preproduction/stage2_sample/sample_chapter.xhtml",
+      "line": 8,
+      "kind": "html_src_href",
+      "ref": "sample_assets/book.css",
+      "resolved": "preproduction/stage2_sample/sample_assets/book.css"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_chapter.xhtml",
+      "line": 23,
+      "kind": "html_src_href",
+      "ref": "sample_assets/i10_fig01_decagon_pentagon_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_assets/i10_fig01_decagon_pentagon_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_chapter.xhtml",
+      "line": 33,
+      "kind": "html_src_href",
+      "ref": "sample_assets/i10_fig02_cyclic_quadrilateral_lemma_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_assets/i10_fig02_cyclic_quadrilateral_lemma_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_chapter.xhtml",
+      "line": 38,
+      "kind": "html_src_href",
+      "ref": "sample_assets/i10_fig03_difference_of_arcs_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_assets/i10_fig03_difference_of_arcs_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_chapter.xhtml",
+      "line": 43,
+      "kind": "html_src_href",
+      "ref": "sample_assets/i10_fig04_half_arc_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_assets/i10_fig04_half_arc_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_chapter.xhtml",
+      "line": 49,
+      "kind": "html_src_href",
+      "ref": "sample_assets/i10_fig05_sum_of_arcs_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_assets/i10_fig05_sum_of_arcs_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_chapter.xhtml",
+      "line": 55,
+      "kind": "html_src_href",
+      "ref": "sample_assets/i10_fig06_chord_arc_ratio_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_assets/i10_fig06_chord_arc_ratio_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_chapter.xhtml",
+      "line": 62,
+      "kind": "html_src_href",
+      "ref": "sample_assets/i10_fig07_one_degree_bracket_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_assets/i10_fig07_one_degree_bracket_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/book-info.xhtml",
+      "line": 8,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/styles/book.css"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/cover.xhtml",
+      "line": 8,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/styles/book.css"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/nav.xhtml",
+      "line": 7,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/styles/book.css"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/nav.xhtml",
+      "line": 13,
+      "kind": "html_src_href",
+      "ref": "book-info.xhtml",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/book-info.xhtml"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/nav.xhtml",
+      "line": 14,
+      "kind": "html_src_href",
+      "ref": "sample_chapter.xhtml",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/sample_chapter.xhtml"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 18,
+      "kind": "html_src_href",
+      "ref": "nav.xhtml",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/nav.xhtml"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 19,
+      "kind": "html_src_href",
+      "ref": "cover.xhtml",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/cover.xhtml"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 20,
+      "kind": "html_src_href",
+      "ref": "book-info.xhtml",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/book-info.xhtml"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 21,
+      "kind": "html_src_href",
+      "ref": "sample_chapter.xhtml",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/sample_chapter.xhtml"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 22,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/styles/book.css"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 23,
+      "kind": "html_src_href",
+      "ref": "images/cover.svg",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/cover.svg"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 24,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig01_decagon_pentagon_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig01_decagon_pentagon_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 25,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig02_cyclic_quadrilateral_lemma_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig02_cyclic_quadrilateral_lemma_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 26,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig03_difference_of_arcs_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig03_difference_of_arcs_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 27,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig04_half_arc_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig04_half_arc_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 28,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig05_sum_of_arcs_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig05_sum_of_arcs_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 29,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig06_chord_arc_ratio_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig06_chord_arc_ratio_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/package.opf",
+      "line": 30,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig07_one_degree_bracket_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig07_one_degree_bracket_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/sample_chapter.xhtml",
+      "line": 8,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/styles/book.css"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/sample_chapter.xhtml",
+      "line": 23,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig01_decagon_pentagon_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig01_decagon_pentagon_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/sample_chapter.xhtml",
+      "line": 33,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig02_cyclic_quadrilateral_lemma_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig02_cyclic_quadrilateral_lemma_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/sample_chapter.xhtml",
+      "line": 38,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig03_difference_of_arcs_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig03_difference_of_arcs_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/sample_chapter.xhtml",
+      "line": 43,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig04_half_arc_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig04_half_arc_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/sample_chapter.xhtml",
+      "line": 49,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig05_sum_of_arcs_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig05_sum_of_arcs_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/sample_chapter.xhtml",
+      "line": 55,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig06_chord_arc_ratio_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig06_chord_arc_ratio_facsimile.png"
+    },
+    {
+      "file": "preproduction/stage2_sample/sample_epub_source/EPUB/sample_chapter.xhtml",
+      "line": 62,
+      "kind": "html_src_href",
+      "ref": "images/i10_fig07_one_degree_bracket_facsimile.png",
+      "resolved": "preproduction/stage2_sample/sample_epub_source/EPUB/images/i10_fig07_one_degree_bracket_facsimile.png"
+    }
+  ],
+  "issues": []
+}

@@ -1,0 +1,56 @@
+{
+  "status": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+  "created_at_utc": "2026-05-17T22:13:17+00:00",
+  "chapter": "Book I.9",
+  "translation_allowed": false,
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_file_exists",
+      "path": "chapters/src/009_book_i_09_on_individual_preliminaries.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "fccab52df9206ad6434c6edc75afde0f01a3781977eb42936d52a0cfc474246c"
+    },
+    {
+      "id": "source_extraction_check_exists",
+      "path": "qa/pretranslation/009_book_i_09_source_extraction_check.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "145f2886f663b0fc4bc1db15744011551fdfda418717ba0e9788c7a3666b9744"
+    },
+    {
+      "id": "pdf_contact_sheet_exists",
+      "path": "qa/technical/page_screenshots/book_i09_page_019_contact_sheet.jpg",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "83688d64443bbcd2dcc4458668762f1da18d0bc4d884a3adc95ab1312d8b4708"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/009_book_i_09_on_individual_preliminaries.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "e7c531dbc23277749e9dec206bf703592746cc9bedd96951e5cc5791c2baf0e6"
+    },
+    {
+      "id": "term_lock_updated",
+      "path": "qa/technical/mathematical_term_lock.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "1066e99caad25386984337d6db996609a52f9dfba28fbccc2e08a570982e42a0"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/009_book_i_09_on_individual_preliminaries.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

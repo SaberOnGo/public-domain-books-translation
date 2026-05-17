@@ -1,0 +1,82 @@
+{
+  "status": "PASS_CHAPTER_QUALITY_GATE__FINAL_PROMOTION_PENDING",
+  "created_at_utc": "2026-05-17T22:13:36+00:00",
+  "chapter": "Book I.7",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_extraction",
+      "path": "qa/pretranslation/007_book_i_07_source_extraction_check.json",
+      "status": "PASS",
+      "expected": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "actual": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "sha256": "6b09d018a3c4d002d6c404dc4f5b94b98f5c806a2fda3305bdc28af6237e9114"
+    },
+    {
+      "id": "formal_source_recheck",
+      "path": "qa/pretranslation/007_book_i_07_formal_source_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+      "actual": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+      "sha256": "af1e9214a8b5740a09043b3ba91d94cdd6148122353d214a0ac4e7f15019b9d6"
+    },
+    {
+      "id": "chapter_control",
+      "path": "qa/pretranslation/007_book_i_07_chapter_control_check.json",
+      "status": "PASS",
+      "expected": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "actual": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "sha256": "279465d0d1feeff1265d5751de3dcaef739125f3c163beee11a6e520f3093bf1"
+    },
+    {
+      "id": "translation_draft",
+      "path": "qa/pretranslation/007_book_i_07_translation_check.json",
+      "status": "PASS",
+      "expected": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "actual": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "sha256": "c4f2c92acbb4578ed02aa4ba2710fdf09618ba805c996960716907c0d1397474"
+    },
+    {
+      "id": "draft_review",
+      "path": "qa/pretranslation/007_book_i_07_review_check.json",
+      "status": "PASS",
+      "expected": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "actual": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "sha256": "a2907a983095541cac8807a2e4c07359fa6020e5225d2a7777b2e7daea60a591"
+    },
+    {
+      "id": "post_translation_technical_recheck",
+      "path": "qa/pretranslation/007_book_i_07_post_translation_technical_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "actual": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "sha256": "4733bff91f6a7723b9d98579e0726697a5d7623cd361abdbdd95f61f142b3b2d"
+    },
+    {
+      "id": "chapter_quality_gate_record",
+      "path": "qa/chapter_controls/007_book_i_07_earth_has_no_translational_motion.quality_gate.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "aa54ec5f76ee2c520956831fbfa680defe8ae2b794b2c75b1ad1aedc3bcf0927"
+    },
+    {
+      "id": "translation_file",
+      "path": "chapters/translated/007_book_i_07_earth_has_no_translational_motion.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "e98457b9a87c6d933eb5ef8b1392cce2cca76fcc741003d06b9ad6be025ec9f7"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "chapters/final/007_book_i_07_earth_has_no_translational_motion.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

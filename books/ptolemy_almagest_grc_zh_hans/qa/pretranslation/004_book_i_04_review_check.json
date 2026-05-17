@@ -1,0 +1,41 @@
+{
+  "status": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+  "created_at_utc": "2026-05-17T22:13:27+00:00",
+  "chapter": "Book I.4",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "review_exists",
+      "path": "reviews/chapters/004_book_i_04_earth_is_spherical.review.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "afd61dced013bd410a480e94f750ee28957d68656af099b343bae2ad3453279d"
+    },
+    {
+      "id": "translation_check_exists",
+      "path": "qa/pretranslation/004_book_i_04_translation_check.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "907146980a1eb08e36b9c835f9ef6b9aa8c6d302abeeef2e8d48d407683dc017"
+    },
+    {
+      "id": "translation_exists",
+      "path": "chapters/translated/004_book_i_04_earth_is_spherical.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "6ac3e482ad43bf2df9777301c57402ff00ee70fc723af3ae4f5da9bc1405473b"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/004_book_i_04_earth_is_spherical.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

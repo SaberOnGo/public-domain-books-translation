@@ -1,0 +1,56 @@
+{
+  "status": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+  "created_at_utc": "2026-05-17T22:13:15+00:00",
+  "chapter": "Book I.3",
+  "translation_allowed": false,
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_file_exists",
+      "path": "chapters/src/003_book_i_03_heaven_moves_spherically.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "103f34da97738cddb0bb0c4464fba46581067bdeb90ce72eea6bf34c8ffc4089"
+    },
+    {
+      "id": "source_extraction_check_exists",
+      "path": "qa/pretranslation/003_book_i_03_source_extraction_check.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "7a5f310f8584174a8f7bcbda8caa19480ec224ae899209fe3f1af177f950f9da"
+    },
+    {
+      "id": "pdf_contact_sheet_exists",
+      "path": "qa/technical/page_screenshots/book_i03_pages_009_011_contact_sheet.jpg",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "6c36ca35b1cceadeb8432eb3c611b16a4e7ba90a2a4aa38550f43f18fd9c4cfe"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/003_book_i_03_heaven_moves_spherically.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "e67bea80f6fdd3268ebdea37fafcc110d04d6e06f4f128b0e75f69048fe465f8"
+    },
+    {
+      "id": "term_lock_updated",
+      "path": "qa/technical/mathematical_term_lock.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "1066e99caad25386984337d6db996609a52f9dfba28fbccc2e08a570982e42a0"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/003_book_i_03_heaven_moves_spherically.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

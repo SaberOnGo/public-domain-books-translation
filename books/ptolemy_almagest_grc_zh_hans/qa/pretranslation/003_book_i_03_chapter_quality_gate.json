@@ -1,0 +1,82 @@
+{
+  "status": "PASS_CHAPTER_QUALITY_GATE__FINAL_PROMOTION_PENDING",
+  "created_at_utc": "2026-05-17T22:13:35+00:00",
+  "chapter": "Book I.3",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_extraction",
+      "path": "qa/pretranslation/003_book_i_03_source_extraction_check.json",
+      "status": "PASS",
+      "expected": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "actual": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "sha256": "b96ad6ae722cf423fda58413fa2b178e986805f0b90a29756ad2003484d59cab"
+    },
+    {
+      "id": "formal_source_recheck",
+      "path": "qa/pretranslation/003_book_i_03_formal_source_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+      "actual": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+      "sha256": "9cf459f8d3f9b322053e1d5eb68268f3eab5abf245b99ebb7e16cf1d029d6ba4"
+    },
+    {
+      "id": "chapter_control",
+      "path": "qa/pretranslation/003_book_i_03_chapter_control_check.json",
+      "status": "PASS",
+      "expected": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "actual": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "sha256": "c755e434f4c8f16def8b33341f1a75340f6de7481bf155e60b1f1e82897d4b13"
+    },
+    {
+      "id": "translation_draft",
+      "path": "qa/pretranslation/003_book_i_03_translation_check.json",
+      "status": "PASS",
+      "expected": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "actual": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "sha256": "868a24793f4af976b98a47774e79eb76ce4cdcd879df4d8abecb0e65280c7e57"
+    },
+    {
+      "id": "draft_review",
+      "path": "qa/pretranslation/003_book_i_03_review_check.json",
+      "status": "PASS",
+      "expected": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "actual": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "sha256": "95bfa8fd2e1d350a2fd47a95c39721c18aadd330b6e2da2b69c86834f5fd0e09"
+    },
+    {
+      "id": "post_translation_technical_recheck",
+      "path": "qa/pretranslation/003_book_i_03_post_translation_technical_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "actual": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "sha256": "347e294a46f17e809bcee4c03979a66bb74de63572ab650cd51b8b27c4481b7e"
+    },
+    {
+      "id": "chapter_quality_gate_record",
+      "path": "qa/chapter_controls/003_book_i_03_heaven_moves_spherically.quality_gate.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "e868d03f0eba1e0ad006cd7c407db78efe2c91c6d96c6dcd74ac1bf1ad9c5ade"
+    },
+    {
+      "id": "translation_file",
+      "path": "chapters/translated/003_book_i_03_heaven_moves_spherically.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "4a95a1e6d89e117ab346e50ceb5be8463cb48518f757ade19568767c3f19cb11"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "chapters/final/003_book_i_03_heaven_moves_spherically.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

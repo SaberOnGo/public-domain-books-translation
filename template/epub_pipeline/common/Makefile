@@ -1,12 +1,17 @@
 BOOK=output/book.epub
 
+.PHONY: lint epub check all
+
+lint:
+	npm run lint:publication
+	npm run lint:assets
+
 epub:
-	pandoc frontmatter/preface.md frontmatter/translator_note.md chapters/final/*.md \
-	  --metadata-file=metadata/book.yaml \
-	  --toc --toc-depth=2 --split-level=1 \
-	  -o $(BOOK)
+	npm run build:epub
 
 check:
-	epubcheck $(BOOK) > output/epubcheck.log
+	npm run check:epub
 
-all: epub check
+all:
+	npm run build:epub
+	npm run check:epub

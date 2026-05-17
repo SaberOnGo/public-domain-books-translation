@@ -1,0 +1,41 @@
+{
+  "status": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+  "created_at_utc": "2026-05-17T22:13:26+00:00",
+  "chapter": "Book I.2",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "review_exists",
+      "path": "reviews/chapters/002_book_i_02_order_of_the_theorems.review.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "ee86b252054aaf46a9cc8c406a43e5a90075ba762b538d2cb7a46dba0108bffc"
+    },
+    {
+      "id": "translation_check_exists",
+      "path": "qa/pretranslation/002_book_i_02_translation_check.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "5ecef11c67c308fe1edbd28ff5c01ee873f95a3b105dbb249a30401c16ee8da6"
+    },
+    {
+      "id": "translation_exists",
+      "path": "chapters/translated/002_book_i_02_order_of_the_theorems.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "2cc9ab0f7adb05a3c56a58dea6f78678850ad3cc0115f8b7c36fb29afa1efe96"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/002_book_i_02_order_of_the_theorems.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

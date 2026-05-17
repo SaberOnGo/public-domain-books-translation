@@ -1,0 +1,66 @@
+{
+  "status": "PASS_FOR_FORMAL_SOURCE_RECHECK__NOT_FINAL_GATE",
+  "created_at_utc": "2026-05-17T22:13:18+00:00",
+  "chapter": "Book I.10",
+  "formal_final_allowed": false,
+  "book_i11_translation_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_file_exists",
+      "path": "chapters/src/010_book_i_10_chords.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "e21c66349fbe266194b46e6c96b781c4737f42baae68d31edfd4b039d271357c"
+    },
+    {
+      "id": "page_verification_exists",
+      "path": "qa/technical/book_i_page_verification.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "eb988965e2a881177f0f1c1f27778ecad1ba285ce2506e04141e683ff895f16d"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/010_book_i_10_chords.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "ae00b126e6ccda0003fb12d620703b850ed52d7c95aa85d98c170191465ea88c"
+    },
+    {
+      "id": "diagram_audit_exists",
+      "path": "qa/technical/010_book_i_10_chords.diagram_table_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "7ac4fbc61bc087961e6b0ccc44fb7a02365b0b7545990d548ae3cc24785a10be"
+    },
+    {
+      "id": "proof_dependency_exists",
+      "path": "qa/technical/proof_dependency_map.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "914e5432d7d8a0b03e5ad2ca663acfdf0c09dbe2ef126d5d30a9edbf9217c2a1"
+    },
+    {
+      "id": "numeric_validation_exists",
+      "path": "qa/technical/numeric_validation_log.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "613268fcf1c2373e4aaa65efc21c093bf90f4c5c682b6e8738901df2bc17a80c"
+    },
+    {
+      "id": "trial_translation_exists",
+      "path": "chapters/translated/010_book_i_10_chords.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "71a08a8206de2b546b5af68031e700eaa07db0920371fddc07132267be46e6eb"
+    },
+    {
+      "id": "trial_review_exists",
+      "path": "reviews/trial_chapter/010_book_i_10_chords.review.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "147d83552d5e7d525b4266281f1cb1b822184fe83f547a8c387dcf48becb25fa"
+    }
+  ]
+}

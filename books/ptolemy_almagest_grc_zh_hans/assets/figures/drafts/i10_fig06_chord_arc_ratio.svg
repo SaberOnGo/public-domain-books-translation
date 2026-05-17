@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Book I.10 Figure 6: chord and arc ratio inequality</title>
+  <desc id="desc">Trial SVG redraw for Book I.10, figure 6. Circle ABGD with unequal chords AB and BG, angle ABG bisected by BD, line AEG, perpendicular DZ, and auxiliary sector HET.</desc>
+  <style>
+    .circle{stroke:#1f2933;stroke-width:3;fill:none}
+    .line{stroke:#1f2933;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .aux{stroke:#5b6770;stroke-width:2;fill:none;stroke-dasharray:8 7}
+    .label{font-family:"Times New Roman",serif;font-size:30px;fill:#111827}
+    .point{fill:#111827}
+  </style>
+  <circle class="circle" cx="315" cy="210" r="165"/>
+  <path class="line" d="M 150 210 L 230 85 L 500 210 L 315 355 Z"/>
+  <path class="line" d="M 230 85 L 315 355"/>
+  <path class="line" d="M 150 210 L 325 210 L 500 210"/>
+  <path class="line" d="M 315 355 L 325 210"/>
+  <path class="aux" d="M 315 355 A 145 145 0 0 1 395 223"/>
+  <path class="aux" d="M 315 355 L 415 150"/>
+  <circle class="point" cx="150" cy="210" r="5"/>
+  <circle class="point" cx="230" cy="85" r="5"/>
+  <circle class="point" cx="500" cy="210" r="5"/>
+  <circle class="point" cx="315" cy="355" r="5"/>
+  <circle class="point" cx="325" cy="210" r="5"/>
+  <circle class="point" cx="395" cy="223" r="5"/>
+  <circle class="point" cx="292" cy="305" r="5"/>
+  <circle class="point" cx="415" cy="150" r="5"/>
+  <text class="label" x="118" y="222">Α</text>
+  <text class="label" x="207" y="75">Β</text>
+  <text class="label" x="514" y="222">Γ</text>
+  <text class="label" x="306" y="388">Δ</text>
+  <text class="label" x="331" y="205">Ε</text>
+  <text class="label" x="400" y="247">Ζ</text>
+  <text class="label" x="264" y="322">Η</text>
+  <text class="label" x="425" y="145">Θ</text>
+</svg>

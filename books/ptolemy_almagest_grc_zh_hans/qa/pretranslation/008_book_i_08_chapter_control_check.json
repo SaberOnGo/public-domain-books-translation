@@ -1,0 +1,42 @@
+{
+  "status": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+  "created_at_utc": "2026-05-17T22:13:21+00:00",
+  "chapter": "Book I.8",
+  "translation_file_allowed_next": "chapters/translated/008_book_i_08_two_primary_motions.md",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "control_exists",
+      "path": "qa/chapter_controls/008_book_i_08_two_primary_motions.control.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "03a7ef3f3031049b52c51f76fc1ec47848382d9f1a67326859e4a3f87c9be717"
+    },
+    {
+      "id": "source_recheck_exists",
+      "path": "qa/pretranslation/008_book_i_08_formal_source_recheck.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "dd8dc960c88cfc4c4c6bea6d75ec1a704b66bf95969d187732794f1881ba9364"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/008_book_i_08_two_primary_motions.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "649ab7caa0c4097a0d33496ac0270b5cf33b80542bfd292082233a41efa4ffc4"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/008_book_i_08_two_primary_motions.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

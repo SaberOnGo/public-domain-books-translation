@@ -1,0 +1,113 @@
+{
+  "status": "FAIL",
+  "created_at_utc": "2026-05-17T22:21:27+00:00",
+  "chapter": "Book I.11",
+  "row_transcription_complete": false,
+  "translation_allowed": false,
+  "checks": [
+    {
+      "id": "region_csv_exists",
+      "status": "PASS",
+      "path": "source/tables/book_i_11_chord_table_regions.csv"
+    },
+    {
+      "id": "printed_page_coverage",
+      "status": "PASS",
+      "expected": [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "actual": [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ]
+    },
+    {
+      "id": "viewer_page_coverage",
+      "status": "PASS",
+      "expected": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "actual": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ]
+    },
+    {
+      "id": "region_images_exist",
+      "status": "PASS",
+      "missing": []
+    },
+    {
+      "id": "region_images_not_tiny",
+      "status": "PASS",
+      "small": []
+    },
+    {
+      "id": "region_images_have_edge_margin",
+      "status": "FAIL",
+      "bad": [
+        "source/tables/book_i_11_chord_table_regions/book_i11_p049_right_table_region.png",
+        "source/tables/book_i_11_chord_table_regions/book_i11_p053_right_table_region.png"
+      ]
+    },
+    {
+      "id": "row_transcription_not_claimed",
+      "status": "PASS",
+      "bad_count": 0
+    },
+    {
+      "id": "strategy_mentions_region_stage",
+      "status": "PASS",
+      "missing": []
+    },
+    {
+      "id": "book_i11_final_absent",
+      "status": "PASS"
+    }
+  ],
+  "failures": [
+    "region images have too much ink on crop edge; likely clipped or too tight: ['source/tables/book_i_11_chord_table_regions/book_i11_p049_right_table_region.png', 'source/tables/book_i_11_chord_table_regions/book_i11_p053_right_table_region.png']"
+  ]
+}

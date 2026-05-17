@@ -1,0 +1,59 @@
+{
+  "status": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+  "created_at_utc": "2026-05-17T22:13:32+00:00",
+  "chapter": "Book I.6",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "next_gate": "chapter quality gate",
+  "checks": [
+    {
+      "id": "post_translation_recheck_exists",
+      "path": "qa/technical/006_book_i_06_earth_as_point_to_heavens.post_translation_technical_recheck.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "e89d51a3b624f86b63219146e5bf488cd6f6cbaf816d8e571e1160656be2fad6"
+    },
+    {
+      "id": "translation_exists",
+      "path": "chapters/translated/006_book_i_06_earth_as_point_to_heavens.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "f119dadf12ae458af97d6271f775872d2c63b6bc4587b5230c52f4b50e6eb5fb"
+    },
+    {
+      "id": "review_exists",
+      "path": "reviews/chapters/006_book_i_06_earth_as_point_to_heavens.review.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "de73697473ce0f2aebbfe956ec03b545fb4881a260db64621ebeb9b15f7120f4"
+    },
+    {
+      "id": "term_lock_contains_book_i6_terms",
+      "path": "qa/technical/mathematical_term_lock.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "1066e99caad25386984337d6db996609a52f9dfba28fbccc2e08a570982e42a0"
+    },
+    {
+      "id": "translation_body_modernizing_terms_absent",
+      "status": "PASS",
+      "hits": []
+    },
+    {
+      "id": "geometry_table_numeric_markers_absent_for_i6",
+      "status": "PASS",
+      "hits": []
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "chapters/final/006_book_i_06_earth_as_point_to_heavens.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

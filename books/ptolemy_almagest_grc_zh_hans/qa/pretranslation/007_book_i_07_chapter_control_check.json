@@ -1,0 +1,42 @@
+{
+  "status": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+  "created_at_utc": "2026-05-17T22:13:21+00:00",
+  "chapter": "Book I.7",
+  "translation_file_allowed_next": "chapters/translated/007_book_i_07_earth_has_no_translational_motion.md",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "control_exists",
+      "path": "qa/chapter_controls/007_book_i_07_earth_has_no_translational_motion.control.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "6828368e374bf157c6c03c43664f9e64d92327ba219be56c731b2257ba5fa203"
+    },
+    {
+      "id": "source_recheck_exists",
+      "path": "qa/pretranslation/007_book_i_07_formal_source_recheck.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "477c43fa0d440cd38dd98575ee900e829d9ea13470baf93a60856266e9bd7073"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/007_book_i_07_earth_has_no_translational_motion.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "0ca6663d4ca6a716234fc6ef59b10fd18de8b8b39f3c867d30b6be06076a3fd1"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/007_book_i_07_earth_has_no_translational_motion.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

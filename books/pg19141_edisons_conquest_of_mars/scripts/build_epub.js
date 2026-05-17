@@ -23,12 +23,11 @@ const meta = {
   publisher: 'LifeBook 书坊',
   sourceUrl: 'https://www.gutenberg.org/ebooks/19141',
   sourceId: 'Project Gutenberg #19141',
+  projectUrl: 'https://github.com/SaberOnGo/public-domain-books-translation',
+  lifeBookUrl: 'https://yourlifebook.app',
   originalPublication: '1898 年英文原著。本译本依据 Project Gutenberg #19141 公版文本制作。',
   description: '本书是美国早期科幻小说，承接威尔斯《世界大战》的火星入侵想象，写托马斯·爱迪生组织科学家与地球舰队，以电力飞船和分解射线反攻火星。本中文 EPUB 由 LifeBook 书坊 SaberOnGo 依据 Project Gutenberg #19141 公版英文原文新译制作，翻译时间为 2026-05-13。源文本在美国为公版，跨地区发行前仍应按目标国家或地区复核版权状态。',
-  authorBio: '加勒特·普特南·瑟维斯（Garrett Putman Serviss，1851-1929）是美国天文学普及作家、记者和早期科幻小说作者，长期以通俗文章向大众介绍天文学和新科学。代表作包括《爱迪生征服火星》以及若干科学幻想和科学普及作品。',
-  creationBackground: '本书于 1898 年问世，常被视为承接威尔斯《世界大战》火星入侵想象的一部早期美国科幻续写。作品把十九世纪末的发明家崇拜、电学奇观、报刊连载节奏和星际战争幻想结合起来，塑造出由爱迪生和各国科学家率领地球舰队反攻火星的叙事。',
-  bookContext: '书中的科学设想属于十九世纪末大众科学语境，如以太、电力排斥、分解射线和电力飞船等，阅读时宜把它看作近代科学浪漫主义和早期太空歌剧的混合文本，而非现代硬科幻工程设定。',
-  rights: '源文本：Project Gutenberg #19141，美国公版文本。中文译文：LifeBook 书坊 SaberOnGo，发行和授权由项目所有者决定。'
+  rights: '源文本：Project Gutenberg #19141，美国公版文本。中文译本、译注、整理文本、封面、排版设计与 EPUB 打包内容由 LifeBook 书坊 SaberOnGo 译制，除单本书或文件另有说明外，按 CC BY-NC-SA 4.0 面向公众发布；第三方商业使用需另行授权。'
 };
 const coverJpgPath = path.join(root, 'assets', 'cover.jpg');
 const coverPngPath = path.join(root, 'assets', 'cover.png');
@@ -291,10 +290,13 @@ function coverSvg() {
   <path d="M300 1765 L960 1185 L1015 1245 L360 1830 Z" fill="#d7e9f6" opacity="0.72"/>
   <path d="M942 1138 L1088 1265 L1022 1315 L890 1190 Z" fill="#f6d678"/>
   <path d="M360 1850 C560 1760 720 1810 890 1660 C1080 1490 1235 1565 1460 1380 L1460 2240 L360 2240 Z" fill="#6d251d" opacity="0.9"/>
-  <text x="800" y="760" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-weight="700" font-size="130" fill="#fff7df">爱迪生征服火星</text>
-  <text x="800" y="940" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="54" fill="#f4d891">Edison's Conquest of Mars</text>
-  <text x="800" y="1080" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="58" fill="#fff7df">加勒特·P. 瑟维斯 著</text>
-  <text x="800" y="1170" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="48" fill="#f4d891">LifeBook 书坊 译制</text>
+  <text x="800" y="360" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="72" fill="#f4d891" letter-spacing="8">LifeBook 公版新译</text>
+  <text x="800" y="760" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-weight="700" font-size="150" fill="#fff7df">爱迪生</text>
+  <text x="800" y="950" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-weight="700" font-size="150" fill="#fff7df">征服火星</text>
+  <line x1="410" y1="1055" x2="1190" y2="1055" stroke="#f4d891" stroke-width="5" opacity="0.78"/>
+  <text x="800" y="1225" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="54" fill="#f4d891">Edison's Conquest of Mars</text>
+  <text x="800" y="1365" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="58" fill="#fff7df">加勒特·P. 瑟维斯 著</text>
+  <text x="800" y="1455" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="44" fill="#f4d891">LifeBook 书坊 SaberOnGo 译制</text>
   <text x="800" y="2110" text-anchor="middle" font-family="Noto Serif CJK SC, Source Han Serif SC, STSong, SimSun, serif" font-size="44" fill="#f6ddb2">依据 Project Gutenberg #19141 公版原文制作</text>
 </svg>`;
 }
@@ -305,6 +307,7 @@ function coverPage(coverImageName) {
 
 function bookInfoPage() {
   return xhtml('书籍信息', `<section epub:type="frontmatter" class="book-info">
+<p class="more-lifebook">更多 LifeBook：<a href="${esc(meta.lifeBookUrl)}">${esc(meta.lifeBookUrl)}</a></p>
 <h1>书籍信息</h1>
 <dl>
   <dt>中文书名</dt><dd>${esc(meta.title)}</dd>
@@ -313,18 +316,15 @@ function bookInfoPage() {
   <dt>译者</dt><dd>${esc(meta.translator)}</dd>
   <dt>翻译时间</dt><dd>${esc(meta.translationDate)}</dd>
   <dt>原文来源</dt><dd>${esc(meta.sourceId)}，${esc(meta.sourceUrl)}</dd>
-  <dt>公版说明</dt><dd>本译本依据 Project Gutenberg 提供的美国公版英文文本制作。跨国家或地区发行、商业使用或平台上架前，仍应按目标地区法律复核版权状态。</dd>
+  <dt>版权说明</dt><dd><p>原书：本译本依据 Project Gutenberg 提供的美国公版英文文本制作；跨国家或地区发行前，仍应按目标地区复核原书版权状态。</p><p>译本：中文译文、译注、整理文本、封面、排版设计与 EPUB 打包内容，除另有说明外，按 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 发布；第三方商业使用需另行授权。</p></dd>
 </dl>
 <h2>本书简介</h2>
 <p>${inline(meta.description)}</p>
-<h2>作者简介</h2>
-<p>${inline(meta.authorBio)}</p>
-<h2>创作背景</h2>
-<p>${inline(meta.creationBackground)}</p>
-<h2>关于本书</h2>
-<p>${inline(meta.bookContext)}</p>
 <h2>原书信息</h2>
 <p>${inline(meta.originalPublication)}</p>
+<h2>译者说明</h2>
+<p>本书由 LifeBook 书坊依据可靠公版原文新译制作。LifeBook 书坊希望用 AI 辅助流程和人工审校，把更多进入公版、但还不容易被中文读者读到的作品整理成可阅读的电子书。如果你愿意试读、校对、查资料、统一术语或参与后续书籍制作，欢迎访问本项目：<a href="${esc(meta.projectUrl)}">${esc(meta.projectUrl)}</a>。</p>
+<p>更多 LifeBook：<a href="${esc(meta.lifeBookUrl)}">${esc(meta.lifeBookUrl)}</a></p>
 </section>`);
 }
 
@@ -390,10 +390,15 @@ nav#toc li { margin: 0.45em 0; line-height: 1.45; }
 .cover-page .cover-image { display: block; width: 100%; height: auto; max-height: 100%; margin: 0 auto; }
 .book-info h1 { margin-top: 1.2em; }
 .book-info p { text-indent: 2em; }
+.book-info .more-lifebook {
+  text-indent: 0;
+  text-align: center;
+  font-weight: 600;
+  margin: 1.4em 0 1.1em;
+}
 dl { margin: 0.5em 0 1.2em; }
 dt { font-weight: 600; margin-top: 0.65em; }
 dd { margin-left: 0; padding-left: 1.2em; line-height: 1.55; }
-.book-info dd { overflow-wrap: anywhere; }
 `;
 
 const packageOpf = `<?xml version="1.0" encoding="utf-8"?>
@@ -460,12 +465,7 @@ for (const ch of chapters) files.push({ name: `EPUB/${ch.href}`, data: ch.html }
 files.push({ name: 'EPUB/package.opf', data: packageOpf });
 
 const buffer = zipBuffer(files);
-const coverSvgOut = path.join(outputDir, 'cover.svg');
-if (coverImageName === 'cover.svg') {
-  fs.writeFileSync(coverSvgOut, coverSvg());
-} else if (fs.existsSync(coverSvgOut)) {
-  fs.rmSync(coverSvgOut);
-}
+fs.writeFileSync(path.join(outputDir, 'cover.svg'), coverSvg());
 if (coverImageName === 'cover.jpg') fs.copyFileSync(coverJpgPath, path.join(outputDir, 'cover.jpg'));
 if (coverImageName === 'cover.png') fs.copyFileSync(coverPngPath, path.join(outputDir, 'cover.png'));
 fs.writeFileSync(outFile, buffer);

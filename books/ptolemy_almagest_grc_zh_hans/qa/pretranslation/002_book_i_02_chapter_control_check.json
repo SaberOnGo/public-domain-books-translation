@@ -1,0 +1,42 @@
+{
+  "status": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+  "created_at_utc": "2026-05-17T22:13:19+00:00",
+  "chapter": "Book I.2",
+  "translation_file_allowed_next": "chapters/translated/002_book_i_02_order_of_the_theorems.md",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "control_exists",
+      "path": "qa/chapter_controls/002_book_i_02_order_of_the_theorems.control.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "c7e9c4df5128c89207f92d1402bfd88f00e65923b0be2652eace6600f5ecfaed"
+    },
+    {
+      "id": "source_recheck_exists",
+      "path": "qa/pretranslation/002_book_i_02_formal_source_recheck.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "9af76b2719ce2f21dcddba884f4637f8e1ef886f407fa3bd26104b1d95ea774d"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/002_book_i_02_order_of_the_theorems.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "35de93d135c26fc30632c7dfaa517dc0acf96d4708cd753149754f98b429a543"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/002_book_i_02_order_of_the_theorems.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

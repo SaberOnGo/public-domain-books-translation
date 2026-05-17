@@ -1,0 +1,82 @@
+{
+  "status": "PASS_CHAPTER_QUALITY_GATE__FINAL_PROMOTION_PENDING",
+  "created_at_utc": "2026-05-17T22:13:36+00:00",
+  "chapter": "Book I.5",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_extraction",
+      "path": "qa/pretranslation/005_book_i_05_source_extraction_check.json",
+      "status": "PASS",
+      "expected": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "actual": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "sha256": "d80215bb788b1222cc7635ff50291c6a2968b8b40cbfa00b615a054f65776a66"
+    },
+    {
+      "id": "formal_source_recheck",
+      "path": "qa/pretranslation/005_book_i_05_formal_source_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+      "actual": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+      "sha256": "3064e1e52a862c95d4d5bfc16ebd283a9294ccca829ca4721d3c2b5c5df812ac"
+    },
+    {
+      "id": "chapter_control",
+      "path": "qa/pretranslation/005_book_i_05_chapter_control_check.json",
+      "status": "PASS",
+      "expected": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "actual": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "sha256": "6da29fd1c41582b657c112a9d15f68c95d94b084f1fe16285106d4c31e7490ec"
+    },
+    {
+      "id": "translation_draft",
+      "path": "qa/pretranslation/005_book_i_05_translation_check.json",
+      "status": "PASS",
+      "expected": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "actual": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "sha256": "8363572eceda45cbab31a90220a3e55621b7b31397ef6df416f4dc8d4d43177c"
+    },
+    {
+      "id": "draft_review",
+      "path": "qa/pretranslation/005_book_i_05_review_check.json",
+      "status": "PASS",
+      "expected": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "actual": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "sha256": "51e2aed8f73816ec6e0157ddaec60f64bab9f0f78279a60f4e047ad819ad67f9"
+    },
+    {
+      "id": "post_translation_technical_recheck",
+      "path": "qa/pretranslation/005_book_i_05_post_translation_technical_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "actual": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "sha256": "4452a9f51f47e366c4659eda08c3c50aec6fe3fa54c4f914c99f63145259df52"
+    },
+    {
+      "id": "chapter_quality_gate_record",
+      "path": "qa/chapter_controls/005_book_i_05_earth_is_central.quality_gate.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "1f268bf5c30405660c04f1a2beca5959cc67d4ec45ce51aad4da81ef03324cf7"
+    },
+    {
+      "id": "translation_file",
+      "path": "chapters/translated/005_book_i_05_earth_is_central.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "5bf43979605de77bf717b4231fcefee787491969e7de5c616da1ddc5f2c40c2f"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "chapters/final/005_book_i_05_earth_is_central.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

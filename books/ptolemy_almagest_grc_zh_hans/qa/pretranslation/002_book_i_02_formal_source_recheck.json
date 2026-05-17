@@ -1,0 +1,56 @@
+{
+  "status": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+  "created_at_utc": "2026-05-17T22:13:15+00:00",
+  "chapter": "Book I.2",
+  "translation_allowed": false,
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_file_exists",
+      "path": "chapters/src/002_book_i_02_order_of_the_theorems.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "a977571101db26fe921b5e64e2c3b74ffe5cf23a00b645dbe689c440b52df0d2"
+    },
+    {
+      "id": "source_extraction_check_exists",
+      "path": "qa/pretranslation/002_book_i_02_source_extraction_check.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "b6850eabc121e255c5dbcc1f5f75028a5ea467e1d87b43cadc6d8d2c9e12ac6c"
+    },
+    {
+      "id": "pdf_contact_sheet_exists",
+      "path": "qa/technical/page_screenshots/book_i02_pages_008_009_contact_sheet.jpg",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "ce3c8024960c449b9cfeebaf27390b6c2ccf22d1459b3ac6e76b533bbcd552de"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/002_book_i_02_order_of_the_theorems.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "35de93d135c26fc30632c7dfaa517dc0acf96d4708cd753149754f98b429a543"
+    },
+    {
+      "id": "term_lock_updated",
+      "path": "qa/technical/mathematical_term_lock.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "1066e99caad25386984337d6db996609a52f9dfba28fbccc2e08a570982e42a0"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/002_book_i_02_order_of_the_theorems.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

@@ -1,0 +1,82 @@
+{
+  "status": "PASS_CHAPTER_QUALITY_GATE__FINAL_PROMOTION_PENDING",
+  "created_at_utc": "2026-05-17T22:13:36+00:00",
+  "chapter": "Book I.6",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "source_extraction",
+      "path": "qa/pretranslation/006_book_i_06_source_extraction_check.json",
+      "status": "PASS",
+      "expected": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "actual": "PASS_SOURCE_EXTRACTED__PDF_RECHECK_AND_TECHNICAL_QA_PENDING",
+      "sha256": "2d48d1af935a32c82aa41f1979131eda8d883596b65cf12910f8909fb65f6b32"
+    },
+    {
+      "id": "formal_source_recheck",
+      "path": "qa/pretranslation/006_book_i_06_formal_source_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+      "actual": "PASS_FOR_SOURCE_PREP__CHAPTER_CONTROL_PENDING",
+      "sha256": "205b829764155741613464fcbd956377c0cfd5200322cba2782e8598656e5478"
+    },
+    {
+      "id": "chapter_control",
+      "path": "qa/pretranslation/006_book_i_06_chapter_control_check.json",
+      "status": "PASS",
+      "expected": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "actual": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+      "sha256": "e68b523e67e4493015ee64fa9282dd8e8e6bebfa030d59c962bde6547cef6264"
+    },
+    {
+      "id": "translation_draft",
+      "path": "qa/pretranslation/006_book_i_06_translation_check.json",
+      "status": "PASS",
+      "expected": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "actual": "PASS_TRANSLATION_DRAFT__REVIEW_PENDING",
+      "sha256": "7032114914efe44acda0eb9044f905616d0e72161a032ce9b5055bfd922f58ea"
+    },
+    {
+      "id": "draft_review",
+      "path": "qa/pretranslation/006_book_i_06_review_check.json",
+      "status": "PASS",
+      "expected": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "actual": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+      "sha256": "6dcf800d9672212e15869524a5c51760c0e23cfd534a9fb428c99853ea40779c"
+    },
+    {
+      "id": "post_translation_technical_recheck",
+      "path": "qa/pretranslation/006_book_i_06_post_translation_technical_recheck.json",
+      "status": "PASS",
+      "expected": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "actual": "PASS_POST_TRANSLATION_TECHNICAL_RECHECK__CHAPTER_GATE_PENDING",
+      "sha256": "72ca40f93eb1ca3c32eb68cada713316d6ea8783a54fe9b3b54e7df3402a8127"
+    },
+    {
+      "id": "chapter_quality_gate_record",
+      "path": "qa/chapter_controls/006_book_i_06_earth_as_point_to_heavens.quality_gate.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "d6b95cfc54610ba11d264f2c42fe0df96df5c89aa6c26421f7caae41cb46c600"
+    },
+    {
+      "id": "translation_file",
+      "path": "chapters/translated/006_book_i_06_earth_as_point_to_heavens.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "f119dadf12ae458af97d6271f775872d2c63b6bc4587b5230c52f4b50e6eb5fb"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "chapters/final/006_book_i_06_earth_as_point_to_heavens.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_file_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Book I.10 Figure 1: decagon and pentagon side construction</title>
+  <desc id="desc">Trial SVG redraw for Book I.10, figure 1. Semicircle ABG on diameter ADG with center D, perpendicular DB, midpoint E of DG, EZ equal to EB, and joined ZB.</desc>
+  <style>
+    .line{stroke:#1f2933;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .aux{stroke:#5b6770;stroke-width:2;fill:none;stroke-dasharray:8 7}
+    .label{font-family:"Times New Roman",serif;font-size:30px;fill:#111827}
+    .point{fill:#111827}
+  </style>
+  <path class="line" d="M 130 250 A 190 190 0 0 1 510 250"/>
+  <path class="line" d="M 130 250 L 510 250"/>
+  <path class="line" d="M 320 250 L 320 60"/>
+  <path class="line" d="M 320 60 L 380 250"/>
+  <path class="line" d="M 250 250 L 320 60"/>
+  <path class="line" d="M 250 250 L 380 250"/>
+  <circle class="point" cx="130" cy="250" r="5"/>
+  <circle class="point" cx="320" cy="60" r="5"/>
+  <circle class="point" cx="510" cy="250" r="5"/>
+  <circle class="point" cx="320" cy="250" r="5"/>
+  <circle class="point" cx="380" cy="250" r="5"/>
+  <circle class="point" cx="250" cy="250" r="5"/>
+  <text class="label" x="100" y="263">Α</text>
+  <text class="label" x="310" y="48">Β</text>
+  <text class="label" x="522" y="263">Γ</text>
+  <text class="label" x="309" y="286">Δ</text>
+  <text class="label" x="371" y="286">Ε</text>
+  <text class="label" x="235" y="286">Ζ</text>
+</svg>

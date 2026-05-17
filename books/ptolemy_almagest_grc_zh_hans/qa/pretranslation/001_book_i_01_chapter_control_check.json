@@ -1,0 +1,42 @@
+{
+  "status": "PASS_CHAPTER_CONTROL__CONTROLLED_TRANSLATION_PREP_ALLOWED",
+  "created_at_utc": "2026-05-17T22:13:18+00:00",
+  "chapter": "Book I.1",
+  "translation_file_allowed_next": "chapters/translated/001_book_i_01_proem.md",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "control_exists",
+      "path": "qa/chapter_controls/001_book_i_01_proem.control.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "f96fc5f6217aad3e8406a9236b0cd445dcda7751139a3e799541b539cbd91a54"
+    },
+    {
+      "id": "source_recheck_exists",
+      "path": "qa/pretranslation/001_book_i_01_formal_source_recheck.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "9139bd4394a77a0431d12d6a82e63f149904bb62eaf6f6967e557504f7fb35a2"
+    },
+    {
+      "id": "technical_audit_exists",
+      "path": "qa/technical/001_book_i_01_proem.technical_audit.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "2cf157e9103529714fa68d0a16d2fc72c099cf034cbfe902724c46a5e28d5aeb"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/001_book_i_01_proem.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

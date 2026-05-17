@@ -1,0 +1,67 @@
+{
+  "status": "PASS_BOOK_I11_TABLE_STRATEGY__SOURCE_EXTRACTION_PENDING",
+  "created_at_utc": "2026-05-17T22:13:38+00:00",
+  "chapter": "Book I.11",
+  "formal_translation_allowed": false,
+  "checks": [
+    {
+      "id": "required_file",
+      "path": "qa/technical/011_book_i_11_chord_table_strategy.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/page_screenshots/book_i11_chord_table_pages_028_035_contact_sheet.jpg",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/table_validation_log.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/diagram_table_inventory.md",
+      "status": "PASS"
+    },
+    {
+      "id": "required_file",
+      "path": "qa/technical/chord_angle_calculation_policy.md",
+      "status": "PASS"
+    },
+    {
+      "id": "strategy_required_wording",
+      "status": "PASS",
+      "missing": []
+    },
+    {
+      "id": "table_validation_log_updated",
+      "status": "PASS",
+      "missing": []
+    },
+    {
+      "id": "diagram_table_inventory_updated",
+      "status": "PASS",
+      "missing": []
+    },
+    {
+      "id": "chord_policy_updated",
+      "status": "PASS",
+      "missing": []
+    },
+    {
+      "id": "pal_i11_table_body_absent",
+      "status": "PASS",
+      "page_markers": [
+        "I_48",
+        "I_63"
+      ],
+      "reserve_marker_count": 2
+    },
+    {
+      "id": "formal_translation_still_gated",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

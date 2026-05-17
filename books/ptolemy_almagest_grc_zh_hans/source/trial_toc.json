@@ -1,0 +1,21 @@
+{
+  "toc_status": "TRIAL_ONLY_NOT_FULL_SOURCE_SPLIT",
+  "created_at_utc": "2026-05-16T19:39:10+00:00",
+  "source": "PAL Heiberg transcription, auxiliary source control",
+  "full_book_split_allowed": false,
+  "chapters": [
+    {
+      "id": "010_book_i_10_chords",
+      "book": "I",
+      "chapter": "10",
+      "source_file": "chapters/src/010_book_i_10_chords.md",
+      "pal_start_marker": "I_31_7",
+      "pal_end_before": "I_48",
+      "pdf_page_mapping_status": "PASS_FOR_BOOK_I10_TRIAL",
+      "pdf_viewer_pages": "19-27",
+      "pdf_boundary_page": "28 starts Book I.11",
+      "translation_status": "NOT_TRANSLATED",
+      "review_status": "NOT_STARTED"
+    }
+  ]
+}

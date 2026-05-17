@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Book I.10 Figure 3: difference of two arcs</title>
+  <desc id="desc">Trial SVG redraw for Book I.10, figure 3. Semicircle ABGD on diameter AD, with given lines AB and AG, joined BG, and auxiliary lines BD and GD.</desc>
+  <style>
+    .line{stroke:#1f2933;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .label{font-family:"Times New Roman",serif;font-size:30px;fill:#111827}
+    .point{fill:#111827}
+  </style>
+  <path class="line" d="M 120 280 A 200 200 0 0 1 520 280"/>
+  <path class="line" d="M 120 280 L 520 280"/>
+  <path class="line" d="M 120 280 L 190 140 L 350 80 L 520 280 Z"/>
+  <path class="line" d="M 190 140 L 520 280"/>
+  <path class="line" d="M 350 80 L 520 280"/>
+  <path class="line" d="M 190 140 L 350 80"/>
+  <circle class="point" cx="120" cy="280" r="5"/>
+  <circle class="point" cx="190" cy="140" r="5"/>
+  <circle class="point" cx="350" cy="80" r="5"/>
+  <circle class="point" cx="520" cy="280" r="5"/>
+  <text class="label" x="91" y="292">Α</text>
+  <text class="label" x="164" y="132">Β</text>
+  <text class="label" x="350" y="70">Γ</text>
+  <text class="label" x="532" y="292">Δ</text>
+</svg>

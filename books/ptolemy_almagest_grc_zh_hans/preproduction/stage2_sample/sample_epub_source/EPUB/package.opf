@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package version="3.0" unique-identifier="bookid" xmlns="http://www.idpf.org/2007/opf">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/">
+    <dc:identifier id="bookid">urn:uuid:ptolemy-almagest-book-i10-trial-sample</dc:identifier>
+    <dc:title>天文学大成：Book I.10 试译样本</dc:title>
+    <dc:creator>Claudius Ptolemaeus</dc:creator>
+    <dc:contributor>LifeBook 书坊试译样本</dc:contributor>
+    <dc:language>zh-CN</dc:language>
+    <dc:source>https://commons.wikimedia.org/wiki/File:Almagest_Complete,_Heiberg.pdf</dc:source>
+    <dc:description>Book I.10 controlled trial translation sample. Not a full-book translation or publishable EPUB.</dc:description>
+    <dc:rights>Research and pretranslation trial only; source rights and publication gates remain open.</dc:rights>
+    <dc:publisher>LifeBook 书坊</dc:publisher>
+    <dcterms:modified>2026-05-17T06:47:34Z</dcterms:modified>
+    <meta property="schema:accessMode">textual</meta>
+    <meta property="schema:accessMode">visual</meta>
+  </metadata>
+  <manifest>
+    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
+    <item id="cover" href="cover.xhtml" media-type="application/xhtml+xml" />
+    <item id="book-info" href="book-info.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter" href="sample_chapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="css" href="styles/book.css" media-type="text/css" />
+    <item id="cover-image" href="images/cover.svg" media-type="image/svg+xml" properties="cover-image" />
+    <item id="fig01" href="images/i10_fig01_decagon_pentagon_facsimile.png" media-type="image/png" />
+    <item id="fig02" href="images/i10_fig02_cyclic_quadrilateral_lemma_facsimile.png" media-type="image/png" />
+    <item id="fig03" href="images/i10_fig03_difference_of_arcs_facsimile.png" media-type="image/png" />
+    <item id="fig04" href="images/i10_fig04_half_arc_facsimile.png" media-type="image/png" />
+    <item id="fig05" href="images/i10_fig05_sum_of_arcs_facsimile.png" media-type="image/png" />
+    <item id="fig06" href="images/i10_fig06_chord_arc_ratio_facsimile.png" media-type="image/png" />
+    <item id="fig07" href="images/i10_fig07_one_degree_bracket_facsimile.png" media-type="image/png" />
+  </manifest>
+  <spine>
+    <itemref idref="cover" />
+    <itemref idref="book-info" />
+    <itemref idref="chapter" />
+  </spine>
+</package>

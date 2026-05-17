@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Book I.10 Figure 2: cyclic quadrilateral product lemma</title>
+  <desc id="desc">Trial SVG redraw for Book I.10, figure 2. A cyclic quadrilateral ABGD with diagonals AG and BD, and auxiliary point E used in the proof.</desc>
+  <style>
+    .circle{stroke:#1f2933;stroke-width:3;fill:none}
+    .line{stroke:#1f2933;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .aux{stroke:#5b6770;stroke-width:2;fill:none;stroke-dasharray:8 7}
+    .label{font-family:"Times New Roman",serif;font-size:30px;fill:#111827}
+    .point{fill:#111827}
+  </style>
+  <circle class="circle" cx="320" cy="210" r="160"/>
+  <path class="line" d="M 210 310 L 240 110 L 435 105 L 465 265 Z"/>
+  <path class="line" d="M 210 310 L 435 105"/>
+  <path class="line" d="M 240 110 L 465 265"/>
+  <path class="aux" d="M 240 110 L 338 210 L 465 265"/>
+  <circle class="point" cx="210" cy="310" r="5"/>
+  <circle class="point" cx="240" cy="110" r="5"/>
+  <circle class="point" cx="435" cy="105" r="5"/>
+  <circle class="point" cx="465" cy="265" r="5"/>
+  <circle class="point" cx="338" cy="210" r="5"/>
+  <text class="label" x="180" y="335">Α</text>
+  <text class="label" x="218" y="98">Β</text>
+  <text class="label" x="442" y="96">Γ</text>
+  <text class="label" x="475" y="275">Δ</text>
+  <text class="label" x="348" y="208">Ε</text>
+</svg>

@@ -1,0 +1,41 @@
+{
+  "status": "PASS_REVIEW__TECHNICAL_RECHECK_PENDING",
+  "created_at_utc": "2026-05-17T22:13:29+00:00",
+  "chapter": "Book I.9",
+  "final_allowed": false,
+  "formal_epub_allowed": false,
+  "checks": [
+    {
+      "id": "review_exists",
+      "path": "reviews/chapters/009_book_i_09_on_individual_preliminaries.review.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "76f5eea5626aec8d6186688fefa5532bfdd8d432f04ce6813148d0ab78ed97dd"
+    },
+    {
+      "id": "translation_check_exists",
+      "path": "qa/pretranslation/009_book_i_09_translation_check.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "95022f39d2540b52bec6be2a7c2717a95ce3eb42ed9f0bac852dd53de2db15b7"
+    },
+    {
+      "id": "translation_exists",
+      "path": "chapters/translated/009_book_i_09_on_individual_preliminaries.md",
+      "status": "PASS",
+      "missing": [],
+      "sha256": "7c270fdda053c3693781e8f1cb20f607d36bc00dec986f8f38802c052f2c44c1"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "chapters/final/009_book_i_09_on_individual_preliminaries.md",
+      "status": "PASS"
+    },
+    {
+      "id": "forbidden_absent",
+      "path": "output/book.epub",
+      "status": "PASS"
+    }
+  ],
+  "failures": []
+}

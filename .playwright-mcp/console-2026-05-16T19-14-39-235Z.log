@@ -1,0 +1,3 @@
+[    1035ms] [LOG] %c%s color: red; background: yellow; font-size: 24px; 警告！ @ https://www.gstatic.com/_/mss/boq-chrome-webstore/_/js/k=boq-chrome-webstore.ChromeWebStoreConsumerFeUi.zh_CN.haN3n2U9l68.2018.O/am=gIEBAAAA2Ak/d=1/excm=_b,_tp,categoryview/ed=1/dg=0/wt=2/ujg=1/rs=AEP720LrW684pPIMa8IKq2tKOSJPAwM6yQ/dti=1/m=_b,_tp:366
+[    1035ms] [LOG] %c%s font-size: 18px; 使用此控制台可能会让攻击者趁机利用一种名为“Self-XSS”（自跨站脚本）的攻击方式来冒充您并窃取您的信息。
+请勿输入或粘贴任何来历不明的代码。 @ https://www.gstatic.com/_/mss/boq-chrome-webstore/_/js/k=boq-chrome-webstore.ChromeWebStoreConsumerFeUi.zh_CN.haN3n2U9l68.2018.O/am=gIEBAAAA2Ak/d=1/excm=_b,_tp,categoryview/ed=1/dg=0/wt=2/ujg=1/rs=AEP720LrW684pPIMa8IKq2tKOSJPAwM6yQ/dti=1/m=_b,_tp:366

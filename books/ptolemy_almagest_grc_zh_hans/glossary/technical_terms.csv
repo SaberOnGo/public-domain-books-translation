@@ -1,0 +1,16 @@
+type,source_term,source_language,transliteration,target_term,domain,definition,locked_status,first_location,notes
+astronomy_term,ἐπίκυκλος,grc,epikyklos,本轮,astronomy,planetary epicycle concept to verify against Greek context,PROVISIONAL,Book I/whole work,common Chinese astronomy term candidate
+astronomy_term,,grc,,均轮,astronomy,deferent circle candidate term; exact Greek source term to verify,PROVISIONAL,Book I/whole work,do not lock until Greek term confirmed
+astronomy_term,,grc,,偏心圆,astronomy,eccentric circle candidate term; exact Greek source term to verify,PROVISIONAL,Book I/whole work,requires model registry
+astronomy_term,,grc,,等分点,astronomy,equant point candidate term; exact Greek source term and historical use to verify,PROVISIONAL,later books likely,avoid premature modernized explanation
+mathematical_term,χορδή,grc,chorde,弦,mathematics,chord; Greek form must be verified against local Book I source before formal translation,PILOT_LOCKED,Book I,chord table term
+mathematical_term,,grc,,弦表,mathematics,chord table; exact Greek expression to verify,PILOT_LOCKED,Book I,requires table validation
+geometry_term,,grc,,设,mathematics,proof setup action,PILOT_LOCKED,Book I,Book I sample must use this consistently
+geometry_term,,grc,,作,mathematics,geometric construction action,PILOT_LOCKED,Book I,Book I sample must use this consistently
+geometry_term,,grc,,连结,mathematics,joining geometric points or lines,PILOT_LOCKED,Book I,diagram labels must match source
+geometry_term,,grc,,延长,mathematics,extending a line,PILOT_LOCKED,Book I,do not confuse with continuation of argument
+geometry_term,,grc,,交于,mathematics,intersection relation,PILOT_LOCKED,Book I,always preserve point labels
+geometry_term,,grc,,成比例,mathematics,ratio/proportion relation,PILOT_LOCKED,Book I,proof dependency term
+diagram_label,,,,,diagram,,PROVISIONAL,,to be populated after figure inventory
+table_field,,,,,table,,PROVISIONAL,,to be populated after chord/table inventory
+unit_or_measure,,,,,units,,PROVISIONAL,,degree/minute/sexagesimal policy required
