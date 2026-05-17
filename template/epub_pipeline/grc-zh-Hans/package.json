@@ -1,0 +1,16 @@
+{
+  "name": "book-epub-project-grc-zh-hans",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "lint:publication": "node scripts/publication_lint.js --target=zh-Hans --write-report",
+    "lint:assets": "node scripts/asset_manifest_check.js --write-report",
+    "review:random-samples": "python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 10",
+    "fix:publication": "node scripts/publication_lint.js --target=zh-Hans --fix --write-report",
+    "build:epub": "npm run lint:publication && npm run lint:assets && node scripts/build_epub.js",
+    "check:epub": "node scripts/run_epubcheck.js"
+  },
+  "description": "Book-local npm scripts for Ancient Greek to Simplified Chinese EPUB production. Shared Node dependencies are installed once under ../node_modules.",
+  "license": "UNLICENSED"
+}

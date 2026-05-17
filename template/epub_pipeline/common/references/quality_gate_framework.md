@@ -16,6 +16,8 @@ This file defines quality-gate concepts that apply to every translation directio
 - 每章进入 `chapters/final/` 前，必须通过忠实度、可读性、术语和最终门禁检查。
 - EPUB output must pass structural validation before final release.
 - 最终发布前，EPUB 必须通过结构校验。
+- After each post-EPUB refinement pass, at least two independent review agents must spot-check no fewer than ten random reader-facing paragraphs each; both must pass the recorded score threshold before refinement can be considered complete.
+- 每一轮 EPUB 后精校完成后，必须由至少两个独立评审 Agent 各随机抽检不少于十个读者可见正文段落；两个 Agent 都达到记录的评分门槛后，才可认为精校完成。
 
 ## What Belongs Elsewhere / 哪些内容不属于这里
 

@@ -38,6 +38,9 @@ This file is for AI agents using the `en-zh-Hans` template.
 - No translated chapter may enter `chapters/final/` without chapter controls, review, and gate pass records.
 - 任何章节没有译后控制、审校和门禁 PASS 记录，不得进入 `chapters/final/`。
 
+- After each post-EPUB refinement pass, at least two independent agents must randomly spot-check no fewer than ten reader-facing Chinese paragraphs each. Both agents must pass the random spot-check threshold before refinement can be considered complete.
+- 每轮 EPUB 后精校完成后，必须由至少两个独立 Agent 各随机抽检不少于十个读者可见中文正文段落；两个 Agent 都通过随机抽检门槛后，才可认为精校完成。
+
 - Before building or publishing an EPUB, run `node scripts/publication_lint.js --target=zh-Hans --write-report` and fix all hard errors.
 - 构建或发布 EPUB 前，必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`，并修复所有硬错误。
 
@@ -69,6 +72,9 @@ This file is for AI agents using the `en-zh-Hans` template.
 - `qa/gates/{NNN_slug}.gate.md`
 - `preproduction/stage2_sample/sample_book.epub`
 - `output/publication_lint.json`
+- `reviews/random_spotcheck/random_sample_manifest.json`
+- `reviews/agent_a/random_spotcheck_review.md`
+- `reviews/agent_b/random_spotcheck_review.md`
 - `reviews/scorecards/final_quality_score.md`
 
 If no human feedback is required, continue only when the relevant report says `PASS`.

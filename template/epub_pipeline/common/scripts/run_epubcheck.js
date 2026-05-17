@@ -43,7 +43,6 @@ const jar = nodeModules
 
 const java = findJava(javaRoot) || firstExisting([
   process.env.JAVA_HOME && path.join(process.env.JAVA_HOME, 'bin', 'java.exe'),
-  'C:\\Program Files\\Android\\Android Studio\\jbr\\bin\\java.exe',
 ]) || 'java';
 
 if (!jar || !fs.existsSync(jar)) {

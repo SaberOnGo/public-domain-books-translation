@@ -10,7 +10,9 @@ This directory contains shared workflow files for all language-pair templates.
 - `automation_contract.md`: automation and template-protection rules.
 - `metadata/rights_checklist.md` and `metadata/source_evidence.md`: source and public-domain evidence templates.
 - `preproduction/`: shared EPUB preproduction templates.
-- `references/`: language-neutral title, literary refinement, quality gate, and benchmark policies.
+- `references/`: language-neutral title, literary refinement, quality gate, EPUB asset, and benchmark policies.
+- `assets/`: default EPUB resource directories for figures, images, styles, and table resources.
+- `source/tables/`: source CSV/TSV tables used to generate reader-facing XHTML tables.
 - `scripts/`: reusable chapter splitting, Markdown normalization, publication lint, and refinement-check helpers.
 - `package.json`: book-local npm script template only; shared dependencies are installed once under `books/`.
 - `state/`: initial pipeline state and human-feedback control files.
@@ -46,17 +48,34 @@ Before building a final EPUB, run:
 
 ```powershell
 node scripts/publication_lint.js --target={target-language} --write-report
+node scripts/asset_manifest_check.js --write-report
 ```
 
 在构建最终 EPUB 前必须运行：
 
 ```powershell
 node scripts/publication_lint.js --target={target-language} --write-report
+node scripts/asset_manifest_check.js --write-report
 ```
 
-This check is common because encoding damage, legacy print tables of contents, repeated spacing, and path portability problems can affect any language.
+These checks are common because encoding damage, legacy print tables of contents, repeated spacing, missing image resources, unmanifested SVG/PNG/CSS files, and path portability problems can affect any language.
 
-这项检查属于通用层，因为编码污染、旧纸书页码目录、连续空格和路径可移植性问题可能影响任何语言方向。
+这些检查属于通用层，因为编码污染、旧纸书页码目录、连续空格、图片资源丢失、SVG/PNG/CSS 未登记到 OPF manifest、路径可移植性问题可能影响任何语言方向。
+
+## Figures, Images, and Tables / 图表、图片与表格
+
+Markdown files under `chapters/final/` are authoring sources only. The EPUB build must convert them to XHTML, copy assets into the EPUB package, and register every used resource in OPF manifest.
+
+`chapters/final/` 下的 Markdown 只是编辑源。EPUB 构建必须把它们转换成 XHTML，把资源复制进 EPUB 包，并把所有实际使用的资源登记到 OPF manifest。
+
+Recommended defaults:
+
+- `assets/figures/*.svg` for diagrams and line art.
+- `assets/images/*.jpg|png|webp` for cover images, scans, and bitmap illustrations.
+- `source/tables/*.csv|tsv` for table source data.
+- XHTML `<table>` for reader-facing numeric or technical tables.
+
+具体规则见 `references/epub_assets_figures_tables.md`。
 
 ## Refinement Check / 精修复查
 

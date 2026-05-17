@@ -136,6 +136,9 @@ The post-generation review must include:
 - Spot checks of high-risk chapters in the generated XHTML, not only in Markdown source files.
 - 对高风险章节检查生成后的 XHTML，而不是只看 Markdown 源文件。
 
+- Independent random paragraph spot checks after every refinement pass: at least two agents, at least ten random reader-facing paragraphs per agent, with seed and sample manifest preserved.
+- 每轮精校后必须做独立随机段落抽检：至少两个 Agent，每个 Agent 至少十个随机读者可见正文段落，并保留 seed 和样本清单。
+
 - A short QA record under `books/{book_id_slug}/qa/` when the review affects publication quality or confirms a delivery build.
 - 如果复查影响出版质量，或用于确认交付版本，必须在 `books/{book_id_slug}/qa/` 下留下简短 QA 记录。
 
@@ -159,3 +162,6 @@ A book must not be marked `DONE` if:
 
 - validation only proves EPUB structure, while translation quality has not passed editorial review.
 - 只证明了 EPUB 结构合格，但译文质量尚未通过编辑级审查。
+
+- post-refinement random spot checks are missing, reused from an earlier refinement pass, or failed the required two-agent threshold.
+- 精校后的随机抽检缺失、复用了上一轮精校样本，或没有达到双 Agent 通过门槛。

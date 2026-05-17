@@ -81,3 +81,6 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
 
 - EPUB output must pass validation before final output.
 - EPUB 必须通过校验后才能进入最终输出。
+
+- After every post-EPUB refinement pass, run `npm run review:random-samples` or the equivalent random-sampling script. Two independent agents must each review at least ten random reader-facing Chinese paragraphs, with both averages >= 75 and no paragraph < 70.
+- 每轮 EPUB 后精校完成后，必须运行 `npm run review:random-samples` 或等效随机抽样脚本。两个独立 Agent 各抽检至少十个读者可见中文正文段落，两个平均分都必须 >= 75，且不得有单段 < 70。

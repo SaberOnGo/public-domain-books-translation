@@ -1,0 +1,9 @@
+type,source_symbol,target_symbol_or_label,domain,definition,first_location,locked_status,notes
+variable,,,,,,,
+diagram_label,,,,,,,
+unit_symbol,,,,,,,
+angle_symbol,,,,,,,
+table_field,,,,,,,
+astronomical_symbol,,,,,,,
+operator_or_relation,,,,,,,
+

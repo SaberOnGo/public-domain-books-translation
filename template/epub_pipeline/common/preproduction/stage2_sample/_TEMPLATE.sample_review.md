@@ -17,6 +17,11 @@ human_required: false
 - [ ] 未嵌入完整超大中文字体。
 - [ ] `第X章` 与章节说明字号协调。
 - [ ] 正文段落、行距、缩进适合中文长文阅读。
+- [ ] 若样章含图，Markdown 图片已转换为 XHTML `<figure>`，图片文件存在。
+- [ ] 若样章含图，`img alt`、`figcaption` 和必要长描述存在。
+- [ ] 若样章含表，表格为 XHTML `<table>`，含 `caption`、`thead`、`th`。
+- [ ] 样章 EPUB 的 OPF manifest 登记所有图片、样式、字体等资源。
+- [ ] `output/asset_manifest_check.json` 或样章等效资源检查无硬错误。
 - [ ] 文件体积合理。
 
 ## 自动结论 / Auto Conclusion

@@ -1,0 +1,56 @@
+# 18 最终输出 / Final EPUB Output
+
+## 目的 / Purpose
+
+在所有翻译、预制作、样章、全书制作、双 Agent 评审、回退修复都通过后，输出正本 EPUB。
+
+## 输入 / Input
+
+- `output/book.epub`
+- `reviews/scorecards/final_quality_score.md`
+- `reviews/revision_route.md`
+- `output/publication_lint.json`
+- `output/asset_manifest_check.json`
+- `output/epubcheck.json` 或 `output/epubcheck.log`
+- `metadata/source_witness_manifest.md`
+- `qa/textual/textual_uncertainty_log.md`
+
+## 最终检查 / Final Checks
+
+必须确认：
+
+1. EPUBCheck：fatal=0，error=0；warning 必须解释或修复。
+2. EPUB 内有封面，且 OPF manifest 标记 `cover-image`。
+3. 版本说明页存在，并含 `LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明。
+4. 无旧品牌名残留。
+5. 标题层级、字体策略、正文排版符合 `production_spec.md`。
+6. `metadata/source_witness_manifest.md` 存在且 `manifest_status=PASS`。
+7. `qa/textual/textual_uncertainty_log.md` 不存在阻断最终输出的 `UNRESOLVED` 项。
+8. 章节标题已按 `references/chapter_title_policy.md` 和 `references/ancient_greek_title_strategy.md` 检查：无半截标题、无机械破折号长链，EPUB 目录使用短题名。
+   - 若古希腊文原章或校勘版结构只有编号、卷号、节号或简单题名，不得出现 AI 自拟的可见中文小标题；解释性概括只能放入 `title_note`、制作说明或 QA。
+9. 文件体积合理，封面和字体未异常膨胀。
+10. 双 Agent 评审分数达到 PASS。
+11. `output/publication_lint.json` 无硬错误；不存在分号滥用、异常连续空格、旧纸书页码目录、乱码、普通名词原文括注或旧纸书可见分隔符，且 `targetTitleLatinResidue=0`、`sourceTermBeforeTranslation=0`、`bodyOriginalTermGloss=0`、`bodySceneSeparator=0`。
+12. `output/asset_manifest_check.json` 无硬错误；所有 EPUB 内图片、SVG、CSS、字体等资源均存在、使用相对路径，并登记到 OPF manifest。
+13. 若书中含图，XHTML 内使用 `<figure>` 或等效结构，含 `img alt`、`figcaption` 和必要长描述；若书中含表，优先为 XHTML `<table>`，含 `caption`、`thead`、`th`。
+14. 不存在本机绝对路径、`file://`、Windows 盘符、仓库外资源或未经许可的远程图片热链接。
+15. 如本书存在系统性精修问题，`goal/` 下已有本书目标或完成记录，且可复用经验已回填到 common、zh-Hans 或 grc-zh-Hans 模板。
+16. 标题中的人名不计入“正文首次出现”：章节标题、副标题和目录题名只用中文译名；古希腊文原名、拉丁化转写或外文括注只可放在正文第一次自然出现该人名的位置、译注或术语表。
+17. 普通名词必须直接译成中文正文，不附加原文词括注；`* * * * *`、`*****`、`----`、`---` 等纸书分隔符已删除，而不是换成另一种符号。
+18. 若模板包含 `scripts/refinement_check.js`，运行后 `qa/refinement/refinement_check.json` 已保存；出版范围内 BOM、乱码、异常连续空格和不当标点为 0，或已有明确例外说明。
+
+## 输出 / Output
+
+- `output/book.epub`
+- 可选中文文件名副本：`output/{中文书名}.epub`
+- `output/publication_lint.json`
+- `output/asset_manifest_check.json`
+- `output/final_manifest.md`
+
+## 状态 / State
+
+通过后：
+
+- `state/pipeline_state.json.status = FINAL_OUTPUT_PASS`
+
+注意：此状态还不是 `DONE`，必须进入第 19 阶段复审和经验沉淀。
