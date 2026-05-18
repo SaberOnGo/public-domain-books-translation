@@ -1,0 +1,271 @@
+{
+  "schema_version": "2.0",
+  "round_id": "round_003",
+  "seed": "587892c957585417d341ba147ac753cd",
+  "book_root": "D:\\project\\49_public-domain-books-translation\\books\\zh-Hans\\5_pg3479_the_metal_monster",
+  "source_dir": "chapters/final",
+  "output_dir": "reviews/random_spotcheck",
+  "profile": "standard",
+  "agents": 2,
+  "rounds_planned": 3,
+  "target_confidence": 0.8,
+  "defect_rate": 0.1,
+  "release_confidence": 0.998203,
+  "release_confidence_model": "min_h(1 - (1 - defect_rate) ** planned_samples_h); full-scan strata count as 1.0",
+  "required_total_samples_per_stratum_for_target": 16,
+  "strata": {
+    "paragraph": {
+      "candidate_count": 1604,
+      "sample_count": 20,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.998203
+    },
+    "table": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    },
+    "figure": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    },
+    "formula": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    },
+    "caption_note": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    }
+  },
+  "sample_sets": {
+    "agent_a": {
+      "paragraph": [
+        {
+          "id": "029_chapter_xxviii_the_frenzy_of_ruth::paragraph::0030",
+          "stratum": "paragraph",
+          "file": "chapters/final/029_chapter_xxviii_the_frenzy_of_ruth.md",
+          "heading": "露丝的狂乱",
+          "ordinal": 30,
+          "text": "事情很快办好。露丝轻盈的身体在兄长和爱人之间摇荡，我们向前进入雾中，小心翼翼地穿过那死寂。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "018_chapter_xvii_yuruk::paragraph::0020",
+          "stratum": "paragraph",
+          "file": "chapters/final/018_chapter_xvii_yuruk.md",
+          "heading": "尤鲁克",
+          "ordinal": 20,
+          "text": "它是不是许多人所说的灵魂？或者，它是一种更精微的物质，一种自我觉知的力量，以身体为载体，正如其他力量以别的机器为衣裳？归根到底，我想，我们这个有意识的自我，这个“我”，不就是一粒觉知的火花，在我们称为大脑的机制中沿时间之路连续奔行，沿着那条路径接触，如同电火花在导线末端闪现？",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "016_chapter_xv_the_house_of_norhala::paragraph::0006",
+          "stratum": "paragraph",
+          "file": "chapters/final/016_chapter_xv_the_house_of_norhala.md",
+          "heading": "诺哈拉之屋",
+          "ordinal": 6,
+          "text": "“那是胡言乱语吗，古德温？还是他可能……他怎么说的来着……同那些东西和它们的目的有了接触？那信息……是真实的吗？”",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "018_chapter_xvii_yuruk::paragraph::0009",
+          "stratum": "paragraph",
+          "file": "chapters/final/018_chapter_xvii_yuruk.md",
+          "heading": "尤鲁克",
+          "ordinal": 9,
+          "text": "“很久以前，”他回答，“很久，很久以前，他们的城里出了乱子，就在切尔基斯那座伟大居所里。我和女神的母亲一起逃走。我们有二十个人，我们逃到这里——沿着我会指给你看的那条路——”",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "025_chapter_xxiv_ruszark::paragraph::0042",
+          "stratum": "paragraph",
+          "file": "chapters/final/025_chapter_xxiv_ruszark.md",
+          "heading": "鲁扎克",
+          "ordinal": 42,
+          "text": "间隔处摆着矮而有力的木铁机械，旁边堆着巨大圆石。我知道那是投石机，每架周围都聚着一群士兵，把大石安放到位，拉紧粗绳，绳一松，投射物便会飞出。两侧还有人拖来更多这样的投石器，把一组炮列般的器械组装起来，对准威胁他们城市的、庞大闪耀的怪物。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "009_chapter_viii_the_drums_of_thunder::paragraph::0008",
+          "stratum": "paragraph",
+          "file": "chapters/final/009_chapter_viii_the_drums_of_thunder.md",
+          "heading": "雷鼓",
+          "ordinal": 8,
+          "text": "除了这些微光，这地方的光线虽近黄昏，却水晶般清澈。我们头顶高处——五百英尺，一千英尺——墙壁融入一片混浊绿柱石色的雾霭。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "009_chapter_viii_the_drums_of_thunder::paragraph::0029",
+          "stratum": "paragraph",
+          "file": "chapters/final/009_chapter_viii_the_drums_of_thunder.md",
+          "heading": "雷鼓",
+          "ordinal": 29,
+          "text": "那又是什么？是埃及人的拉-哈拉赫提斯，被剥去双翼，流放到亡者廊道里衰老？还是那嘲弄的发光体，古代北欧人相信被安置在冰冷地狱中折磨受诅者的，光明与温暖之神的寒冷幽影？",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "021_chapter_xx_vampires_of_the_sun::paragraph::0014",
+          "stratum": "paragraph",
+          "file": "chapters/final/021_chapter_xx_vampires_of_the_sun.md",
+          "heading": "太阳吸血鬼",
+          "ordinal": 14,
+          "text": "我再次看见嵌在金色带上的蓝宝石发光椭圆，看见脉动的花瓣火焰构成的神秘玫瑰，看见那玫瑰中心静止的白热红宝石核心。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "028_chapter_xxvii_the_drums_of_destiny::paragraph::0066",
+          "stratum": "paragraph",
+          "file": "chapters/final/028_chapter_xxvii_the_drums_of_destiny.md",
+          "heading": "“命运之鼓”",
+          "ordinal": 66,
+          "text": "远处我看见一颗蓝宝石火花，我知道那是诺哈拉的家。那疾驰的金字塔如今离它不远——而我忽然意识到，在那形体中奇怪地既没有球体也没有金字塔。除了构成我们所站平台、正颤抖的立方体之外，载着我们的这个缩小之物，也没有包含金属巨兽任何其他单元，只有它的球体和四面体——至少在可见的躯体中是这样。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "003_chapter_ii_the_sigil_on_the_rocks::paragraph::0009",
+          "stratum": "paragraph",
+          "file": "chapters/final/003_chapter_ii_the_sigil_on_the_rocks.md",
+          "heading": "岩石上的符印",
+          "ordinal": 9,
+          "text": "山谷的魔力笼罩着我们，我们走得从容。西边的山已经很近，我们必须通过的峡谷口也清清楚楚出现在前方。看来黄昏前我们到不了那里，德雷克和我都已经接受在这座宁静山谷里再住一夜的安排。我们一边缓慢前行，一边各自沉思，忽然，他一声惊呼把我吓了一跳。",
+          "asset_path": "",
+          "evidence_path": ""
+        }
+      ],
+      "table": [],
+      "figure": [],
+      "formula": [],
+      "caption_note": []
+    },
+    "agent_b": {
+      "paragraph": [
+        {
+          "id": "009_chapter_viii_the_drums_of_thunder::paragraph::0023",
+          "stratum": "paragraph",
+          "file": "chapters/final/009_chapter_viii_the_drums_of_thunder.md",
+          "heading": "雷鼓",
+          "ordinal": 23,
+          "text": "我向后望去——一批批立方体正从追随我们的金属群体中疾射出来，它们排成长长的双列闪过我们身边，冲到前方。远远在我们前面，一片阴郁开始生长，它加深，直到我们正冲入最黑的夜。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "029_chapter_xxviii_the_frenzy_of_ruth::paragraph::0040",
+          "stratum": "paragraph",
+          "file": "chapters/final/029_chapter_xxviii_the_frenzy_of_ruth.md",
+          "heading": "露丝的狂乱",
+          "ordinal": 40,
+          "text": "那不可解释的躯体仍像我初次看见时一样高达一英里，里面藏着巨锥的大心脏，来自我们太阳的磁瀑被吸入其中，里面也藏着较小锥体的小心脏、工坊、诞生室，以及许多未经猜测、未曾看见的奥秘。它的基底已经收缩了足足四分之一。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "010_chapter_ix_the_portal_of_flame::paragraph::0017",
+          "stratum": "paragraph",
+          "file": "chapters/final/010_chapter_ix_the_portal_of_flame.md",
+          "heading": "火焰之门",
+          "ordinal": 17,
+          "text": "我们处在一个涡旋的一端，那是发光雾气中的漏斗状通道，漏斗的另一端在一英里外扩展成一个巨大的圆，雾气勾勒的边缘触到那座——城市——高耸的断壁。仿佛在我们前方，横躺着一只由水晶般清澈空气组成的圆锥，一种比空气重、比水轻的发光介质，正压在它弯曲的侧面上。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "007_chapter_vi_norhala_of_the_lightnings::paragraph::0047",
+          "stratum": "paragraph",
+          "file": "chapters/final/007_chapter_vi_norhala_of_the_lightnings.md",
+          "heading": "闪电中的诺哈拉",
+          "ordinal": 47,
+          "text": "然后，诺哈拉一臂搂着露丝，飘了过来。现在她到了我们身边，她放开露丝，滑过我们。我们继续走了一百码或更远，随后她把我们稍稍带向看不见的峡谷壁。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "016_chapter_xv_the_house_of_norhala::paragraph::0033",
+          "stratum": "paragraph",
+          "file": "chapters/final/016_chapter_xv_the_house_of_norhala.md",
+          "heading": "诺哈拉之屋",
+          "ordinal": 33,
+          "text": "“好吧。”他阴沉地点头。“可到了时候，我直说，博士，我会做到极限。那个像人蛛一样的家伙身上有种东西，让我想把他碾扁……慢慢地。”",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "003_chapter_ii_the_sigil_on_the_rocks::paragraph::0014",
+          "stratum": "paragraph",
+          "file": "chapters/final/003_chapter_ii_the_sigil_on_the_rocks.md",
+          "heading": "岩石上的符印",
+          "ordinal": 14,
+          "text": "我踏上那道痕迹。它平得像刨过一样。我俯下身，不敢相信自己的眼睛。因为石头和泥土被压碎、压紧，成了一片光滑、颗粒细到显微镜下才可辨的坚硬复合体，在这基质里，仍带着些许色泽痕迹的罂粟像化石一样嵌在其中。龙卷风可以、也确实会抓住麦秆，把它们完好地插进一英寸厚的木板，可是有什么力量，能拿起花朵娇嫩的花瓣，把它们像镶嵌物一样嵌进石头表面？",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "016_chapter_xv_the_house_of_norhala::paragraph::0032",
+          "stratum": "paragraph",
+          "file": "chapters/final/016_chapter_xv_the_house_of_norhala.md",
+          "heading": "诺哈拉之屋",
+          "ordinal": 32,
+          "text": "“不。”我拦住他说。“不。只要我们保持警觉，他就足够安全。我还不想对他动用武力。等到我们知道能从中得到值得的东西，再说。”",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "026_chapter_xxv_cherkis::paragraph::0002",
+          "stratum": "paragraph",
+          "file": "chapters/final/026_chapter_xxv_cherkis.md",
+          "heading": "切尔基斯",
+          "ordinal": 2,
+          "text": "从城垛上倾泻出一阵箭暴，一片标枪云。矮壮的投石机向前跳动。大石的冰雹从其中飞来。面对那扑来的死亡风暴，我畏缩了。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "002_chapter_i_valley_of_the_blue_poppies::paragraph::0029",
+          "stratum": "paragraph",
+          "file": "chapters/final/002_chapter_i_valley_of_the_blue_poppies.md",
+          "heading": "蓝罂粟谷",
+          "ordinal": 29,
+          "text": "我点点头。原来他是阿尔文·德雷克的儿子。我知道，阿尔文大约在我开始这次旅行前一年去世了。但他的儿子在这片荒野里做什么？",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "028_chapter_xxvii_the_drums_of_destiny::paragraph::0009",
+          "stratum": "paragraph",
+          "file": "chapters/final/028_chapter_xxvii_the_drums_of_destiny.md",
+          "heading": "“命运之鼓”",
+          "ordinal": 9,
+          "text": "“他们折磨了他。”露丝的声音紧绷而痛苦，她说的是波斯语——我当时以为是为了让诺哈拉听懂，没有猜到更深的理由。“他们折磨他。他们让他承受剧痛，直到他——回来。他们还向他许诺别的痛苦，会让他长久祈求死亡。",
+          "asset_path": "",
+          "evidence_path": ""
+        }
+      ],
+      "table": [],
+      "figure": [],
+      "formula": [],
+      "caption_note": []
+    }
+  }
+}

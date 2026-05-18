@@ -1,0 +1,20 @@
+{
+  "projectRoot": ".",
+  "target": "zh-Hans",
+  "fixed": false,
+  "totals": {
+    "files": 50,
+    "asciiSemicolon": 0,
+    "zhSemicolon": 6,
+    "cjkMultiSpace": 0,
+    "repeatedSpace": 0,
+    "mojibake": 0,
+    "legacyPrintToc": 0,
+    "targetTitleLatinResidue": 0,
+    "sourceTermBeforeTranslation": 0,
+    "bodyOriginalTermGloss": 0,
+    "bodySceneSeparator": 0
+  },
+  "issues": [],
+  "warnings": []
+}

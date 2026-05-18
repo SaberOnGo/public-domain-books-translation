@@ -1,0 +1,37 @@
+{
+  "paragraph": {
+    "candidate_count": 1604,
+    "sample_count": 20,
+    "full_scan": false,
+    "target_total_samples_for_confidence": 16,
+    "estimated_confidence_after_planned_rounds": 0.998203
+  },
+  "table": {
+    "candidate_count": 0,
+    "sample_count": 0,
+    "full_scan": false,
+    "target_total_samples_for_confidence": 16,
+    "estimated_confidence_after_planned_rounds": 0.0
+  },
+  "figure": {
+    "candidate_count": 0,
+    "sample_count": 0,
+    "full_scan": false,
+    "target_total_samples_for_confidence": 16,
+    "estimated_confidence_after_planned_rounds": 0.0
+  },
+  "formula": {
+    "candidate_count": 0,
+    "sample_count": 0,
+    "full_scan": false,
+    "target_total_samples_for_confidence": 16,
+    "estimated_confidence_after_planned_rounds": 0.0
+  },
+  "caption_note": {
+    "candidate_count": 0,
+    "sample_count": 0,
+    "full_scan": false,
+    "target_total_samples_for_confidence": 16,
+    "estimated_confidence_after_planned_rounds": 0.0
+  }
+}

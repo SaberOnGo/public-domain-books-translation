@@ -5,9 +5,9 @@ description: Use when creating or reviewing Ancient Greek to Simplified Chinese 
 
 # Ancient Greek to Simplified Chinese EPUB Pipeline / 古希腊文到简体中文 EPUB 流水线
 
-Use this skill after copying `template/epub_pipeline/common` and overlaying `template/epub_pipeline/grc-zh-Hans` into a book project.
+Use this skill after `books/scripts/create_book_project.py` has copied `template/epub_pipeline/common` and overlaid `template/epub_pipeline/grc-zh-Hans` into `books/zh-Hans/{number}_{book_id_slug}/`.
 
-使用本 skill 前，应先把 `template/epub_pipeline/common` 复制到书籍工程，再覆盖复制 `template/epub_pipeline/grc-zh-Hans`。
+使用本 skill 前，应先通过 `books/scripts/create_book_project.py` 把 `template/epub_pipeline/common` 复制到 `books/zh-Hans/{number}_{book_id_slug}/`，再覆盖复制 `template/epub_pipeline/grc-zh-Hans`。
 
 If the work is classical science, mathematics, astronomy, or diagram/table-heavy, overlay `template/epub_pipeline/profiles/classical-science-zh-Hans` after this template.
 
@@ -29,6 +29,8 @@ If the work is classical science, mathematics, astronomy, or diagram/table-heavy
 12. `references/ancient_greek_names_transliteration_policy.md`
 13. `references/ancient_greek_title_strategy.md`
 14. `references/ancient_greek_to_chinese_translation_notes.md`
+15. `references/stratified_random_spotcheck.md`
+16. `references/release_versioning.md`
 
 ## Translation Standard / 翻译标准
 
@@ -72,3 +74,8 @@ If the work is classical science, mathematics, astronomy, or diagram/table-heavy
 
 - If the classical-science profile is enabled, every relevant chapter must also pass technical and diagram/table audits.
 - 如果启用古典科学 profile，相关章节还必须通过技术审计和图表/表格审计。
+
+- After the first full-book EPUB and after every post-EPUB refinement pass, run the stratified random spot-check module: `npm run review:random-samples`, independent agent review, fix closure, new-seed re-sampling after rework, and `npm run review:random-validate:pass` before final output. The sampled population is reader-facing audit units, including paragraphs, tables, figures, formulas/proof blocks, captions, and notes.
+- 第一版全书 EPUB 生成后，以及每轮 EPUB 后精校完成后，必须执行分层随机抽检模块：运行 `npm run review:random-samples`、独立 Agent 评审、修复闭环、返工后新 seed 复抽，并在最终输出前通过 `npm run review:random-validate:pass`。抽样总体是读者可见审计单元，包括正文段落、表格、图片、公式/证明块、图注和注释。
+- After random spot-check closure, create a versioned EPUB release with `npm run release:create`. The publishable artifact is `output/release/book_vX.X.X.epub` with bilingual `release_note_vX.X.X.md`; `output/book.epub` alone is not enough for `DONE`.
+- 随机抽检闭环通过后，必须运行 `npm run release:create` 创建带版本号的 EPUB 发布产物。可发布产物是 `output/release/book_vX.X.X.epub` 及中英文 `release_note_vX.X.X.md`；只有 `output/book.epub` 不能标记 `DONE`。

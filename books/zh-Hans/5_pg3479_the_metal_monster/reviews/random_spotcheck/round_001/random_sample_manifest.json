@@ -1,0 +1,271 @@
+{
+  "schema_version": "2.0",
+  "round_id": "round_001",
+  "seed": "4f2f9430f35b9054040ed13ddd162324",
+  "book_root": "D:\\project\\49_public-domain-books-translation\\books\\zh-Hans\\5_pg3479_the_metal_monster",
+  "source_dir": "chapters/final",
+  "output_dir": "reviews/random_spotcheck",
+  "profile": "standard",
+  "agents": 2,
+  "rounds_planned": 3,
+  "target_confidence": 0.8,
+  "defect_rate": 0.1,
+  "release_confidence": 0.998203,
+  "release_confidence_model": "min_h(1 - (1 - defect_rate) ** planned_samples_h); full-scan strata count as 1.0",
+  "required_total_samples_per_stratum_for_target": 16,
+  "strata": {
+    "paragraph": {
+      "candidate_count": 1604,
+      "sample_count": 20,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.998203
+    },
+    "table": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    },
+    "figure": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    },
+    "formula": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    },
+    "caption_note": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    }
+  },
+  "sample_sets": {
+    "agent_a": {
+      "paragraph": [
+        {
+          "id": "004_chapter_iii_ruth_ventnor::paragraph::0069",
+          "stratum": "paragraph",
+          "file": "chapters/final/004_chapter_iii_ruth_ventnor.md",
+          "heading": "露丝·文特诺",
+          "ordinal": 69,
+          "text": "“他们为什么留下？嗯，他们也许发现新生活比旧生活更愉快。也可能被某种意外锁在了山谷里，山崩、岩崩封住了入口。有十几种合理可能。”",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "025_chapter_xxiv_ruszark::paragraph::0015",
+          "stratum": "paragraph",
+          "file": "chapters/final/025_chapter_xxiv_ruszark.md",
+          "heading": "鲁扎克",
+          "ordinal": 15,
+          "text": "诺哈拉的歌唱变了，又成了傲慢的号角声。紧贴我们下方，那巨大颈项裂开了。那一刻我想到，诺哈拉仿佛是这头嵌合怪的支配灵——它似乎捕捉、理解并服从她每一个迅捷的念头。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "002_chapter_i_valley_of_the_blue_poppies::paragraph::0052",
+          "stratum": "paragraph",
+          "file": "chapters/final/002_chapter_i_valley_of_the_blue_poppies.md",
+          "heading": "蓝罂粟谷",
+          "ordinal": 52,
+          "text": "一支巨大的、雾绿火焰的长矛从黑暗中射出，把矛尖刺入天顶的心脏，紧随其后，一大群闪光的光矛跃上天空。此刻，那片黑暗像一只乌木般的手，挥舞着一千支金银箔火焰的标枪。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "011_chapter_x_witch_give_back_my_sister::paragraph::0010",
+          "stratum": "paragraph",
+          "file": "chapters/final/011_chapter_x_witch_give_back_my_sister.md",
+          "heading": "“女巫！把我妹妹还回来”",
+          "ordinal": 10,
+          "text": "然而仍有差别，因为骨头周围没有那种朦胧光晕，没有 X 射线无法完全隐去的肉体。骷髅线条清清楚楚，没有任何血肉衣裳的痕迹。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "004_chapter_iii_ruth_ventnor::paragraph::0002",
+          "stratum": "paragraph",
+          "file": "chapters/final/004_chapter_iii_ruth_ventnor.md",
+          "heading": "露丝·文特诺",
+          "ordinal": 2,
+          "text": "它的下降虽缓，却一直没有中断，因此不久后我们开始看见半热带植被的迹象，我并不惊讶。巨大的杜鹃和树蕨，让位给偶尔出现的一丛丛挺拔柯佩克树，以及一片片更耐寒的竹子。我们又给粮柜添了几只雪鸡，虽然它们本不该出现在这里，而是为了某些可口的小食，从自己的峰顶和高原飞进峡谷。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "016_chapter_xv_the_house_of_norhala::paragraph::0004",
+          "stratum": "paragraph",
+          "file": "chapters/final/016_chapter_xv_the_house_of_norhala.md",
+          "heading": "诺哈拉之屋",
+          "ordinal": 4,
+          "text": "“我也这样想。”我阴沉地回答。“而在我看来，这是整个处境中最可怕的一面，而且原因并不全都同露丝有关。”我补了一句。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "032_chapter_xxxi_slag::paragraph::0029",
+          "stratum": "paragraph",
+          "file": "chapters/final/032_chapter_xxxi_slag.md",
+          "heading": "熔渣！",
+          "ordinal": 29,
+          "text": "巨大的滑坡已经破碎，可以攀爬。可是即便我们能安全穿过深渊隧道，前方仍有那条裂谷，我们无法在其上架桥。即便我们能架桥，那条路尽头还有峭壁，诺哈拉曾用她的闪电封住其中竖井。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "022_chapter_xxi_phantasmagoria_metallique::paragraph::0009",
+          "stratum": "paragraph",
+          "file": "chapters/final/022_chapter_xxi_phantasmagoria_metallique.md",
+          "heading": "金属幻景",
+          "ordinal": 9,
+          "text": "在每一个脚边，我如今都能看见一堆微微闪光的材料。卷须在其中盘绕，然后抽起某种像粗水晶棒的东西。弯下的平面伸直，与此同时，它们把那些水晶棒推向炽光。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "007_chapter_vi_norhala_of_the_lightnings::paragraph::0039",
+          "stratum": "paragraph",
+          "file": "chapters/final/007_chapter_vi_norhala_of_the_lightnings.md",
+          "heading": "闪电中的诺哈拉",
+          "ordinal": 39,
+          "text": "她指向前方虚空，随后，在我们开始向前时，她伸手拦住露丝。德雷克和文特诺靠近她们，带着疑问和焦虑。可我向前踏出，离开那片朦胧微光。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "032_chapter_xxxi_slag::paragraph::0020",
+          "stratum": "paragraph",
+          "file": "chapters/final/032_chapter_xxxi_slag.md",
+          "heading": "熔渣！",
+          "ordinal": 20,
+          "text": "我们只能猜测。我称作守护者的十字形形体，是毁灭的媒介——这一点毫无疑问。在那个神秘生物中，它虽多仍是一，保持整体完整的同时可以分离出许多部分，却仍能作为整体在数英里空间之外对它们保持无形联系和指挥，守护者有它的位置，它的工作，它的职责。",
+          "asset_path": "",
+          "evidence_path": ""
+        }
+      ],
+      "table": [],
+      "figure": [],
+      "formula": [],
+      "caption_note": []
+    },
+    "agent_b": {
+      "paragraph": [
+        {
+          "id": "002_chapter_i_valley_of_the_blue_poppies::paragraph::0011",
+          "stratum": "paragraph",
+          "file": "chapters/final/002_chapter_i_valley_of_the_blue_poppies.md",
+          "heading": "蓝罂粟谷",
+          "ordinal": 11,
+          "text": "只需说，有一夜在纽约，我重读也许是我所有著作中最轰动的一本《西藏南部的罂粟与报春花》，那是我一九一〇至一九一一旅行的成果。读着读着，我决定回到那片安静而被禁绝的土地去。若世上还有什么地方能让我接近遗忘，大概就在那里。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "020_chapter_xix_the_city_that_was_alive::paragraph::0056",
+          "stratum": "paragraph",
+          "file": "chapters/final/020_chapter_xix_the_city_that_was_alive.md",
+          "heading": "活着的城市",
+          "ordinal": 56,
+          "text": "“凭这地方所有该死的地狱发誓，”他庄重地说，“我不再跑了。毕竟——我们是人。它们要杀我们，就杀吧。可是凭造我的上帝发誓，我不会再从它们面前逃跑。我要站着死。”",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "028_chapter_xxvii_the_drums_of_destiny::paragraph::0065",
+          "stratum": "paragraph",
+          "file": "chapters/final/028_chapter_xxvii_the_drums_of_destiny.md",
+          "heading": "“命运之鼓”",
+          "ordinal": 65,
+          "text": "在这些音符下，剩下的那部分东西跃起，狂奔。诺哈拉火焰般的头发噼啪作响，向后流泻，在她乳白与珍珠般的身体周围——在露丝奶油色的肌肤周围——一层明亮光晕开始发亮。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "007_chapter_vi_norhala_of_the_lightnings::paragraph::0014",
+          "stratum": "paragraph",
+          "file": "chapters/final/007_chapter_vi_norhala_of_the_lightnings.md",
+          "heading": "闪电中的诺哈拉",
+          "ordinal": 14,
+          "text": "她指向散布在凹地里的那些蜷伏堆块。也就在这时，我看出从她大眼睛里流出的光来自何处。那些蓝色和金色小星暗淡、颤抖，随后像一群群细小而聚集的银色太阳般迸亮。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "032_chapter_xxxi_slag::paragraph::0014",
+          "stratum": "paragraph",
+          "file": "chapters/final/032_chapter_xxxi_slag.md",
+          "heading": "熔渣！",
+          "ordinal": 14,
+          "text": "我们开始从堆积的残骸上择路下行，走上平原。整整一天又加上第二天的一部分，我们都在寻找离开深坑的开口。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "027_chapter_xxvi_the_vengeance_of_norhala::paragraph::0031",
+          "stratum": "paragraph",
+          "file": "chapters/final/027_chapter_xxvi_the_vengeance_of_norhala.md",
+          "heading": "诺哈拉的复仇",
+          "ordinal": 31,
+          "text": "连枷与大槌击落。建筑在打击下像蛋壳一样爆裂，碎片埋葬了在贯穿其间的大道上为逃生而搏斗的人群。我们越过废墟前进。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "019_chapter_xviii_into_the_pit::paragraph::0003",
+          "stratum": "paragraph",
+          "file": "chapters/final/019_chapter_xviii_into_the_pit.md",
+          "heading": "深坑之中",
+          "ordinal": 3,
+          "text": "没有回答。我跑到门口。仰望白色天穹，我把时间估到大约七点，也就是说，我睡了三小时上下。可是尽管这段睡眠很短，我却觉得惊人地清爽，重新充满了力量，我确信，这是这地方空气异常强壮人心的性质所造成的影响。可其他人在哪里？尤鲁克在哪里？",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "032_chapter_xxxi_slag::paragraph::0007",
+          "stratum": "paragraph",
+          "file": "chapters/final/032_chapter_xxxi_slag.md",
+          "heading": "熔渣！",
+          "ordinal": 7,
+          "text": "第一次看见它时，我们望见的是一片光辉之海，被长矛般的森林刺穿，被巨大的火焰旗帜横扫，我们曾看见它清空了火雾——一块巨大石板，覆着数学之神的笔迹，我们曾看见它充满金属大军的符号，由那座活城市的庞大整体象形文字统治，我们曾看见它成为一片光辉湖，怪异太阳俯孵其上，一片黄色火沫之湖，晶亮冰雹落在其上，其中挺立着孤岛般的塔和一座正在沉没、流淌太阳火瀑的山，在这里，我们曾看见一位女神般的女子，一个半属大地、半属未知的存在，被幽禁在一座活的坟墓——一座将死的坟墓——里，那坟墓满是燃烧的奥秘，也曾看见一个十字形的金属撒旦，一个阴郁燃烧的水晶犹大背叛了——它自己。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "006_chapter_v_the_smiting_thing::paragraph::0018",
+          "stratum": "paragraph",
+          "file": "chapters/final/006_chapter_v_the_smiting_thing.md",
+          "heading": "击打之物",
+          "ordinal": 18,
+          "text": "烟尘迅速升起，我看见整面建筑都塌了，碎块撒满道路。人和马零散地扑倒在这些碎石之间，还有一些踉跄着，尖叫着。在这道石堤另一边，我们的追兵像急流被突然倒下的树木拦住一样受阻。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "022_chapter_xxi_phantasmagoria_metallique::paragraph::0037",
+          "stratum": "paragraph",
+          "file": "chapters/final/022_chapter_xxi_phantasmagoria_metallique.md",
+          "heading": "金属幻景",
+          "ordinal": 37,
+          "text": "我的目光移向横臂。它们从一端到另一端伸展六十英尺。每端又各有两枚菱形图案，不暗淡，而是愤怒地燃着橙红光泽。横梁中央，有某种东西，或许可以说是帝王那脉动多色玫瑰的烟燃红色倒影，只不过若那玫瑰每一瓣都被剪平、削成方形。",
+          "asset_path": "",
+          "evidence_path": ""
+        }
+      ],
+      "table": [],
+      "figure": [],
+      "formula": [],
+      "caption_note": []
+    }
+  }
+}

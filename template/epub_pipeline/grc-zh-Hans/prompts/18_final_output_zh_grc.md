@@ -8,10 +8,16 @@
 
 - `output/book.epub`
 - `reviews/scorecards/final_quality_score.md`
+- `reviews/scorecards/random_spotcheck_score.md`
+- `reviews/random_spotcheck/random_sample_manifest.json`
+- `reviews/random_spotcheck/round_XXX/verification/closure_check.md`
 - `reviews/revision_route.md`
 - `output/publication_lint.json`
 - `output/asset_manifest_check.json`
 - `output/epubcheck.json` 或 `output/epubcheck.log`
+- `output/release/book_vX.X.X.epub`
+- `output/release/release_note_vX.X.X.md`
+- `output/release/release_state.json`
 - `metadata/source_witness_manifest.md`
 - `qa/textual/textual_uncertainty_log.md`
 
@@ -30,19 +36,24 @@
    - 若古希腊文原章或校勘版结构只有编号、卷号、节号或简单题名，不得出现 AI 自拟的可见中文小标题；解释性概括只能放入 `title_note`、制作说明或 QA。
 9. 文件体积合理，封面和字体未异常膨胀。
 10. 双 Agent 评审分数达到 PASS。
-11. `output/publication_lint.json` 无硬错误；不存在分号滥用、异常连续空格、旧纸书页码目录、乱码、普通名词原文括注或旧纸书可见分隔符，且 `targetTitleLatinResidue=0`、`sourceTermBeforeTranslation=0`、`bodyOriginalTermGloss=0`、`bodySceneSeparator=0`。
-12. `output/asset_manifest_check.json` 无硬错误；所有 EPUB 内图片、SVG、CSS、字体等资源均存在、使用相对路径，并登记到 OPF manifest。
-13. 若书中含图，XHTML 内使用 `<figure>` 或等效结构，含 `img alt`、`figcaption` 和必要长描述；若书中含表，优先为 XHTML `<table>`，含 `caption`、`thead`、`th`。
-14. 不存在本机绝对路径、`file://`、Windows 盘符、仓库外资源或未经许可的远程图片热链接。
-15. 如本书存在系统性精修问题，`goal/` 下已有本书目标或完成记录，且可复用经验已回填到 common、zh-Hans 或 grc-zh-Hans 模板。
-16. 标题中的人名不计入“正文首次出现”：章节标题、副标题和目录题名只用中文译名；古希腊文原名、拉丁化转写或外文括注只可放在正文第一次自然出现该人名的位置、译注或术语表。
-17. 普通名词必须直接译成中文正文，不附加原文词括注；`* * * * *`、`*****`、`----`、`---` 等纸书分隔符已删除，而不是换成另一种符号。
-18. 若模板包含 `scripts/refinement_check.js`，运行后 `qa/refinement/refinement_check.json` 已保存；出版范围内 BOM、乱码、异常连续空格和不当标点为 0，或已有明确例外说明。
+11. 分层随机抽检已覆盖实际存在的正文、表格、图片、公式/证明块、图注/注释；`reviews/random_spotcheck/round_XXX/` 下样本、证据、评审、修复记录和闭环验证齐全。
+12. `npm run review:random-validate:pass` 已通过；若发生返工，最终通过轮次使用的是新 seed。
+13. 已执行 `prompts/18a_release_versioning.md` 或 `npm run release:create`，并且 `output/release/release_state.json.latest_status = PASS`。
+14. `release_note_vX.X.X.md` 已用中英文记录发布原因、问题点、修复方式、QA 证据、风险和下一轮迭代。
+15. `output/publication_lint.json` 无硬错误；不存在分号滥用、异常连续空格、旧纸书页码目录、乱码、普通名词原文括注或旧纸书可见分隔符，且 `targetTitleLatinResidue=0`、`sourceTermBeforeTranslation=0`、`bodyOriginalTermGloss=0`、`bodySceneSeparator=0`。
+16. `output/asset_manifest_check.json` 无硬错误；所有 EPUB 内图片、SVG、CSS、字体等资源均存在、使用相对路径，并登记到 OPF manifest。
+17. 若书中含图，XHTML 内使用 `<figure>` 或等效结构，含 `img alt`、`figcaption` 和必要长描述；若书中含表，优先为 XHTML `<table>`，含 `caption`、`thead`、`th`。
+18. 不存在本机绝对路径、`file://`、Windows 盘符、仓库外资源或未经许可的远程图片热链接。
+19. 如本书存在系统性精修问题，`goal/` 下已有本书目标或完成记录，且可复用经验已回填到 common、zh-Hans 或 grc-zh-Hans 模板。
+20. 标题中的人名不计入“正文首次出现”：章节标题、副标题和目录题名只用中文译名；古希腊文原名、拉丁化转写或外文括注只可放在正文第一次自然出现该人名的位置、译注或术语表。
+21. 普通名词必须直接译成中文正文，不附加原文词括注；`* * * * *`、`*****`、`----`、`---` 等纸书分隔符已删除，而不是换成另一种符号。
+22. 若模板包含 `scripts/refinement_check.js`，运行后 `qa/refinement/refinement_check.json` 已保存；出版范围内 BOM、乱码、异常连续空格和不当标点为 0，或已有明确例外说明。
 
 ## 输出 / Output
 
 - `output/book.epub`
-- 可选中文文件名副本：`output/{中文书名}.epub`
+- `output/release/book_vX.X.X.epub`
+- `output/release/release_note_vX.X.X.md`
 - `output/publication_lint.json`
 - `output/asset_manifest_check.json`
 - `output/final_manifest.md`

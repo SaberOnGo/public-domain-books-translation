@@ -80,13 +80,13 @@ Project Gutenberg、Wikisource、Standard Ebooks を優先してください。
 
 ### `books/`
 
-実際の書籍プロジェクトを置くフォルダです。現在のサンプルは次の通りです。
+実際の書籍プロジェクトを置くフォルダです。新しい書籍は対象言語ごとのフォルダに置き、次の形式を使います。
 
 ```text
-books/pg20923_a_negro_explorer_at_the_north_pole/
+books/{target}/{number}_{book_slug}/
 ```
 
-これは Project Gutenberg #20923、Matthew A. Henson の *A Negro Explorer at the North Pole* をもとにした工程です。出典証拠、権利メモ、26 章の原文、翻訳、最終稿、レビュー、生成済み EPUB、EPUBCheck 結果を含みます。EPUBCheck は fatal=0、error=0、warning=0 です。
+たとえば簡体字中国語版は `books/zh-Hans/1_pg20923_a_negro_explorer_at_the_north_pole/` に置けます。このサンプルは Project Gutenberg #20923、Matthew A. Henson の *A Negro Explorer at the North Pole* をもとにした工程です。出典証拠、権利メモ、26 章の原文、翻訳、最終稿、レビュー、生成済み EPUB、EPUBCheck 結果を含みます。EPUBCheck は fatal=0、error=0、warning=0 です。
 
 このサンプルは工程が最後まで動くことを示しています。ただし、全章が人間の出版編集レベルで最終承認済みという意味ではありません。
 

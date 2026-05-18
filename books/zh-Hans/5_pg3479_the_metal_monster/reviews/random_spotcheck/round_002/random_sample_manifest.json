@@ -1,0 +1,271 @@
+{
+  "schema_version": "2.0",
+  "round_id": "round_002",
+  "seed": "8e1c1038ff55f37494297c1b55132b12",
+  "book_root": "D:\\project\\49_public-domain-books-translation\\books\\zh-Hans\\5_pg3479_the_metal_monster",
+  "source_dir": "chapters/final",
+  "output_dir": "reviews/random_spotcheck",
+  "profile": "standard",
+  "agents": 2,
+  "rounds_planned": 3,
+  "target_confidence": 0.8,
+  "defect_rate": 0.1,
+  "release_confidence": 0.998203,
+  "release_confidence_model": "min_h(1 - (1 - defect_rate) ** planned_samples_h); full-scan strata count as 1.0",
+  "required_total_samples_per_stratum_for_target": 16,
+  "strata": {
+    "paragraph": {
+      "candidate_count": 1604,
+      "sample_count": 20,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.998203
+    },
+    "table": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    },
+    "figure": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    },
+    "formula": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    },
+    "caption_note": {
+      "candidate_count": 0,
+      "sample_count": 0,
+      "full_scan": false,
+      "target_total_samples_for_confidence": 16,
+      "estimated_confidence_after_planned_rounds": 0.0
+    }
+  },
+  "sample_sets": {
+    "agent_a": {
+      "paragraph": [
+        {
+          "id": "007_chapter_vi_norhala_of_the_lightnings::paragraph::0048",
+          "stratum": "paragraph",
+          "file": "chapters/final/007_chapter_vi_norhala_of_the_lightnings.md",
+          "heading": "闪电中的诺哈拉",
+          "ordinal": 48,
+          "text": "我回头望入黑暗。某种像巨大、暗淡闪光的杆子一样的东西正在抬起。它越升越高。现在它直立起来，成了一根纤细高耸的柱子，一个巨大的细瘦身影，顶端直指百英尺高空。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "004_chapter_iii_ruth_ventnor::paragraph::0045",
+          "stratum": "paragraph",
+          "file": "chapters/final/004_chapter_iii_ruth_ventnor.md",
+          "heading": "露丝·文特诺",
+          "ordinal": 45,
+          "text": "“一件短紫披肩从他肩上垂下。他胸前覆着精细的锁子甲。双腿被高筒绑带靴的皮带缠住并扎紧。他拿着一面小圆盾，蒙着兽皮，又带一柄短短的双刃剑。他头戴头盔。事实上，他属于，哦，至少二十个世纪以前。”",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "026_chapter_xxv_cherkis::paragraph::0019",
+          "stratum": "paragraph",
+          "file": "chapters/final/026_chapter_xxv_cherkis.md",
+          "heading": "切尔基斯",
+          "ordinal": 19,
+          "text": "取代他们位置的是一打弓手，他们跃出并跪下。他们围住那两人，弓弦拉满，箭已搭好，直指二人的心脏。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "009_chapter_viii_the_drums_of_thunder::paragraph::0054",
+          "stratum": "paragraph",
+          "file": "chapters/final/009_chapter_viii_the_drums_of_thunder.md",
+          "heading": "雷鼓",
+          "ordinal": 54,
+          "text": "在遥远前方，那女人和少女站立其上的东西疾驰着。她们的头发在身后飞流，交织成一张丝般的网，褐色的丝绺与红金色的发幕混在一起，一小团一小团闪烁微粒穿过其间，像飞掠的萤火虫群，她们的身体被微小、闪动的薰衣草色火舌镶上一圈光晕。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "005_chapter_iv_metal_with_a_brain::paragraph::0002",
+          "stratum": "paragraph",
+          "file": "chapters/final/005_chapter_iv_metal_with_a_brain.md",
+          "heading": "有脑子的金属",
+          "ordinal": 2,
+          "text": "“我把它们放在安全的地方。”他继续说，“我有个想法，它们比我们那些披甲人要奇异得多——也重要得多。不管怎样，我们必须把它们带走。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "024_chapter_xxiii_the_treachery_of_yuruk::paragraph::0061",
+          "stratum": "paragraph",
+          "file": "chapters/final/024_chapter_xxiii_the_treachery_of_yuruk.md",
+          "heading": "尤鲁克的背叛",
+          "ordinal": 61,
+          "text": "曾堆着被杀者、上面覆盖黑太监的地方，只剩一小团旋转的悲哀灰尘。被一阵穿堂风抓住，它打着旋，滑过地板，消失在门口。两颗毁灭星体一动不动，注视着我们。诺哈拉一动不动，她的怒火丝毫未因这骇人的献祭而减弱。我们也被所见之事麻痹，一动不动地站着。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "028_chapter_xxvii_the_drums_of_destiny::paragraph::0009",
+          "stratum": "paragraph",
+          "file": "chapters/final/028_chapter_xxvii_the_drums_of_destiny.md",
+          "heading": "“命运之鼓”",
+          "ordinal": 9,
+          "text": "“他们折磨了他。”露丝的声音紧绷而痛苦，她说的是波斯语——我当时以为是为了让诺哈拉听懂，没有猜到更深的理由。“他们折磨他。他们让他承受剧痛，直到他——回来。他们还向他许诺别的痛苦，会让他长久祈求死亡。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "002_chapter_i_valley_of_the_blue_poppies::paragraph::0048",
+          "stratum": "paragraph",
+          "file": "chapters/final/002_chapter_i_valley_of_the_blue_poppies.md",
+          "heading": "蓝罂粟谷",
+          "ordinal": 48,
+          "text": "“那是有目的的，”他低声说，“那是故意的。就像有什么东西伸上去，摆弄那些光线，折断它们，再把它们像柳枝一样拉下来。”",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "019_chapter_xviii_into_the_pit::paragraph::0017",
+          "stratum": "paragraph",
+          "file": "chapters/final/019_chapter_xviii_into_the_pit.md",
+          "heading": "深坑之中",
+          "ordinal": 17,
+          "text": "“再说，她有步枪和手枪，她知道怎么用。你到底什么意思，竟提出那种主意？”他的愤怒冲破了一切界限。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "011_chapter_x_witch_give_back_my_sister::paragraph::0024",
+          "stratum": "paragraph",
+          "file": "chapters/final/011_chapter_x_witch_give_back_my_sister.md",
+          "heading": "“女巫！把我妹妹还回来”",
+          "ordinal": 24,
+          "text": "现在我看见弥漫此地的光从何而来。柱间高处，漂浮着一批批球体，像苍白镀金、冻结的太阳一样发光。有大有小，在整个上层空间中，这些奇异的发光体闪耀着，固定不动，毫无支撑地悬在空中。它们发亮的球形表面射出同样淡金色的光线，僵直、不变，也带着冻结般静止的暗示。",
+          "asset_path": "",
+          "evidence_path": ""
+        }
+      ],
+      "table": [],
+      "figure": [],
+      "formula": [],
+      "caption_note": []
+    },
+    "agent_b": {
+      "paragraph": [
+        {
+          "id": "011_chapter_x_witch_give_back_my_sister::paragraph::0014",
+          "stratum": "paragraph",
+          "file": "chapters/final/011_chapter_x_witch_give_back_my_sister.md",
+          "heading": "“女巫！把我妹妹还回来”",
+          "ordinal": 14,
+          "text": "从阴森的非真实到正常，这转换如此迅速，以至于即便在我并不迷信的头脑里，也带着巫术的味道。下一瞬，我们三人彼此相望，重新披上血肉，小马也不再是死亡之马，而是我们那匹蓬乱、耐心的小伙伴。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "020_chapter_xix_the_city_that_was_alive::paragraph::0041",
+          "stratum": "paragraph",
+          "file": "chapters/final/020_chapter_xix_the_city_that_was_alive.md",
+          "heading": "活着的城市",
+          "ordinal": 41,
+          "text": "一种奇异的无助愤怒的狂热摇撼着我，一种受辱的怒火遮住了我本该为逃脱而感到的一切感激。德雷克眼中怒焰燃烧。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "020_chapter_xix_the_city_that_was_alive::paragraph::0045",
+          "stratum": "paragraph",
+          "file": "chapters/final/020_chapter_xix_the_city_that_was_alive.md",
+          "heading": "活着的城市",
+          "ordinal": 45,
+          "text": "就在停下的那一刻，更深的震颤摇撼了我，那是生命根基本身的颤抖，是一个人面对不可思议之物，并终于知道不可思议之物——确实存在时的战栗。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "029_chapter_xxviii_the_frenzy_of_ruth::paragraph::0024",
+          "stratum": "paragraph",
+          "file": "chapters/final/029_chapter_xxviii_the_frenzy_of_ruth.md",
+          "heading": "露丝的狂乱",
+          "ordinal": 24,
+          "text": "“德雷克，”他说，“站在原地。你再朝这个姑娘走一步，我就开枪——上帝作证，我会开枪！”",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "015_chapter_xiv_free_but_a_monster::paragraph::0005",
+          "stratum": "paragraph",
+          "file": "chapters/final/015_chapter_xiv_free_but_a_monster.md",
+          "heading": "“自由了！却成了怪物！”",
+          "ordinal": 5,
+          "text": "在人类祖传的这些小径上，在习用的这些屏障之内，人像动物在自己的栖身处一样隐蔽而安全地行动，至少他自己这样认为。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "004_chapter_iii_ruth_ventnor::paragraph::0059",
+          "stratum": "paragraph",
+          "file": "chapters/final/004_chapter_iii_ruth_ventnor.md",
+          "heading": "露丝·文特诺",
+          "ordinal": 59,
+          "text": "“他们过去了，我们折回。那夜我们没有生火，本该把小马放走，可我们没有。它驮着我的仪器和弹药，而我觉得我们会需要后者。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "025_chapter_xxiv_ruszark::paragraph::0027",
+          "stratum": "paragraph",
+          "file": "chapters/final/025_chapter_xxiv_ruszark.md",
+          "heading": "鲁扎克",
+          "ordinal": 27,
+          "text": "我们被推向上方，越来越高。我昏乱地回头看。那面攀入天空的岩壁上，一道宽阔裂口还在冒烟。滚滚尘云仍从其中流出，追逐着、威胁着我们。整道花岗岩屏障似乎在痛苦中颤动。我们升得更高，又更高。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "024_chapter_xxiii_the_treachery_of_yuruk::paragraph::0059",
+          "stratum": "paragraph",
+          "file": "chapters/final/024_chapter_xxiii_the_treachery_of_yuruk.md",
+          "heading": "尤鲁克的背叛",
+          "ordinal": 59,
+          "text": "诺哈拉举起双手。那些东西上尖下方的紫色椭圆中喷出蓝焰。蓝焰落到尤鲁克身上，又溅过他，落到被杀者的堆上。尸堆里有可怕的运动，一阵扭曲，尸体僵直，似乎试图站起，试图推开——死去的神经和肌肉对穿过它们的摧毁性能量作出回应。",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "020_chapter_xix_the_city_that_was_alive::paragraph::0024",
+          "stratum": "paragraph",
+          "file": "chapters/final/020_chapter_xix_the_city_that_was_alive.md",
+          "heading": "活着的城市",
+          "ordinal": 24,
+          "text": "“奇怪，这里所有地方都是方的。”德雷克咕哝，“它们在建筑里似乎没有用任何球形或金字塔的观念——如果这算建筑的话。”",
+          "asset_path": "",
+          "evidence_path": ""
+        },
+        {
+          "id": "010_chapter_ix_the_portal_of_flame::paragraph::0002",
+          "stratum": "paragraph",
+          "file": "chapters/final/010_chapter_ix_the_portal_of_flame.md",
+          "heading": "火焰之门",
+          "ordinal": 2,
+          "text": "小马叉开四腿，低下头，在飓风的咆哮中，它的尖叫细细刺出，那是马，也只有马，到了承受极限时才会发出的痛苦而可怕的悲鸣。",
+          "asset_path": "",
+          "evidence_path": ""
+        }
+      ],
+      "table": [],
+      "figure": [],
+      "formula": [],
+      "caption_note": []
+    }
+  }
+}

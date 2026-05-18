@@ -21,7 +21,7 @@ Use this profile for classical scientific or technical works where terminology, 
 具体书籍工程必须先由 `common` 和语言方向模板创建，再叠加本 profile。
 
 ```text
-common -> {source-target} -> profiles/classical-science-zh-Hans -> books/{book_id_slug}/
+common -> {source-target} -> profiles/classical-science-zh-Hans -> books/zh-Hans/{number}_{book_id_slug}/
 ```
 
 ## 执行步骤 / Workflow
@@ -35,6 +35,7 @@ common -> {source-target} -> profiles/classical-science-zh-Hans -> books/{book_i
 5. 每章译后控制后执行 `prompts/08b_chapter_technical_audit_zh_Hans.md`。
 6. 涉及图表/表格的章节执行 `prompts/08c_diagram_table_audit_zh_Hans.md`。
 7. 最终独立评审时使用 `reviews/scorecards/_TEMPLATE_science_scorecard.md`。
+8. 第一版全书 EPUB 生成后，以及每轮 EPUB 后精校完成后，执行分层随机抽检模块；表格、图片、公式/证明块、图注和注释必须作为高风险层抽样。
 
 ## 通过标准 / Pass Standard
 
@@ -43,6 +44,7 @@ common -> {source-target} -> profiles/classical-science-zh-Hans -> books/{book_i
 - 证明链、图表、表格、数值、单位和标签已经单独审计。
 - 参考译本只留下差异记录和校读结论，不留下可替代原文的转译文本。
 - EPUB 最终输出没有未解释的图表缺失、标签错配、数值漂移或术语漂移。
+- 分层随机抽检使用 `--profile auto` 或 `--profile science` 通过，且 `npm run review:random-validate:pass` 成功。
 
 ## 必要记录 / Required Records
 
@@ -59,3 +61,4 @@ common -> {source-target} -> profiles/classical-science-zh-Hans -> books/{book_i
 - `qa/technical/mathematical_term_lock.md`
 - `qa/technical/chord_angle_calculation_policy.md`
 - `qa/technical/diagram_redraw_workflow.md`
+- `reviews/random_spotcheck/round_XXX/`

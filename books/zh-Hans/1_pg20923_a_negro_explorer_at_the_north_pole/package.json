@@ -1,0 +1,21 @@
+{
+  "name": "1_pg20923_a_negro_explorer_at_the_north_pole",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "lint:publication": "node scripts/publication_lint.js --target=zh-Hans --write-report",
+    "lint:assets": "node scripts/asset_manifest_check.js --write-report",
+    "review:random-samples": "python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --target-confidence 0.80 --defect-rate 0.10 --profile auto",
+    "review:random-validate": "python scripts/validate_random_spotcheck.py --target-confidence 0.80",
+    "review:random-validate:pass": "python scripts/validate_random_spotcheck.py --target-confidence 0.80 --require-pass",
+    "release:draft": "python scripts/create_release.py --status DRAFT",
+    "release:create": "python scripts/create_release.py --status PASS --require-pass",
+    "fix:publication": "node scripts/publication_lint.js --target=zh-Hans --fix --write-report",
+    "build:epub": "npm run lint:publication && npm run lint:assets && node scripts/build_epub.js",
+    "check:epub": "node scripts/run_epubcheck.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Book-local npm scripts. Shared Node dependencies are installed once under books/node_modules and are resolved by walking up from the project root."
+}

@@ -1,0 +1,15 @@
+{
+  "round_dir": "D:\\project\\49_public-domain-books-translation\\books\\zh-Hans\\5_pg3479_the_metal_monster\\reviews\\random_spotcheck\\round_003",
+  "target_confidence": 0.8,
+  "release_confidence": 0.998203,
+  "confidence_by_stratum": {
+    "paragraph": 0.998203,
+    "table": 1.0,
+    "figure": 1.0,
+    "formula": 1.0,
+    "caption_note": 1.0
+  },
+  "require_pass": true,
+  "status": "PASS",
+  "errors": []
+}

@@ -1,6 +1,7 @@
 {
   "template_version": "1.1",
   "template_root": "",
+  "common_template_root": "",
   "project_root": "",
   "source_url": "",
   "status": "INIT",
@@ -22,9 +23,13 @@
     "preproduction_spec": "preproduction/stage1/production_spec.md",
     "sample_review": "preproduction/stage2_sample/sample_review.md",
     "epubcheck_status": "",
+    "random_spotcheck_status": "",
+    "random_spotcheck_manifest": "reviews/random_spotcheck/random_sample_manifest.json",
     "independent_review_status": "",
     "revision_route_status": "",
     "final_output_status": "",
+    "release_status": "",
+    "release_state": "output/release/release_state.json",
     "retrospective_status": ""
   },
   "forbidden_shortcuts": [
@@ -40,6 +45,11 @@
     "shipping EPUB with missing cover-image metadata",
     "shipping EPUB with poor metadata or stale brand names",
     "locking ugly fonts or embedding full Chinese fonts without subsetting",
-    "using oversized uncompressed cover images"
+    "using oversized uncompressed cover images",
+    "declaring DONE before stratified random spot-check pass",
+    "skipping table, figure, formula, caption, or note strata in post-EPUB review",
+    "reusing an old random spot-check seed after rework",
+    "treating a 75% estimated fix probability as a release pass without closure verification",
+    "declaring DONE before output/release/release_state.json latest_status is PASS"
   ]
 }

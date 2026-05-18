@@ -18,7 +18,7 @@ This file is for AI agents using the `classical-science-zh-Hans` profile overlay
 ## Mandatory Rules / 强制规则
 
 - Copy `template/epub_pipeline/common` first, overlay the matching language-pair template second, then overlay `template/epub_pipeline/profiles/classical-science-zh-Hans`.
-- 必须先复制 `template/epub_pipeline/common`，再覆盖复制匹配的语言方向模板，最后覆盖复制 `template/epub_pipeline/profiles/classical-science-zh-Hans`。
+- 必须通过 `books/scripts/create_book_project.py --profile classical-science-zh-Hans` 创建书籍工程：脚本会先复制 `template/epub_pipeline/common`，再覆盖复制匹配的语言方向模板，最后覆盖复制 `template/epub_pipeline/profiles/classical-science-zh-Hans`。
 
 - Do not write book-specific source text, translations, diagrams, QA files, EPUB output, or metadata into this profile directory.
 - 不得把具体书籍的原文、译文、图表、QA、EPUB 输出或 metadata 写入本 profile 目录。
@@ -53,8 +53,8 @@ This file is for AI agents using the `classical-science-zh-Hans` profile overlay
 - No chapter may enter `chapters/final/` unless its technical audit and diagram/table audit pass when applicable.
 - 章节若涉及技术内容、图表或表格，未通过技术审计与图表/表格审计，不得进入 `chapters/final/`。
 
-- After each post-EPUB refinement pass, at least two independent agents must randomly spot-check no fewer than ten reader-facing paragraphs each, with special attention to mathematical proof chains, astronomical concepts, numeric notation, diagram labels, and Chinese readability.
-- 每轮 EPUB 后精校完成后，必须由至少两个独立 Agent 各随机抽检不少于十个读者可见正文段落，重点检查数学证明链、天文学概念、数值表示、图表标签和中文可读性。
+- After the first full-book EPUB and after each post-EPUB refinement pass, at least two independent agents must run the stratified random spot-check gate with `--profile auto` or `--profile science`. Tables, figures, formula/proof blocks, captions, and notes must be sampled as independent high-risk strata, with special attention to mathematical proof chains, astronomical concepts, numeric notation, diagram labels, image cropping, table structure, and Chinese readability.
+- 第一版全书 EPUB 生成后，以及每轮 EPUB 后精校完成后，必须由至少两个独立 Agent 使用 `--profile auto` 或 `--profile science` 执行分层随机抽检门禁。表格、图片、公式/证明块、图注和注释必须作为独立高风险层抽样，重点检查数学证明链、天文学概念、数值表示、图表标签、图片裁剪、表格结构和中文可读性。
 
 ## Human Checkpoints / 人类可选检查点
 
@@ -76,6 +76,7 @@ This file is for AI agents using the `classical-science-zh-Hans` profile overlay
 - `qa/technical/{NNN_slug}.technical_audit.md`
 - `qa/technical/{NNN_slug}.diagram_table_audit.md`
 - `reviews/random_spotcheck/random_sample_manifest.json`
+- `reviews/random_spotcheck/round_XXX/`
 - `reviews/agent_a/random_spotcheck_review.md`
 - `reviews/agent_b/random_spotcheck_review.md`
 - `reviews/scorecards/final_science_score.md`

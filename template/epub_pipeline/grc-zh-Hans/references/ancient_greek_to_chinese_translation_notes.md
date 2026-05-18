@@ -71,7 +71,7 @@ An Ancient-Greek-to-Chinese EPUB is not finished just because it opens and rough
 如果某本书已经发现标题、段落、术语、译注、排版、底本、异文或参考译本边界方面的系统问题，目标文档必须放在：
 
 ```text
-books/{book_id_slug}/goal/
+books/zh-Hans/{number}_{book_id_slug}/goal/
 ```
 
 不能放在仓库根目录的通用 `goal/` 下。
@@ -80,7 +80,7 @@ books/{book_id_slug}/goal/
 
 古希腊文到简体中文项目中的可复用经验必须回填到三层：
 
-1. `books/{book_id_slug}/goal/`：记录这本书的具体问题和执行计划。
+1. `books/zh-Hans/{number}_{book_id_slug}/goal/`：记录这本书的具体问题和执行计划。
 2. `template/epub_pipeline/common/`：记录所有语言方向都适用的 EPUB、标题、QA、路径和流程规则。
 3. `template/epub_pipeline/grc-zh-Hans/`：记录古希腊文源文到简体中文的专用问题，例如底本、异文、转写、参考译本边界和古希腊文句法干扰。
 

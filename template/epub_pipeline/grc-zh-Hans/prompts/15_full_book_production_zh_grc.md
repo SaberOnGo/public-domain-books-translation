@@ -25,6 +25,7 @@
 9. 打包 `output/book.epub`。
 10. 保留必要可审计产物，如 `output/cover.jpg`、`output/publication_lint.json`、`output/asset_manifest_check.json`、`output/epubcheck.json`。
 11. 运行 EPUBCheck。
+12. EPUBCheck 通过后，下一步必须进入 `prompts/16a_stratified_random_spotcheck.md`；不得直接进入最终输出或宣布完成。
 
 ## 禁止 / Forbidden
 
@@ -33,6 +34,7 @@
 - 禁止嵌入完整中文字体，除非已完成字体子集化并记录原因。
 - 禁止 metadata、版本说明和封面三处品牌名不一致。
 - 禁止在出版文本 lint 未通过时构建或发布全书 EPUB。
+- 禁止第一版 `output/book.epub` 生成后跳过 EPUB 后分层随机抽检模块。
 - 禁止在资源引用检查未通过时构建或发布全书 EPUB。
 - 禁止 XHTML、CSS 或 OPF 中出现本机绝对路径、`file://`、Windows 盘符或未经许可的远程图片热链接。
 - 禁止把可结构化技术表格只做成图片；表格应输出为 XHTML `<table>`。

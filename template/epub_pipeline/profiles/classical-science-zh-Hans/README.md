@@ -22,7 +22,7 @@ Typical examples include classical astronomy, mathematics, optics, mechanics, ge
 2. 匹配的语言方向模板，例如 `template/epub_pipeline/en-zh-Hans`、未来的 `grc-zh-Hans`、`la-zh-Hans`、`ar-zh-Hans`
 3. 本目录：`template/epub_pipeline/profiles/classical-science-zh-Hans`
 
-所有具体书籍输出只能写入 `books/{book_id_slug}/`，不得写回本目录。
+所有具体书籍输出只能写入 `books/zh-Hans/{number}_{book_id_slug}/`，不得写回本目录。
 
 ## 核心原则 / Core Principles
 
@@ -54,6 +54,7 @@ Typical examples include classical astronomy, mathematics, optics, mechanics, ge
 - `qa/technical/diagram_redraw_workflow.md`：GPT-Image-2 草图、结构化重绘和最终图表核验记录。
 - `qa/technical/{NNN_slug}.technical_audit.md`：逐章技术审计。
 - `qa/technical/{NNN_slug}.diagram_table_audit.md`：逐章图表/表格审计。
+- `reviews/random_spotcheck/round_XXX/`：EPUB 后分层随机抽检轮次目录，必须包含正文、表格、图片、公式/证明块、图注/注释等实际存在层的样本、证据、评审、修复和闭环记录。
 
 ## 参考规则 / Reference Rules
 
@@ -76,3 +77,5 @@ Typical examples include classical astronomy, mathematics, optics, mechanics, ge
 本 profile 负责“古典科学书”的工程问题，例如术语冻结、证明链检查、图表重绘、数值表校验、参考译本使用边界。
 
 如果两者冲突，本 profile 的科学/数学/图表硬门禁优先；语言风格问题仍遵循语言方向模板和 `targets/zh-Hans` 目标语质量框架。
+
+第一版全书 EPUB 生成后，本 profile 要求分层随机抽检使用 `--profile auto` 或 `--profile science`。科学类书籍中，表格、图片、公式/证明块、图注和注释是高风险层；不得只抽普通正文段落后宣布出版质量通过。

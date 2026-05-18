@@ -44,9 +44,9 @@ Example prompt. This uses French to English as a concrete direction. If `fr-en` 
 Fetch the source text from {reliable public-domain source URL}.
 Use template/epub_pipeline/common plus template/epub_pipeline/fr-en, and let the orchestrator prompt run the full workflow:
 source and rights review, book research, pre-translation trials, chapter translation, chapter review,
-chapter gates, preproduction stage 1, sample EPUB review, full EPUB production, independent review,
-revision routing, final output, and retrospective.
-Generate output/book.epub and pass epubcheck.
+chapter gates, preproduction stage 1, sample EPUB review, full EPUB production, post-EPUB stratified random spot-check, independent review,
+revision routing, versioned release, final output, and retrospective.
+Generate output/book.epub, pass epubcheck, and create output/release/book_v0.0.1.epub with a bilingual release note.
 ```
 
 If you only know a title, ask AI to find a reliable public-domain source first:
@@ -54,14 +54,14 @@ If you only know a title, ask AI to find a reliable public-domain source first:
 ```text
 Please find a reliable public-domain source for {book title}.
 Prioritize Project Gutenberg, Wikisource, and Standard Ebooks.
-After source and rights risks are checked, choose the matching language-pair template. For French to English, use or add template/epub_pipeline/fr-en; for Japanese to Spanish, use or add template/epub_pipeline/ja-es; for English to Simplified Chinese, use template/epub_pipeline/en-zh-Hans. Then create a new book project under books/ by copying template/epub_pipeline/common first and overlaying the language-pair template.
+After source and rights risks are checked, choose the matching language-pair template. For French to English, use or add template/epub_pipeline/fr-en; for Japanese to Spanish, use or add template/epub_pipeline/ja-es; for English to Simplified Chinese, use template/epub_pipeline/en-zh-Hans. Then create the new book project with books/scripts/create_book_project.py; it copies template/epub_pipeline/common first, overlays the language-pair template, and places the project under books/{target}/{number}_{book_slug}/.
 ```
 
 ## Repository Structure
 
 ### `template/epub_pipeline/`
 
-This is the reusable book-production template area. `common/` contains shared EPUB workflow contracts, rights checks, state files, scripts, and production rules. Each language-pair directory contains prompts, glossary/style guidance, typography expectations, and review rules for that direction. For a new book, ask AI to copy `common/` into a new folder under `books/`, then overlay the matching language-pair template; do not put real book data into the template folder itself.
+This is the reusable book-production template area. `common/` contains shared EPUB workflow contracts, rights checks, state files, scripts, and production rules. Each language-pair directory contains prompts, glossary/style guidance, typography expectations, and review rules for that direction. For a new book, ask AI to use books/scripts/create_book_project.py so the project is created under books/{target}/{number}_{book_slug}/ with the next numeric prefix; do not put real book data into the template folder itself.
 
 Important files and folders:
 
@@ -76,21 +76,21 @@ Important files and folders:
 - `qa/`: fidelity, readability, terminology, imagery, and gate reviews.
 - `preproduction/`: cover, metadata, layout, and sample EPUB checks.
 - `reviews/`: independent review and scorecards.
-- `output/`: final EPUB and validation results.
+- `output/`: current build EPUB, validation results, and versioned release artifacts under `output/release/`.
 
 ### `books/`
 
-This folder contains actual book projects. The current example is:
+This folder contains actual book projects grouped by target language. New projects use this layout:
 
 ```text
-books/pg20923_a_negro_explorer_at_the_north_pole/
+books/{target}/{number}_{book_slug}/
 ```
 
-It is based on Project Gutenberg #20923, Matthew A. Henson's *A Negro Explorer at the North Pole*. It includes source evidence, rights notes, 26 source chapters, translated chapters, final chapters, review files, generated EPUB output, and an EPUBCheck report with zero fatal errors, zero errors, and zero warnings.
+For example, a Simplified Chinese edition can live at `books/zh-Hans/1_pg20923_a_negro_explorer_at_the_north_pole/`. That sample is based on Project Gutenberg #20923, Matthew A. Henson's *A Negro Explorer at the North Pole*. It includes source evidence, rights notes, 26 source chapters, translated chapters, final chapters, review files, generated EPUB output, and an EPUBCheck report with zero fatal errors, zero errors, and zero warnings.
 
 The example proves that the workflow can run end to end. It does not mean every chapter has already received final human editorial approval.
 
-Node.js tooling is shared at `books/`: run `npm install` once from `books/`, then run `npm run ...` inside each book project. Do not create a duplicate `node_modules/` inside every book directory unless a specific book records a justified exception.
+Node.js tooling is shared at `books/`: run `npm install` once from `books/`, then run `npm run ...` inside each book project. Do not create a duplicate `node_modules/` inside every book directory unless a specific book records a justified exception. Book-local scripts must walk up to `books/node_modules/` because book projects may be nested under target-language directories.
 
 ### `template/epub_pipeline/targets/`
 
@@ -136,7 +136,7 @@ AI can run most of the workflow automatically, but people are especially useful 
 - Chapter control and review: `chapters/src/`, `chapters/translated/`, `chapters/final/`, `qa/chapter_controls/`, `qa/fidelity/`, `qa/readability/`, `qa/terminology/`, `qa/imagery/`, `qa/gates/`.
 - Preproduction stage 1: `preproduction/stage1/production_spec.md`.
 - Preproduction stage 2: `preproduction/stage2_sample/sample_book.epub` and `sample_review.md`.
-- Final output: `output/book.epub`, `output/epubcheck.json`, `reviews/`.
+- Final output: `output/book.epub`, `output/epubcheck.json`, `reviews/`, `reviews/random_spotcheck/round_XXX/` for human-checkable stratified samples, evidence, fixes, and closure records, plus `output/release/book_vX.X.X.epub` and `release_note_vX.X.X.md`.
 
 ## Translation Directions
 
