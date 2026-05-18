@@ -1,3 +1,0 @@
-# 第六章 狂风巨浪 章节门禁
-
-结论：PASS_WITH_RECORDED_LIMITATIONS

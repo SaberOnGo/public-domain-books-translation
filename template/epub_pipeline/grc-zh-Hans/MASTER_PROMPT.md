@@ -4,7 +4,7 @@
 
 - `{TEMPLATE_ROOT}`：语言方向模板目录，即 `template/epub_pipeline/grc-zh-Hans`。
 - `{COMMON_TEMPLATE_ROOT}`：共享模板目录，即 `template/epub_pipeline/common`。
-- `{PROJECT_ROOT}`：复制模板后的具体书籍工程目录。
+- `{PROJECT_ROOT}`：复制模板后的具体书籍工程目录，默认格式为 `books/zh-Hans/{number}_{book_id_slug}`。
 - `{SOURCE_URL}`：古希腊文公版来源 URL。
 - `{PROFILE_ROOT}`：可选，特殊书型 profile；如果不启用，写 `NONE`。
 - `{REFERENCE_TRANSLATION_URLS}`：可选，第二语言参考译本 URL 列表；如果没有，写 `NONE`。
@@ -19,7 +19,7 @@ SOURCE_URL = {SOURCE_URL}
 PROFILE_ROOT = {PROFILE_ROOT}
 REFERENCE_TRANSLATION_URLS = {REFERENCE_TRANSLATION_URLS}
 
-第一步：如果 PROJECT_ROOT 不存在，先把 COMMON_TEMPLATE_ROOT 复制到 PROJECT_ROOT，再把 TEMPLATE_ROOT 覆盖复制到 PROJECT_ROOT。若 PROFILE_ROOT 不是 NONE，再把 PROFILE_ROOT 覆盖复制到 PROJECT_ROOT。
+第一步：如果 PROJECT_ROOT 不存在，必须优先运行 `books/scripts/create_book_project.py` 自动创建 `books/zh-Hans/{number}_{book_id_slug}`，由脚本先把 COMMON_TEMPLATE_ROOT 复制到 PROJECT_ROOT，再把 TEMPLATE_ROOT 覆盖复制到 PROJECT_ROOT。若 PROFILE_ROOT 不是 NONE，再把 PROFILE_ROOT 覆盖复制到 PROJECT_ROOT。
 
 严禁直接在 COMMON_TEMPLATE_ROOT、TEMPLATE_ROOT 或 PROFILE_ROOT 内制作具体书籍。它们是只读模板，只能作为复制来源。所有抓取、研究、翻译、QA、EPUB 输出都必须写入 PROJECT_ROOT。
 
@@ -49,8 +49,10 @@ REFERENCE_TRANSLATION_URLS = {REFERENCE_TRANSLATION_URLS}
 - 每章必须完成 fidelity/readability/terminology/gate 报告。
 - 只有 gate PASS 的章节才可写入 `chapters/final`。
 - 如果 PROFILE_ROOT 启用古典科学 profile，必须额外执行参考译本政策、术语锁定、图表/表格清单、技术审计、图表/表格审计和科学评审。
-- 最终生成 `output/book.epub`。
+- 最终生成 `output/book.epub`，并把可发布版本固化到 `output/release/book_vX.X.X.epub`。
 - 必须运行 epubcheck 或等价校验，fatal/error 为 0 才可进入最终输出。
+- 第一版全书 EPUB 完成后必须执行分层随机抽检模块：运行确定性抽样脚本，抽样正文段落、表格、图片、公式/证明块、图注和注释，保留 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、评审、修复和闭环记录，并在最终输出前通过 `npm run review:random-validate:pass`。
+- 随机抽检闭环通过后必须执行版本化发布模块：运行 `npm run release:create`，生成 `output/release/book_vX.X.X.epub`、中英文 `release_note_vX.X.X.md`、`release_state.json` 和 `release_index.md`。
 - 完成后必须做全阶段复审，总结经验教训，写入 retrospective，并在需要时递增模板版本。
 
 如果需要人类审阅，只能由控制文件决定；默认 human_required=false，AI 自动执行。

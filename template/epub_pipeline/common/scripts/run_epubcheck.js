@@ -47,7 +47,7 @@ const java = findJava(javaRoot) || firstExisting([
 
 if (!jar || !fs.existsSync(jar)) {
   console.error(`Missing epubcheck jar: ${jar || '(node_modules not found)'}`);
-  console.error('Run npm install from the books/ directory, or run: npm --prefix .. install');
+  console.error('Run npm install from the books/ directory so this script can find books/node_modules while walking upward.');
   process.exit(1);
 }
 

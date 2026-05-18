@@ -1,3 +1,0 @@
-# 第三十章 抵达澳门 章节门禁
-
-结论：PASS_WITH_RECORDED_LIMITATIONS

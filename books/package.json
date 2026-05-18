@@ -4,6 +4,9 @@
   "private": true,
   "description": "Shared Node.js tooling for book projects under books/.",
   "license": "UNLICENSED",
+  "scripts": {
+    "new:book": "python scripts/create_book_project.py"
+  },
   "dependencies": {
     "epubchecker": "^5.2.1"
   }

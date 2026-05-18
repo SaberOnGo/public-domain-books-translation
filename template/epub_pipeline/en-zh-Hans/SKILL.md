@@ -5,9 +5,9 @@ description: Use when creating or reviewing English to Simplified Chinese public
 
 # English to Simplified Chinese EPUB Pipeline / 英文到简体中文 EPUB 流水线
 
-Use this skill after copying `template/epub_pipeline/common` and overlaying `template/epub_pipeline/en-zh-Hans` into a book project.
+Use this skill after `books/scripts/create_book_project.py` has copied `template/epub_pipeline/common` and overlaid `template/epub_pipeline/en-zh-Hans` into `books/zh-Hans/{number}_{book_id_slug}/`.
 
-使用本 skill 前，应先把 `template/epub_pipeline/common` 复制到书籍工程，再覆盖复制 `template/epub_pipeline/en-zh-Hans`。
+使用本 skill 前，应先通过 `books/scripts/create_book_project.py` 把 `template/epub_pipeline/common` 复制到 `books/zh-Hans/{number}_{book_id_slug}/`，再覆盖复制 `template/epub_pipeline/en-zh-Hans`。
 
 ## Required Reading / 必读文件
 
@@ -36,6 +36,11 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
    读取英文旧式章节标题链的中文处理规则。
 10. `references/english_to_chinese_literary_refinement.md`
    读取英文到简体中文文学精修策略。
+
+11. `references/stratified_random_spotcheck.md`
+    读取 EPUB 后分层随机抽检门禁。
+12. `references/release_versioning.md`
+    读取 EPUB 版本化发布、release note 和 `output/release/` 门禁。
 
 ## Translation Standard / 翻译标准
 
@@ -82,5 +87,7 @@ Use this skill after copying `template/epub_pipeline/common` and overlaying `tem
 - EPUB output must pass validation before final output.
 - EPUB 必须通过校验后才能进入最终输出。
 
-- After every post-EPUB refinement pass, run `npm run review:random-samples` or the equivalent random-sampling script. Two independent agents must each review at least ten random reader-facing Chinese paragraphs, with both averages >= 75 and no paragraph < 70.
-- 每轮 EPUB 后精校完成后，必须运行 `npm run review:random-samples` 或等效随机抽样脚本。两个独立 Agent 各抽检至少十个读者可见中文正文段落，两个平均分都必须 >= 75，且不得有单段 < 70。
+- After the first full-book EPUB and after every post-EPUB refinement pass, run the stratified random spot-check module: `npm run review:random-samples`, independent agent review, fix closure, new-seed re-sampling after rework, and `npm run review:random-validate:pass` before final output. The sampled population is reader-facing audit units, including paragraphs, tables, figures, formulas/proof blocks, captions, and notes.
+- 第一版全书 EPUB 生成后，以及每轮 EPUB 后精校完成后，必须执行分层随机抽检模块：运行 `npm run review:random-samples`、独立 Agent 评审、修复闭环、返工后新 seed 复抽，并在最终输出前通过 `npm run review:random-validate:pass`。抽样总体是读者可见审计单元，包括正文段落、表格、图片、公式/证明块、图注和注释。
+- After random spot-check closure, create a versioned EPUB release with `npm run release:create`. The publishable artifact is `output/release/book_vX.X.X.epub` with bilingual `release_note_vX.X.X.md`; `output/book.epub` alone is not enough for `DONE`.
+- 随机抽检闭环通过后，必须运行 `npm run release:create` 创建带版本号的 EPUB 发布产物。可发布产物是 `output/release/book_vX.X.X.epub` 及中英文 `release_note_vX.X.X.md`；只有 `output/book.epub` 不能标记 `DONE`。

@@ -1,6 +1,6 @@
 BOOK=output/book.epub
 
-.PHONY: lint epub check all
+.PHONY: lint epub check random-review random-validate release release-draft all
 
 lint:
 	npm run lint:publication
@@ -11,6 +11,18 @@ epub:
 
 check:
 	npm run check:epub
+
+random-review:
+	npm run review:random-samples
+
+random-validate:
+	npm run review:random-validate:pass
+
+release:
+	npm run release:create
+
+release-draft:
+	npm run release:draft
 
 all:
 	npm run build:epub

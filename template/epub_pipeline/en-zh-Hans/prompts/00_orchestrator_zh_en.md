@@ -9,11 +9,11 @@
 - `SOURCE_URL`
 - 可选 `PROJECT_ROOT`
 
-你必须先把共享模板和语言方向模板合并复制为独立书籍工程目录 `PROJECT_ROOT`，然后只在 `PROJECT_ROOT` 内自动完成全流程，不向用户询问文件名、目录组织、章节命名、QA 文件名等问题。
+你必须先使用 `books/scripts/create_book_project.py` 把共享模板和语言方向模板合并复制为独立书籍工程目录 `PROJECT_ROOT`，然后只在 `PROJECT_ROOT` 内自动完成全流程，不向用户询问文件名、目录组织、章节命名、QA 文件名等问题。
 
-如果用户没有提供 `PROJECT_ROOT`，你必须根据书号、作者、书名或来源 URL 自动生成，例如：
+如果用户没有提供 `PROJECT_ROOT`，你必须根据书号、作者、书名或来源 URL 自动生成基础 slug，并让脚本在目标语言目录内自动分配数字前缀，例如：
 
-`books/{book_id_slug}/`
+`books/zh-Hans/{number}_{book_id_slug}/`
 
 严禁在 `TEMPLATE_ROOT` 原目录内抓取、研究、翻译或构建 EPUB。
 
@@ -29,10 +29,12 @@
 8. `references/chapter_title_policy.md`
 9. `references/literary_refinement_policy.md`
 10. `references/english_to_chinese_literary_refinement.md`
-11. `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`
-12. `epub_production_lessons.md`
-13. `state/human_feedback_control.md`
-14. `TEMPLATE_VERSION.md`
+11. `references/stratified_random_spotcheck.md`
+12. `references/release_versioning.md`
+13. `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`
+14. `epub_production_lessons.md`
+15. `state/human_feedback_control.md`
+16. `TEMPLATE_VERSION.md`
 
 ## 执行顺序 / Execution Order
 
@@ -53,10 +55,12 @@
 13. `13_preproduction_stage1_spec_zh_en.md`
 14. `14_preproduction_stage2_sample_zh_en.md`
 15. `15_full_book_production_zh_en.md`
-16. `16_independent_review_agents_zh_en.md`
-17. `17_revision_routing_zh_en.md`
-18. `18_final_output_zh_en.md`
-19. `19_retrospective_template_update_zh_en.md`
+16. `prompts/16a_stratified_random_spotcheck.md`
+17. `16_independent_review_agents_zh_en.md`
+18. `17_revision_routing_zh_en.md`
+19. `prompts/18a_release_versioning.md`
+20. `18_final_output_zh_en.md`
+21. `19_retrospective_template_update_zh_en.md`
 
 ## 禁止 / Forbidden
 
@@ -66,6 +70,8 @@
 - 禁止章节门禁未通过就写入 `chapters/final/`。
 - 禁止全部章节完成后跳过预制作规格和样章检查。
 - 禁止样章未 PASS 就制作全书。
+- 禁止第一版全书 EPUB 生成后跳过分层随机抽检模块。
+- 禁止把表格、图片、公式、图注或注释风险混入普通段落抽样后宣布通过。
 - 禁止主执行 AI 不经双 Agent 独立评审就宣布完成。
 - 禁止评审发现问题后只解释不返工。
 - 禁止把“通顺但无味”的第一版当终稿。

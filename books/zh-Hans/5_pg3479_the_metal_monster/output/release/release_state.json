@@ -1,0 +1,25 @@
+{
+  "current_version": "v0.0.3",
+  "main_version": 0,
+  "sub_version": 0,
+  "patch_version": 3,
+  "latest_epub": "book_v0.0.3.epub",
+  "latest_release_note": "release_note_v0.0.3.md",
+  "latest_status": "PASS",
+  "latest_created_at": "2026-05-18T07:44:35Z",
+  "latest_sha256": "78f42bfb43e748ec6a813bf966a9d80b05dcf810653775e9000d769b8e3988de",
+  "latest_size_bytes": 259256,
+  "gate_summary": {
+    "random_spotcheck_round": "reviews/random_spotcheck/round_003",
+    "random_spotcheck_validation": "reviews/random_spotcheck/round_003/validation_report.json",
+    "release_confidence": 0.998203,
+    "random_spotcheck_status": "PASS",
+    "random_spotcheck_require_pass": true,
+    "epubcheck_path": "output/epubcheck.json",
+    "epubcheck_fatal": 0,
+    "epubcheck_error": 0,
+    "epubcheck_warning": 0,
+    "publication_lint_path": "output/publication_lint.json",
+    "publication_lint_issue_count": 0
+  }
+}

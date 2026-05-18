@@ -17,8 +17,8 @@ This file is for AI agents using the `en-zh-Hans` template.
 
 ## Mandatory Rules / 强制规则
 
-- Copy `template/epub_pipeline/common` first, then overlay `template/epub_pipeline/en-zh-Hans` into a book project under `books/{book_id_slug}/`.
-- 必须先复制 `template/epub_pipeline/common`，再覆盖复制 `template/epub_pipeline/en-zh-Hans` 到 `books/{book_id_slug}/` 书籍工程。
+- Create each new book project with `books/scripts/create_book_project.py`; it copies `template/epub_pipeline/common` first, then overlays `template/epub_pipeline/en-zh-Hans` into `books/zh-Hans/{number}_{book_id_slug}/`.
+- 必须用 `books/scripts/create_book_project.py` 创建每本新书；脚本会先复制 `template/epub_pipeline/common`，再覆盖复制 `template/epub_pipeline/en-zh-Hans` 到 `books/zh-Hans/{number}_{book_id_slug}/` 书籍工程。
 
 - Do not write book-specific files into this template directory.
 - 不得把具体书籍文件写入本模板目录。
@@ -38,8 +38,10 @@ This file is for AI agents using the `en-zh-Hans` template.
 - No translated chapter may enter `chapters/final/` without chapter controls, review, and gate pass records.
 - 任何章节没有译后控制、审校和门禁 PASS 记录，不得进入 `chapters/final/`。
 
-- After each post-EPUB refinement pass, at least two independent agents must randomly spot-check no fewer than ten reader-facing Chinese paragraphs each. Both agents must pass the random spot-check threshold before refinement can be considered complete.
-- 每轮 EPUB 后精校完成后，必须由至少两个独立 Agent 各随机抽检不少于十个读者可见中文正文段落；两个 Agent 都通过随机抽检门槛后，才可认为精校完成。
+- After the first full-book EPUB and after each post-EPUB refinement pass, at least two independent agents must run the stratified random spot-check gate. The sampled population is reader-facing audit units, including paragraphs, tables, figures, formulas/proof blocks, captions, and notes. Both agents, fix closure, and `npm run review:random-validate:pass` must pass before refinement can be considered complete.
+- 第一版全书 EPUB 生成后，以及每轮 EPUB 后精校完成后，必须由至少两个独立 Agent 执行分层随机抽检门禁。抽样总体是读者可见审计单元，包括正文段落、表格、图片、公式/证明块、图注和注释。两个 Agent、修复闭环和 `npm run review:random-validate:pass` 都通过后，才可认为精校完成。
+- After random spot-check closure, create a versioned EPUB release under `output/release/`; `output/book.epub` alone is not a publishable final artifact.
+- 随机抽检闭环通过后，必须在 `output/release/` 下创建带版本号的 EPUB release；只有 `output/book.epub` 不是可发布最终产物。
 
 - Before building or publishing an EPUB, run `node scripts/publication_lint.js --target=zh-Hans --write-report` and fix all hard errors.
 - 构建或发布 EPUB 前，必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`，并修复所有硬错误。
@@ -73,8 +75,12 @@ This file is for AI agents using the `en-zh-Hans` template.
 - `preproduction/stage2_sample/sample_book.epub`
 - `output/publication_lint.json`
 - `reviews/random_spotcheck/random_sample_manifest.json`
+- `reviews/random_spotcheck/round_XXX/`
 - `reviews/agent_a/random_spotcheck_review.md`
 - `reviews/agent_b/random_spotcheck_review.md`
+- `output/release/book_vX.X.X.epub`
+- `output/release/release_note_vX.X.X.md`
+- `output/release/release_state.json`
 - `reviews/scorecards/final_quality_score.md`
 
 If no human feedback is required, continue only when the relevant report says `PASS`.

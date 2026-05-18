@@ -12,8 +12,8 @@ This file is for AI agents working from a downloaded copy of this repository.
 - Do not treat `en-zh-Hans` as the default translation direction. It is only one currently available language-pair template.
 - 不要把 `en-zh-Hans` 当作默认翻译方向。它只是当前已有的一个语言方向模板。
 
-- For every new book project, copy `template/epub_pipeline/common` first, then overlay the matching language-pair template, and write all book-specific output only under `books/{book_id_slug}/`.
-- 制作每一本新书时，必须先复制 `template/epub_pipeline/common`，再覆盖复制匹配的语言方向模板；所有具体书籍产物只能写入 `books/{book_id_slug}/`。
+- For every new book project, use `books/scripts/create_book_project.py` to create the project under `books/{target}/{number}_{book_id_slug}/`, where `{target}` is the output language tag such as `zh-Hans`, `en`, `ja`, or `es`, and `{number}` is the next integer in that target-language directory. The script must copy `template/epub_pipeline/common` first, then overlay the matching language-pair template. All book-specific output must stay under that numbered project directory.
+- 制作每一本新书时，必须使用 `books/scripts/create_book_project.py` 在 `books/{target}/{number}_{book_id_slug}/` 下创建工程；其中 `{target}` 是输出语言标签，例如 `zh-Hans`、`en`、`ja`、`es`，`{number}` 是该目标语言目录内自动递增的下一个整数。脚本必须先复制 `template/epub_pipeline/common`，再覆盖复制匹配的语言方向模板。所有具体书籍产物只能写入这个带编号的书籍工程目录。
 - Shared build dependencies are installed once under `books/` (`books/package.json`, `books/package-lock.json`, ignored `books/node_modules/`). Do not create per-book `node_modules/` directories unless a book records a justified private-toolchain exception.
 - 构建依赖统一安装在 `books/`（`books/package.json`、`books/package-lock.json`、被忽略的 `books/node_modules/`）。不要为每本书重复创建 `node_modules/`；除非某本书记录了确有必要的私有工具链例外。
 - Target-language quality rules live under `template/epub_pipeline/targets/{target}/`; source-to-target-specific rules live under `template/epub_pipeline/{source-target}/`.

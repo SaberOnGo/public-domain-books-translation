@@ -1,3 +1,0 @@
-# 第十二章 韦杰号失事 章节门禁
-
-结论：PASS_WITH_RECORDED_LIMITATIONS

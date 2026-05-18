@@ -1,3 +1,0 @@
-# 第十五章 一艘捕获船 章节门禁
-
-结论：PASS_WITH_RECORDED_LIMITATIONS

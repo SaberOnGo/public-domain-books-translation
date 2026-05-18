@@ -1,3 +1,0 @@
-# 第二十七章 病员登陆 章节门禁
-
-结论：PASS_WITH_RECORDED_LIMITATIONS

@@ -48,15 +48,16 @@ Long paragraphs should be reviewed for mobile readability, but paragraph breaks 
 
 Names and historically loaded terms need a stable first-mention and note policy. Less familiar personal names and place names may stay in English; if translated, the first occurrence must preserve the original English name.
 
-### 4a. 精校后随机抽检 / Post-Refinement Random Spot Checks
+### 4a. EPUB 后分层随机抽检 / Post-EPUB Stratified Random Spot Checks
 
-- 每轮 EPUB 后精校完成后，必须运行 `npm run review:random-samples` 或等效脚本，从 `chapters/final` 生成随机正文段落样本。
-- 至少 2 个独立 Agent 各抽检不少于 10 个随机段落，不能由主执行 AI 人工挑选段落。
-- 抽检 Agent 必须假设自己是认真阅读本书的中文读者，逐段判断：中文是否读得懂、是否忠实于英文公版原文、是否有英文句法硬搬、是否无依据润饰、专名/称谓/译注/标题策略是否一致。
-- 每段 0-100 分；每个 Agent 平均分必须 >= 75，且不得有单段 < 70。
-- 任一段存在读不懂、事实误解、叙述关系误判、英文腔明显、术语/专名/译注错误，即使平均分达标，也必须回到精校或更早阶段修复；修复后重新生成随机样本，不能复用旧样本。
+- 第一版全书 EPUB 生成后，以及每轮 EPUB 后精校完成后，必须运行 `npm run review:random-samples` 或等效脚本，从 `chapters/final` 和读者可见资源生成分层随机审计单元样本。
+- 至少 2 个独立 Agent 检查样本，不能由主执行 AI 人工挑选内容。
+- 抽样层至少包括正文段落、表格、图片、公式/证明块、图注和注释；实际存在的表格、图片、公式不得被普通段落抽样替代。
+- 抽检 Agent 必须假设自己是认真阅读本书的中文读者，逐项判断：中文是否读得懂、是否忠实于英文公版原文、是否有英文句法硬搬、是否无依据润饰、专名/称谓/译注/标题策略是否一致，表格/图片/公式是否正确。
+- 每个样本 0-100 分；每个 Agent 平均分必须 >= 75，且不得有单项 < 70。
+- 任一样本存在读不懂、事实误解、叙述关系误判、英文腔明显、术语/专名/译注/表格/图片/公式错误，即使平均分达标，也必须回到精校或更早阶段修复；修复后在旧轮次关闭问题，并使用新 seed 重新生成样本。
 
-Random spot checks are a hard post-refinement gate. They test whether the book reads as Chinese to a real reader, not merely whether the main agent believes the refinement is complete.
+Stratified random spot checks are a hard post-EPUB gate. They test whether the book reads as Chinese and whether reader-facing tables, figures, formulas, captions, and notes survive publication production.
 
 ### 5. 标点和排版 / Punctuation and Typography
 
@@ -77,7 +78,7 @@ Chinese punctuation and EPUB typography are publication issues, not cosmetic det
 如果某本书已经发现标题、段落、术语、译注、排版或文学精修方面的系统问题，目标文档必须放在：
 
 ```text
-books/{book_id_slug}/goal/
+books/zh-Hans/{number}_{book_id_slug}/goal/
 ```
 
 不能放在仓库根目录的通用 `goal/` 下。根目录目标会让 AI 误以为这是项目级任务，而不是某本书的执行目标。
@@ -88,7 +89,7 @@ If systematic issues are found in a specific book, the goal document belongs und
 
 英文到简体中文项目中的可复用经验必须回填到三层：
 
-1. `books/{book_id_slug}/goal/`：记录这本书的具体问题和执行计划。
+1. `books/zh-Hans/{number}_{book_id_slug}/goal/`：记录这本书的具体问题和执行计划。
 2. `template/epub_pipeline/common/`：记录所有语言方向都适用的 EPUB、标题、QA、路径和流程规则。
 3. `template/epub_pipeline/en-zh-Hans/`：记录英文源文到简体中文的专用问题，例如英文标题链、英文长句干扰、英文称谓和中文译注策略。
 

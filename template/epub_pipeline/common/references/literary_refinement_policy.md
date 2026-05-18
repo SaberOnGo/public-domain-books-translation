@@ -53,9 +53,9 @@ Every book project must review:
 
 ### Phase 1: Book-Specific Goal / 阶段 1：本书目标
 
-Create a book-specific goal document under `books/{book_id_slug}/goal/`.
+Create a book-specific goal document under `books/{target}/{number}_{book_id_slug}/goal/`.
 
-必须在 `books/{book_id_slug}/goal/` 下建立本书专属目标文档。
+必须在 `books/{target}/{number}_{book_id_slug}/goal/` 下建立本书专属目标文档。
 
 The document must record concrete issues found in that book, not only generic quality slogans. It should list high-risk chapters, title problems, terminology risks, paragraphs that need review, and build-script work required before final output.
 
@@ -136,11 +136,11 @@ The post-generation review must include:
 - Spot checks of high-risk chapters in the generated XHTML, not only in Markdown source files.
 - 对高风险章节检查生成后的 XHTML，而不是只看 Markdown 源文件。
 
-- Independent random paragraph spot checks after every refinement pass: at least two agents, at least ten random reader-facing paragraphs per agent, with seed and sample manifest preserved.
-- 每轮精校后必须做独立随机段落抽检：至少两个 Agent，每个 Agent 至少十个随机读者可见正文段落，并保留 seed 和样本清单。
+- Stratified random spot checks after the first full-book EPUB and after every refinement pass: at least two agents, deterministic random samples across reader-facing audit units, preserved seed, round manifest, samples, figure/table/formula evidence, agent reviews, fix log, and closure check.
+- 第一版全书 EPUB 生成后，以及每轮精校后必须做分层随机抽检：至少两个 Agent，使用确定性随机样本覆盖读者可见审计单元，并保留 seed、轮次 manifest、样本、图片/表格/公式证据、Agent 评审、修复记录和闭环检查。
 
-- A short QA record under `books/{book_id_slug}/qa/` when the review affects publication quality or confirms a delivery build.
-- 如果复查影响出版质量，或用于确认交付版本，必须在 `books/{book_id_slug}/qa/` 下留下简短 QA 记录。
+- A short QA record under `books/{target}/{number}_{book_id_slug}/qa/` when the review affects publication quality or confirms a delivery build.
+- 如果复查影响出版质量，或用于确认交付版本，必须在 `books/{target}/{number}_{book_id_slug}/qa/` 下留下简短 QA 记录。
 
 ## Hard Gate / 硬门禁
 
@@ -163,5 +163,5 @@ A book must not be marked `DONE` if:
 - validation only proves EPUB structure, while translation quality has not passed editorial review.
 - 只证明了 EPUB 结构合格，但译文质量尚未通过编辑级审查。
 
-- post-refinement random spot checks are missing, reused from an earlier refinement pass, or failed the required two-agent threshold.
-- 精校后的随机抽检缺失、复用了上一轮精校样本，或没有达到双 Agent 通过门槛。
+- post-EPUB stratified random spot checks are missing, omit existing table/figure/formula/caption/note strata, reuse an earlier seed after rework, lack fix closure, or fail `npm run review:random-validate:pass`.
+- EPUB 后分层随机抽检缺失、遗漏实际存在的表格/图片/公式/图注/注释层、返工后复用旧 seed、缺少修复闭环，或未通过 `npm run review:random-validate:pass`。

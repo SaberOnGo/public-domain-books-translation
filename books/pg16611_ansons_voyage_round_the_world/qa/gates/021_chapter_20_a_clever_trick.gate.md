@@ -1,3 +1,0 @@
-# 第二十章 一个巧计 章节门禁
-
-结论：PASS_WITH_RECORDED_LIMITATIONS

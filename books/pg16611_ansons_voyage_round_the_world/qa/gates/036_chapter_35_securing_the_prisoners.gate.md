@@ -1,3 +1,0 @@
-# 第三十五章 安置俘虏 章节门禁
-
-结论：PASS_WITH_RECORDED_LIMITATIONS

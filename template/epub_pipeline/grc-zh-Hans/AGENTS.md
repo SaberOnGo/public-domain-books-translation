@@ -17,8 +17,8 @@ This file is for AI agents using the `grc-zh-Hans` template.
 
 ## Mandatory Rules / 强制规则
 
-- Copy `template/epub_pipeline/common` first, then overlay `template/epub_pipeline/grc-zh-Hans` into a book project under `books/{book_id_slug}/`.
-- 必须先复制 `template/epub_pipeline/common`，再覆盖复制 `template/epub_pipeline/grc-zh-Hans` 到 `books/{book_id_slug}/` 书籍工程。
+- Create each new book project with `books/scripts/create_book_project.py`; it copies `template/epub_pipeline/common` first, then overlays `template/epub_pipeline/grc-zh-Hans` into `books/zh-Hans/{number}_{book_id_slug}/`.
+- 必须用 `books/scripts/create_book_project.py` 创建每本新书；脚本会先复制 `template/epub_pipeline/common`，再覆盖复制 `template/epub_pipeline/grc-zh-Hans` 到 `books/zh-Hans/{number}_{book_id_slug}/` 书籍工程。
 
 - If the work is scientific, mathematical, astronomical, diagram-heavy, table-heavy, or proof-heavy, overlay `template/epub_pipeline/profiles/classical-science-zh-Hans` after this language template.
 - 如果作品属于科学、数学、天文学、图表密集、表格密集或证明密集型作品，必须在本语言模板之后叠加 `template/epub_pipeline/profiles/classical-science-zh-Hans`。
@@ -53,6 +53,11 @@ This file is for AI agents using the `grc-zh-Hans` template.
 - Before building or publishing an EPUB, run `node scripts/publication_lint.js --target=zh-Hans --write-report` and fix all hard errors.
 - 构建或发布 EPUB 前，必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`，并修复所有硬错误。
 
+- After the first full-book EPUB and after each post-EPUB refinement pass, at least two independent agents must run the stratified random spot-check gate. The sampled population is reader-facing audit units, including paragraphs, tables, figures, formulas/proof blocks, captions, and notes. Both agents, fix closure, and `npm run review:random-validate:pass` must pass before refinement can be considered complete.
+- 第一版全书 EPUB 生成后，以及每轮 EPUB 后精校完成后，必须由至少两个独立 Agent 执行分层随机抽检门禁。抽样总体是读者可见审计单元，包括正文段落、表格、图片、公式/证明块、图注和注释。两个 Agent、修复闭环和 `npm run review:random-validate:pass` 都通过后，才可认为精校完成。
+- After random spot-check closure, create a versioned EPUB release under `output/release/`; `output/book.epub` alone is not a publishable final artifact.
+- 随机抽检闭环通过后，必须在 `output/release/` 下创建带版本号的 EPUB release；只有 `output/book.epub` 不是可发布最终产物。
+
 ## Human Checkpoints / 人类可选检查点
 
 - `metadata/source_evidence.md`
@@ -67,6 +72,13 @@ This file is for AI agents using the `grc-zh-Hans` template.
 - `qa/gates/{NNN_slug}.gate.md`
 - 启用 profile 时的 `metadata/reference_witness_policy.md`
 - 启用 profile 时的 `qa/technical/*.md`
+- `reviews/random_spotcheck/random_sample_manifest.json`
+- `reviews/random_spotcheck/round_XXX/`
+- `reviews/agent_a/random_spotcheck_review.md`
+- `reviews/agent_b/random_spotcheck_review.md`
+- `output/release/book_vX.X.X.epub`
+- `output/release/release_note_vX.X.X.md`
+- `output/release/release_state.json`
 
 If no human feedback is required, continue only when the relevant report says `PASS`.
 
