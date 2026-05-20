@@ -4,6 +4,7 @@ const { spawnSync } = require('child_process');
 
 const root = path.resolve(__dirname, '..');
 const javaRoot = path.join(root, 'tools', 'zulu17-jre');
+const sharedJavaRoot = path.join(root, '..', 'tools', 'zulu17-jre');
 const epub = path.join(root, 'output', 'book.epub');
 const report = path.join(root, 'output', 'epubcheck.json');
 
@@ -41,7 +42,7 @@ const jar = nodeModules
   ? path.join(nodeModules, 'epubchecker', 'vendors', 'epubcheck-5.2.1', 'epubcheck.jar')
   : null;
 
-const java = findJava(javaRoot) || firstExisting([
+const java = findJava(javaRoot) || findJava(sharedJavaRoot) || firstExisting([
   process.env.JAVA_HOME && path.join(process.env.JAVA_HOME, 'bin', 'java.exe'),
 ]) || 'java';
 

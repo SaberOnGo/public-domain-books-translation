@@ -13,36 +13,63 @@ Use this skill when an AI agent is asked to create a book project, add or update
 
 1. Read `AGENTS.md`.
    先读取 `AGENTS.md`。
-2. Read the repository README in the user's preferred language when available.
+2. Before doing any repository task, read the relevant `template/` files. The template is the source of truth; do not rely on memory or prior runs.
+   执行任何仓库任务前，必须读取相关 `template/` 文件。模板是规则源，不得依赖记忆或历史执行经验。
+3. Read the repository README in the user's preferred language when available.
    优先读取用户偏好语言对应的 README。
-3. Read `template/epub_pipeline/README.md`.
+4. Read `template/epub_pipeline/README.md`.
    读取 `template/epub_pipeline/README.md`。
-4. Select the matching language-pair template, for example `fr-en`, `ja-es`, `en-zh-Hans`, or `zh-Hant-de`.
+5. For EPUB production, cover, book-info/frontmatter, assets, quality gates, random review, or release work, read the applicable common policy files before editing or building:
+   - `template/epub_pipeline/common/README.md`
+   - `template/epub_pipeline/common/preproduction/stage1/_TEMPLATE.production_spec.md`
+   - `template/epub_pipeline/common/references/cover_design_policy.md`
+   - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
+   - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
+   - `template/epub_pipeline/common/references/quality_gate_framework.md`
+   - `template/epub_pipeline/common/references/release_versioning.md`
+   涉及 EPUB 制作、封面、书籍信息页/前置页、资产、质量门禁、随机评审或发布时，编辑或构建前必须读取适用的 common policy 文件：
+   - `template/epub_pipeline/common/README.md`
+   - `template/epub_pipeline/common/preproduction/stage1/_TEMPLATE.production_spec.md`
+   - `template/epub_pipeline/common/references/cover_design_policy.md`
+   - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
+   - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
+   - `template/epub_pipeline/common/references/quality_gate_framework.md`
+   - `template/epub_pipeline/common/references/release_versioning.md`
+6. Select the matching language-pair template, for example `fr-en`, `ja-es`, `en-zh-Hans`, or `zh-Hant-de`.
    选择匹配的语言方向模板，例如 `fr-en`、`ja-es`、`en-zh-Hans` 或 `zh-Hant-de`。
-5. If a matching target-language framework exists under `template/epub_pipeline/targets/{target}/`, read it before translating.
+7. If a matching target-language framework exists under `template/epub_pipeline/targets/{target}/`, read it before translating.
    如果 `template/epub_pipeline/targets/{target}/` 下存在匹配的目标语言质量框架，翻译前必须读取。
-6. Create the book project with `books/scripts/create_book_project.py`; it copies `template/epub_pipeline/common` into `books/{target}/{number}_{book_id_slug}/`, then overlays the matching language-pair template.
+8. Create the book project with `books/scripts/create_book_project.py`; it copies `template/epub_pipeline/common` into `books/{target}/{number}_{book_id_slug}/`, then overlays the matching language-pair template.
    使用 `books/scripts/create_book_project.py` 创建书籍工程；脚本会把 `template/epub_pipeline/common` 复制到 `books/{target}/{number}_{book_id_slug}/`，再覆盖复制匹配的语言方向模板。
-7. Write all book-specific source text, translations, QA, EPUB output, and metadata only inside the book project.
+9. Write all book-specific source text, translations, QA, EPUB output, and metadata only inside the book project.
    所有具体书籍的原文、译文、QA、EPUB 输出和 metadata 只能写入书籍工程目录。
-8. Run the workflow through source evidence, rights checks, research, trial translation, chapter translation, review, gates, EPUB production, validation, mandatory post-EPUB stratified random spot-check, independent review, versioned release, and retrospective.
+10. Run the workflow through source evidence, rights checks, research, trial translation, chapter translation, review, gates, EPUB production, validation, mandatory post-EPUB stratified random spot-check, independent review, versioned release, and retrospective.
    按来源证据、版权核查、研究、试译、章节翻译、审校、门禁、EPUB 制作、校验、EPUB 后强制分层随机抽检、独立评审、版本化发布和复盘流程执行。
-9. Before EPUB production, run `node scripts/publication_lint.js --target={target-language} --write-report` inside the book project and fix all hard errors.
+11. Before EPUB production, run `node scripts/publication_lint.js --target={target-language} --write-report` inside the book project and fix all hard errors.
    EPUB 制作前，必须在书籍工程内运行 `node scripts/publication_lint.js --target={target-language} --write-report`，并修复所有硬错误。
-10. Before final EPUB output, check long chapter titles against `references/chapter_title_policy.md` and any matching source-to-target title strategy. EPUB navigation must use concise labels, not printed-TOC title chains.
+12. Before final EPUB output, check long chapter titles against `references/chapter_title_policy.md` and any matching source-to-target title strategy. EPUB navigation must use concise labels, not printed-TOC title chains.
     最终 EPUB 输出前，必须按 `references/chapter_title_policy.md` 及对应语言方向标题策略检查长章节标题。EPUB 目录应使用短题名，不应塞入纸书目录式标题链。
-11. After the first full-book EPUB is built, run the stratified random spot-check module from `references/stratified_random_spotcheck.md` and `prompts/16a_stratified_random_spotcheck.md`. Use deterministic scripts, keep all samples and evidence under `books/{target}/{number}_{book_id_slug}/reviews/random_spotcheck/round_XXX/`, close every discovered P0/P1/P2, and run `npm run review:random-validate:pass` before final output.
+13. After the first full-book EPUB is built, run the stratified random spot-check module from `references/stratified_random_spotcheck.md` and `prompts/16a_stratified_random_spotcheck.md`. Use deterministic scripts, keep all samples and evidence under `books/{target}/{number}_{book_id_slug}/reviews/random_spotcheck/round_XXX/`, close every discovered P0/P1/P2, and run `npm run review:random-validate:pass` before final output.
     第一版全书 EPUB 生成后，必须执行 `references/stratified_random_spotcheck.md` 和 `prompts/16a_stratified_random_spotcheck.md` 定义的分层随机抽检模块。必须使用确定性脚本，所有样本和证据保存在 `books/{target}/{number}_{book_id_slug}/reviews/random_spotcheck/round_XXX/`，所有发现的 P0/P1/P2 必须关闭，最终输出前必须通过 `npm run review:random-validate:pass`。
-12. After random spot-check closure, run the versioned release module from `references/release_versioning.md` and `prompts/18a_release_versioning.md`. Create `output/release/book_vX.X.X.epub`, `release_note_vX.X.X.md`, `release_state.json`, and `release_index.md`; `output/book.epub` alone is not enough for `DONE`.
+14. After random spot-check closure, run the versioned release module from `references/release_versioning.md` and `prompts/18a_release_versioning.md`. Create `output/release/book_vX.X.X.epub`, `release_note_vX.X.X.md`, `release_state.json`, and `release_index.md`; `output/book.epub` alone is not enough for `DONE`.
     随机抽检闭环通过后，必须执行 `references/release_versioning.md` 和 `prompts/18a_release_versioning.md` 定义的版本化发布模块。必须创建 `output/release/book_vX.X.X.epub`、`release_note_vX.X.X.md`、`release_state.json` 和 `release_index.md`；只有 `output/book.epub` 不能标记 `DONE`。
-12. For translated titles, title occurrences do not count as first body occurrences for terminology notes. Chapter titles, subtitles, and navigation titles must follow target-language title style; source names or parenthetical original names belong at the first natural body occurrence, in notes, or in the glossary.
+15. For translated titles, title occurrences do not count as first body occurrences for terminology notes. Chapter titles, subtitles, and navigation titles must follow target-language title style; source names or parenthetical original names belong at the first natural body occurrence, in notes, or in the glossary.
     对译文标题而言，标题中的出现不计入术语译注的“正文首次出现”。章节标题、副标题和目录题名必须按目标语言标题习惯处理；原文名或括注原名应放在正文第一次自然出现处、译注或术语表中。
-13. If a specific book has systematic refinement issues, place its goal under `books/{target}/{number}_{book_id_slug}/goal/`, then backfill reusable lessons into common, target-language, or source-target templates.
+16. If a specific book has systematic refinement issues, place its goal under `books/{target}/{number}_{book_id_slug}/goal/`, then backfill reusable lessons into common, target-language, or source-target templates.
     如果某本书有系统性精修问题，目标文档应放在 `books/{target}/{number}_{book_id_slug}/goal/`，再把可复用经验回填到 common、目标语言或语言方向模板。
-14. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
+17. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
    特定语言方向的脚本、数据集和探索性调研应放在 `research/{source-target}/...` 或对应语言方向模板中，不要放在仓库根目录。
-15. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
+18. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
     不要在脚本或 prompt 中写死本机绝对路径。路径应基于脚本位置、仓库根目录或用户显式传入的参数解析。
+
+## Policy Boundary Lessons / Policy 边界教训
+
+- Read `cover_design_policy.md` and `book_info_frontmatter_policy.md` separately. Do not merge them from memory.
+- 必须分别读取 `cover_design_policy.md` 与 `book_info_frontmatter_policy.md`，不得凭记忆把两者合并。
+- Covers use the concise producer line `LifeBook 书坊 译制`. Personal contributor names belong in `book-info.xhtml` and metadata only when the book-info policy requires them.
+- 封面使用简洁署名 `LifeBook 书坊 译制`。个人贡献者名只在书籍信息页 policy 要求时进入 `book-info.xhtml` 和 metadata。
+- Before asset or publication lint, remove or rebuild stale staging output so old XHTML and old asset links cannot affect the new result.
+- 运行资产检查或出版检查前，应清理或重新生成旧的 staging 输出，避免旧 XHTML 和旧资产链接影响新结果。
 
 ## Language Requirements / 语言要求
 
