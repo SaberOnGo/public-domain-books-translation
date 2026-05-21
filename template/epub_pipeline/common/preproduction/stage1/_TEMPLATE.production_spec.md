@@ -17,26 +17,36 @@ human_required: false
 
 - 封面来源：AI 生成 / 公版图片 / 自制设计 / 其他。
 - EPUB 内封面格式：推荐 `cover.jpg`。
+- 封面原图/背景图 output 文件：`output/cover_source.png` 或本书记录的等效文件。
+- 带文字压缩封面 output 文件：`output/cover.jpg` 或本书记录的等效文件。
 - 封面尺寸：建议长边 1600-2560px，比例 2:3 或接近书籍封面比例。
 - 封面体积：建议控制在 200KB-800KB；除非有特殊理由，不应数 MB。
 - OPF：manifest 必须包含 `properties="cover-image"`。
 - 必须有 `cover.xhtml`。
 
-## 版本说明页 / Book Info Page
+## 书籍信息页 / Book Info Page
 
-必须优先展示本项目版本信息，文字要短，不写成长篇宣传：
+必须优先展示本项目版本信息，文字要短，像正式出版物的版权页/版本页，不得写成制作日志、宣传页或 README。
 
-1. 页首放一句：`更多 LifeBook：https://yourlifebook.app`。
-2. 中文书名。
-3. 英文原名。
-4. 作者信息。
-5. `LifeBook 书坊 + 个人名` 译制。
-6. 译制时间。
-7. 公版来源 URL。
-8. `版权说明`：分两小段写清楚原书版权状态和译本授权。原书段说明使用的公版来源；译本段参考仓库 `license/LICENSE.md`，默认说明中文译文、译注、整理文本、封面、排版设计与 EPUB 打包内容按 `CC BY-NC-SA 4.0` 发布，第三方商业使用需另行授权。
-9. 原书信息。
-10. 本书简介。
-11. `译者说明`：简短介绍 LifeBook 书坊，说明本项目链接 `https://github.com/SaberOnGo/public-domain-books-translation` 和 LifeBook 链接 `https://yourlifebook.app`，邀请读者参与试读、校对、查资料、统一术语或后续书籍制作。末尾可再次放一句：`更多 LifeBook：https://yourlifebook.app`。
+必备内容：
+
+1. 目标语言书名。
+2. 原书名。
+3. 作者信息。
+4. `LifeBook 书坊 + 个人名` 译制。
+5. 译制时间。
+6. 公版来源名称与 URL。
+7. 公版说明：用一条简短说明写清源文本公版依据，并提醒跨地区发行需复核目标地区版权状态。
+8. 本书简介：只介绍作品本身，不混入 EPUB 制作、译者署名、来源 URL 或版权提醒。
+9. 作者简介。
+10. 创作/成书背景。
+
+可选内容：
+
+- 译制说明、底本选择、术语原则、图表策略等确有必要时，放入单独的 `translator-note.xhtml` 或 `edition-note.xhtml`，文字必须短而读者友好。
+- 项目链接、参与方式、QA 过程、prompt、工作流日志、图表审计日志不得放入 `book-info.xhtml`；但可以在页首保留一条短 LifeBook 入口：`更多：访问 LifeBook`，链接文字内部嵌入 `https://yourlifebook.app`，不得直接显示长 URL。
+- 不要在 `book-info.xhtml` 页首、页尾重复放置 `更多 LifeBook` 或其他项目链接。
+- 不要在同一前置页中反复出现多个 `版权说明`；版权和公版状态应集中、简短、一次说明。
 
 ## 字体 / Font
 
@@ -82,10 +92,16 @@ human_required: false
 ```powershell
 node scripts/publication_lint.js --target={target-language} --write-report
 node scripts/asset_manifest_check.js --write-report
+python scripts/check_template_workflow_gate.py --write-report
+python scripts/check_cover_output_assets.py --write-report
+python scripts/check_reader_facing_policy.py --write-report
 ```
 
 输出必须保存为 `output/publication_lint.json`。
 资源检查输出必须保存为 `output/asset_manifest_check.json`。
+模板流程门禁输出必须保存为 `output/template_workflow_gate.json`。
+封面 output 资产门禁输出必须保存为 `output/cover_output_assets_check.json`。
+读者可见内容门禁输出必须保存为 `output/reader_facing_policy_check.json`。
 
 ## Metadata / 元数据
 
@@ -111,4 +127,7 @@ OPF 必须包含：
 - 标题和正文排版适合手机阅读。
 - `output/publication_lint.json` 无硬错误。
 - `output/asset_manifest_check.json` 无硬错误。
+- `output/template_workflow_gate.json` 无硬错误。
+- `output/cover_output_assets_check.json` 无硬错误。
+- `output/reader_facing_policy_check.json` 无硬错误。
 - 图表、表格、图片资源路径和 OPF manifest 一致。

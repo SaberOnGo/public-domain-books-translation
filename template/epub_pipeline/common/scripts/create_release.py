@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
@@ -58,6 +59,26 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: fh.read(1024 * 1024), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def read_book_title(book_root: Path) -> str:
+    metadata_path = book_root / "metadata" / "book.yaml"
+    if not metadata_path.exists():
+        return "book"
+    for line in metadata_path.read_text(encoding="utf-8").splitlines():
+        match = re.match(r"^\s*title\s*:\s*(.+?)\s*$", line)
+        if match:
+            value = match.group(1).strip()
+            if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
+                value = value[1:-1]
+            return value.strip() or "book"
+    return "book"
+
+
+def safe_filename_part(value: str) -> str:
+    value = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", value)
+    value = re.sub(r"\s+", " ", value).strip(" .")
+    return value or "book"
 
 
 def parse_version(version: str) -> tuple[int, int, int]:
@@ -160,6 +181,19 @@ def append_release_index(path: Path, version: str, epub_name: str, note_name: st
         fh.write(f"| {version} | {status} | `{epub_name}` | `{note_name}` | {created_at} |\n")
 
 
+def prepend_release_note(path: Path, entry: str) -> None:
+    title = "# Release Notes / 发布说明"
+    if not path.exists():
+        path.write_text(f"{title}\n\n{entry}", encoding="utf-8", newline="\n")
+        return
+    old = path.read_text(encoding="utf-8")
+    if old.startswith(title):
+        rest = old[len(title):].lstrip()
+        path.write_text(f"{title}\n\n{entry}\n\n{rest}", encoding="utf-8", newline="\n")
+    else:
+        path.write_text(f"{title}\n\n{entry}\n\n---\n\n{old}", encoding="utf-8", newline="\n")
+
+
 def main() -> None:
     args = parse_args()
     book_root = resolve_book_root(args.book_root)
@@ -181,13 +215,14 @@ def main() -> None:
         require_pass_gates(summary)
 
     release_dir.mkdir(parents=True, exist_ok=True)
-    epub_name = f"book_{version}.epub"
-    note_name = f"release_note_{version}.md"
+    release_title = safe_filename_part(read_book_title(book_root))
+    epub_name = f"{release_title}_{version}.epub"
+    note_name = "release_notes.md"
     target_epub = release_dir / epub_name
     release_note = release_dir / note_name
-    if not args.overwrite and (target_epub.exists() or release_note.exists()):
+    if not args.overwrite and target_epub.exists():
         raise SystemExit(
-            f"release artifact already exists for {version}; create the next patch version or pass --overwrite deliberately"
+            f"release EPUB already exists for {version}; create the next patch version or pass --overwrite deliberately"
         )
     shutil.copy2(source_epub, target_epub)
 
@@ -197,7 +232,7 @@ def main() -> None:
 
     reason = args.reason or "Create a versioned EPUB release artifact from the current book build. / 将当前书籍构建产物固化为带版本号的 EPUB 发布文件。"
     note = [
-        f"# Release {version} / 版本 {version}",
+        f"## Release {version} / 版本 {version}",
         "",
         f"status: {args.status}",
         f"main_version: {main_version}",
@@ -249,7 +284,7 @@ def main() -> None:
         "- Patch version increases by 1 for every release artifact created by this script. / 本脚本每创建一次发布产物，小版本号递增 1。",
         "",
     ]
-    release_note.write_text("\n".join(note), encoding="utf-8", newline="\n")
+    prepend_release_note(release_note, "\n".join(note))
 
     new_state = {
         "current_version": version,
@@ -268,7 +303,7 @@ def main() -> None:
     append_release_index(release_dir / "release_index.md", version, epub_name, note_name, args.status, created_at)
 
     print(f"created {rel_or_abs(book_root, target_epub)}")
-    print(f"created {rel_or_abs(book_root, release_note)}")
+    print(f"updated {rel_or_abs(book_root, release_note)}")
     print(f"version={version}")
 
 

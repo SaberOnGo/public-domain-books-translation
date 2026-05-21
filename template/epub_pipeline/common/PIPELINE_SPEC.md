@@ -153,8 +153,8 @@
 ### Output
 
 - `output/book.epub`：最终 EPUB。
-- `output/release/book_vX.X.X.epub`：带版本号的 EPUB 发布产物，不得平铺在 `output/` 根目录。
-- `output/release/release_note_vX.X.X.md`：该版本的中英文发布说明，必须记录发布原因、问题点、修复、QA 证据、风险和下一轮迭代。
+- `output/release/{目标语言书名}_vX.X.X.epub`：带版本号的 EPUB 发布产物，例如 `金属巨兽_v0.0.4.epub`；不得平铺在 `output/` 根目录，也不得使用英文 slug 或通用 `book_` 前缀。
+- `output/release/release_notes.md`：累计中英文发布说明；每次发布把最新版本条目插入文件顶部，必须记录发布原因、问题点、修复、QA 证据、风险和下一轮迭代。
 - `output/release/release_state.json`：当前 release 状态；`latest_status = PASS` 是 `DONE` 的必要条件。
 - `output/release/release_index.md`：所有版本的发布索引。
 - `output/epubcheck.log` 或 `output/epubcheck.json`：EPUB 校验结果。
@@ -223,9 +223,9 @@ node scripts/asset_manifest_check.js --write-report
 - 最终退出前必须运行 `npm run review:random-validate:pass`。该命令失败时，不得进入 `FINAL_OUTPUT_PASS`、`RETROSPECTIVE_DONE` 或 `DONE`。
 - `npm run review:random-validate:pass` 必须计算并写入 `release_confidence = min_h confidence_h`。若 `release_confidence < 0.80`，即使 Agent 文字评审写了 PASS，也不得退出任务。
 - `npm run review:random-validate:pass` 还必须校验每个 Agent 的 `average_score >= 75`、`lowest_score >= 70`、`blocking_issue_count = 0`，以及闭环文件中的 `open_p0_p1_p2_count = 0`。
-- 分层随机抽检通过后，必须执行 `prompts/18a_release_versioning.md` 或等效命令 `npm run release:create`。正式发布必须生成 `output/release/book_vX.X.X.epub`、`release_note_vX.X.X.md`、`release_state.json` 和 `release_index.md`。
+- 分层随机抽检通过后，必须执行 `prompts/18a_release_versioning.md` 或等效命令 `npm run release:create`。正式发布必须生成 `output/release/{目标语言书名}_vX.X.X.epub`、`release_notes.md`、`release_state.json` 和 `release_index.md`。
 - `npm run release:create` 必须拒绝未使用 `--require-pass` 生成的随机抽检校验报告；结构性抽样校验或 `DRAFT` release 不得作为 `DONE` 的依据。
-- 每次 EPUB 内容、排版、metadata、图表、注释或抽检修复发生变化后，都必须创建新的 patch release。不得覆盖旧版本 EPUB 或旧 release note。
+- 每次 EPUB 内容、排版、metadata、图表、注释或抽检修复发生变化后，都必须创建新的 patch release。不得覆盖旧版本 EPUB；release note 必须追加到累计 `release_notes.md` 顶部，不得每次散落新建 release note 文件。
 - 如果已经发现系统性文学精修问题，必须在 `books/{target}/{number}_{book_id_slug}/goal/` 建立本书目标，并把可复用经验回填到 common、目标语言或语言方向模板。
 - 整本 EPUB 制作后，必须派生 2 个独立 Agent 评审。
 - 评审失败时必须通过 `reviews/revision_route.md` 回到对应前置阶段。
@@ -250,8 +250,8 @@ node scripts/asset_manifest_check.js --write-report
 - `reviews/random_spotcheck/random_sample_manifest.json`、`reviews/agent_a/random_spotcheck_review.md`、`reviews/agent_b/random_spotcheck_review.md` 和 `reviews/scorecards/random_spotcheck_score.md` 均指向或记录最近通过轮次。
 - `npm run review:random-validate:pass` 通过。
 - `output/book.epub` 存在。
-- `output/release/book_vX.X.X.epub`、`output/release/release_note_vX.X.X.md`、`output/release/release_state.json` 和 `output/release/release_index.md` 存在。
-- `output/release/release_state.json.latest_status == PASS`，且 release note 已记录随机抽检轮次、`release_confidence >= 0.80`、EPUBCheck、publication lint、修复闭环、风险和下一轮迭代。
+- `output/release/{目标语言书名}_vX.X.X.epub`、`output/release/release_notes.md`、`output/release/release_state.json` 和 `output/release/release_index.md` 存在。
+- `output/release/release_state.json.latest_status == PASS`，且 `release_notes.md` 顶部最新条目已记录随机抽检轮次、`release_confidence >= 0.80`、EPUBCheck、publication lint、修复闭环、风险和下一轮迭代。
 - EPUBCheck 无 fatal/error。
 - `reviews/agent_a/review.md` 和 `reviews/agent_b/review.md` 均存在，且评分通过。
 - `reviews/revision_route.md` 中无未关闭 P0/P1/P2 必修项。

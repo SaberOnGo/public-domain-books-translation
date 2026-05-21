@@ -26,7 +26,7 @@ v0.0.1
 
 若没有明确要求，脚本每次创建 release 都递增 `patch_version`。
 
-旧版本 EPUB 和旧 release note 不得被覆盖。若已经存在同版本产物，必须创建下一个 patch version；只有在明确重建同一候选版本时，才允许使用脚本的 `--overwrite` 参数。
+旧版本 EPUB 不得被覆盖。Release note 使用累计文件 `release_notes.md`，每次发布必须把最新版本说明追加到文件顶部，保留旧版本记录；不得为每次修改散落新建多个 release note 文件。若已经存在同版本 EPUB，必须创建下一个 patch version；只有在明确重建同一候选版本时，才允许使用脚本的 `--overwrite` 参数。
 
 ## 目录 / Directory
 
@@ -38,8 +38,8 @@ output/release/
 
 必须包含：
 
-- `book_vX.X.X.epub`
-- `release_note_vX.X.X.md`
+- `{目标语言书名}_vX.X.X.epub`，例如 `金属巨兽_v0.0.4.epub`
+- `release_notes.md`
 - `release_state.json`
 - `release_index.md`
 
@@ -47,7 +47,7 @@ output/release/
 
 ## 发布说明 / Release Note
 
-每个版本必须有中英文 release note，像软件版本说明一样记录：
+每个版本必须在同一个 `release_notes.md` 中有中英文 release note 条目，像软件版本说明一样记录；最新版本条目必须位于文件最上方：
 
 - 发布原因 / Release reason
 - 修改内容 / Changes
@@ -88,8 +88,8 @@ python scripts/create_release.py --status PASS --require-pass
 
 一本书不得标记 `DONE`，除非：
 
-- 至少存在一个 `output/release/book_vX.X.X.epub`。
-- 对应 `release_note_vX.X.X.md` 存在。
+- 至少存在一个 `output/release/{目标语言书名}_vX.X.X.epub`。
+- `output/release/release_notes.md` 存在，且最新版本条目位于最上方。
 - `release_state.json.latest_status = PASS`。
 - release note 记录抽检、修复、风险和校验证据。
 

@@ -49,6 +49,30 @@ function inline(text) {
   return escapeHtml(text).replace(/`([^`]+)`/g, '<code>$1</code>');
 }
 
+function parseMarkdownTable(lines, start) {
+  const rows = [];
+  let i = start;
+  while (i < lines.length) {
+    const line = lines[i].trim();
+    if (!line.startsWith('|') || !line.endsWith('|')) break;
+    rows.push(line.slice(1, -1).split('|').map((cell) => cell.trim()));
+    i += 1;
+  }
+  if (rows.length < 2 || !rows[1].every((cell) => /^:?-{3,}:?$/.test(cell))) return null;
+  return { rows: [rows[0], ...rows.slice(2)], next: i };
+}
+
+function tableHtml(rows) {
+  const header = rows[0];
+  const bodyRows = rows.slice(1);
+  const thead = `<thead><tr>${header.map((cell) => `<th scope="col">${inline(cell)}</th>`).join('')}</tr></thead>`;
+  const tbody = bodyRows.map((row) => {
+    const padded = [...row, ...Array(Math.max(0, header.length - row.length)).fill('')].slice(0, header.length);
+    return `<tr>${padded.map((cell) => `<td>${inline(cell)}</td>`).join('')}</tr>`;
+  }).join('');
+  return `<div class="table-wrap" role="region" aria-label="结构化表格"><table><caption>结构化表格</caption>${thead}<tbody>${tbody}</tbody></table></div>`;
+}
+
 function slug(file) {
   return path.basename(file, path.extname(file)).replace(/[^A-Za-z0-9_-]+/g, '_');
 }
@@ -88,10 +112,19 @@ function markdownToBody(file, imageMap) {
     }
   };
 
-  for (const raw of readText(file).split('\n')) {
+  const lines = readText(file).split('\n');
+  for (let i = 0; i < lines.length; i += 1) {
+    const raw = lines[i];
     const line = raw.trimEnd();
     if (!line.trim()) {
       flush();
+      continue;
+    }
+    const table = parseMarkdownTable(lines, i);
+    if (table) {
+      flush();
+      out.push(tableHtml(table.rows));
+      i = table.next - 1;
       continue;
     }
     const image = /^!\[([^\]]*)\]\(([^)]+)\)$/.exec(line.trim());
@@ -167,7 +200,7 @@ function writeContainer() {
 }
 
 function writeCss() {
-  writeText(path.join(workDir, 'EPUB', 'styles', 'book.css'), `body{line-height:1.72;margin:0;padding:1.2em;overflow-wrap:break-word}p{margin:0 0 .7em;text-indent:2em}h1{font-size:1.55em;line-height:1.25}h2{font-size:1.2em}h3{font-size:1.05em}img{max-width:100%;height:auto}figure{margin:1.2em 0;text-align:center;break-inside:avoid}figcaption{font-size:.88em;line-height:1.45}code{font-family:monospace;overflow-wrap:anywhere}.list-item{text-indent:0;margin-left:1.5em}`);
+  writeText(path.join(workDir, 'EPUB', 'styles', 'book.css'), `body{line-height:1.72;margin:0;padding:1.2em;overflow-wrap:break-word}p{margin:0 0 .7em;text-indent:2em}h1{font-size:1.55em;line-height:1.25}h2{font-size:1.2em}h3{font-size:1.05em}img{max-width:100%;height:auto}figure{margin:1.2em 0;text-align:center;break-inside:avoid}figcaption{font-size:.88em;line-height:1.45}code{font-family:monospace;overflow-wrap:anywhere}.list-item{text-indent:0;margin-left:1.5em}.table-wrap{display:block;width:100%;max-width:100%;margin:.8em 0 1.2em;overflow:visible}table{border-collapse:collapse;width:100%;max-width:100%;table-layout:fixed;font-size:.74em;line-height:1.34;page-break-inside:auto;break-inside:auto}caption{font-size:.9em;line-height:1.35;margin:0 0 .35em;text-align:left}th,td{border:1px solid #777;padding:.22em .28em;vertical-align:top;white-space:normal;overflow-wrap:anywhere;word-break:break-word}th{font-weight:600;background:#f2f2f2}tr{page-break-inside:avoid;break-inside:avoid}`);
 }
 
 function zipEpub() {

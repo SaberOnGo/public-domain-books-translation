@@ -26,6 +26,7 @@ This policy centralizes cover requirements that were previously scattered across
 - EPUB 必须有 `cover.xhtml`。
 - OPF manifest 必须把封面图片标记为 `properties="cover-image"`。
 - EPUB 内封面推荐使用 `cover.jpg`；高清 PNG/PSD/工程源文件可以保留在书籍工程目录，但不得直接把超大未压缩源图塞入 EPUB。
+- 合格的封面原图/背景图与带文字压缩封面图必须同时保存到该书 `output/` 目录；推荐文件名为 `output/cover_source.png` 与 `output/cover.jpg`，若有特殊命名必须在 production spec 中记录。EPUB 内部仍使用压缩后的封面图，不把超大原图塞入 EPUB。
 - 封面比例建议为 2:3 或接近传统书封比例；推荐尺寸为 1600 x 2400 px，长边可在 1600-2560 px 范围内。
 - EPUB 内封面体积建议控制在 200KB-800KB；除非有明确理由，不应达到数 MB。
 - 封面、书籍信息页、OPF metadata 中的书名、作者、译者/译制者、品牌名必须一致。
@@ -57,6 +58,7 @@ This policy centralizes cover requirements that were previously scattered across
 - 中文大标题应居中对齐，尽量只占一行；英文标题字体较小，居中对齐，也尽量只占一行。
 - 如确有额外内容，可使用副标题或另起一行小字；不要把说明性内容堆到封面。
 - EPUB 内封面应使用压缩后的 JPG，视觉可用且体积合理。
+- `output/` 应保留两份读者/审校可直接查看的封面资产：一份合格原图或背景图，一份确定性叠字后的压缩封面图；标准构建脚本必须运行 `python scripts/check_cover_output_assets.py --write-report`。
 - 封面文字不依赖图像模型自动生成；文字居中、层级和品牌信息应由确定性排版核验。
 - AI 图像模型适合生成背景图或主视觉，不适合直接生成精确中文标题。
 - 封面文字应后期用 SVG/Canvas/HTML/CSS/图像处理脚本确定性叠加。
@@ -129,6 +131,7 @@ Output:
 - 图像权利：公版证据、AI 生成说明或自制说明。
 - 尺寸、格式、压缩目标。
 - EPUB 内部文件名，通常为 `assets/cover.jpg` 和 `EPUB/images/cover.jpg`。
+- `output/` 中保存的封面原图/背景图文件名和带文字压缩封面文件名。
 - `cover.xhtml` 和 OPF `cover-image` 写入方式。
 - 封面文字排版方式：确定性 SVG、Canvas、HTML/CSS 截图或图像处理脚本。
 
@@ -151,6 +154,7 @@ Output:
 - `package.opf` 只有一个正确的 `cover-image`。
 - EPUBCheck fatal=0、error=0，warning 需修复或记录。
 - `output/final_manifest.md` 记录封面文件、EPUB 大小、SHA256 和校验结果。
+- `output/final_manifest.md` 必须列出 `output/` 中的封面原图/背景图与带文字压缩封面图，并记录 SHA256。
 
 ## 禁止事项 / Forbidden
 

@@ -37,7 +37,7 @@ const allowedAssetExts = new Set([
 
 const textExts = new Set(['.md', '.xhtml', '.html', '.opf', '.css']);
 const imageMd = /!\[[^\]]*]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
-const htmlSrc = /\b(?:src|href)=["']([^"']+)["']/g;
+const htmlSrc = /<([A-Za-z][\w:-]*)\b[^>]*\b(src|href)=["']([^"']+)["']/g;
 const cssUrl = /url\(["']?([^"')]+)["']?\)/g;
 const opfItem = /<item\b[^>]*\bhref=["']([^"']+)["'][^>]*>/g;
 const absolutePath = /^(?:[A-Za-z]:[\\/]|\\\\|\/|file:\/\/)/;
@@ -81,7 +81,17 @@ function collectRefs(file, text) {
     }
   };
   addMatches(imageMd, 'markdown_image');
-  addMatches(htmlSrc, 'html_src_href');
+  htmlSrc.lastIndex = 0;
+  let htmlMatch;
+  while ((htmlMatch = htmlSrc.exec(text))) {
+    refs.push({
+      kind: 'html_src_href',
+      tag: htmlMatch[1].toLowerCase(),
+      attr: htmlMatch[2].toLowerCase(),
+      ref: htmlMatch[3],
+      index: htmlMatch.index,
+    });
+  }
   addMatches(cssUrl, 'css_url');
   return refs;
 }
@@ -133,7 +143,7 @@ for (const file of files) {
       issues.push({ file: relFile, line: lineAt(text, item.index), rule: 'absolute_asset_path', ref: item.ref });
       continue;
     }
-    if (remoteUrl.test(cleanRef)) {
+    if (remoteUrl.test(cleanRef) && !(item.kind === 'html_src_href' && item.tag === 'a' && item.attr === 'href')) {
       issues.push({ file: relFile, line: lineAt(text, item.index), rule: 'remote_asset_hotlink', ref: item.ref });
       continue;
     }

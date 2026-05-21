@@ -47,20 +47,28 @@ npm install
 Before building a final EPUB, run:
 
 ```powershell
+python scripts/check_template_workflow_gate.py --write-report
 node scripts/publication_lint.js --target={target-language} --write-report
 node scripts/asset_manifest_check.js --write-report
+python scripts/check_cover_output_assets.py --write-report
+python scripts/check_reader_facing_policy.py --write-report
 ```
 
 在构建最终 EPUB 前必须运行：
 
 ```powershell
+python scripts/check_template_workflow_gate.py --write-report
 node scripts/publication_lint.js --target={target-language} --write-report
 node scripts/asset_manifest_check.js --write-report
+python scripts/check_cover_output_assets.py --write-report
+python scripts/check_reader_facing_policy.py --write-report
 ```
 
-These checks are common because encoding damage, legacy print tables of contents, repeated spacing, missing image resources, unmanifested SVG/PNG/CSS files, and path portability problems can affect any language.
+These checks are common because template drift, unnumbered book paths, encoding damage, legacy print tables of contents, repeated spacing, missing image resources, missing output cover assets, reader-facing production notes, unmanifested SVG/PNG/CSS files, and path portability problems can affect any language.
 
-这些检查属于通用层，因为编码污染、旧纸书页码目录、连续空格、图片资源丢失、SVG/PNG/CSS 未登记到 OPF manifest、路径可移植性问题可能影响任何语言方向。
+这些检查属于通用层，因为模板漂移、未编号书籍路径、编码污染、旧纸书页码目录、连续空格、图片资源丢失、output 封面资产缺失、读者可见制作说明、SVG/PNG/CSS 未登记到 OPF manifest、路径可移植性问题可能影响任何语言方向。
+
+`check_reader_facing_policy.py` 会拦截进入读者版 EPUB 的生产痕迹，例如章节开头的 `译文说明` / `章节控制说明`、书籍信息页里的项目宣传语、制作日志、QA/prompt 记录，以及同一前置页内反复出现的版权/权利说明。
 
 ## Figures, Images, and Tables / 图表、图片与表格
 
@@ -141,20 +149,20 @@ See `references/stratified_random_spotcheck.md` and `prompts/16a_stratified_rand
 
 ## Versioned Release / 版本化发布
 
-`output/book.epub` is only the current build artifact. After random spot-check closure, the workflow must create a versioned release under `output/release/`:
+`output/book.epub` is only the current build artifact. After random spot-check closure, the workflow must create a versioned release under `output/release/`. Release scripts must run the template workflow gate and cover output asset gate first:
 
 ```powershell
 npm run release:create
 ```
 
-`PASS` release creation requires the latest random spot-check validation to come from `npm run review:random-validate:pass`; a structural-only validation or `DRAFT` release is not enough for `DONE`.
+`PASS` release creation requires the latest random spot-check validation to come from `npm run review:random-validate:pass`; a structural-only validation, missing output cover assets, or `DRAFT` release is not enough for `DONE`.
 
-`output/book.epub` 只是当前构建产物。随机抽检闭环通过后，流水线必须在 `output/release/` 下创建带版本号的发布产物：
+`output/book.epub` 只是当前构建产物。随机抽检闭环通过后，流水线必须在 `output/release/` 下创建带版本号的发布产物。发布脚本必须先运行模板流程门禁和封面 output 资产门禁：
 
 ```powershell
 npm run release:create
 ```
 
-正式 `PASS` release 要求最近一次随机抽检校验来自 `npm run review:random-validate:pass`；只做结构校验或只生成 `DRAFT` release，不能作为 `DONE` 依据。
+正式 `PASS` release 要求最近一次随机抽检校验来自 `npm run review:random-validate:pass`；只做结构校验、缺少 output 封面资产或只生成 `DRAFT` release，不能作为 `DONE` 依据。
 
-Release artifacts are named `book_vX.X.X.epub`, with `v0.0.1` as the default first version. Every release also needs `release_note_vX.X.X.md`, `release_state.json`, and `release_index.md`. See `references/release_versioning.md` and `prompts/18a_release_versioning.md`.
+Release artifacts are named with the target-language title plus version, for example `金属巨兽_v0.0.4.epub`, with `v0.0.1` as the default first version. Every release also needs the cumulative `release_notes.md`, `release_state.json`, and `release_index.md`. New release-note entries are inserted at the top of `release_notes.md`, like software changelogs. See `references/release_versioning.md` and `prompts/18a_release_versioning.md`.

@@ -48,12 +48,12 @@ output/release/
 
 必须包含：
 
-- `book_vX.X.X.epub`
-- `release_note_vX.X.X.md`
+- `{目标语言书名}_vX.X.X.epub`，例如 `金属巨兽_v0.0.4.epub`
+- `release_notes.md`
 - `release_state.json`
 - `release_index.md`
 
-`output/book.epub` 只是当前构建产物；`output/release/book_vX.X.X.epub` 才是可追踪发布产物。
+`output/book.epub` 只是当前构建产物；`output/release/{目标语言书名}_vX.X.X.epub` 才是可追踪发布产物。文件名必须使用目标语言书名，不得使用英文 slug 或通用 `book_` 前缀。
 
 ## 命令 / Commands
 
@@ -89,7 +89,7 @@ python scripts/create_release.py --status PASS --require-pass
 - 风险 / risks
 - 下一轮迭代 / next iteration
 
-如果是 `DRAFT`，release note 必须明确说明不能作为 `DONE` 依据。若是 `PASS`，release note 必须引用随机抽检轮次、`release_confidence >= 0.80`、EPUBCheck、publication lint 和所有关闭记录。
+Release note 必须写入累计文件 `output/release/release_notes.md`，每次发布把最新版本条目插入文件顶部，像软件更新日志一样保留历史。不得每次修改散落新建 `release_note_vX.X.X.md`。如果是 `DRAFT`，最新 release note 条目必须明确说明不能作为 `DONE` 依据。若是 `PASS`，最新 release note 条目必须引用随机抽检轮次、`release_confidence >= 0.80`、EPUBCheck、publication lint 和所有关闭记录。
 
 ## 硬门禁 / Hard Gates
 

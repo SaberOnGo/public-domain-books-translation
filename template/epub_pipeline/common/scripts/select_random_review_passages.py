@@ -9,12 +9,14 @@ import secrets
 import shutil
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from xml.etree import ElementTree as ET
 from urllib.parse import unquote
 
 
 DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
 STRATA = ("paragraph", "table", "figure", "formula", "caption_note")
 BLOCKING_PRIORITY_RE = re.compile(r"\bP[0-2]\b", flags=re.IGNORECASE)
+XHTML_NS = "{http://www.w3.org/1999/xhtml}"
 
 
 @dataclass(frozen=True)
@@ -62,6 +64,37 @@ def parse_args() -> argparse.Namespace:
 
 def normalize(text: str) -> str:
     return " ".join(text.replace("\r\n", "\n").split())
+
+
+def tag_name(element: ET.Element) -> str:
+    return element.tag.split("}", 1)[-1] if "}" in element.tag else element.tag
+
+
+def element_text(element: ET.Element) -> str:
+    return normalize("".join(element.itertext()))
+
+
+def html_fragment(element: ET.Element) -> str:
+    return normalize(ET.tostring(element, encoding="unicode", method="html"))
+
+
+def is_proof_like_text(text: str) -> bool:
+    cues = (
+        "所对直线",
+        "双倍弧",
+        "成比例",
+        "复合",
+        "矩形",
+        "平方",
+        "弦长",
+        "圆内",
+        "《几何原本》",
+        "由此",
+        "所以",
+        "比",
+        "约为",
+    )
+    return sum(1 for cue in cues if cue in text) >= 3
 
 
 def safe_id(text: str) -> str:
@@ -319,12 +352,118 @@ def units_from_file(book_root: Path, path: Path) -> list[AuditUnit]:
     return out
 
 
+def units_from_xhtml_file(book_root: Path, path: Path) -> list[AuditUnit]:
+    if path.name in {"nav.xhtml", "cover.xhtml"}:
+        return []
+    rel = path.relative_to(book_root).as_posix()
+    root = ET.parse(path).getroot()
+    body = root.find(f".//{XHTML_NS}body")
+    if body is None:
+        body = root.find(".//body")
+    if body is None:
+        return []
+
+    heading = ""
+    counters = {stratum: 0 for stratum in STRATA}
+    out: list[AuditUnit] = []
+    skip_tags = {"head", "script", "style"}
+
+    for element in body.iter():
+        name = tag_name(element)
+        if name in skip_tags:
+            continue
+        if name in {"h1", "h2", "h3", "h4", "h5", "h6"}:
+            heading = element_text(element)
+            continue
+        if name == "figure":
+            img = next((child for child in element.iter() if tag_name(child) == "img"), None)
+            caption = next((child for child in element.iter() if tag_name(child) == "figcaption"), None)
+            counters["figure"] += 1
+            out.append(
+                AuditUnit(
+                    id=unit_id(path, "figure", counters["figure"]),
+                    stratum="figure",
+                    file=rel,
+                    heading=heading,
+                    ordinal=counters["figure"],
+                    text=element_text(element),
+                    asset_path=img.attrib.get("src", "") if img is not None else "",
+                )
+            )
+            if caption is not None:
+                text = element_text(caption)
+                if text:
+                    counters["caption_note"] += 1
+                    out.append(
+                        AuditUnit(
+                            id=unit_id(path, "caption_note", counters["caption_note"]),
+                            stratum="caption_note",
+                            file=rel,
+                            heading=heading,
+                            ordinal=counters["caption_note"],
+                            text=text,
+                        )
+                    )
+            continue
+        if name == "table":
+            counters["table"] += 1
+            out.append(
+                AuditUnit(
+                    id=unit_id(path, "table", counters["table"]),
+                    stratum="table",
+                    file=rel,
+                    heading=heading,
+                    ordinal=counters["table"],
+                    text=html_fragment(element),
+                )
+            )
+            continue
+        if name == "li":
+            text = element_text(element)
+            if len(text) >= 20:
+                counters["caption_note"] += 1
+                out.append(
+                    AuditUnit(
+                        id=unit_id(path, "caption_note", counters["caption_note"]),
+                        stratum="caption_note",
+                        file=rel,
+                        heading=heading,
+                        ordinal=counters["caption_note"],
+                        text=text,
+                    )
+                )
+            continue
+        if name == "p":
+            text = element_text(element)
+            if len(text) < 40:
+                continue
+            stratum = "formula" if is_proof_like_text(text) else "paragraph"
+            counters[stratum] += 1
+            out.append(
+                AuditUnit(
+                    id=unit_id(path, stratum, counters[stratum]),
+                    stratum=stratum,
+                    file=rel,
+                    heading=heading,
+                    ordinal=counters[stratum],
+                    text=text,
+                )
+            )
+    return out
+
+
 def collect_units(book_root: Path, source_dir: Path) -> list[AuditUnit]:
     if not source_dir.exists():
         raise SystemExit(f"source directory does not exist: {source_dir}")
     units: list[AuditUnit] = []
-    for path in sorted(source_dir.rglob("*.md")):
-        units.extend(units_from_file(book_root, path))
+    for path in sorted(source_dir.rglob("*")):
+        if not path.is_file():
+            continue
+        suffix = path.suffix.lower()
+        if suffix == ".md":
+            units.extend(units_from_file(book_root, path))
+        elif suffix in {".xhtml", ".html"}:
+            units.extend(units_from_xhtml_file(book_root, path))
     return units
 
 

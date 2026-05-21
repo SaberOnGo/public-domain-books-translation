@@ -4,7 +4,6 @@ const { spawnSync } = require('child_process');
 
 const root = path.resolve(__dirname, '..');
 const javaRoot = path.join(root, 'tools', 'zulu17-jre');
-const sharedJavaRoot = path.join(root, '..', 'tools', 'zulu17-jre');
 const epub = path.join(root, 'output', 'book.epub');
 const report = path.join(root, 'output', 'epubcheck.json');
 
@@ -37,12 +36,23 @@ function firstExisting(paths) {
   return paths.find((item) => item && fs.existsSync(item)) || null;
 }
 
+function findSharedTool(start, relativePath) {
+  let dir = start;
+  while (true) {
+    const candidate = path.join(dir, relativePath);
+    if (fs.existsSync(candidate)) return candidate;
+    const parent = path.dirname(dir);
+    if (parent === dir) return null;
+    dir = parent;
+  }
+}
+
 const nodeModules = findSharedNodeModules(root);
 const jar = nodeModules
   ? path.join(nodeModules, 'epubchecker', 'vendors', 'epubcheck-5.2.1', 'epubcheck.jar')
   : null;
 
-const java = findJava(javaRoot) || findJava(sharedJavaRoot) || firstExisting([
+const java = findJava(javaRoot) || findJava(findSharedTool(root, path.join('tools', 'zulu17-jre'))) || firstExisting([
   process.env.JAVA_HOME && path.join(process.env.JAVA_HOME, 'bin', 'java.exe'),
 ]) || 'java';
 

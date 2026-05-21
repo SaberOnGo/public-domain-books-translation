@@ -130,6 +130,8 @@ Here, “book info” means reader-visible pages added by the translation projec
 - URL 可以保留可读文本，但要允许换行，不得撑破屏幕。
 - 信息页应在阅读器目录中可找到，但目录题名应短。
 - 不要在信息页中放过长宣传语、AI 生成说明、内部 QA 细节或工作流日志。
+- 可在书籍信息页页首保留一条很短的 LifeBook 入口，例如 `更多：访问 LifeBook`，链接文字内部嵌入 `https://yourlifebook.app`；不得直接显示长 URL，不得重复出现，不得压过书籍信息。
+- 底本分工、图表策略、表格校验、模型名称、prompt、QA 过程等制作细节不得塞入 `book-info.xhtml`；必要时放入 `translator-note.xhtml`、QA 记录或 release note。
 
 ## Metadata 同步 / Metadata Synchronization
 
@@ -200,6 +202,7 @@ Output:
 - “本书简介”是否只介绍作品本身，没有混入 EPUB 制作、译者署名、来源 URL 或版权复核提醒。
 - 是否仍有旧品牌名。
 - 页面是否过长、像 README 或像制作日志。
+- 是否只包含至多一条短 LifeBook 入口，且没有底本/图表策略、QA/prompt 或重复版权说明等读者前置页噪声。
 - 手机窄屏下 `h1`、`dl`、URL、段落是否可读。
 
 最终输出阶段必须检查：
@@ -219,5 +222,7 @@ Output:
 - 禁止书籍信息页缺少公版来源 URL 或公版说明。
 - 禁止把原书作者序言改写成本项目说明。
 - 禁止把制作日志、prompt、QA 过程或 AI 自述放进读者前置页。
+- 禁止把 `译文说明`、`章节控制说明` 等生产控制小节作为章节正文输出到读者版 EPUB。
+- 禁止在书籍信息页重复放置项目链接或多个版权/权利说明区块；允许至多一条短 LifeBook 入口，链接文字不得显示成长 URL。
 - 禁止封面、书籍信息页和 metadata 的品牌名、译者名不一致。
 - 禁止使用“LifeBook 翻译组”等旧名称。

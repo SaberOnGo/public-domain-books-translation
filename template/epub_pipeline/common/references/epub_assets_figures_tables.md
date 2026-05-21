@@ -50,6 +50,14 @@ Markdown source is acceptable as the authoring format, but EPUB content must be 
 
 读者可见表格必须优先生成 XHTML `<table>`，而不是图片。
 
+移动端优先原则：
+
+- 长表必须先分段，再输出多个较短的 XHTML 表格。
+- EPUB 正文表格应优先适配分页阅读器：`width: 100%`、`table-layout: fixed`、允许单元格换行。
+- 不要把 `width: max-content`、固定大 `min-width`、整表 `white-space: nowrap` 作为默认 EPUB 表格样式；这些样式在部分手机分页阅读器中会造成空白页或无法正常翻页。
+- 需要保留横向查看能力时，只能作为增强样式；不得牺牲手机分页、换页和基本可读性。
+- QA 状态、抽查状态、脚本状态等生产控制列不应进入读者正文表格，应保存在 `qa/technical/` 或 release 证据中。
+
 ```html
 <table id="tbl-i-11-chords">
   <caption>弦表节选</caption>

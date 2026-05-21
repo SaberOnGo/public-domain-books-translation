@@ -1,0 +1,17 @@
+{
+  "latest_version": "v0.0.4",
+  "current_version": "v0.0.4",
+  "main_version": 0,
+  "sub_version": 0,
+  "patch_version": 4,
+  "latest_status": "PASS",
+  "created": "2026-05-21T14:33:21Z",
+  "book_scope": "Book I.1-I.16 standalone EPUB only",
+  "release_epub": "output/release/天文学大成_第一卷_v0.0.4.epub",
+  "release_note": "output/release/release_notes.md",
+  "epubcheck": {
+    "status": "PASS",
+    "detail": "fatal=0, error=0, warning=0"
+  },
+  "publication_check_ok": true
+}
