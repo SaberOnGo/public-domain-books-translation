@@ -8,3 +8,6 @@
 
 # Local private docs should never be tracked.
 doc/private/
+
+# Book-specific screenshot/debug captures must stay under the matching book project.
+/almagest-*.png
