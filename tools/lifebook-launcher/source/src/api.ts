@@ -6,7 +6,9 @@ import {
   LauncherUpdateInfo,
   LauncherState,
   LifeBookUpdateInfo,
+  OpenCodeLocalStatus,
   OpenCodeUpdateInfo,
+  ProjectDocument,
 } from "./types";
 
 declare global {
@@ -47,13 +49,68 @@ export function getLauncherState() {
 
 export function chooseRepoFolder() {
   if (!isTauriRuntime()) {
-    return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode." });
+    return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode.", repoRoot: "D:\\LifeBook", requiresDownload: false });
   }
   return invoke<ActionResult>("choose_repo_folder");
 }
 
-export function checkLifeBookUpdates() {
+export function setRepoFolder(repoRoot: string) {
   if (!isTauriRuntime()) {
+    return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode.", repoRoot, requiresDownload: false });
+  }
+  return invoke<ActionResult>("set_repo_folder", { repoRoot });
+}
+
+export function checkLifeBookUpdates(locale = "en") {
+  if (!isTauriRuntime()) {
+    const commits = [
+      {
+        hash: "a1b2c3d",
+        date: "2025-05-25 10:15",
+        title: "新增书籍：《时间简史》全文初译",
+        summary: "添加《时间简史》第一版全文初译，包含第1-10章内容。",
+      },
+      {
+        hash: "d4e5f6a",
+        date: "2025-05-25 09:02",
+        title: "优化术语库匹配算法",
+        summary: "改进术语匹配逻辑，提高长句和复合句的识别准确率。",
+      },
+      {
+        hash: "b7c8d9e",
+        date: "2025-05-24 22:47",
+        title: "修复章节导出格式问题",
+        summary: "修复 Markdown 导出时标题层级丢失的问题。",
+      },
+      {
+        hash: "e0f1a2b",
+        date: "2025-05-24 18:33",
+        title: "更新贡献指南",
+        summary: "补充翻译规范说明，新增常见问题解答部分。",
+      },
+      {
+        hash: "c3d4e5f",
+        date: "2025-05-24 16:11",
+        title: "新增西班牙语翻译支持",
+        summary: "添加西班牙语语言包与基础术语库支持。",
+      },
+      {
+        hash: "f6a7b8c",
+        date: "2025-05-24 12:05",
+        title: "改进 Web 编辑器体验",
+        summary: "优化段落导航与快捷键提示，提升编辑效率。",
+      },
+      {
+        hash: "9d8c7bb",
+        date: "2025-05-23 23:19",
+        title: "修复图片引用路径问题",
+        summary: "修复部分书籍中图片相对路径失效的问题。",
+      },
+    ].map((commit) => ({
+      ...commit,
+      fullMessage: `${commit.title}\n\nZH:\n- ${commit.summary}\n\nEN:\n- Preview English summary for ${commit.hash}.\n\nJA:\n- ${commit.hash} のプレビュー概要。`,
+    }));
+
     return Promise.resolve<LifeBookUpdateInfo>({
       repoRoot: "LifeBook-PublicDomain-Translator",
       currentCommit: "preview",
@@ -61,60 +118,24 @@ export function checkLifeBookUpdates() {
       behindCount: 7,
       aheadCount: 0,
       hasUpdate: true,
-      commits: [
-        {
-          hash: "a1b2c3d",
-          date: "2025-05-25 10:15",
-          title: "新增书籍：《时间简史》全文初译",
-          summary: "添加《时间简史》第一版全文初译，包含第1-10章内容。",
-        },
-        {
-          hash: "d4e5f6a",
-          date: "2025-05-25 09:02",
-          title: "优化术语库匹配算法",
-          summary: "改进术语匹配逻辑，提高长句和复合句的识别准确率。",
-        },
-        {
-          hash: "b7c8d9e",
-          date: "2025-05-24 22:47",
-          title: "修复章节导出格式问题",
-          summary: "修复 Markdown 导出时标题层级丢失的问题。",
-        },
-        {
-          hash: "e0f1a2b",
-          date: "2025-05-24 18:33",
-          title: "更新贡献指南",
-          summary: "补充翻译规范说明，新增常见问题解答部分。",
-        },
-        {
-          hash: "c3d4e5f",
-          date: "2025-05-24 16:11",
-          title: "新增西班牙语翻译支持",
-          summary: "添加西班牙语语言包与基础术语库支持。",
-        },
-        {
-          hash: "f6a7b8c",
-          date: "2025-05-24 12:05",
-          title: "改进 Web 编辑器体验",
-          summary: "优化段落导航与快捷键提示，提升编辑效率。",
-        },
-        {
-          hash: "9d8c7bb",
-          date: "2025-05-23 23:19",
-          title: "修复图片引用路径问题",
-          summary: "修复部分书籍中图片相对路径失效的问题。",
-        },
-      ],
+      commits,
     });
   }
-  return invoke<LifeBookUpdateInfo>("check_lifebook_updates");
+  return invoke<LifeBookUpdateInfo>("check_lifebook_updates", { locale });
 }
 
-export function prepareLifeBookProject() {
+export function prepareLifeBookProject(locale = "en") {
   if (!isTauriRuntime()) {
-    return checkLifeBookUpdates();
+    return checkLifeBookUpdates(locale);
   }
-  return invoke<LifeBookUpdateInfo>("prepare_lifebook_project");
+  return invoke<LifeBookUpdateInfo>("prepare_lifebook_project", { locale });
+}
+
+export function syncLifeBookProject(locale = "en") {
+  if (!isTauriRuntime()) {
+    return checkLifeBookUpdates(locale);
+  }
+  return invoke<LifeBookUpdateInfo>("sync_lifebook_project", { locale });
 }
 
 export function updateLifeBook() {
@@ -122,6 +143,49 @@ export function updateLifeBook() {
     return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode." });
   }
   return invoke<ActionResult>("update_lifebook");
+}
+
+export function readProjectDocument(kind: "readme" | "howto", locale: string) {
+  if (!isTauriRuntime()) {
+    const content = kind === "readme"
+      ? `# LifeBook 书坊公版书翻译项目
+
+<table align="center">
+  <tr>
+    <td align="center"><h3><a href="./README.zh-CN.md">简体中文</a></h3></td>
+    <td align="center"><h3><a href="./doc/public/how-to-use-prompts.zh-CN.md">How to use</a></h3></td>
+  </tr>
+</table>
+
+LifeBook 书坊是一个多语言公版书翻译与 EPUB 制作流程。
+
+## 快速开始
+
+- 打开 [How to use](./doc/public/how-to-use-prompts.zh-CN.md)
+- 查看 \`template/epub_pipeline\`
+`
+      : `# How to use
+
+## 选择客户端
+
+- 使用 LifeBook Launcher 安装 OpenCode Desktop。
+- 阅读 [README](./README.zh-CN.md)。
+`;
+    return Promise.resolve<ProjectDocument>({
+      kind,
+      path: `preview/${kind}.md`,
+      title: kind === "readme" ? "README" : "How to use",
+      content,
+    });
+  }
+  return invoke<ProjectDocument>("read_project_document", { kind, locale });
+}
+
+export function readProjectDocumentPath(relativePath: string, locale: string) {
+  if (!isTauriRuntime()) {
+    return readProjectDocument(relativePath.toLowerCase().includes("how-to-use") ? "howto" : "readme", locale);
+  }
+  return invoke<ProjectDocument>("read_project_document_path", { relativePath, locale });
 }
 
 export function checkLauncherUpdates() {
@@ -134,6 +198,9 @@ export function checkLauncherUpdates() {
       assetSize: 2717961,
       assetUrl: "https://github.com/SaberOnGo/public-domain-books-translation/releases/latest",
       installRoot: "LifeBook/launcher/updates",
+      installerPath: null,
+      installerDownloaded: false,
+      partialDownloadedBytes: 0,
     });
   }
   return invoke<LauncherUpdateInfo>("check_launcher_updates");
@@ -173,9 +240,24 @@ export function checkOpenCodeUpdates() {
       installRoot: "LifeBook/tools/opencode-desktop",
       clientPath: "C:\\Users\\preview\\AppData\\Local\\Programs\\OpenCode\\OpenCode.exe",
       clientAvailable: true,
+      installerPath: "LifeBook/tools/opencode-desktop/downloads/opencode-desktop-win-x64.exe",
+      installerDownloaded: true,
+      partialDownloadedBytes: 0,
     });
   }
   return invoke<OpenCodeUpdateInfo>("check_opencode_updates");
+}
+
+export function checkOpenCodeLocalStatus() {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<OpenCodeLocalStatus>({
+      installedVersion: "v1.2.3",
+      installRoot: "LifeBook/tools/opencode-desktop",
+      clientPath: "C:\\Users\\preview\\AppData\\Local\\Programs\\OpenCode\\OpenCode.exe",
+      clientAvailable: true,
+    });
+  }
+  return invoke<OpenCodeLocalStatus>("check_opencode_local_status");
 }
 
 export function downloadAndOpenOpenCode() {
@@ -183,6 +265,13 @@ export function downloadAndOpenOpenCode() {
     return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode." });
   }
   return invoke<ActionResult>("download_and_open_opencode");
+}
+
+export function cancelOpenCodeDownload() {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode." });
+  }
+  return invoke<ActionResult>("cancel_opencode_download");
 }
 
 export function launchOpenCodeClient() {

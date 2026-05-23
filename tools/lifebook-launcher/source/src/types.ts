@@ -20,6 +20,7 @@ export type CommitInfo = {
   date: string;
   title: string;
   summary: string;
+  fullMessage: string;
 };
 
 export type LifeBookUpdateInfo = {
@@ -42,6 +43,16 @@ export type OpenCodeUpdateInfo = {
   installRoot: string;
   clientPath?: string | null;
   clientAvailable: boolean;
+  installerPath?: string | null;
+  installerDownloaded: boolean;
+  partialDownloadedBytes: number;
+};
+
+export type OpenCodeLocalStatus = {
+  installedVersion?: string | null;
+  installRoot: string;
+  clientPath?: string | null;
+  clientAvailable: boolean;
 };
 
 export type LauncherUpdateInfo = {
@@ -52,11 +63,23 @@ export type LauncherUpdateInfo = {
   assetSize: number;
   assetUrl: string;
   installRoot: string;
+  installerPath?: string | null;
+  installerDownloaded: boolean;
+  partialDownloadedBytes: number;
 };
 
 export type ActionResult = {
   ok: boolean;
   message: string;
+  repoRoot?: string | null;
+  requiresDownload?: boolean | null;
+};
+
+export type ProjectDocument = {
+  kind: string;
+  path: string;
+  title: string;
+  content: string;
 };
 
 export type DownloadProgress = {
@@ -68,8 +91,6 @@ export type DownloadProgress = {
 export type LauncherSettings = {
   autoStart: boolean;
   checkLauncherOnLaunch: boolean;
-  autoInstallLauncherUpdates: boolean;
-  autoUpdateLifeBook: boolean;
   checkOpenCodeOnLaunch: boolean;
 };
 

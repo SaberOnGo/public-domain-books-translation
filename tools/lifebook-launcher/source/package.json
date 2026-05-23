@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 1420",
     "build": "tsc && vite build",
+    "clean:cache": "node scripts/clean-build-cache.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 1420",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
