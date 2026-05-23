@@ -33,7 +33,7 @@
 ## 你需要知道的关键位置
 
 - `.\template\epub_pipeline`：查看当前有哪些源语言/语言方向模板。AI 会据此判断该用已有模板 prompt，还是新建语言模板 prompt。
-- `.\tools\ai-client-launcher\opencode`：OpenCode 客户端下载和启动目录。用户需要知道这个位置，方便确认 Launcher 把 OpenCode 放在哪里、从哪里启动客户端。
+- `.\tools\lifebook-launcher`：LifeBook Launcher 客户端安装启动目录。用户需要知道这个位置，以使用 LifeBook 项目和安装 OpenCode。
 - `.\doc\public\user_prompt`：公共 prompt 放在这里。想了解提示词细节，或想手动修改 prompt 时，看这个目录。
 - `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
 

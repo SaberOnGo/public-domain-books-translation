@@ -51,7 +51,7 @@ Launcher 不會保存 API Key，也不會把 OpenCode 本體放進本倉庫。�
 ## 使用者需要知道的重要目錄
 
 - `.\template\epub_pipeline`：查看目前有哪些源語言/語言方向模板。`en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans` 等目錄都在這裡。
-- `.\tools\ai-client-launcher\opencode`：OpenCode 用戶端下載和啟動目錄。使用者需要知道這個位置，方便確認 Launcher 把 OpenCode 放在哪裡、從哪裡啟動用戶端。
+- `.\tools\lifebook-launcher`：LifeBook Launcher 用戶端安裝啟動目錄。使用者需要知道這個位置，以使用 LifeBook 專案和安裝 OpenCode。
 - `.\doc\public\user_prompt`：公共啟動 prompt 目錄。若想了解 prompt 細節，或手動調整給 AI 的 prompt，可以看這裡。
 - `.\books\zh-Hans`：最重要的成書目錄。翻譯成簡體中文成功後，到對應書籍目錄裡找 `output\release\`；只有 release 目錄裡的成品才算可發布結果。
 

@@ -51,7 +51,7 @@ Launcher 不会保存 API Key，也不会把 OpenCode 本体放进本仓库。�
 ## 用户需要知道的重要目录
 
 - `.\template\epub_pipeline`：查看当前有哪些源语言/语言方向模板。`en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans` 等目录都在这里。
-- `.\tools\ai-client-launcher\opencode`：OpenCode 客户端下载和启动目录。用户需要知道这个位置，方便确认 Launcher 把 OpenCode 放在哪里、从哪里启动客户端。
+- `.\tools\lifebook-launcher`：LifeBook Launcher 客户端安装启动目录。用户需要知道这个位置，以使用 LifeBook 项目和安装 OpenCode。
 - `.\doc\public\user_prompt`：公共启动提示词目录。用户想了解提示词细节，或想手动调整给 AI 的 prompt，可以看这里。
 - `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
 

@@ -51,7 +51,7 @@ Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリ�
 ## ユーザーが知っておくべき重要フォルダ
 
 - `.\template\epub_pipeline`：現在どの原言語・言語方向テンプレートがあるか確認する場所です。`en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans` などがあります。
-- `.\tools\ai-client-launcher\opencode`：OpenCode クライアントのダウンロード先・起動用フォルダです。Launcher が OpenCode をどこに置き、どこから起動するか確認できます。
+- `.\tools\lifebook-launcher`：LifeBook Launcher クライアントのインストール・起動フォルダです。LifeBook プロジェクトを使い、OpenCode をインストールするためにユーザーが知っておくべき場所です。
 - `.\doc\public\user_prompt`：公開スターター prompt の場所です。AI に渡す prompt の詳細を確認したり、手動で調整したりできます。
 - `.\books\zh-Hans`：もっとも重要な完成本の場所です。簡体字中国語への翻訳が完了したら、該当する書籍フォルダの `output\release\` を確認します。公開可能なのは release 成果物です。
 

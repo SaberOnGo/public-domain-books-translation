@@ -33,7 +33,7 @@ Do not ask me to fill technical fields unless rights or source evidence cannot b
 ## Key Places To Know
 
 - `.\template\epub_pipeline`: check which source-language and source-to-target templates currently exist. The AI uses this to decide whether to run the existing-template prompt or the new-template prompt.
-- `.\tools\ai-client-launcher\opencode`: OpenCode client download and launch folder. Users need this path to know where the Launcher places OpenCode and where to start the client.
+- `.\tools\lifebook-launcher`: LifeBook Launcher client install and launch folder. Users need this path to use the LifeBook project and install OpenCode.
 - `.\doc\public\user_prompt`: the public prompts live here. Read or edit these if you want to understand or manually adjust the prompt.
 - `.\books\zh-Hans`: the most important output area for Simplified Chinese books. After translation succeeds, open the matching book folder and check `output\release\`; only release artifacts count as publishable results.
 

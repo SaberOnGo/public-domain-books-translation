@@ -33,7 +33,7 @@
 ## 知っておくべき重要な場所
 
 - `.\template\epub_pipeline`：現在どの原言語・言語方向テンプレートがあるか確認する場所です。AI はここを見て、既存テンプレート prompt か新規テンプレート prompt かを判断します。
-- `.\tools\ai-client-launcher\opencode`：OpenCode クライアントのダウンロード先・起動用フォルダです。Launcher が OpenCode をどこに置き、どこから起動するか確認できます。
+- `.\tools\lifebook-launcher`：LifeBook Launcher クライアントのインストール・起動フォルダです。LifeBook プロジェクトを使い、OpenCode をインストールするためにユーザーが知っておくべき場所です。
 - `.\doc\public\user_prompt`：公開 prompt はここにあります。prompt の詳細を確認したり、手動で調整したりできます。
 - `.\books\zh-Hans`：もっとも重要な完成本の場所です。簡体字中国語への翻訳が完了したら、該当する書籍フォルダの `output\release\` を確認します。公開可能なのは release 成果物です。
 
