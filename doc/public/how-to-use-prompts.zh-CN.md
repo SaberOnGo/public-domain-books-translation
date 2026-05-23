@@ -48,15 +48,17 @@
 | 客户端 | 适合谁 | 怎么用本仓库 prompt |
 | --- | --- | --- |
 | Codex App | 想要图形界面、文件 diff、终端、浏览器都集成的人 | 打开仓库，新建 thread，粘贴 `/goal`，让它读模板并执行 |
+| Claude Code | 熟悉终端、想用命令行 Agent 的人 | 在仓库中启动 Claude Code，粘贴目标 prompt |
 | LifeBook Launcher | 想要最少手动步骤的人 | 打开 Launcher，选择翻译书籍任务，粘贴两行输入 |
 | Google Antigravity | 想在 AI IDE 里让 agent 计划、改文件、跑命令的人 | 打开仓库 workspace，在 agent 输入框粘贴目标 prompt |
 
 ## LifeBook Launcher
 
-如果你不想手动处理项目和客户端，可以使用 LifeBook Launcher。
+如果你不想手动处理项目和客户端，可以使用 LifeBook Launcher。Launcher 可以下载并打开 OpenCode 客户端；OpenCode 支持市面上大多数 AI 模型，例如 DeepSeek、豆包等。使用前需要在 OpenCode 里配置对应模型的 API Key。
 
 - 打开 **LifeBook Launcher**。
 - 选择或打开本项目。
+- 按需要下载或打开 OpenCode 客户端，并在 OpenCode 中配置 API Key。
 - 粘贴“我要翻译的书”和“目标语言”两行输入。
 - 等 AI 完成后，检查书籍目录里的 `output/release/`。
 

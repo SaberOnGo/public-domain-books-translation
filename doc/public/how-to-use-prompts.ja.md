@@ -48,15 +48,17 @@
 | クライアント | 向いている人 | prompt の使い方 |
 | --- | --- | --- |
 | Codex App | GUI、diff、terminal、browser、Git review をまとめて使いたい人 | リポジトリを開き、新しい thread に `/goal` を貼る |
+| Claude Code | ターミナルでコマンドライン Agent を使いたい人 | リポジトリで Claude Code を起動し、prompt を貼る |
 | LifeBook Launcher | 手作業をできるだけ減らしたい人 | Launcher を開き、書籍翻訳タスクを選び、2 行の入力を貼る |
 | Google Antigravity | AI IDE で agent に計画、編集、実行を任せたい人 | workspace を開き、agent 入力欄に prompt を貼る |
 
 ## LifeBook Launcher
 
-プロジェクトやクライアント設定を手作業で扱いたくない場合は、LifeBook Launcher を使えます。
+プロジェクトやクライアント設定を手作業で扱いたくない場合は、LifeBook Launcher を使えます。Launcher は OpenCode クライアントをダウンロードして開けます。OpenCode は DeepSeek、豆包など、市場の多くの AI モデルに対応しています。使用前に OpenCode 内で対象モデルの API Key を設定してください。
 
 - **LifeBook Launcher** を開きます。
 - このプロジェクトを選ぶ、または開きます。
+- 必要に応じて OpenCode クライアントをダウンロードまたは開き、OpenCode で API Key を設定します。
 - 「翻訳したい本」と「対象言語」の 2 行を貼り付けます。
 - AI が完了したら、書籍フォルダの `output/release/` を確認します。
 

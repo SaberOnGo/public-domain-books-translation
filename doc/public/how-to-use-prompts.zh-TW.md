@@ -48,15 +48,17 @@
 | 用戶端 | 適合誰 | 怎麼用本倉庫 prompt |
 | --- | --- | --- |
 | Codex App | 想要圖形介面、diff、終端、瀏覽器整合的人 | 打開倉庫，新建 thread，貼上 `/goal` |
+| Claude Code | 熟悉終端、想用命令列 Agent 的人 | 在倉庫中啟動 Claude Code，貼上目標 prompt |
 | LifeBook Launcher | 想要最少手動步驟的人 | 打開 Launcher，選擇翻譯書籍任務，貼上兩行輸入 |
 | Google Antigravity | 想在 AI IDE 裡讓 agent 計畫、改檔、跑命令的人 | 打開 workspace，在 agent 輸入框貼上 prompt |
 
 ## LifeBook Launcher
 
-如果不想手動處理專案和用戶端，可以使用 LifeBook Launcher。
+如果不想手動處理專案和用戶端，可以使用 LifeBook Launcher。Launcher 可以下載並打開 OpenCode 用戶端；OpenCode 支援市面上大多數 AI 模型，例如 DeepSeek、豆包等。使用前需要在 OpenCode 裡配置對應模型的 API Key。
 
 - 打開 **LifeBook Launcher**。
 - 選擇或打開本專案。
+- 按需要下載或打開 OpenCode 用戶端，並在 OpenCode 中配置 API Key。
 - 貼上「我要翻譯的書」和「目標語言」兩行輸入。
 - 等 AI 完成後，檢查書籍目錄裡的 `output/release/`。
 

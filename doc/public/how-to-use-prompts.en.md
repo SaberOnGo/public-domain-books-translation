@@ -48,15 +48,17 @@ If you are unsure which one applies, ask the AI to check whether the template ex
 | Client | Good for | How to use the prompt |
 | --- | --- | --- |
 | Codex App | Desktop UI, diffs, terminal, browser, Git review | Open the repo, create a thread, paste the `/goal` |
+| Claude Code | Terminal users who want a command-line agent | Start Claude Code in the repository and paste the prompt |
 | LifeBook Launcher | Fewest manual steps | Open Launcher, choose the book-translation task, paste the two-line input |
 | Google Antigravity | AI IDE with agent workflows | Open the repo workspace and paste the prompt into the agent box |
 
 ## LifeBook Launcher
 
-If you do not want to handle project and client setup manually, use LifeBook Launcher.
+If you do not want to handle project and client setup manually, use LifeBook Launcher. Launcher can download and open the OpenCode client. OpenCode supports most mainstream AI models, including DeepSeek and Doubao. Before use, configure the model provider API key inside OpenCode.
 
 - Open **LifeBook Launcher**.
 - Select or open this project.
+- Download or open the OpenCode client if needed, then configure the API key in OpenCode.
 - Paste the two-line input: book to translate and target language.
 - After the AI finishes, check the book folder's `output/release/`.
 
