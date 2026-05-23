@@ -30,6 +30,25 @@ Automatically choose the correct translation prompt:
 Do not ask me to fill technical fields unless rights or source evidence cannot be confirmed. Automatically find a reliable public-domain source, create the book project, complete translation, review, EPUB build, stratified random spot-check, and release.
 ```
 
+## Refinement Review Prompt (Optional)
+
+After the first EPUB has been generated, use this prompt if you want a stricter refinement pass. `N` means the number of consecutive clean rounds required before exit: `1` saves tokens, `3` is stricter and usually produces a higher-quality edition; use `2` if unsure.
+
+```text
+Book project: {book project path, for example books/{target}/{number}_{slug}}
+Consecutive clean exit rounds N: {1/2/3; default 2}
+
+First read AGENTS.md, this book's SKILL.md if present, template/epub_pipeline/README.md, template/epub_pipeline/common/README.md, and the relevant rules for cover, book-info/frontmatter, assets, quality gates, stratified random spot-check, and release.
+
+Set a /goal: refine the already generated EPUB. Strictly follow the templates and check the cover, first pages/frontmatter, metadata, nav, table of contents, body text, notes, figures, formulas, tables, images, styles, reader-facing content, EPUB build, and release. Do not limit the review to only the items I named.
+
+Start 2 independent review agents for stratified random spot-checking. Run at least 4 rounds. Use a new seed each round, and save samples, evidence, reviews, fixes, and closure records exactly as the template requires. If any round finds P0/P1/P2, any item score <70, reader-incomprehensible text, factual/terminology/figure/formula errors, or a hard template-gate failure, fix the issue and add another new round.
+
+Exit condition: the most recent N consecutive rounds have no new blocking issues, and npm run review:random-validate:pass passes. N=1 is the lowest, token-saving strictness; N=3 is stricter and aims for a higher-quality reviewed edition. The user may choose the value.
+
+After passing, clean or rebuild staging, regenerate the EPUB, and run publication lint, asset manifest, cover output, reader-facing policy, EPUBCheck, and release scripts. The publishable EPUB must be written under this book's output/release/, and release_state.json.latest_status must be PASS. Report the release EPUB path, spot-check rounds, fix summary, validation command results, and remaining risks.
+```
+
 ## Key Places To Know
 
 - `.\template\epub_pipeline`: check which source-language and source-to-target templates currently exist. The AI uses this to decide whether to run the existing-template prompt or the new-template prompt.

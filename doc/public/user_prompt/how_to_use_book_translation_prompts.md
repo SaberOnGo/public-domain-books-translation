@@ -97,6 +97,25 @@
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
 ```
 
+## EPUB 后精修审校 prompt（可选）
+
+第一版 EPUB 已经生成后，如果用户想提高译本质量，可以再给 AI 这一段。`N` 是“连续无问题轮数”：`1` 最省 token，`3` 更严格，质量要求更高；不确定时填 `2`。
+
+```text
+本书项目：{书籍项目路径，例如 books/{target}/{number}_{slug}}
+连续无问题退出轮数 N：{1/2/3；默认 2}
+
+请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md，以及封面、book-info/frontmatter、图表资产、质量门禁、分层随机抽检、release 相关规则。
+
+请设置 /goal：对已生成 EPUB 做精修审校，严格按模板要求检查封面、首页/前置页、metadata、nav、目录、正文、注释、图表、公式、表格、图片、样式、读者可见内容、EPUB 构建与 release。不得只检查我点名的项目。
+
+启动 2 个独立评审 agent 做分层随机抽检。至少执行 4 轮；每轮使用新 seed，并按模板保存样本、证据、评审、修复和闭环记录。若任何轮发现 P0/P1/P2、单项 <70、读者不可理解、事实/术语/图表/公式错误或模板硬门禁失败，修复后必须追加新一轮。
+
+退出条件：最近连续 N 轮均无新增阻塞问题，且 npm run review:random-validate:pass 通过。N=1 为最低强度，较省 token；N=3 更严格，审校后译本质量更高，用户可自行调整。
+
+通过后清理或重建 staging，重新生成 EPUB，运行 publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck 和 release 脚本。最终可发布 EPUB 必须输出到该书 output/release/，release_state.json.latest_status 必须为 PASS。报告 release EPUB 路径、抽检轮次、修复摘要、验证命令结果和剩余风险。
+```
+
 ## AI Agent 必须交付什么
 
 任务完成时，AI 至少要报告：

@@ -30,6 +30,25 @@
 権利または出典証拠を確認できない場合を除き、技術項目を私に入力させないでください。信頼できるパブリックドメイン原文を自動で探し、書籍プロジェクトを作成し、翻訳、レビュー、EPUB ビルド、層化ランダム抜き取り検査、release まで完了してください。
 ```
 
+## 精密レビュー prompt（任意）
+
+最初の EPUB が生成されたあと、訳文の品質をさらに高めたい場合は次の prompt を使います。`N` は「問題なしの連続 round 数」です。`1` は token を節約する最低強度、`3` はより厳格で高品質を狙う設定です。迷う場合は `2` にします。
+
+```text
+書籍プロジェクト：{書籍プロジェクトのパス。例：books/{target}/{number}_{slug}}
+終了に必要な問題なし連続 round 数 N：{1/2/3。既定は 2}
+
+まず AGENTS.md、この書籍の SKILL.md（あれば）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md、および cover、book-info/frontmatter、assets、quality gates、stratified random spot-check、release に関する規則を読んでください。
+
+/goal を設定してください：生成済み EPUB を精密レビューし、テンプレート要件に従って cover、最初のページ/frontmatter、metadata、nav、目次、本文、注、図、数式、表、画像、style、読者に見える内容、EPUB build、release を確認してください。私が明示した項目だけに限定しないでください。
+
+2 つの独立 review agent を起動し、層化ランダム抜き取り検査を行ってください。最低 4 round 実行します。各 round で新しい seed を使い、samples、evidence、reviews、fixes、closure records をテンプレートどおり保存してください。いずれかの round で P0/P1/P2、単項目 <70、読者が理解できない箇所、事実/用語/図表/数式の誤り、またはテンプレートの hard gate failure が見つかった場合は、修正後に新しい round を追加してください。
+
+終了条件：直近 N round 連続で新しい blocking issue がなく、npm run review:random-validate:pass が通ること。N=1 は token 節約向けの最低強度、N=3 はより厳格で、レビュー後の訳本品質を高める設定です。ユーザーが自由に選べます。
+
+通過後は staging を清掃または再構築し、EPUB を再生成し、publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck、release script を実行してください。公開可能な EPUB は必ずこの書籍の output/release/ に出力し、release_state.json.latest_status は PASS にしてください。release EPUB path、抜き取り検査 round、修正概要、検証コマンド結果、残りリスクを報告してください。
+```
+
 ## 知っておくべき重要な場所
 
 - `.\template\epub_pipeline`：現在どの原言語・言語方向テンプレートがあるか確認する場所です。AI はここを見て、既存テンプレート prompt か新規テンプレート prompt かを判断します。
