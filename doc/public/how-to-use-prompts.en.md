@@ -49,7 +49,7 @@ If you are unsure which one applies, ask the AI to check whether the template ex
 | --- | --- | --- |
 | Codex App | Desktop UI, diffs, terminal, browser, Git review | Open the repo, create a thread, paste the `/goal` |
 | Claude Code | Terminal users who want a command-line agent | Start Claude Code in the repository and paste the prompt |
-| LifeBook Launcher | Fewest manual steps | Open Launcher, choose the book-translation task, paste the two-line input |
+| LifeBook Launcher | Fewest manual steps; requires OpenCode client support | Open Launcher and install OpenCode. OpenCode supports most mainstream models, such as DeepSeek and Doubao. Choose the book-translation task in OpenCode and paste the two-line input |
 | Google Antigravity | AI IDE with agent workflows | Open the repo workspace and paste the prompt into the agent box |
 
 ## LifeBook Launcher

@@ -49,7 +49,7 @@
 | --- | --- | --- |
 | Codex App | 想要图形界面、文件 diff、终端、浏览器都集成的人 | 打开仓库，新建 thread，粘贴 `/goal`，让它读模板并执行 |
 | Claude Code | 熟悉终端、想用命令行 Agent 的人 | 在仓库中启动 Claude Code，粘贴目标 prompt |
-| LifeBook Launcher | 想要最少手动步骤的人 | 打开 Launcher，选择翻译书籍任务，粘贴两行输入 |
+| LifeBook Launcher | 想要最少手动步骤的人，需安装 OpenCode 客户端支持 | 打开 Launcher，安装 OpenCode；OpenCode 支持市面大多数模型（如 DeepSeek、豆包等）；在 OpenCode 里选择翻译书籍任务，粘贴两行输入 |
 | Google Antigravity | 想在 AI IDE 里让 agent 计划、改文件、跑命令的人 | 打开仓库 workspace，在 agent 输入框粘贴目标 prompt |
 
 ## LifeBook Launcher

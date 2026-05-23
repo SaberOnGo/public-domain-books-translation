@@ -49,7 +49,7 @@
 | --- | --- | --- |
 | Codex App | GUI、diff、terminal、browser、Git review をまとめて使いたい人 | リポジトリを開き、新しい thread に `/goal` を貼る |
 | Claude Code | ターミナルでコマンドライン Agent を使いたい人 | リポジトリで Claude Code を起動し、prompt を貼る |
-| LifeBook Launcher | 手作業をできるだけ減らしたい人 | Launcher を開き、書籍翻訳タスクを選び、2 行の入力を貼る |
+| LifeBook Launcher | 手作業をできるだけ減らしたい人。OpenCode クライアントのインストールが必要 | Launcher を開いて OpenCode をインストールします。OpenCode は DeepSeek、豆包など多くの主要モデルに対応しています。OpenCode で書籍翻訳タスクを選び、2 行の入力を貼ります |
 | Google Antigravity | AI IDE で agent に計画、編集、実行を任せたい人 | workspace を開き、agent 入力欄に prompt を貼る |
 
 ## LifeBook Launcher

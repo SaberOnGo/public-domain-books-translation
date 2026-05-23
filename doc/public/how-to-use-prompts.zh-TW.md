@@ -49,7 +49,7 @@
 | --- | --- | --- |
 | Codex App | 想要圖形介面、diff、終端、瀏覽器整合的人 | 打開倉庫，新建 thread，貼上 `/goal` |
 | Claude Code | 熟悉終端、想用命令列 Agent 的人 | 在倉庫中啟動 Claude Code，貼上目標 prompt |
-| LifeBook Launcher | 想要最少手動步驟的人 | 打開 Launcher，選擇翻譯書籍任務，貼上兩行輸入 |
+| LifeBook Launcher | 想要最少手動步驟的人，需安裝 OpenCode 用戶端支援 | 打開 Launcher，安裝 OpenCode；OpenCode 支援市面大多數模型（如 DeepSeek、豆包等）；在 OpenCode 裡選擇翻譯書籍任務，貼上兩行輸入 |
 | Google Antigravity | 想在 AI IDE 裡讓 agent 計畫、改檔、跑命令的人 | 打開 workspace，在 agent 輸入框貼上 prompt |
 
 ## LifeBook Launcher
