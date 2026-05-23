@@ -25,13 +25,14 @@ LifeBook 書坊は、パブリックドメイン書籍を多言語で翻訳し�
 AI クライアントに渡す最小 prompt：
 
 ```text
-翻訳したい本：{書名、作者。信頼できる原文 URL があれば貼る}
+翻訳したい本：{書名、作者（任意）。信頼できる原文 URL があれば貼る}
 対象言語：{例：日本語、英語、スペイン語、簡体字中国語}
 
-まず AGENTS.md を読み、その後 template/epub_pipeline の関連ルールを読んでください。
-books/scripts/create_book_project.py で書籍プロジェクトを作成してください。
-本固有の原文、翻訳、QA、EPUB 出力、metadata を template/ に書かないでください。
-出典証拠またはパブリックドメイン状態が不明な場合は停止してください。
+正しい翻訳 prompt を自動的に選んでください。
+- 対応する原言語テンプレートがすでにある場合は、doc/public/user_prompt/book_translation_existing_template.md を実行してください。
+- 対応する原言語テンプレートがまだない場合は、doc/public/user_prompt/book_translation_new_template.md を実行してください。
+
+権利または出典証拠を確認できない場合を除き、技術項目を私に入力させないでください。信頼できるパブリックドメイン原文を自動で探し、書籍プロジェクトを作成し、翻訳、レビュー、EPUB ビルド、層化ランダム抜き取り検査、release まで完了してください。
 ```
 
 ## AI クライアント
@@ -50,9 +51,9 @@ Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリ�
 ## ユーザーが知っておくべき重要フォルダ
 
 - `.\template\epub_pipeline`：現在どの原言語・言語方向テンプレートがあるか確認する場所です。`en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans` などがあります。
-- `.\tools\lifebook-launcher`：LifeBook Launcher の入口フォルダです。Windows ユーザーは中の `LifeBook Launcher Setup.exe` をダブルクリックします。
+- `.\tools\ai-client-launcher\opencode`：OpenCode クライアントのダウンロード先・起動用フォルダです。Launcher が OpenCode をどこに置き、どこから起動するか確認できます。
 - `.\doc\public\user_prompt`：公開スターター prompt の場所です。AI に渡す prompt の詳細を確認したり、手動で調整したりできます。
-- `.\books\zh-Hans`：簡体字中国語の書籍プロジェクトと出力先です。翻訳が完了したら、該当する書籍フォルダの `output\book.epub` と `output\release\` を確認します。
+- `.\books\zh-Hans`：もっとも重要な完成本の場所です。簡体字中国語への翻訳が完了したら、該当する書籍フォルダの `output\release\` を確認します。公開可能なのは release 成果物です。
 
 ## リポジトリ構成
 

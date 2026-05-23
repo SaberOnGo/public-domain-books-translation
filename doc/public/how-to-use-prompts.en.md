@@ -5,7 +5,7 @@ This guide is for people who want to use an AI client to make a translated publi
 ## Three Things To Understand First
 
 1. **A normal user only needs three items.**
-   Tell the AI which book you want translated, the target language, and the rule for choosing the correct translation prompt automatically. The AI should handle the reliable source, source language, template, project folder, release, and validation commands.
+   Tell the AI which book you want translated, the target language, and the rule for choosing the correct translation prompt automatically. The full wording for that rule is in the [Easiest Starter Prompt](#easiest-starter-prompt). The AI should handle the reliable source, source language, template, project folder, release, and validation commands.
 
 2. **Let the AI read the rules.**
    You do not need to understand the repository rules. Ask the AI to choose the correct public prompt automatically.
@@ -32,8 +32,10 @@ Do not ask me to fill technical fields unless rights or source evidence cannot b
 
 ## Key Places To Know
 
-- `doc/public/user_prompt/`: the public prompts live here.
-- `books/.../output/release/`: the publishable EPUB appears here after the AI finishes.
+- `.\template\epub_pipeline`: check which source-language and source-to-target templates currently exist. The AI uses this to decide whether to run the existing-template prompt or the new-template prompt.
+- `.\tools\ai-client-launcher\opencode`: OpenCode client download and launch folder. Users need this path to know where the Launcher places OpenCode and where to start the client.
+- `.\doc\public\user_prompt`: the public prompts live here. Read or edit these if you want to understand or manually adjust the prompt.
+- `.\books\zh-Hans`: the most important output area for Simplified Chinese books. After translation succeeds, open the matching book folder and check `output\release\`; only release artifacts count as publishable results.
 
 ## What Are The Two Public Prompts?
 
@@ -49,7 +51,7 @@ If you are unsure which one applies, ask the AI to check whether the template ex
 | --- | --- | --- |
 | Codex App | Desktop UI, diffs, terminal, browser, Git review | Open the repo, create a thread, paste the `/goal` |
 | Claude Code | Terminal users who want a command-line agent | Start Claude Code in the repository and paste the prompt |
-| LifeBook Launcher | Fewest manual steps;<br>requires OpenCode client support | Open Launcher and install OpenCode.<br>OpenCode supports most mainstream models, such as DeepSeek and Doubao.<br>Choose the book-translation task in OpenCode and paste the three items |
+| LifeBook Launcher | Fewest manual steps;<br>requires OpenCode client support | Open Launcher and install OpenCode.<br>OpenCode supports most mainstream models, such as DeepSeek and Doubao.<br>Choose the book-translation task in OpenCode and paste the three items; see the [full example](#easiest-starter-prompt) |
 | Google Antigravity | AI IDE with agent workflows | Open the repo workspace and paste the prompt into the agent box |
 
 ## LifeBook Launcher
@@ -59,7 +61,7 @@ If you do not want to handle project and client setup manually, use LifeBook Lau
 - Open **LifeBook Launcher**.
 - Select or open this project.
 - Download or open the OpenCode client if needed, then configure the API key in OpenCode.
-- Paste the three items: book to translate, target language, and the prompt-selection rule.
+- Paste the three items: book to translate, target language, and the prompt-selection rule. The full wording is in the [Easiest Starter Prompt](#easiest-starter-prompt).
 - After the AI finishes, check the book folder's `output/release/`.
 
 ## Codex App
@@ -70,7 +72,7 @@ If you do not want to handle project and client setup manually, use LifeBook Lau
 4. Paste the `/goal`.
 5. Let the AI read `AGENTS.md` and `template/`.
 6. Review the files it wants to change.
-7. Check the final `books/.../output/release/` folder.
+7. Check the final `books/zh-Hans/.../output/release/` folder, or the matching `books/{target}/.../output/release/` folder for another target language.
 
 Codex App is useful for this repository because it makes it easy to review the files changed by the AI.
 

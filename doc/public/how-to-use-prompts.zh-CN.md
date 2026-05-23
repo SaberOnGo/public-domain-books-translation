@@ -5,7 +5,7 @@
 ## 你要先明白的 3 件事
 
 1. **普通用户只需要给三项内容。**
-   你只需要告诉 AI“我要翻译的书”“目标语言”和“自动选择翻译 prompt 的规则”。可靠来源、源语言、模板、目录名、release 和检查命令都由 AI 自动处理。
+   你只需要告诉 AI“我要翻译的书”“目标语言”和“自动选择翻译 prompt 的规则”。“自动选择翻译 prompt 的规则”的完整写法见下面的[最简单的启动方式](#最简单的启动方式)。可靠来源、源语言、模板、目录名、release 和检查命令都由 AI 自动处理。
 
 2. **让 AI 自己读规则。**
    你不需要理解仓库规则，只要要求 AI 自动选择正确的公共 prompt。
@@ -32,8 +32,10 @@
 
 ## 你需要知道的关键位置
 
-- `doc/public/user_prompt/`：公共 prompt 放在这里。
-- `books/.../output/release/`：AI 完成后，可发布 EPUB 放在这里。
+- `.\template\epub_pipeline`：查看当前有哪些源语言/语言方向模板。AI 会据此判断该用已有模板 prompt，还是新建语言模板 prompt。
+- `.\tools\ai-client-launcher\opencode`：OpenCode 客户端下载和启动目录。用户需要知道这个位置，方便确认 Launcher 把 OpenCode 放在哪里、从哪里启动客户端。
+- `.\doc\public\user_prompt`：公共 prompt 放在这里。想了解提示词细节，或想手动修改 prompt 时，看这个目录。
+- `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
 
 ## 两个公共 prompt 是什么
 
@@ -49,7 +51,7 @@
 | --- | --- | --- |
 | Codex App | 想要图形界面、文件 diff、终端、浏览器都集成的人 | 打开仓库，新建 thread，粘贴 `/goal`，让它读模板并执行 |
 | Claude Code | 熟悉终端、想用命令行 Agent 的人 | 在仓库中启动 Claude Code，粘贴目标 prompt |
-| LifeBook Launcher | 想要最少手动步骤的人；<br>需安装 OpenCode 客户端支持 | 打开 Launcher，安装 OpenCode；<br>OpenCode 支持市面大多数模型（如 DeepSeek、豆包等）；<br>在 OpenCode 里选择翻译书籍任务，粘贴三项内容 |
+| LifeBook Launcher | 想要最少手动步骤的人；<br>需安装 OpenCode 客户端支持 | 打开 Launcher，安装 OpenCode；<br>OpenCode 支持市面大多数模型（如 DeepSeek、豆包等）；<br>在 OpenCode 里选择翻译书籍任务，粘贴三项内容（见[完整示例](#最简单的启动方式)） |
 | Google Antigravity | 想在 AI IDE 里让 agent 计划、改文件、跑命令的人 | 打开仓库 workspace，在 agent 输入框粘贴目标 prompt |
 
 ## LifeBook Launcher
@@ -59,7 +61,7 @@
 - 打开 **LifeBook Launcher**。
 - 选择或打开本项目。
 - 按需要下载或打开 OpenCode 客户端，并在 OpenCode 中配置 API Key。
-- 粘贴三项内容：我要翻译的书、目标语言、自动选择 prompt 的规则。
+- 粘贴三项内容：我要翻译的书、目标语言、自动选择 prompt 的规则（见[最简单的启动方式](#最简单的启动方式)里的完整示例）。
 - 等 AI 完成后，检查书籍目录里的 `output/release/`。
 
 ## Codex App 用法
@@ -70,7 +72,7 @@
 4. 粘贴上面的 `/goal`。
 5. 等 AI 先读 `AGENTS.md` 和 `template/`。
 6. 审查它要改的文件；确认无误后让它继续。
-7. 最后检查 `books/.../output/release/`。
+7. 最后检查 `books/zh-Hans/.../output/release/`，或对应目标语言的 `books/{target}/.../output/release/`。
 
 Codex App 适合这个仓库的长流程任务，因为它方便查看 AI 修改了哪些文件。
 

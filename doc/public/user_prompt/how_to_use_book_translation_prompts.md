@@ -4,9 +4,16 @@
 
 1. 我要翻译的书是什么。
 2. 我要翻译成什么语言。
-3. 请 AI 自动选择正确的翻译 prompt。
+3. 请 AI 自动选择正确的翻译 prompt。完整写法见下面的[最省事的推荐入口](#最省事的推荐入口)。
 
 其他事情都交给 AI Agent 自动完成：找可靠公版来源、判断源语言、选择或创建模板、建立书籍项目、翻译、审校、构建 EPUB、随机抽检、生成 release。
+
+## 用户需要知道的 4 个目录
+
+- `.\template\epub_pipeline`：查看当前有哪些源语言/语言方向模板。用户不需要判断模板，但如果想确认“已有模板/没有模板”，看这里。
+- `.\tools\ai-client-launcher\opencode`：OpenCode 客户端下载和启动目录。用户需要知道这个位置，方便确认 Launcher 把 OpenCode 放在哪里、从哪里启动客户端。
+- `.\doc\public\user_prompt`：公共 prompt 目录。用户想了解提示词细节，或想手动修改 prompt，可以看这里。
+- `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
 
 ## 你只需要这样写
 

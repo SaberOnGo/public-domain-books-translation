@@ -25,13 +25,14 @@ LifeBook 書坊是一套多語言公版書翻譯與 EPUB 製作流程。它不�
 給 AI 用戶端的最小提示：
 
 ```text
-我要翻譯的書：{書名、作者；如果已有可靠來源 URL，也可以貼上}
+我要翻譯的書：{書名、作者（可選）；如果已有可靠來源 URL，也可以貼上}
 目標語言：{例如 繁體中文、英文、日文、西班牙文}
 
-請先讀取 AGENTS.md，再讀取 template/epub_pipeline 下的相關規則。
-使用 books/scripts/create_book_project.py 建立書籍工程。
-不要把具體書籍的原文、譯文、QA、EPUB 輸出或 metadata 寫進 template/。
-如果來源證據或公版狀態不清楚，請停止。
+請自動選擇正確的翻譯 prompt：
+- 如已有對應源語言模板，執行 doc/public/user_prompt/book_translation_existing_template.md。
+- 如無對應源語言模板，執行 doc/public/user_prompt/book_translation_new_template.md。
+
+除非版權或來源無法確認，不要讓我填寫技術欄位。請自動查找可靠公版來源，自動建立專案，完成翻譯、審校、EPUB 建置、分層隨機抽檢和 release。
 ```
 
 ## AI 用戶端
@@ -50,9 +51,9 @@ Launcher 不會保存 API Key，也不會把 OpenCode 本體放進本倉庫。�
 ## 使用者需要知道的重要目錄
 
 - `.\template\epub_pipeline`：查看目前有哪些源語言/語言方向模板。`en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans` 等目錄都在這裡。
-- `.\tools\lifebook-launcher`：LifeBook Launcher 啟動器目錄。Windows 使用者雙擊裡面的 `LifeBook Launcher Setup.exe`。
+- `.\tools\ai-client-launcher\opencode`：OpenCode 用戶端下載和啟動目錄。使用者需要知道這個位置，方便確認 Launcher 把 OpenCode 放在哪裡、從哪裡啟動用戶端。
 - `.\doc\public\user_prompt`：公共啟動 prompt 目錄。若想了解 prompt 細節，或手動調整給 AI 的 prompt，可以看這裡。
-- `.\books\zh-Hans`：簡體中文書籍工程和成書輸出目錄。翻譯成功後，到對應書籍目錄裡找 `output\book.epub` 和 `output\release\`。
+- `.\books\zh-Hans`：最重要的成書目錄。翻譯成簡體中文成功後，到對應書籍目錄裡找 `output\release\`；只有 release 目錄裡的成品才算可發布結果。
 
 ## 倉庫結構
 

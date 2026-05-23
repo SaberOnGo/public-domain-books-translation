@@ -25,13 +25,14 @@ For a short user guide, see:
 Minimal prompt for an AI client:
 
 ```text
-Book I want translated: {title, author, and source URL if known}
+Book I want translated: {title, author optional, and source URL if known}
 Target language: {for example Spanish, English, Japanese, or Simplified Chinese}
 
-Read AGENTS.md first, then read the relevant template/epub_pipeline rules.
-Create the book project with books/scripts/create_book_project.py.
-Do not write book-specific source text, translations, QA, EPUB output, or metadata into template/.
-Stop if source evidence or public-domain status is unclear.
+Automatically choose the correct translation prompt:
+- If the matching source-language template already exists, execute doc/public/user_prompt/book_translation_existing_template.md.
+- If the matching source-language template does not exist yet, execute doc/public/user_prompt/book_translation_new_template.md.
+
+Do not ask me to fill technical fields unless rights or source evidence cannot be confirmed. Automatically find a reliable public-domain source, create the book project, complete translation, review, EPUB build, stratified random spot-check, and release.
 ```
 
 ## AI Clients
@@ -50,9 +51,9 @@ The launcher does not store API keys and does not include OpenCode binaries in t
 ## Important Folders For Users
 
 - `.\template\epub_pipeline`: check which source-language and source-to-target templates currently exist. Language-pair folders such as `en-zh-Hans`, `ja-zh-Hans`, and `grc-zh-Hans` live here.
-- `.\tools\lifebook-launcher`: LifeBook Launcher entry folder. Windows users double-click `LifeBook Launcher Setup.exe` inside this folder.
+- `.\tools\ai-client-launcher\opencode`: OpenCode client download and launch folder. Users need this path to know where the Launcher places OpenCode and where to start the client.
 - `.\doc\public\user_prompt`: public starter prompts. Read or adjust these if you want to understand or manually refine the prompt given to an AI client.
-- `.\books\zh-Hans`: Simplified Chinese book projects and outputs. After a book is completed, look inside the matching book folder, especially `output\book.epub` and `output\release\`.
+- `.\books\zh-Hans`: the most important output area for Simplified Chinese books. After translation succeeds, open the matching book folder and check `output\release\`; only release artifacts count as publishable results.
 
 ## Repository Layout
 

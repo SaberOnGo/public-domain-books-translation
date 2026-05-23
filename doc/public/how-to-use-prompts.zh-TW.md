@@ -5,7 +5,7 @@
 ## 先理解 3 件事
 
 1. **普通用戶只需要提供三項內容。**
-   你只需要告訴 AI「我要翻譯的書」「目標語言」和「自動選擇翻譯 prompt 的規則」。可靠來源、源語言、模板、目錄名、release 和檢查命令都由 AI 自動處理。
+   你只需要告訴 AI「我要翻譯的書」「目標語言」和「自動選擇翻譯 prompt 的規則」。「自動選擇翻譯 prompt 的規則」的完整寫法見下面的[最簡單的啟動方式](#最簡單的啟動方式)。可靠來源、源語言、模板、目錄名、release 和檢查命令都由 AI 自動處理。
 
 2. **讓 AI 自己讀規則。**
    你不需要理解倉庫規則，只要要求 AI 自動選擇正確的公共 prompt。
@@ -32,8 +32,10 @@
 
 ## 你需要知道的關鍵位置
 
-- `doc/public/user_prompt/`：公共 prompt 放在這裡。
-- `books/.../output/release/`：AI 完成後，可發布 EPUB 放在這裡。
+- `.\template\epub_pipeline`：查看目前有哪些源語言/語言方向模板。AI 會據此判斷該用已有模板 prompt，還是新建語言模板 prompt。
+- `.\tools\ai-client-launcher\opencode`：OpenCode 用戶端下載和啟動目錄。使用者需要知道這個位置，方便確認 Launcher 把 OpenCode 放在哪裡、從哪裡啟動用戶端。
+- `.\doc\public\user_prompt`：公共 prompt 放在這裡。想了解 prompt 細節，或想手動修改 prompt 時，看這個目錄。
+- `.\books\zh-Hans`：最重要的成書目錄。翻譯成簡體中文成功後，到對應書籍目錄裡找 `output\release\`；只有 release 目錄裡的成品才算可發布結果。
 
 ## 兩個公共 prompt 是什麼
 
@@ -49,7 +51,7 @@
 | --- | --- | --- |
 | Codex App | 想要圖形介面、diff、終端、瀏覽器整合的人 | 打開倉庫，新建 thread，貼上 `/goal` |
 | Claude Code | 熟悉終端、想用命令列 Agent 的人 | 在倉庫中啟動 Claude Code，貼上目標 prompt |
-| LifeBook Launcher | 想要最少手動步驟的人；<br>需安裝 OpenCode 用戶端支援 | 打開 Launcher，安裝 OpenCode；<br>OpenCode 支援市面大多數模型（如 DeepSeek、豆包等）；<br>在 OpenCode 裡選擇翻譯書籍任務，貼上三項內容 |
+| LifeBook Launcher | 想要最少手動步驟的人；<br>需安裝 OpenCode 用戶端支援 | 打開 Launcher，安裝 OpenCode；<br>OpenCode 支援市面大多數模型（如 DeepSeek、豆包等）；<br>在 OpenCode 裡選擇翻譯書籍任務，貼上三項內容（見[完整範例](#最簡單的啟動方式)） |
 | Google Antigravity | 想在 AI IDE 裡讓 agent 計畫、改檔、跑命令的人 | 打開 workspace，在 agent 輸入框貼上 prompt |
 
 ## LifeBook Launcher
@@ -59,7 +61,7 @@
 - 打開 **LifeBook Launcher**。
 - 選擇或打開本專案。
 - 按需要下載或打開 OpenCode 用戶端，並在 OpenCode 中配置 API Key。
-- 貼上三項內容：我要翻譯的書、目標語言、自動選擇 prompt 的規則。
+- 貼上三項內容：我要翻譯的書、目標語言、自動選擇 prompt 的規則（見[最簡單的啟動方式](#最簡單的啟動方式)裡的完整範例）。
 - 等 AI 完成後，檢查書籍目錄裡的 `output/release/`。
 
 ## Codex App
@@ -70,7 +72,7 @@
 4. 貼上 `/goal`。
 5. 等 AI 先讀 `AGENTS.md` 和 `template/`。
 6. 審查它要修改的檔案。
-7. 最後檢查 `books/.../output/release/`。
+7. 最後檢查 `books/zh-Hans/.../output/release/`，或對應目標語言的 `books/{target}/.../output/release/`。
 
 Codex App 適合本倉庫的長流程任務，因為它方便查看 AI 修改了哪些檔案。
 

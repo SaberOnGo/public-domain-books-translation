@@ -25,13 +25,14 @@ LifeBook 书坊是一个多语言公版书翻译与 EPUB 制作流程。它不�
 给 AI 客户端的最小提示：
 
 ```text
-我要翻译的书：{书名、作者；如果已有可靠来源 URL，也可以贴上}
+我要翻译的书：{书名、作者（可选）；如果已有可靠来源 URL，也可以贴上}
 目标语言：{例如 简体中文、英文、日文、西班牙文}
 
-请先读取 AGENTS.md，再读取 template/epub_pipeline 下的相关规则。
-使用 books/scripts/create_book_project.py 创建书籍工程。
-不要把具体书籍的原文、译文、QA、EPUB 输出或 metadata 写进 template/。
-如果来源证据或公版状态不清楚，请停止。
+请自动选择正确的翻译 prompt：
+- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
+- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
+
+除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
 ```
 
 ## AI 客户端
@@ -50,9 +51,9 @@ Launcher 不会保存 API Key，也不会把 OpenCode 本体放进本仓库。�
 ## 用户需要知道的重要目录
 
 - `.\template\epub_pipeline`：查看当前有哪些源语言/语言方向模板。`en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans` 等目录都在这里。
-- `.\tools\lifebook-launcher`：LifeBook Launcher 启动器目录。Windows 用户双击里面的 `LifeBook Launcher Setup.exe`。
+- `.\tools\ai-client-launcher\opencode`：OpenCode 客户端下载和启动目录。用户需要知道这个位置，方便确认 Launcher 把 OpenCode 放在哪里、从哪里启动客户端。
 - `.\doc\public\user_prompt`：公共启动提示词目录。用户想了解提示词细节，或想手动调整给 AI 的 prompt，可以看这里。
-- `.\books\zh-Hans`：简体中文书籍工程和成书输出目录。翻译成功后，到对应书籍目录里找 `output\book.epub` 和 `output\release\`。
+- `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
 
 ## 仓库结构
 
