@@ -72,6 +72,20 @@ This file is for AI agents working from a downloaded copy of this repository.
 - Scripts and prompts must not hard-code local absolute paths such as Windows drive paths or one contributor's workspace. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
 - 脚本和 prompt 不得写死本机绝对路径，例如 Windows 盘符路径或某个贡献者的工作目录。路径应基于脚本位置、仓库根目录或用户显式传入的参数解析。
 
+## GitHub Push Commit Rules / GitHub 推送提交规则
+
+- Before pushing to GitHub, every commit being pushed must have both a concise title and a detailed commit body. One-line commits are forbidden, because LifeBook Launcher uses commit information as user-facing update text.
+- 推送到 GitHub 前，所有将被推送的 commit 都必须同时包含简洁标题和详细正文摘要。禁止只有一行标题的 commit，因为 LifeBook Launcher 会把 commit 信息作为面向用户的更新内容展示。
+
+- The detailed commit body must contain separated `ZH:`, `EN:`, and `JA:` sections. Each section must explain the user-visible or maintainer-visible change in enough detail for LifeBook Launcher to select a localized summary according to the user's computer language.
+- commit 正文摘要必须分成独立的 `ZH:`、`EN:`、`JA:` 三段。每一段都必须足够详细地说明用户可见或维护者可见的变化，方便 LifeBook Launcher 按用户电脑语言选择本地化摘要。
+
+- Before `git push`, run `python tools/git/check_commit_messages.py --range origin/main..HEAD` or the correct upstream range for the current branch. The command must pass before pushing.
+- 执行 `git push` 前，必须运行 `python tools/git/check_commit_messages.py --range origin/main..HEAD`，或当前分支对应的正确 upstream range。该命令通过后才允许推送。
+
+- When creating commits, use a multi-message commit form such as `git commit -m "Title" -m "ZH: ..."` with separate `-m` bodies for `ZH:`, `EN:`, and `JA:`. Do not use a one-line `git commit -m "Title"` for work that will be pushed.
+- 创建 commit 时，应使用多段提交信息，例如 `git commit -m "Title" -m "ZH: ..."`，并为 `ZH:`、`EN:`、`JA:` 分别写正文。不要对将推送的工作使用只有一行的 `git commit -m "Title"`。
+
 ## Recommended Reading / 建议读取
 
 - `README.md`, `README.zh-CN.md`, `readme/README.zh-TW.md`, or `readme/README.ja.md`

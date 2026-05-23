@@ -35,6 +35,8 @@ user project folder:
 
 Launcher 应显示下载进度、网络错误、代理提示、系统架构和本地安装状态。OpenCode 和 Launcher 自更新下载应使用 `.part` 临时文件尽量支持断点续传。LifeBook 项目默认自动更新；首页只展示最近一条 LifeBook commit，有更多更新时允许展开查看，并在工作区有本地改动时停止更新。
 
+GitHub 推送规则是打包层的强制依赖：每个推送到 GitHub 的 commit 必须有标题和详细正文摘要，正文必须分成 `ZH:`、`EN:`、`JA:` 三段。推送前必须运行 `python tools/git/check_commit_messages.py --range origin/main..HEAD` 或当前分支对应 range，确保 LifeBook Launcher 有足够的多语言更新摘要可展示。
+
 ## Windows 开箱包
 
 Windows 开箱包可以在 release 附件中额外附带固定版本 OpenCode zip 或 exe，但不要把二进制提交进 git 历史。
