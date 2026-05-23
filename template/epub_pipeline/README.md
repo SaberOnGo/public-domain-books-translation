@@ -45,6 +45,7 @@ Language-pair directories use BCP 47-style direction names:
 
 - `en-zh-Hans`: English to Simplified Chinese.
 - `grc-zh-Hans`: Ancient Greek to Simplified Chinese.
+- `ja-zh-Hans`: Japanese to Simplified Chinese.
 - `fr-en`: French to English.
 - `ja-es`: Japanese to Spanish.
 - `zh-Hant-de`: Traditional Chinese to German.

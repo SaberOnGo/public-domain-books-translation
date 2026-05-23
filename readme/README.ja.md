@@ -1,4 +1,4 @@
-# LifeBook 書坊：グローバルなパブリックドメイン書籍翻訳と EPUB 制作プロジェクト
+# LifeBook 書坊 パブリックドメイン書籍翻訳プロジェクト
 
 <table align="center">
   <tr>
@@ -9,173 +9,123 @@
   </tr>
 </table>
 
-LifeBook 書坊は、世界のパブリックドメイン書籍を多言語で翻訳し、読みやすい EPUB として制作するための協作プロジェクトです。
+LifeBook 書坊は、パブリックドメイン書籍を多言語で翻訳し、レビュー済みの読みやすい EPUB にするためのワークフローです。AI の初稿をそのまま公開するのではなく、出典証拠、権利確認、下訳、レビュー、EPUB 検証、層化ランダム抜き取り検査、バージョン付きリリースを残します。
 
-目的は、AI が出した未確認の翻訳をそのまま公開することではありません。AI は、原文の取得、整形、章分け、下訳、用語表作成、漏れの確認、EPUB 作成などを助けられます。しかし、良い本にするには人間の判断が必要です。文章が自然か、名前や用語が統一されているか、歴史的な表現が適切か、読書アプリで読みやすいかを、人が確認する必要があります。
+プログラミングができなくても参加できます。本の提案、出典調査、試読、原文との比較、読みにくい箇所の報告、EPUB テスト、テンプレートやスクリプトの改善が役に立ちます。
 
-プログラミングができなくても参加できます。数ページ読んで「ここが分かりにくい」と伝えるだけでも役に立ちます。
+## クイックスタート
 
-## このプロジェクトがしたいこと
+短い利用ガイド：
 
-- Project Gutenberg、Wikisource、Standard Ebooks など、信頼できる公開元からパブリックドメイン書籍を選ぶ。
-- 翻訳前に、出典と権利状態の証拠を残す。
-- 現代出版社版、現代注釈版、出所不明のテキストを避ける。
-- AI を「追跡可能な下訳と確認」のために使い、一回で出した文章をそのまま完成品にしない。
-- 原文、下訳、最終稿、レビュー、用語表、EPUB 出力を、他の人が確認しやすい形で残す。
-- 試読、校正、用語確認、資料調査、レイアウト確認、EPUB テストなど、小さな作業でも参加できるようにする。
+- [日本語ガイド](../doc/public/how-to-use-prompts.ja.md)
+- [English guide](../doc/public/how-to-use-prompts.en.md)
+- [简体中文说明](../doc/public/how-to-use-prompts.zh-CN.md)
+- [繁體中文說明](../doc/public/how-to-use-prompts.zh-TW.md)
 
-大きな運動というより、小さな本づくりの場です。誰かが本を探し、誰かが出典を確認し、誰かが一章を読み、誰かが EPUB を試す。そうした小さな作業の積み重ねで、一冊の本はよくなります。
-
-## いちばん簡単な始め方
-
-多くの参加者は、フォルダを手でコピーしたり、metadata ファイルを自分で書いたりする必要はありません。AI にテンプレートフォルダ、パブリックドメインの URL、翻訳方向を渡します。AI が書籍プロジェクトを作成し、metadata を記入し、出典証拠を残し、翻訳パイプラインを実行し、EPUB を作成します。
-
-通常、AI に伝えるのは次の三つです。
-
-- 作りたい本。
-- 分かっていれば、パブリックドメインの原文 URL。
-- 翻訳方向。例：英語からスペイン語、フランス語から日本語、中国語から英語、日本語からドイツ語。
-- 使用する既存の言語テンプレート。対応するテンプレートがまだない場合は、先にテンプレートディレクトリを追加します。
-
-プロンプト例です。ここでは「フランス語から英語」を具体例にしています。`fr-en` テンプレートがまだない場合は、先にその言語方向テンプレートを追加します。
+AI クライアントに渡す最小 prompt：
 
 ```text
-/goal フランス語のパブリックドメイン書籍から英語 EPUB を制作してください。
-{信頼できるパブリックドメイン原文 URL} から原文を取得してください。
-template/epub_pipeline/common と template/epub_pipeline/fr-en を使い、総合オーケストレータープロンプトから完全な工程を実行してください：
-出典と権利確認、書籍調査、試訳、章ごとの翻訳、章ごとのレビュー、章ゲート、
-プリプロダクション段階 1、サンプル EPUB 確認、全書 EPUB 制作、独立レビュー、
-修正ルート、最終出力、振り返り。
-output/book.epub を生成し、epubcheck を通過させてください。
+翻訳したい本：{書名、作者。信頼できる原文 URL があれば貼る}
+対象言語：{例：日本語、英語、スペイン語、簡体字中国語}
+
+まず AGENTS.md を読み、その後 template/epub_pipeline の関連ルールを読んでください。
+books/scripts/create_book_project.py で書籍プロジェクトを作成してください。
+本固有の原文、翻訳、QA、EPUB 出力、metadata を template/ に書かないでください。
+出典証拠またはパブリックドメイン状態が不明な場合は停止してください。
 ```
 
-書名しか分からない場合は、先に AI に信頼できる公版ソースを探してもらえます。
+## AI クライアント
 
-```text
-{書名} の信頼できるパブリックドメイン原文を探してください。
-Project Gutenberg、Wikisource、Standard Ebooks を優先してください。
-出典と権利リスクを確認したあと、翻訳方向に合うテンプレートを選んでください。たとえばフランス語から英語なら template/epub_pipeline/fr-en、日本語からスペイン語なら template/epub_pipeline/ja-es、英語から簡体字中国語なら template/epub_pipeline/en-zh-Hans を使用します。そのうえで template/epub_pipeline/common を先にコピーし、言語方向テンプレートを上書きして books/ 以下に新しい書籍工程を作成してください。
-```
+このリポジトリは特定のモデルに依存しません。Codex App、Claude Code、OpenCode、aider、Antigravity、その他ローカルファイルを扱える AI クライアントを利用できます。条件は、リポジトリを読めること、ファイル編集とコマンド実行ができること、`AGENTS.md` に従うことです。
+
+一般ユーザーが使いやすい入口として **LifeBook Launcher** を使います。
+
+- Windows ユーザーは現在、`tools\lifebook-launcher\LifeBook Launcher Setup.exe` をダブルクリックできます。
+- リリース版のユーザーは **LifeBook Launcher** アプリまたはインストーラーだけをダウンロードして起動できます。Launcher が LifeBook プロジェクトフォルダを自動で準備・更新します。Windows の既定フォルダは `D:\LifeBook` です。
+- このリポジトリ内のソースフォルダは `tools/lifebook-launcher/source/` で、開発者とパッケージ担当者向けです。
+- LifeBook プロジェクト更新の自動管理、OpenCode Desktop の確認/更新、LifeBook Launcher 自体の更新、自動起動設定を扱います。
+
+Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリに含めません。詳しくは [LifeBook Launcher 設計説明](../docs/lifebook-launcher/design.zh-CN.md) と [OpenCode クライアント説明](../docs/ai-clients/opencode.zh-CN.md) を参照してください。
+
+## ユーザーが知っておくべき重要フォルダ
+
+- `.\template\epub_pipeline`：現在どの原言語・言語方向テンプレートがあるか確認する場所です。`en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans` などがあります。
+- `.\tools\lifebook-launcher`：LifeBook Launcher の入口フォルダです。Windows ユーザーは中の `LifeBook Launcher Setup.exe` をダブルクリックします。
+- `.\doc\public\user_prompt`：公開スターター prompt の場所です。AI に渡す prompt の詳細を確認したり、手動で調整したりできます。
+- `.\books\zh-Hans`：簡体字中国語の書籍プロジェクトと出力先です。翻訳が完了したら、該当する書籍フォルダの `output\book.epub` と `output\release\` を確認します。
 
 ## リポジトリ構成
 
-### `template/epub_pipeline/`
+- `AGENTS.md`：すべての AI agent が最初に読む必須ルール。
+- `template/epub_pipeline/`：正式なワークフローテンプレートとルール。
+- `template/epub_pipeline/common/`：共通 EPUB ワークフロー、スクリプト、出典証拠、権利確認、品質ゲート、ランダム検査、リリース規則。
+- `template/epub_pipeline/{source-target}/`：言語方向ごとの prompt、用語、文体、レビュー規則。
+- `template/epub_pipeline/targets/{target}/`：対象言語の品質ルール。
+- `template/epub_pipeline/profiles/{profile-target}/`：特殊な本の種類に対する追加ルール。
+- `books/{target}/{number}_{book_slug}/`：実際の書籍プロジェクト。本固有の内容はここに置きます。
+- `books/`：共有 Node.js ツール依存関係。一度だけインストールします。
+- `doc/public/`：公開ガイド、prompt 説明、候補書籍資料。
+- `research/{source-target}/`：言語方向ごとの調査成果物。
+- `.opencode/` と `opencode.jsonc`：OpenCode 用の薄いアダプター。ワークフロー規則ではありません。
+- `tools/lifebook-launcher/`：LifeBook Launcher デスクトップ入口です。開発ソースは `source/` にあります。
 
-書籍制作のための再利用テンプレート領域です。`common/` には共通の EPUB ワークフロー、権利確認、状態ファイル、スクリプト、制作ルールがあります。各言語方向ディレクトリには、その方向に応じたプロンプト、用語・文体ガイド、組版上の期待、レビュー規則があります。新しい本を作るときは、AI に `common/` を `books/` 以下の新しいフォルダへコピーさせ、その上に該当する言語方向テンプレートを重ねます。
+## 新しい本を作る
 
-主な内容：
+テンプレートを手でコピーせず、スクリプトを使います。
 
-- `template/epub_pipeline/README.md`：テンプレート構成の説明。
-- `template/epub_pipeline/common/PIPELINE_SPEC.md`：パイプラインとディレクトリ規約。
-- `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`：簡体字中国語ターゲット言語品質フレームワーク。
-- `template/epub_pipeline/en-zh-Hans/README.md`：現在利用できる言語方向テンプレートの一つ。
-- `template/epub_pipeline/en-zh-Hans/MASTER_PROMPT.md`：新しい本を始めるための主プロンプト。
-- `prompts/`：原文取得からレビュー、EPUB 制作、振り返りまでの手順プロンプト。
-- `metadata/`：書籍情報、権利確認、出典証拠、文体プロファイル。
-- `chapters/`：原文、下訳、最終稿。
-- `qa/`：忠実度、可読性、用語、イメージ語、章ゲートのレビュー。
-- `preproduction/`：表紙、metadata、組版、サンプル EPUB 確認。
-- `reviews/`：独立レビューと採点表。
-- `output/`：最終 EPUB と検証結果。
-
-### `books/`
-
-実際の書籍プロジェクトを置くフォルダです。新しい書籍は対象言語ごとのフォルダに置き、次の形式を使います。
-
-```text
-books/{target}/{number}_{book_slug}/
+```powershell
+cd books
+npm run new:book -- {book_id_slug} --source-target {source-target}
 ```
 
-たとえば簡体字中国語版は `books/zh-Hans/1_pg20923_a_negro_explorer_at_the_north_pole/` に置けます。このサンプルは Project Gutenberg #20923、Matthew A. Henson の *A Negro Explorer at the North Pole* をもとにした工程です。出典証拠、権利メモ、26 章の原文、翻訳、最終稿、レビュー、生成済み EPUB、EPUBCheck 結果を含みます。EPUBCheck は fatal=0、error=0、warning=0 です。
-
-このサンプルは工程が最後まで動くことを示しています。ただし、全章が人間の出版編集レベルで最終承認済みという意味ではありません。
-
-### `template/epub_pipeline/targets/`
-
-ターゲット言語ごとの品質フレームワークを置きます。たとえば `template/epub_pipeline/targets/zh-Hans/quality_framework/` には、簡体字中国語訳の品質基準、試訳ルール、ベンチマーク方針、章ごとのゲートがあります。
-
-### `doc/public/`
-
-候補書籍、著作権の初期確認、出典調査などの公開メモを置く場所です。
-
-### `research/`
-
-特定の言語ペアに属する調査成果物と過去の探索ファイルを置きます。たとえば `research/en-zh-Hans/book-discovery/` には、英語から簡体字中国語への候補書籍監査表と検索スクリプトがあります。この領域の内容はプロジェクト全体の既定ツールではありません。他の言語ペアは、それぞれ専用の調査ディレクトリを作成してください。
-
-## 参加できること
-
-短時間でも参加できます。
-
-- 数ページ読んで、読みにくい箇所を報告する。
-- 原文の一段落と翻訳を比べる。
-- 人名、地名、繰り返し出る用語を確認する。
-- 誤字、句読点、重複を見つける。
-- EPUB をスマホ、タブレット、電子書籍リーダーで開いて確認する。
-- 候補書籍が本当にパブリックドメインか調べる。
-- 表紙、metadata、レイアウト、EPUB 互換性を改善する。
-- 章の文章が自然な中国語または自然な英語になっているか確認する。
-
-簡単なフィードバック形式：
+新しい書籍ディレクトリ：
 
 ```text
-書名：
-章：
-位置または文：
-問題：
-提案があれば：
+books/{target}/{number}_{book_id_slug}/
 ```
 
-## 人間が確認するとよいポイント
+スクリプトは `template/epub_pipeline/common` を先にコピーし、対応する言語方向テンプレートを重ねます。必要な場合は、その後 `profiles/{profile-target}/` を重ねます。
 
-AI は多くの工程を自動で進められますが、次の段階では人間の確認が特に役立ちます。
+## 基本ルール
 
-- 書籍調査：`metadata/book_specific_translation_research.md`、`metadata/style_profile.md`、`glossary/terms.csv`。
-- 試訳：`qa/pretranslation/pretranslation_report.md`。
-- 章レビュー：`chapters/src/`、`chapters/translated/`、`chapters/final/`、`qa/chapter_controls/`、`qa/fidelity/`、`qa/readability/`、`qa/terminology/`、`qa/imagery/`、`qa/gates/`。
-- プリプロダクション段階 1：`preproduction/stage1/production_spec.md`。
-- プリプロダクション段階 2：`preproduction/stage2_sample/sample_book.epub` と `sample_review.md`。
-- 最終出力：`output/book.epub`、`output/epubcheck.json`、`reviews/`。
+- 翻訳前に出典証拠と権利確認を残す。
+- 現代の著作権付き翻訳、海賊版サイト、出所不明の EPUB を使わない。
+- AI 初稿をそのまま公開しない。
+- 本固有の内容を `template/` に書かない。
+- 人が読む重要なテンプレートファイルには、想定される貢献者が読めるローカル言語を含める。
+- 最終納品前に EPUB 検証、読者に見える内容の検査、層化ランダム抜き取り検査、バージョン付き release を通す。
 
-## 翻訳方向
+## 書籍ツール
 
-テンプレートは具体的な翻訳方向ごとに整理します。`common` はすべての方向で共有され、`en-zh-Hans`、`fr-en`、`ja-es`、`zh-Hant-de` のようなディレクトリ名が、原文言語と訳文言語を示します。
+共有依存関係は一度だけインストールします。
 
-たとえば、次のような方向に対応できます。
+```powershell
+cd books
+npm install
+```
 
-- 英語の公版小説をスペイン語へ。
-- フランス語の随筆を日本語へ。
-- 中国語の公版作品を英語へ。
-- 日本語の紀行文をドイツ語へ。
-- ドイツ語の哲学テキストを繁体字中国語へ。
-- アラビア語の歴史テキストをインドネシア語へ。
+その後、具体的な書籍プロジェクトで実行します。
 
-どの方向でも、原則は同じです。権利を確認し、出典を記録し、翻訳前に調査し、まず試訳し、章ごとにレビューし、最後に EPUB を検証します。
+```powershell
+npm run build:epub
+npm run check:epub
+npm run review:random-samples
+npm run review:random-validate:pass
+npm run release:create
+```
 
-## 大切にしているルール
+## 参加方法
 
-- 現代の著作権保護された翻訳を翻訳元として使わない。
-- 海賊版サイトや出所不明の EPUB を使わない。
-- AI の初稿を完成品として扱わない。
-- テンプレートフォルダに実際の本のデータを書き込まない。
-- レビュー記録と失敗記録を残す。
-- 追跡できない全体書き換えより、小さく確認できる改善を優先する。
+出典調査、権利確認、翻訳レビュー、用語確認、EPUB テスト、レイアウトの読みやすさのフィードバック、自動化改善などが役立ちます。大きな追跡不能の書き換えより、小さく確認できる修正を優先します。
 
-## 権利とライセンスについて
+## 権利とライセンス
 
-各原書は個別に権利確認が必要です。ある国で公版でも、すべての地域で自動的に公版とは限りません。
+各原書は個別に権利確認が必要です。ある国でパブリックドメインでも、すべての地域で自動的にパブリックドメインとは限りません。
 
-Project Gutenberg のテキストは、多くの場合「米国で公版」とされています。別の地域で公開する場合は、その地域の著作権状態を改めて確認してください。
+このプロジェクトで作られた翻訳、注記、表紙、組版、EPUB パッケージなどの非コードコンテンツは、別記がない限り `CC BY-NC-SA 4.0` で公開されます。第三者による商業利用には、LifeBook 書坊および関係する権利者からの別途許可が必要です。
 
-このプロジェクトで作られた翻訳、注記、表紙、組版、EPUB パッケージ、その他の非コードコンテンツは、既定では `CC BY-NC-SA 4.0` で一般公開されます。第三者による商業利用には、LifeBook 書坊および関係する権利者からの別途許可が必要です。
+参照：
 
-貢献を提出することで、貢献者は、その貢献が本プロジェクトに取り込まれて公開され、LifeBook 書坊により LifeBook products and services に利用されることに同意したものとします。LifeBook 書坊は、プロジェクトの組織、公開、品質管理、ライセンス管理、貢献者への還元に関する取り決めを担当します。具体的な表示と還元方法は、貢献状況とプロジェクトルールに従って決定されます。
-
-詳しくは次を参照してください。
-
-- [LICENSE.ja.md](../license/LICENSE.ja.md)：公開コンテンツライセンスとコードライセンス。
-- [CONTRIBUTING.ja.md](../license/CONTRIBUTING.ja.md)：貢献者の利用許諾と参加ルール。
-- [COMMERCIAL_LICENSE.ja.md](../license/COMMERCIAL_LICENSE.ja.md)：第三者による商業利用の説明。
-
-## 小さな参加を歓迎します
-
-本が好きで、見過ごされがちな公版作品をもっと読まれる形にしたいと思うなら、小さく始められます。一章を読む。一文を指摘する。名前を一つ確認する。EPUB を一度開く。そうした小さな注意が、本をよくしていきます。
+- [LICENSE.ja.md](../license/LICENSE.ja.md)
+- [CONTRIBUTING.ja.md](../license/CONTRIBUTING.ja.md)
+- [COMMERCIAL_LICENSE.ja.md](../license/COMMERCIAL_LICENSE.ja.md)

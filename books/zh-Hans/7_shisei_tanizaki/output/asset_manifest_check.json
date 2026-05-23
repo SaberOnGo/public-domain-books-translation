@@ -1,0 +1,175 @@
+{
+  "projectRoot": ".",
+  "opfFiles": [
+    "output/epub_work/EPUB/package.opf"
+  ],
+  "totals": {
+    "files": 20,
+    "assetRefs": 23,
+    "issues": 0
+  },
+  "assetRefs": [
+    {
+      "file": "frontmatter/cover.md",
+      "line": 3,
+      "kind": "markdown_image",
+      "ref": "../assets/cover.jpg",
+      "resolved": "assets/cover.jpg"
+    },
+    {
+      "file": "output/epub_work/EPUB/001_shisei.xhtml",
+      "line": 8,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "output/epub_work/EPUB/styles/book.css"
+    },
+    {
+      "file": "output/epub_work/EPUB/book_info.xhtml",
+      "line": 8,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "output/epub_work/EPUB/styles/book.css"
+    },
+    {
+      "file": "output/epub_work/EPUB/cover.xhtml",
+      "line": 8,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "output/epub_work/EPUB/styles/book.css"
+    },
+    {
+      "file": "output/epub_work/EPUB/cover.xhtml",
+      "line": 12,
+      "kind": "html_src_href",
+      "ref": "images/cover.jpg",
+      "resolved": "output/epub_work/EPUB/images/cover.jpg"
+    },
+    {
+      "file": "output/epub_work/EPUB/nav.xhtml",
+      "line": 4,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "output/epub_work/EPUB/styles/book.css"
+    },
+    {
+      "file": "output/epub_work/EPUB/nav.xhtml",
+      "line": 6,
+      "kind": "html_src_href",
+      "ref": "cover.xhtml",
+      "resolved": "output/epub_work/EPUB/cover.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/nav.xhtml",
+      "line": 7,
+      "kind": "html_src_href",
+      "ref": "book_info.xhtml",
+      "resolved": "output/epub_work/EPUB/book_info.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/nav.xhtml",
+      "line": 8,
+      "kind": "html_src_href",
+      "ref": "translator_note.xhtml",
+      "resolved": "output/epub_work/EPUB/translator_note.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/nav.xhtml",
+      "line": 9,
+      "kind": "html_src_href",
+      "ref": "preface.xhtml",
+      "resolved": "output/epub_work/EPUB/preface.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/nav.xhtml",
+      "line": 10,
+      "kind": "html_src_href",
+      "ref": "001_shisei.xhtml",
+      "resolved": "output/epub_work/EPUB/001_shisei.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/nav.xhtml",
+      "line": 12,
+      "kind": "html_src_href",
+      "ref": "cover.xhtml",
+      "resolved": "output/epub_work/EPUB/cover.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/nav.xhtml",
+      "line": 13,
+      "kind": "html_src_href",
+      "ref": "book_info.xhtml",
+      "resolved": "output/epub_work/EPUB/book_info.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/package.opf",
+      "line": 17,
+      "kind": "html_src_href",
+      "ref": "nav.xhtml",
+      "resolved": "output/epub_work/EPUB/nav.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/package.opf",
+      "line": 18,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "output/epub_work/EPUB/styles/book.css"
+    },
+    {
+      "file": "output/epub_work/EPUB/package.opf",
+      "line": 19,
+      "kind": "html_src_href",
+      "ref": "cover.xhtml",
+      "resolved": "output/epub_work/EPUB/cover.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/package.opf",
+      "line": 20,
+      "kind": "html_src_href",
+      "ref": "book_info.xhtml",
+      "resolved": "output/epub_work/EPUB/book_info.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/package.opf",
+      "line": 21,
+      "kind": "html_src_href",
+      "ref": "translator_note.xhtml",
+      "resolved": "output/epub_work/EPUB/translator_note.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/package.opf",
+      "line": 22,
+      "kind": "html_src_href",
+      "ref": "preface.xhtml",
+      "resolved": "output/epub_work/EPUB/preface.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/package.opf",
+      "line": 23,
+      "kind": "html_src_href",
+      "ref": "001_shisei.xhtml",
+      "resolved": "output/epub_work/EPUB/001_shisei.xhtml"
+    },
+    {
+      "file": "output/epub_work/EPUB/package.opf",
+      "line": 24,
+      "kind": "html_src_href",
+      "ref": "images/cover.jpg",
+      "resolved": "output/epub_work/EPUB/images/cover.jpg"
+    },
+    {
+      "file": "output/epub_work/EPUB/preface.xhtml",
+      "line": 8,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "output/epub_work/EPUB/styles/book.css"
+    },
+    {
+      "file": "output/epub_work/EPUB/translator_note.xhtml",
+      "line": 8,
+      "kind": "html_src_href",
+      "ref": "styles/book.css",
+      "resolved": "output/epub_work/EPUB/styles/book.css"
+    }
+  ],
+  "issues": []
+}

@@ -113,3 +113,36 @@ PAL古希腊转写本 + 英译本为主要正文文本，PDF核对正文并作�
 禁止进入Book II-XIII、全书13卷翻译、全书级终稿或非Book I EPUB。
 ------------------
 请按照模板要求，生成符合书的语境的封面图和书的”首页/前置页“，最后输出完整的epub电子书。
+-------------------------------------------------------
+在 ".\49_public-domain-books-translation" 中，
+先严格依据 AGENTS.md、template/epub_pipeline/common、
+template/epub_pipeline/targets/zh-Hans/quality_framework、
+template/epub_pipeline/ja-zh-Hans 以及现有已完成书籍项目的实际结构，
+创建并完成谷崎润一郎《刺青》
+（青空文库 No.56641，SOURCE_URL=https://www.aozora-renewal.cloud/cards/001383/card56641.html）的日语->简体中文 EPUB 书籍项目。
+必须使用 books/scripts/create_book_project.py 创建 books/zh-Hans/{next_number}_shisei_tanizaki 或等效编号目录，
+所有原文、译文、QA、EPUB、release 和书籍 metadata 只能写入该书目录，不得写回 template。
+执行中必须完成来源抓取、公版/版权核查、
+metadata/source_evidence.md、metadata/rights_checklist.md、
+metadata/japanese_source_profile.md、
+qa/textual/japanese_textual_notes.md、
+book-specific research、style profile、
+预翻译 PASS、分章翻译、每章译后控制、忠实度/可读性/意象/术语审校、
+章节 gate PASS、preproduction/stage1/production_spec.md、样章检查、全书 EPUB 构建、
+publication lint、asset manifest check、
+template workflow gate、cover output assets check、reader-facing policy check、
+EPUBCheck 或等价校验。必须执行分层随机抽检算法：以 reader-facing audit units 为总体，
+至少覆盖 paragraphs、tables、figures、formulas/proof blocks、captions/notes 等实际存在层；
+每轮生成 reviews/random_spotcheck/round_XXX/ 样本、证据、Agent A/B 独立评审、fix_log 和 closure_check；
+任一层或任一 Agent 发现 P0/P1/P2、读者读不懂、事实/叙述关系误解、日语句法硬搬、无依据润饰、术语/专名/译注/表格/图片/公式错误时，
+必须修复、重建 EPUB、追加新 seed 新一轮抽检；只有最后一轮没有未关闭问题且 npm run review:random-validate:pass
+或等价 --require-pass 校验通过后才可退出抽检。抽检和修复完成后必须重新生成 EPUB，
+并通过 npm run release:create 或等价 release 脚本把可发布 EPUB 输出到该书 output/release/，
+release_state.json.latest_status 必须为 PASS，
+output/book.epub 不能单独作为完成依据。
+执行中如果发现 ja-zh-Hans 模板存在可复用缺陷、缺漏或歧义，
+必须先在该书 QA/retrospective 中记录证据，修复当前书，
+再把可复用规则以最小必要改动回填到 template/epub_pipeline/ja-zh-Hans
+或 common/zh-Hans 的正确层级，并重新验证不破坏建书脚本和模板引用。最终不得提交未验证的完成声明；
+必须报告 release EPUB 路径、验证命令与结果、抽检轮次、修复摘要、模板回填摘要和剩余风险。
+----------------------------------------------------------------------------

@@ -1,0 +1,18 @@
+{
+  "title": "刺青",
+  "author": "谷崎潤一郎",
+  "aozora_work_id": "56641",
+  "source_card_url": "https://www.aozora-renewal.cloud/cards/001383/card56641.html",
+  "source_xhtml_url": "https://aozora-renewal.cloud/cards/001383/files/56641_59496.html",
+  "source_text_zip_url": "https://www.aozora-renewal.cloud/cards/001383/files/56641_ruby_59456.zip",
+  "zip_filename": "56641_ruby_59456.zip",
+  "zip_entry": "shisei.txt",
+  "source_encoding": "cp932",
+  "retrieved_at_utc": "2026-05-22T15:38:49Z",
+  "raw_sha256": "d9043e74f3e39f7a0411e4b33dea9501e9fd18d64da71e9677b595412be9459c",
+  "decoded_utf8_sha256": "25fbbf5b4f349a4b808d80d027bf7f8eaf0cd417d4d0fa328a72002ebb4fb279",
+  "clean_text_sha256": "497029b23cbf99fabe984e85bf960ca569b82c70b95e62bd79886a753c4dbd25",
+  "source_sentence_count": 126,
+  "translation_paragraph_count": 121,
+  "textual_basis": "Aozora Bunko ruby text, 新字新仮名, cleaned by removing ruby/control annotations only for translation working text."
+}
