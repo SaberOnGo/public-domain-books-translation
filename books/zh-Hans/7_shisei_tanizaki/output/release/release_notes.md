@@ -1,5 +1,59 @@
 # Release Notes / 发布说明
 
+## Release v0.0.4 / 版本 v0.0.4
+
+status: PASS
+main_version: 0
+sub_version: 0
+patch_version: 4
+created_at: 2026-05-23T07:27:28Z
+epub: 刺青_v0.0.4.epub
+sha256: 3cb26939d4af776d6ac584f2e303881b179083911d3ffa936f01f23f3c70f449
+size_bytes: 296901
+
+## Release Reason / 发布原因
+
+Fix reader-facing paragraph structure after user review found sentence-by-sentence paragraphing in the body text. / 用户复查发现正文被拆成一句一段，影响阅读版式；本版本修复读者可见段落结构并重新发布。
+
+## Changes / 修改内容
+
+- Restored `chapters/src/001_shisei.md` to Aozora-style natural paragraph and dialogue boundaries. / 将 `chapters/src/001_shisei.md` 恢复为青空整理稿的自然段和对白边界。
+- Synchronized `chapters/translated/001_shisei.md` and `chapters/final/001_shisei.md`; final body now has 54 reader paragraphs instead of 121 sentence-level paragraphs. / 同步修复 `chapters/translated/001_shisei.md` 与 `chapters/final/001_shisei.md`；终稿正文由 121 个句级段落恢复为 54 个读者段落。
+- Added a paragraph-structure QA record and strengthened the Japanese-to-Simplified-Chinese template prompts against sentence-level paragraph splitting. / 新增段落结构 QA 记录，并补强日语到简体中文模板，防止继续把自然段拆成单句段落。
+
+## Issues / 问题点
+
+- Body text had been over-split into many one-sentence paragraphs, although the Japanese source preserved longer natural paragraphs. / 正文此前被过度拆成大量单句段落，但日文底本保留的是较长自然段。
+
+## Fixes / 修复方式
+
+- Compared the full short story against `source/source_text.txt`, merged sentence-level paragraph splits, retained supported dialogue and strong-pause paragraphing, rebuilt EPUB output, and generated a new random spot-check round. / 对照 `source/source_text.txt` 全篇检查，合并句级拆段，保留有依据的对白和强停顿段落，重新构建 EPUB，并生成新一轮随机抽检。
+
+## QA And Evidence / QA 与证据
+
+- source_epub: `output/book.epub`
+- random_spotcheck_round: `reviews/random_spotcheck/round_005`
+- random_spotcheck_validation: `reviews/random_spotcheck/round_005/validation_report.json`
+- random_spotcheck_status: `PASS`
+- random_spotcheck_require_pass: `True`
+- release_confidence: `1.0`
+- epubcheck: `output/epubcheck.json`
+- epubcheck_fatal: `0`
+- epubcheck_error: `0`
+- epubcheck_warning: `0`
+- publication_lint: `output/publication_lint.json`
+- publication_lint_issue_count: `0`
+
+## Risks / 风险
+
+- Minor style notes remain P3 only; no P0/P1/P2 or blocking paragraph-structure issue was found in round_005. / 仍有少量 P3 级别顺滑度意见；round_005 未发现 P0/P1/P2 或阻断性段落结构问题。
+
+## Next Iteration / 下一轮迭代
+
+- Reader feedback, review comments, or automated QA findings should create the next patch release. / 后续读者反馈、审校意见或自动化 QA 发现的问题应进入下一个小版本发布。
+- Patch version increases by 1 for every release artifact created by this script. / 本脚本每创建一次发布产物，小版本号递增 1。
+
+
 ## Release v0.0.3 / 版本 v0.0.3
 
 status: PASS

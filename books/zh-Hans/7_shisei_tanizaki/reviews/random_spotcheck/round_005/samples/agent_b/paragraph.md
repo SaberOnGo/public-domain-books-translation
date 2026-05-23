@@ -1,17 +1,7 @@
-# agent_b 分层随机抽检样本 / Stratified Random Spot-Check Samples
+# agent_b - 正文段落 / Paragraph
 
 seed: `5aad4905d8dea06289b66539d224c6fd`
-
-## 强制评审要求 / Mandatory Review Rules
-
-- 必须逐个样本给出 0-100 分、问题类型、是否需要返工和理由。
-- 表格、图片、公式和图注不得被当作普通段落跳过。
-- 图片必须检查裁剪是否过大或过小、标签是否缺失、是否带入周边无关文字、插入点和说明是否正确。
-- 表格必须检查行列、表头、数值、单位、caption、XHTML 结构和原文对应关系。
-- 公式/证明块必须检查符号、依赖关系、上下文说明和读者可理解性。
-- 任一 P0/P1/P2 或单项 < 70 必须判为本轮 FAIL。
-
-## 正文段落 / Paragraph
+sample_count: `19`
 
 ### Sample 1: `001_shisei::paragraph::0005`
 
