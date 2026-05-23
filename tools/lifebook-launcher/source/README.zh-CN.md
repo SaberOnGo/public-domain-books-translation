@@ -48,4 +48,4 @@ src-tauri\target\release\bundle\msi\LifeBook Launcher_1.3.0_x64_en-US.msi
 - Launcher 自更新下载完成后会退出当前窗口、运行安装器并重新启动。
 - 自动更新 LifeBook 前会检查本地工作区；如果有本地改动，会停止更新，避免覆盖用户文件。
 - LifeBook 流水线规则仍然只来自 `AGENTS.md`、`template/epub_pipeline/` 和 `skills/public-domain-epub-pipeline/SKILL.md`。
-- LifeBook 更新内容来自 GitHub commit 信息；推送前每个 commit 必须有标题和 `ZH:`、`EN:`、`JA:` 三段详细摘要，并通过 `python tools/git/check_commit_messages.py --range origin/main..HEAD` 检查。
+- LifeBook 更新内容来自 GitHub commit 信息；推送前每个 commit 必须有标题和 `ZH:`、`EN:`、`JA:` 三段详细摘要，语言标签必须独占一行，并通过 `python tools/git/check_commit_messages.py --range origin/main..HEAD` 检查。

@@ -34,7 +34,7 @@ LifeBook Launcher 是本仓库面向普通用户的桌面入口。它不是 Open
   - `OpenCode 客户端`：本地版本、最新版本、按钮 `检查更新/立即更新/安装客户端`、`启动客户端`。已检测到客户端时启动按钮为绿色；未检测到时为灰色禁用。
 - 主区第二行：`本次 LifeBook 更新内容`。
   - 每条 commit 显示日期、短 hash、标题、摘要。
-  - GitHub 上的每条 commit 必须提供标题和详细正文摘要；正文必须分成 `ZH:`、`EN:`、`JA:` 三段，供 Launcher 按系统语言选择展示。
+  - GitHub 上的每条 commit 必须提供标题和详细正文摘要；正文必须分成 `ZH:`、`EN:`、`JA:` 三段，且语言标签必须独占一行，供 Launcher 按系统语言选择展示。
   - 区域固定高度，内容滚动。
 - 底部：活动日志，显示检查、下载、更新、失败原因。
 - 设置页：开机启动、LifeBook 项目目录、自动准备/更新 LifeBook、启动后自动检查 Launcher、发现新版 Launcher 时自动安装、启动后自动检查 OpenCode，并提供 Launcher 手动检查/下载/安装入口。
@@ -49,7 +49,7 @@ Launcher 默认管理一个 LifeBook 项目目录。Windows 默认目录是 `D:\
 4. 若工作区有本地改动，停止更新并提示用户先提交或备份。
 5. 不做会覆盖用户文件的 reset、checkout 或强制 pull。
 6. 首页默认只显示最近一条 LifeBook commit；检查到远端更新后，更新内容区域展示可展开的 commit 列表。
-7. 更新内容依赖 GitHub commit 信息。推送前必须运行 `python tools/git/check_commit_messages.py --range origin/main..HEAD` 或当前分支对应 range，确认每个待推送 commit 都有标题和 `ZH:`、`EN:`、`JA:` 三段详细摘要。
+7. 更新内容依赖 GitHub commit 信息。推送前必须运行 `python tools/git/check_commit_messages.py --range origin/main..HEAD` 或当前分支对应 range，确认每个待推送 commit 都有标题和 `ZH:`、`EN:`、`JA:` 三段详细摘要；`ZH:`、`EN:`、`JA:` 必须各自独占一行，摘要从下一行开始。
 
 ## OpenCode 更新规则
 

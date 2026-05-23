@@ -77,14 +77,14 @@ This file is for AI agents working from a downloaded copy of this repository.
 - Before pushing to GitHub, every commit being pushed must have both a concise title and a detailed commit body. One-line commits are forbidden, because LifeBook Launcher uses commit information as user-facing update text.
 - 推送到 GitHub 前，所有将被推送的 commit 都必须同时包含简洁标题和详细正文摘要。禁止只有一行标题的 commit，因为 LifeBook Launcher 会把 commit 信息作为面向用户的更新内容展示。
 
-- The detailed commit body must contain separated `ZH:`, `EN:`, and `JA:` sections. Each section must explain the user-visible or maintainer-visible change in enough detail for LifeBook Launcher to select a localized summary according to the user's computer language.
-- commit 正文摘要必须分成独立的 `ZH:`、`EN:`、`JA:` 三段。每一段都必须足够详细地说明用户可见或维护者可见的变化，方便 LifeBook Launcher 按用户电脑语言选择本地化摘要。
+- The detailed commit body must contain separated `ZH:`, `EN:`, and `JA:` sections. Each language label must appear alone on its own line, and its summary must start on following lines, preferably as bullets. Do not write `ZH: long summary...` on one line. Each section must explain the user-visible or maintainer-visible change in enough detail for LifeBook Launcher to select a localized summary according to the user's computer language.
+- commit 正文摘要必须分成独立的 `ZH:`、`EN:`、`JA:` 三段。每个语言标签必须独占一行，摘要内容从下一行开始，推荐使用 bullet。禁止写成 `ZH: 很长的摘要……` 这种同一行格式。每一段都必须足够详细地说明用户可见或维护者可见的变化，方便 LifeBook Launcher 按用户电脑语言选择本地化摘要。
 
 - Before `git push`, run `python tools/git/check_commit_messages.py --range origin/main..HEAD` or the correct upstream range for the current branch. The command must pass before pushing.
 - 执行 `git push` 前，必须运行 `python tools/git/check_commit_messages.py --range origin/main..HEAD`，或当前分支对应的正确 upstream range。该命令通过后才允许推送。
 
-- When creating commits, use a multi-message commit form such as `git commit -m "Title" -m "ZH: ..."` with separate `-m` bodies for `ZH:`, `EN:`, and `JA:`. Do not use a one-line `git commit -m "Title"` for work that will be pushed.
-- 创建 commit 时，应使用多段提交信息，例如 `git commit -m "Title" -m "ZH: ..."`，并为 `ZH:`、`EN:`、`JA:` 分别写正文。不要对将推送的工作使用只有一行的 `git commit -m "Title"`。
+- When creating commits, use a multi-message commit form such as `git commit -m "Title" -m "ZH:" -m "- Chinese summary..." -m "EN:" -m "- English summary..." -m "JA:" -m "- Japanese summary..."`. Do not use a one-line `git commit -m "Title"` for work that will be pushed, and do not put summary text on the same line as the language label.
+- 创建 commit 时，应使用多段提交信息，例如 `git commit -m "Title" -m "ZH:" -m "- 中文摘要……" -m "EN:" -m "- English summary..." -m "JA:" -m "- 日本語概要..."`。不要对将推送的工作使用只有一行的 `git commit -m "Title"`，也不要把摘要正文写在语言标签同一行。
 
 ## Recommended Reading / 建议读取
 

@@ -36,8 +36,9 @@ def split_title_and_body(message: str) -> tuple[str, str]:
     return title, body
 
 
-def extract_sections(body: str) -> dict[str, str]:
+def extract_sections(body: str) -> tuple[dict[str, str], list[str]]:
     sections: dict[str, list[str]] = {}
+    issues: list[str] = []
     current: str | None = None
     for raw_line in body.splitlines():
         line = raw_line.strip()
@@ -50,11 +51,11 @@ def extract_sections(body: str) -> dict[str, str]:
             sections.setdefault(current, [])
             inline_text = match.group(1).strip()
             if inline_text:
-                sections[current].append(inline_text)
+                issues.append(f"{current} label must be on its own line")
             continue
         if current:
             sections[current].append(raw_line)
-    return {name: "\n".join(lines).strip() for name, lines in sections.items()}
+    return {name: "\n".join(lines).strip() for name, lines in sections.items()}, issues
 
 
 def validate_commit_message(message: str) -> list[str]:
@@ -66,7 +67,8 @@ def validate_commit_message(message: str) -> list[str]:
         issues.append("missing detailed commit body")
         return issues
 
-    sections = extract_sections(body)
+    sections, section_issues = extract_sections(body)
+    issues.extend(section_issues)
     for name in ("ZH", "EN", "JA"):
         text = sections.get(name, "")
         if not text:

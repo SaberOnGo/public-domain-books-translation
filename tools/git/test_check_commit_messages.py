@@ -23,14 +23,17 @@ class CommitMessageValidationTests(unittest.TestCase):
     def test_accepts_title_and_trilingual_detailed_summary(self):
         self.assertEqual(validate_commit_message(VALID_MESSAGE), [])
 
-    def test_accepts_inline_language_labels(self):
+    def test_rejects_inline_language_labels(self):
         message = """Document GitHub commit summary rules
 
 ZH: 将 GitHub 推送前的提交信息要求写入仓库规则，明确必须同时提供标题和详细摘要，供 Launcher 展示。
 EN: Adds repository rules requiring a commit title and detailed summary before pushing to GitHub, so Launcher can display update text.
 JA: GitHub に push する前に commit タイトルと詳細な概要を書くルールを追加し、Launcher の更新表示に使えるようにします。
 """
-        self.assertEqual(validate_commit_message(message), [])
+        issues = validate_commit_message(message)
+        self.assertIn("ZH label must be on its own line", issues)
+        self.assertIn("EN label must be on its own line", issues)
+        self.assertIn("JA label must be on its own line", issues)
 
     def test_rejects_missing_body(self):
         issues = validate_commit_message("Only a title")
