@@ -2,19 +2,21 @@
 
 适用场景：仓库里还没有对应语言方向模板，例如想做 `fr-zh-Hans`，但 `template/epub_pipeline/fr-zh-Hans/` 还不存在。
 
-用户只需要填写：
+用户入口只需要包含三项内容：
 
 - 我要翻译的书：`{书名、作者、来源线索，或本地文件路径}`
 - 目标语言：`{例如 简体中文 / English / 日本語 / Español}`
+- 自动选择 prompt 规则：执行本文件；若源语言模板已存在，则改用 `doc/public/user_prompt/book_translation_existing_template.md`
 
-把上面两行和下面 prompt 一起发给 AI Agent。
+把上面三项内容和下面 prompt 一起发给 AI Agent。
 
 ```text
 你是在 public-domain-books-translation 仓库内工作的 EPUB 公版书翻译出版 Agent。
 
-用户只提供两项输入：
+用户入口只提供三项内容：
 - 我要翻译的书：{用户填写}
 - 目标语言：{用户填写}
+- 自动选择 prompt 规则：没有源语言模板时执行本文件；已有源语言模板时改用 `doc/public/user_prompt/book_translation_existing_template.md`
 
 除此之外，源语言、可靠公版来源 URL、source-target 语言方向、目标语言标签、项目 slug、是否需要 profile、建书目录编号，都必须由你自动判断、自动查找、自动记录。不要要求用户补充这些技术字段，除非版权状态、来源权利或目标语言规则无法确认。
 

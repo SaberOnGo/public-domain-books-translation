@@ -4,8 +4,8 @@
 
 ## 先理解 3 件事
 
-1. **普通用戶只需要提供兩項資訊。**
-   你只需要告訴 AI「我要翻譯的書」和「目標語言」。可靠來源、源語言、模板、目錄名、release 和檢查命令都由 AI 自動處理。
+1. **普通用戶只需要提供三項內容。**
+   你只需要告訴 AI「我要翻譯的書」「目標語言」和「自動選擇翻譯 prompt 的規則」。可靠來源、源語言、模板、目錄名、release 和檢查命令都由 AI 自動處理。
 
 2. **讓 AI 自己讀規則。**
    你不需要理解倉庫規則，只要要求 AI 自動選擇正確的公共 prompt。
@@ -20,17 +20,17 @@
 然後把下面這段貼給 AI，將 `{...}` 換成你的書名和目標語言：
 
 ```text
-我要翻譯的書：{書名、作者；如果你已經有可靠來源連結，也可以貼上}
+我要翻譯的書：{書名、作者（可選）；如果你已經有可靠來源連結，也可以貼上}
 目標語言：{例如 簡體中文}
 
-請在目前倉庫自動選擇正確的公版書翻譯 prompt：
-- 如果已有對應源語言模板，執行 doc/public/user_prompt/book_translation_existing_template.md。
-- 如果沒有對應源語言模板，執行 doc/public/user_prompt/book_translation_new_template.md。
+請自動選擇正確的翻譯 prompt：
+- 如已有對應源語言模板，執行 doc/public/user_prompt/book_translation_existing_template.md。
+- 如無對應源語言模板，執行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版權或來源無法確認，不要讓我填寫技術欄位。請自動查找可靠公版來源，自動建立專案，完成翻譯、審校、EPUB 建置、分層隨機抽檢和 release。
 ```
 
-## 你需要知道的 2 個位置
+## 你需要知道的關鍵位置
 
 - `doc/public/user_prompt/`：公共 prompt 放在這裡。
 - `books/.../output/release/`：AI 完成後，可發布 EPUB 放在這裡。
@@ -39,7 +39,7 @@
 
 - `doc/public/user_prompt/book_translation_existing_template.md`：倉庫已經有對應源語言模板時使用，例如日語到簡體中文、英語到簡體中文、古希臘語到簡體中文。
 - `doc/public/user_prompt/book_translation_new_template.md`：倉庫還沒有對應源語言模板時使用，例如第一次做法語到簡體中文。
-- `doc/public/user_prompt/how_to_use_book_translation_prompts.md`：更短的小白版說明，只解釋怎麼填寫「我要翻譯的書」和「目標語言」。
+- `doc/public/user_prompt/how_to_use_book_translation_prompts.md`：更短的小白版說明，只解釋怎麼填寫三項內容。
 
 如果你不確定該用哪個，就讓 AI 先檢查模板是否存在。普通用戶不需要理解 `source-target`、slug、profile、release version 或 npm 命令。
 
@@ -49,7 +49,7 @@
 | --- | --- | --- |
 | Codex App | 想要圖形介面、diff、終端、瀏覽器整合的人 | 打開倉庫，新建 thread，貼上 `/goal` |
 | Claude Code | 熟悉終端、想用命令列 Agent 的人 | 在倉庫中啟動 Claude Code，貼上目標 prompt |
-| LifeBook Launcher | 想要最少手動步驟的人，需安裝 OpenCode 用戶端支援 | 打開 Launcher，安裝 OpenCode；OpenCode 支援市面大多數模型（如 DeepSeek、豆包等）；在 OpenCode 裡選擇翻譯書籍任務，貼上兩行輸入 |
+| LifeBook Launcher | 想要最少手動步驟的人；<br>需安裝 OpenCode 用戶端支援 | 打開 Launcher，安裝 OpenCode；<br>OpenCode 支援市面大多數模型（如 DeepSeek、豆包等）；<br>在 OpenCode 裡選擇翻譯書籍任務，貼上三項內容 |
 | Google Antigravity | 想在 AI IDE 裡讓 agent 計畫、改檔、跑命令的人 | 打開 workspace，在 agent 輸入框貼上 prompt |
 
 ## LifeBook Launcher
@@ -59,7 +59,7 @@
 - 打開 **LifeBook Launcher**。
 - 選擇或打開本專案。
 - 按需要下載或打開 OpenCode 用戶端，並在 OpenCode 中配置 API Key。
-- 貼上「我要翻譯的書」和「目標語言」兩行輸入。
+- 貼上三項內容：我要翻譯的書、目標語言、自動選擇 prompt 的規則。
 - 等 AI 完成後，檢查書籍目錄裡的 `output/release/`。
 
 ## Codex App
