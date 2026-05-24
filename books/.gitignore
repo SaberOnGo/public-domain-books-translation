@@ -2,6 +2,10 @@
 # Keep scripts, rules, metadata, Markdown QA conclusions, and release notes tracked.
 # Do not ignore final book release EPUBs here; decide that policy separately.
 
+# Shared local-only tool cache. Use scripts/setup_local_tools.py to inspect or
+# populate it; third-party runtimes and archives must not be committed.
+tools/
+
 # Build/cache output copied or regenerated during EPUB production.
 */*/output/epub_work/
 */*/output/*epub_source*/

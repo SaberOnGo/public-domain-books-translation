@@ -1,6 +1,7 @@
 **/node_modules/
 **/__pycache__/
 *.pyc
+books/tools/
 **/tools/zulu17-jre/
 **/tools/zulu17-jre.zip
 
@@ -55,3 +56,4 @@ books/private/
 
 # Book-specific screenshot/debug captures must stay under the matching book project.
 /almagest-*.png
+/lifebook-*.png

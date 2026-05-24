@@ -5,7 +5,9 @@
   "description": "Shared Node.js tooling for book projects under books/.",
   "license": "UNLICENSED",
   "scripts": {
-    "new:book": "python scripts/create_book_project.py"
+    "new:book": "python scripts/create_book_project.py",
+    "setup:tools": "python scripts/setup_local_tools.py",
+    "check:tools": "python scripts/setup_local_tools.py --check"
   },
   "dependencies": {
     "epubchecker": "^5.2.1"
