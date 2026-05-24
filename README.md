@@ -35,6 +35,8 @@ Automatically choose the correct translation prompt:
 Do not ask me to fill technical fields unless rights or source evidence cannot be confirmed. Automatically find a reliable public-domain source, create the book project, complete translation, review, EPUB build, stratified random spot-check, and release.
 ```
 
+For non-public-domain books, use private-use mode only. The user must provide a local ebook file and explicitly declare personal study only, no redistribution, and no commercial use. The AI should create the project under `books/private/{target}/{number}_{book_slug}/`. `books/private/` is ignored by Git, and its source text, translations, QA records, and EPUB files must not be published to GitHub.
+
 ## AI Clients
 
 This repository is model-neutral. Codex App, Claude Code, OpenCode, aider, Antigravity, or any local-file AI client may be used if it can read the repository, edit files, run commands, and follow `AGENTS.md`.
@@ -46,7 +48,7 @@ For the easiest desktop setup, use **LifeBook Launcher**:
 - The source folder in this repository is `tools/lifebook-launcher/source/` for developers and packagers.
 - It keeps the LifeBook project updated automatically, checks/updates OpenCode Desktop, supports LifeBook Launcher self-update, and lets users configure startup launch.
 
-The launcher does not store API keys and does not include OpenCode binaries in this repository. See [LifeBook Launcher design](./docs/lifebook-launcher/design.zh-CN.md) and [OpenCode client guide](./docs/ai-clients/opencode.zh-CN.md).
+The launcher does not store API keys and does not include OpenCode binaries in this repository. For OpenCode client usage, see the [OpenCode client guide](./docs/ai-clients/opencode.zh-CN.md).
 
 ## Important Folders For Users
 
@@ -54,6 +56,7 @@ The launcher does not store API keys and does not include OpenCode binaries in t
 - `.\tools\lifebook-launcher`: LifeBook Launcher client install and launch folder. Users need this path to use the LifeBook project and install OpenCode.
 - `.\doc\public\user_prompt`: public starter prompts. Read or adjust these if you want to understand or manually refine the prompt given to an AI client.
 - `.\books\zh-Hans`: the most important output area for Simplified Chinese books. After translation succeeds, open the matching book folder and check `output\release\`; only release artifacts count as publishable results.
+- `.\books\private`: local private-use book projects. This is for user-provided local sources used for personal non-public-domain translation. It is ignored by Git and must not be published to GitHub.
 
 ## Repository Layout
 
@@ -87,9 +90,19 @@ books/{target}/{number}_{book_id_slug}/
 
 It copies `template/epub_pipeline/common` first, then overlays the matching language-pair template. If a book needs a special profile, overlay the matching `profiles/{profile-target}/` after that.
 
+Private-use projects must be created explicitly:
+
+```powershell
+cd books
+npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "Personal study only; no redistribution; no commercial use."
+```
+
+Private mode changes the rights and directory boundary only. Translation, review, EPUB validation, stratified random spot checks, and versioned artifacts still apply. Private artifacts are personal-use outputs, not public releases.
+
 ## Core Rules
 
-- Preserve public-domain source evidence and rights checks before translation.
+- Preserve source evidence and rights checks before translation; public projects require public-domain or licensed sources.
+- Non-public-domain personal-use projects must use `private_use` mode and stay under ignored `books/private/`.
 - Do not use modern copyrighted translations, pirate sites, or unclear EPUB downloads.
 - Raw AI output is not publishable.
 - Keep concrete book content out of `template/`.
@@ -124,6 +137,8 @@ Useful contributions include source research, rights review, translation review,
 Each source book requires its own rights check. Public-domain status may vary by country.
 
 Non-code book content produced in this project is released under `CC BY-NC-SA 4.0` by default unless a file says otherwise. Third-party commercial use requires separate permission from LifeBook Shufang and relevant rights holders.
+
+Private-use projects under `books/private/` are not public project content, are not covered by the default public release license, and must not be committed or published to GitHub.
 
 See:
 

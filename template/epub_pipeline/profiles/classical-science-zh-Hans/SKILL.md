@@ -1,13 +1,13 @@
 ---
 name: classical-science-zh-Hans
-description: Use this profile after a language-pair EPUB template when translating classical scientific, mathematical, astronomical, technical, diagram-heavy, or table-heavy public-domain works into Simplified Chinese.
+description: Use this profile after a language-pair EPUB template when translating classical scientific, mathematical, astronomical, technical, diagram-heavy, or table-heavy works into Simplified Chinese; public projects require public-domain or licensed evidence, and non-public-domain works must use private_use mode.
 ---
 
 # 古典科学简体中文 EPUB 控制流程 / Classical Science EPUB Control Workflow
 
 ## 何时使用 / When to Use
 
-当一本公版书具有以下任一特征时，使用本 profile：
+当一本书具有以下任一特征时，使用本 profile。公开项目必须有公版或授权来源；非公版书只能作为 `private_use` 私人自用工程：
 
 - 大量数学、天文、几何、科学或技术术语。
 - 大量图表、表格、星表、数值、单位、比例或证明。

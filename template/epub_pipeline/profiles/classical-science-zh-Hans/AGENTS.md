@@ -9,11 +9,11 @@ This file is for AI agents using the `classical-science-zh-Hans` profile overlay
 - Target language: Simplified Chinese.
 - 目标语言：简体中文。
 
-- Source language: any public-domain source language, decided by the language-pair template.
+- Source language: any source language decided by the language-pair template. Public projects require public-domain or licensed source evidence; private-use projects require a user-provided local source file and `metadata/private_use_declaration.md`.
 - 原文语言：由语言方向模板决定，可为古希腊文、拉丁文、阿拉伯文、英文、德文、法文等。
 
-- Book type: classical scientific, mathematical, astronomical, technical, diagram-heavy, table-heavy, or proof-heavy public-domain works.
-- 书籍类型：古典科学、数学、天文学、技术文献，或含大量图表、表格、证明的公版作品。
+- Book type: classical scientific, mathematical, astronomical, technical, diagram-heavy, table-heavy, or proof-heavy works.
+- 书籍类型：古典科学、数学、天文学、技术文献，或含大量图表、表格、证明的作品。公开项目必须有公版或授权证据；私人自用项目必须有本地书源和私人自用声明。
 
 ## Mandatory Rules / 强制规则
 
@@ -23,8 +23,8 @@ This file is for AI agents using the `classical-science-zh-Hans` profile overlay
 - Do not write book-specific source text, translations, diagrams, QA files, EPUB output, or metadata into this profile directory.
 - 不得把具体书籍的原文、译文、图表、QA、EPUB 输出或 metadata 写入本 profile 目录。
 
-- The original-language public-domain source is the translation base text.
-- 公版原书语言文本是翻译底本。
+- The original-language source is the translation base text. Public projects use public-domain or licensed sources; private-use projects use the user-provided local source only inside ignored `books/private/`.
+- 原书语言文本是翻译底本。公开项目使用公版或授权来源；私人自用项目只在被忽略的 `books/private/` 内使用用户提供的本地书源。
 
 - A second-language translation may be used only as a reference witness for understanding, discrepancy checks, and technical verification. It must not become a hidden base text or direct pivot translation.
 - 第二语言译本只能作为理解、差异校对和技术核验的参考证据；不得成为隐藏底本或直接转译底稿。

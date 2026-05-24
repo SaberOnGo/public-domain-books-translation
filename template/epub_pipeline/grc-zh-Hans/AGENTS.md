@@ -29,8 +29,8 @@ This file is for AI agents using the `grc-zh-Hans` template.
 - Important files and prompts for this template must include Simplified Chinese. English may be included in parallel, but English-only important instructions are not acceptable here.
 - 本模板的重要文件和 prompt 必须包含简体中文。英文可以并列，但重要说明不能只写英文。
 
-- Preserve Ancient Greek source evidence, edition information, editor information, and rights checks before translation.
-- 翻译前必须保留古希腊文来源证据、版本信息、编辑者信息并完成版权核查。
+- Preserve Ancient Greek source evidence, edition information, editor information, and rights checks before translation. Public projects require public-domain or licensed source evidence; private-use projects require a user-provided local source file and `metadata/private_use_declaration.md`.
+- 翻译前必须保留古希腊文来源证据、版本信息、编辑者信息并完成版权核查。公开项目必须有公版或授权来源证据；私人自用项目必须有用户提供的本地书源文件和 `metadata/private_use_declaration.md`。
 
 - Do not use modern Chinese translations as source material or hidden reference material.
 - 不得使用现代中文译本作为翻译底本或隐藏参考材料。

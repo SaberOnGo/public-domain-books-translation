@@ -19,6 +19,8 @@
 
 然后复制下面这段，把 `{...}` 换成你的书名和目标语言：
 
+### 公版书翻译 prompt
+
 ```text
 我要翻译的书：{书名、作者（可选）；如果你已经有可靠来源链接，也可以贴上}
 目标语言：{例如 简体中文}
@@ -28,6 +30,22 @@
 - 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
+```
+
+## 个人自用书翻译 prompt
+
+如果这是你自己已有的本地书源，只供个人学习自用，不传播、不商业使用，可以使用下面这段：
+
+```text
+我要翻译的书：{书名、本地目录: XXX }
+目标语言： {例如 简体中文}
+
+请自动选择正确的翻译 prompt：
+- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+
+这是我个人自用的,不传播,不用于商业,使用我给出的本地的书源。
+请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
 ```
 
 ## 精修审校 prompt（可选）
@@ -55,11 +73,14 @@
 - `.\tools\lifebook-launcher`：LifeBook Launcher 客户端安装启动目录。用户需要知道这个位置，以使用 LifeBook 项目和安装 OpenCode。
 - `.\doc\public\user_prompt`：公共 prompt 放在这里。想了解提示词细节，或想手动修改 prompt 时，看这个目录。
 - `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
+- `.\books\private`：个人自用书籍工程目录。非公版私人翻译的原文、译文、QA 和 EPUB 只应保存在这里；该目录被 Git 忽略，不发布到 GitHub。
 
-## 两个公共 prompt 是什么
+## 四个翻译 prompt 是什么
 
 - `doc/public/user_prompt/book_translation_existing_template.md`：仓库已经有对应源语言模板时使用，例如日语到简体中文、英语到简体中文、古希腊语到简体中文。
 - `doc/public/user_prompt/book_translation_new_template.md`：仓库还没有对应源语言模板时使用，例如第一次做法语到简体中文。
+- `doc/public/user_prompt/book_translation_private_existing_template.md`：个人自用、本地书源、已有对应源语言模板时使用。
+- `doc/public/user_prompt/book_translation_private_new_template.md`：个人自用、本地书源、还没有对应源语言模板时使用。
 - `doc/public/user_prompt/how_to_use_book_translation_prompts.md`：更短的小白版说明，只解释怎么填写三项内容。
 
 如果你不确定该用哪个，就让 AI 先检查模板是否存在。普通用户不需要理解 `source-target`、slug、profile、release version 或 npm 命令。

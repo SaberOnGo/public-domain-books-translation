@@ -19,6 +19,8 @@
 
 次の prompt を AI クライアントに貼り付け、`{...}` を本と対象言語に置き換えてください。
 
+### パブリックドメイン書籍翻訳 prompt
+
 ```text
 翻訳したい本：{書名、作者（任意）。信頼できる原文リンクがあれば一緒に貼ってよい}
 対象言語：{例：簡体字中国語}
@@ -28,6 +30,22 @@
 - 対応する原言語テンプレートがまだない場合は、doc/public/user_prompt/book_translation_new_template.md を実行してください。
 
 権利または出典証拠を確認できない場合を除き、技術項目を私に入力させないでください。信頼できるパブリックドメイン原文を自動で探し、書籍プロジェクトを作成し、翻訳、レビュー、EPUB ビルド、層化ランダム抜き取り検査、release まで完了してください。
+```
+
+## 個人利用の書籍翻訳 prompt
+
+自分が持っているローカル書源を、個人学習用としてのみ翻訳し、再配布も商用利用もしない場合は、次の prompt を使います。
+
+```text
+翻訳したい本：{書名、ローカルフォルダ/パス: XXX}
+対象言語：{例：簡体字中国語}
+
+正しい翻訳 prompt を自動的に選んでください。
+- 対応する原言語テンプレートがすでにある場合は、doc/public/user_prompt/book_translation_private_existing_template.md を実行してください。
+- 対応する原言語テンプレートがまだない場合は、doc/public/user_prompt/book_translation_private_new_template.md を実行してください。
+
+これは私の個人利用です。再配布せず、商用利用もしません。私が指定したローカル書源を使用してください。
+プロジェクトを自動作成し、テンプレートが定める体系的な翻訳フロー全体を厳格に完了してください。いかなる漏れも許可しません。
 ```
 
 ## 精密レビュー prompt（任意）
@@ -55,11 +73,14 @@
 - `.\tools\lifebook-launcher`：LifeBook Launcher クライアントのインストール・起動フォルダです。LifeBook プロジェクトを使い、OpenCode をインストールするためにユーザーが知っておくべき場所です。
 - `.\doc\public\user_prompt`：公開 prompt はここにあります。prompt の詳細を確認したり、手動で調整したりできます。
 - `.\books\zh-Hans`：もっとも重要な完成本の場所です。簡体字中国語への翻訳が完了したら、該当する書籍フォルダの `output\release\` を確認します。公開可能なのは release 成果物です。
+- `.\books\private`：個人利用の書籍プロジェクト用フォルダです。パブリックドメインではない私的翻訳の原文、訳文、QA、EPUB 出力はここだけに保存します。このフォルダは Git で無視され、GitHub には公開されません。
 
-## 2 つの公開 prompt とは
+## 4 つの翻訳 prompt とは
 
 - `doc/public/user_prompt/book_translation_existing_template.md`：このリポジトリに対応する原言語テンプレートがすでにある場合に使います。例：日本語から簡体字中国語、英語から簡体字中国語、古代ギリシア語から簡体字中国語。
 - `doc/public/user_prompt/book_translation_new_template.md`：対応する原言語テンプレートがまだない場合に使います。例：初めてフランス語から簡体字中国語の本を作る場合。
+- `doc/public/user_prompt/book_translation_private_existing_template.md`：個人利用のローカル書源で、対応する原言語テンプレートがすでにある場合に使います。
+- `doc/public/user_prompt/book_translation_private_new_template.md`：個人利用のローカル書源で、対応する原言語テンプレートがまだない場合に使います。
 - `doc/public/user_prompt/how_to_use_book_translation_prompts.md`：3 項目の入力方法だけを説明する、さらに短い初心者向けガイドです。
 
 どちらを使うべきか分からない場合は、まずテンプレートが存在するか AI に確認させてください。通常のユーザーは `source-target`、slug、profile、release version、npm コマンドを理解する必要はありません。

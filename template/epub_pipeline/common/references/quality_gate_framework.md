@@ -6,8 +6,8 @@ This file defines quality-gate concepts that apply to every translation directio
 
 ## Universal Gates / 通用门禁
 
-- Source and rights evidence must exist before translation starts.
-- 翻译开始前必须已有来源证据和版权核查记录。
+- Source and rights evidence must exist before translation starts. Public projects require public-domain or licensed evidence. Private-use projects require a user-provided local source file, a private-use declaration, and an ignored `books/private/` project path.
+- 翻译开始前必须已有来源证据和版权核查记录。公开项目必须有公版或授权证据。私人自用项目必须有用户提供的本地书源文件、私人自用声明，并位于被忽略的 `books/private/` 工程路径。
 - A book-level research note and style profile must exist before batch translation.
 - 批量翻译前必须已有本书专项研究和文体画像。
 - Trial translation must pass before full chapter production.

@@ -75,7 +75,19 @@ def add_issue(issues: list[dict], rule: str, detail: str, path: str = "") -> Non
     issues.append({"rule": rule, "path": path, "detail": detail})
 
 
-def check_numbered_project_path(book_root: Path, repo_root: Path | None, issues: list[dict]) -> None:
+def read_state_data(book_root: Path, issues: list[dict]) -> dict:
+    state_path = book_root / "state" / "pipeline_state.json"
+    if not state_path.exists():
+        add_issue(issues, "missing_pipeline_state", "Missing state/pipeline_state.json.", rel(book_root, state_path))
+        return {}
+    try:
+        return json.loads(state_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        add_issue(issues, "invalid_pipeline_state_json", f"Cannot parse pipeline_state.json: {exc}", rel(book_root, state_path))
+        return {}
+
+
+def check_numbered_project_path(book_root: Path, repo_root: Path | None, state_data: dict, issues: list[dict]) -> None:
     if repo_root is None:
         add_issue(issues, "repo_root_not_found", "Cannot find repository root containing books/ and template/.")
         return
@@ -86,29 +98,47 @@ def check_numbered_project_path(book_root: Path, repo_root: Path | None, issues:
         add_issue(issues, "book_root_outside_books", "Book project root must be under books/{target}/{number}_{slug}.", str(book_root))
         return
     parts = relative.parts
-    if len(parts) != 2:
-        add_issue(issues, "book_root_not_numbered_target_project", "Book project root must be exactly books/{target}/{number}_{slug}.", relative.as_posix())
+    publication_mode = state_data.get("publication_mode", "public_domain")
+    if len(parts) == 3 and parts[0] == "private":
+        if publication_mode != "private_use":
+            add_issue(
+                issues,
+                "private_project_without_private_mode",
+                "Book projects under books/private/ require publication_mode=private_use.",
+                relative.as_posix(),
+            )
+            return
+        target, project_dir = parts[1], parts[2]
+    elif len(parts) == 2:
+        if publication_mode == "private_use":
+            add_issue(
+                issues,
+                "private_mode_outside_private_tree",
+                "publication_mode=private_use projects must be under books/private/{target}/{number}_{slug}.",
+                relative.as_posix(),
+            )
+            return
+        target, project_dir = parts
+    else:
+        add_issue(issues, "book_root_not_numbered_target_project", "Book project root must be exactly books/{target}/{number}_{slug} or books/private/{target}/{number}_{slug}.", relative.as_posix())
         return
-    target, project_dir = parts
     if not target or target in {"scripts", "node_modules", "tools"}:
         add_issue(issues, "invalid_target_directory", "Target directory must be a language tag such as zh-Hans, en, ja, or es.", target)
     if not NUMBERED_BOOK_DIR.match(project_dir):
         add_issue(issues, "invalid_project_directory_name", "Project directory must start with a numeric prefix, for example 6_ptolemy_almagest.", project_dir)
 
 
-def check_state(book_root: Path, repo_root: Path | None, issues: list[dict]) -> None:
+def check_state(book_root: Path, repo_root: Path | None, state_data: dict, issues: list[dict]) -> None:
     state_path = book_root / "state" / "pipeline_state.json"
-    if not state_path.exists():
-        add_issue(issues, "missing_pipeline_state", "Missing state/pipeline_state.json.", rel(book_root, state_path))
+    if not state_data:
         return
     if repo_root is None:
         return
-    data = json.loads(state_path.read_text(encoding="utf-8"))
     expected = book_root.relative_to(repo_root).as_posix()
-    actual = data.get("project_root")
+    actual = state_data.get("project_root")
     if actual != expected:
         add_issue(issues, "pipeline_state_project_root_mismatch", f"Expected project_root={expected!r}, found {actual!r}.", rel(book_root, state_path))
-    if data.get("common_template_root") != "template/epub_pipeline/common":
+    if state_data.get("common_template_root") != "template/epub_pipeline/common":
         add_issue(issues, "missing_common_template_root_state", "pipeline_state.json must record common_template_root=template/epub_pipeline/common.", rel(book_root, state_path))
 
 
@@ -163,9 +193,10 @@ def main() -> None:
     book_root = resolve_book_root(args.book_root)
     repo_root = find_repo_root(book_root)
     issues: list[dict] = []
+    state_data = read_state_data(book_root, issues)
 
-    check_numbered_project_path(book_root, repo_root, issues)
-    check_state(book_root, repo_root, issues)
+    check_numbered_project_path(book_root, repo_root, state_data, issues)
+    check_state(book_root, repo_root, state_data, issues)
     check_production_spec(book_root, issues)
     check_local_references(book_root, issues)
     check_package_scripts(book_root, issues)

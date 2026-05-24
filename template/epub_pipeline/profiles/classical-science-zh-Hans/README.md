@@ -8,11 +8,11 @@ It is not a source-target language-pair template. It is an optional third-layer 
 
 适用对象：
 
-- 古典科学、数学、天文学、地理学、光学、力学、医学等技术性公版书。
+- 古典科学、数学、天文学、地理学、光学、力学、医学等技术性书籍。公开项目必须是公版或授权来源；非公版只允许作为 `private_use` 私人自用工程。
 - 含大量证明、术语、图表、表格、数值、单位、专名、校勘版本差异的作品。
 - 需要使用“原书语言 + 第二参考语言译本”共同校读，但禁止从现代译本直接转译的项目。
 
-Typical examples include classical astronomy, mathematics, optics, mechanics, geography, and other technical public-domain works whose translation depends on stable terminology, diagrams, tables, and mathematical verification.
+Typical examples include classical astronomy, mathematics, optics, mechanics, geography, and other technical works whose translation depends on stable terminology, diagrams, tables, and mathematical verification. Public projects require public-domain or licensed evidence; non-public-domain works are allowed only as `private_use` projects.
 
 ## 复制顺序 / Overlay Order
 

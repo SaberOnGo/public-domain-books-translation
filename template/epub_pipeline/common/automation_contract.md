@@ -19,7 +19,7 @@ AI 必须自动决定：
 
 ## AI 不应询问用户
 
-除非来源无法访问或版权状态无法判断，AI 不应询问：
+除非来源无法访问、版权状态无法判断，或用户请求非公版私人自用但没有提供本地书源文件，AI 不应询问：
 
 - 文件名怎么起。
 - 目录怎么组织。
@@ -35,6 +35,7 @@ AI 必须自动决定：
 - 任何具体书籍的数据不得写入模板目录。
 - 若当前工作目录就是模板目录，AI 必须先创建并切换到独立工程目录。
 - 推荐目录：`books/{target}/{number}_{pg_id_or_author_title_slug}/`，并且必须由 `books/scripts/create_book_project.py` 自动创建和分配编号。
+- 非公版私人自用工程必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{book_id_slug}/`；不得把私人原文、译文、QA、EPUB 输出或具体书籍 metadata 写入可发布的 `books/{target}/`。
 - 只有复制后的 `PROJECT_ROOT` 可以写入原文、章节、QA、译文和 EPUB。
 
 ## 人类可选审阅

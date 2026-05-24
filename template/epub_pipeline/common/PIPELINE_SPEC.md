@@ -5,13 +5,16 @@
 - `TEMPLATE_ROOT`
 - `PROFILE_ROOT`：可选。特殊书型控制模板目录，例如 `template/epub_pipeline/profiles/classical-science-zh-Hans`。
 - `PROJECT_ROOT`
-- `SOURCE_URL`
+- `SOURCE_URL`：公开模式或授权模式的来源 URL。
+- `LOCAL_SOURCE_FILE`：可选，仅用于 `publication_mode=private_use` 的用户本地书源文件。
+- `publication_mode`：`public_domain` / `licensed` / `private_use`。
 
 ## 2. 模板保护与写入范围 / Template Protection & Write Scope
 
 - `TEMPLATE_ROOT` 是只读模板目录。
 - AI 不得把具体书籍的原文、译文、QA、EPUB 输出写入模板原目录。
 - 实际做书时，AI 必须通过 `books/scripts/create_book_project.py` 复制模板为独立书籍工程目录，例如 `books/{target}/{number}_{book_id_slug}/`。`{target}` 是输出电子书的目标语言标签，`{number}` 由脚本在该目标语言目录内自动递增分配。
+- 非公版私人自用书籍必须通过 `books/scripts/create_book_project.py --mode private-use --local-source-file ... --private-use-declaration ...` 创建到 `books/private/{target}/{number}_{book_id_slug}/`。`books/private/` 被 Git 忽略；其中的原文、译文、QA、EPUB 输出和具体书籍 metadata 不得发布到 GitHub。
 - 若启用 `PROFILE_ROOT`，必须先复制 `common` 和语言方向模板，再把 `PROFILE_ROOT` 覆盖复制到同一个书籍工程目录。
 - 复制完成后，后续 `PROJECT_ROOT` 指向独立书籍工程目录。
 - AI 只能写入 `PROJECT_ROOT` 内文件。
@@ -69,8 +72,9 @@
 ### Metadata
 
 - `metadata/book.yaml`：EPUB 元数据。
-- `metadata/rights_checklist.md`：版权/公版核查。
+- `metadata/rights_checklist.md`：版权/公版/授权/私人使用边界核查。
 - `metadata/source_evidence.md`：原文来源证据。
+- `metadata/private_use_declaration.md`：私人自用声明。仅 `publication_mode=private_use` 必需；公开项目不得用它替代公版或授权证据。
 - `metadata/source_witness_manifest.md`：可选语言/profile 文件。记录底本、版本、witness、扫描/OCR/转写状态和编号体系。
 - `metadata/book_specific_translation_research.md`：本书专项翻译研究。
 - `metadata/style_profile.md`：文体画像。
@@ -157,6 +161,7 @@
 - `output/release/release_notes.md`：累计中英文发布说明；每次发布把最新版本条目插入文件顶部，必须记录发布原因、问题点、修复、QA 证据、风险和下一轮迭代。
 - `output/release/release_state.json`：当前 release 状态；`latest_status = PASS` 是 `DONE` 的必要条件。
 - `output/release/release_index.md`：所有版本的发布索引。
+- `publication_mode=private_use` 时，`output/release/` 下的版本化 EPUB 是私人自用产物，不是公开 release，不得提交到 GitHub。
 - `output/epubcheck.log` 或 `output/epubcheck.json`：EPUB 校验结果。
 - `output/publication_lint.json`：出版文本 lint 结果，检查编码污染、异常空格、旧纸书页码目录等问题。
 - `output/asset_manifest_check.json`：EPUB 资源引用检查结果，检查图片/样式资源是否存在、路径是否相对、OPF manifest 是否覆盖。
@@ -235,7 +240,8 @@ node scripts/asset_manifest_check.js --write-report
 
 必须同时满足：
 
-- `metadata/rights_checklist.md` 明确可翻译。
+- `metadata/rights_checklist.md` 明确可继续：公开项目必须是 `PUBLICATION_PASS` 或 `LICENSED_PASS`；私人自用项目必须是 `PRIVATE_USE_PASS`。
+- 若 `publication_mode=private_use`，`metadata/private_use_declaration.md` 必须存在并记录用户本地书源文件名、SHA256、个人自用、不传播、不商业使用声明，且工程路径必须位于 `books/private/{target}/{number}_{book_id_slug}/`。
 - 若启用特殊书型 profile，`metadata/reference_witness_policy.md` 必须明确原文底本和第二语言参考译本的使用边界。
 - `qa/pretranslation/pretranslation_report.md` 结论为 `PASS`。
 - 所有章节存在 `qa/chapter_controls/*.control.md` 且结论为 `PASS`。

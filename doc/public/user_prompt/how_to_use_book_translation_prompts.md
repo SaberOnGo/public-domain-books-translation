@@ -6,7 +6,7 @@
 2. 我要翻译成什么语言。
 3. 请 AI 自动选择正确的翻译 prompt。完整写法见下面的[最省事的推荐入口](#最省事的推荐入口)。
 
-其他事情都交给 AI Agent 自动完成：找可靠公版来源、判断源语言、选择或创建模板、建立书籍项目、翻译、审校、构建 EPUB、随机抽检、生成 release。
+其他事情都交给 AI Agent 自动完成：找可靠公版/授权来源或记录私人本地书源、判断源语言、选择或创建模板、建立书籍项目、翻译、审校、构建 EPUB、随机抽检、生成 release 或私人版本化产物。
 
 ## 用户需要知道的 4 个目录
 
@@ -14,6 +14,7 @@
 - `.\tools\lifebook-launcher`：LifeBook Launcher 客户端安装启动目录。用户需要知道这个位置，以使用 LifeBook 项目和安装 OpenCode。
 - `.\doc\public\user_prompt`：公共 prompt 目录。用户想了解提示词细节，或想手动修改 prompt，可以看这里。
 - `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
+- `.\books\private`：非公版私人自用工程目录。这里被 Git 忽略，里面的原文、译文、QA 和 EPUB 不能发布到 GitHub。
 
 ## 你只需要这样写
 
@@ -68,6 +69,8 @@
 
 ## 用户给本地文件时怎么写
 
+如果本地文件是公版或你有明确授权，可以继续使用上面的公版/授权 prompt，并让 AI 核查来源和权利。
+
 ```text
 我要翻译的书：我本地的文件 D:\books\example.txt
 目标语言：简体中文
@@ -81,6 +84,20 @@
 ```
 
 本地文件存在，不代表可以发布。AI 必须先做来源和版权核查。
+
+如果这是非公版书，只做个人学习自用，不传播、不商业使用，应使用私人自用 prompt：
+
+```text
+我要翻译的书：我本地的文件 D:\books\example.epub
+目标语言：简体中文
+私人自用声明：仅供个人学习自用；不传播；不用于商业。
+
+请自动选择正确的私人自用翻译 prompt：
+- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+```
+
+私人自用项目必须创建在 `books/private/{target}/{number}_{slug}/`，不是公开 `books/{target}/`。`books/private/` 被 Git 忽略，不得发布到 GitHub。
 
 ## 最省事的推荐入口
 

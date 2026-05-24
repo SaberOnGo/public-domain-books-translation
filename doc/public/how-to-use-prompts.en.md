@@ -19,6 +19,8 @@ Open your AI client and open this project, or let LifeBook Launcher open it for 
 
 Paste this into your AI client, replacing the `{...}` placeholders:
 
+### Public-Domain Book Translation Prompt
+
 ```text
 Book I want translated: {title, author optional; include a reliable source link if you already have one}
 Target language: {for example Simplified Chinese}
@@ -28,6 +30,22 @@ Automatically choose the correct translation prompt:
 - If the matching source-language template does not exist yet, execute doc/public/user_prompt/book_translation_new_template.md.
 
 Do not ask me to fill technical fields unless rights or source evidence cannot be confirmed. Automatically find a reliable public-domain source, create the book project, complete translation, review, EPUB build, stratified random spot-check, and release.
+```
+
+## Personal-Use Book Translation Prompt
+
+If you already have a local source file and only want a personal study translation, with no redistribution and no commercial use, use this prompt:
+
+```text
+Book I want translated: {title, local folder/path: XXX}
+Target language: {for example Simplified Chinese}
+
+Automatically choose the correct translation prompt:
+- If the matching source-language template already exists, execute doc/public/user_prompt/book_translation_private_existing_template.md.
+- If the matching source-language template does not exist yet, execute doc/public/user_prompt/book_translation_private_new_template.md.
+
+This is for my personal use only. It will not be redistributed and will not be used commercially. Use the local source I provided.
+Automatically create the project and strictly complete the full systematic translation workflow required by the templates, with no omissions.
 ```
 
 ## Refinement Review Prompt (Optional)
@@ -55,11 +73,14 @@ After passing, clean or rebuild staging, regenerate the EPUB, and run publicatio
 - `.\tools\lifebook-launcher`: LifeBook Launcher client install and launch folder. Users need this path to use the LifeBook project and install OpenCode.
 - `.\doc\public\user_prompt`: the public prompts live here. Read or edit these if you want to understand or manually adjust the prompt.
 - `.\books\zh-Hans`: the most important output area for Simplified Chinese books. After translation succeeds, open the matching book folder and check `output\release\`; only release artifacts count as publishable results.
+- `.\books\private`: private-use book project folder. Non-public-domain private translations should keep source text, translations, QA, and EPUB output here only; this folder is ignored by Git and is not published to GitHub.
 
-## What Are The Two Public Prompts?
+## What Are The Four Translation Prompts?
 
 - `doc/public/user_prompt/book_translation_existing_template.md`: use when this repository already has the matching source-language template, such as Japanese to Simplified Chinese, English to Simplified Chinese, or Ancient Greek to Simplified Chinese.
 - `doc/public/user_prompt/book_translation_new_template.md`: use when this repository does not yet have the matching source-language template, such as the first French to Simplified Chinese book.
+- `doc/public/user_prompt/book_translation_private_existing_template.md`: use for a personal-use local source when the matching source-language template already exists.
+- `doc/public/user_prompt/book_translation_private_new_template.md`: use for a personal-use local source when the matching source-language template does not exist yet.
 - `doc/public/user_prompt/how_to_use_book_translation_prompts.md`: a shorter beginner-facing guide that only explains how to fill in the three items.
 
 If you are unsure which one applies, ask the AI to check whether the template exists first. Normal users do not need to understand `source-target`, slug, profile, release version, or npm commands.

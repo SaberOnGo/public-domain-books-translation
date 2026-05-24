@@ -31,6 +31,23 @@ If the book belongs to a special profile, overlay the matching `profiles/{profil
 
 All source text, translations, QA files, and EPUB output belong in the book project, never in `template/`.
 
+### Private-Use Projects / 私人自用工程
+
+Public-domain or licensed projects use the normal publishable tree above. A non-public-domain book may be translated only as a strictly private-use project when the user provides a local source file and explicitly declares personal study only, no redistribution, and no commercial use.
+
+公版或授权项目使用上面的可发布目录。非公版书只有在用户提供本地书源文件，并明确声明仅供个人学习自用、不传播、不商业使用时，才可以作为严格私人自用工程翻译。
+
+Private-use projects must be created with:
+
+```powershell
+cd books
+npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "Personal study only; no redistribution; no commercial use."
+```
+
+The script writes private projects under `books/private/{target}/{number}_{book_id_slug}/`. That tree is ignored by Git. Scripts, templates, and configuration may be published to GitHub, but private source text, translations, QA files, EPUB output, and book-specific metadata under `books/private/` must not be published.
+
+脚本会把私人项目写入 `books/private/{target}/{number}_{book_id_slug}/`。该目录被 Git 忽略。脚本、模板和配置可以发布到 GitHub，但 `books/private/` 下的私人原文、译文、QA、EPUB 输出和具体书籍 metadata 不得发布。
+
 Shared Node.js build dependencies belong at `books/`, not inside every book project. Run `npm install` once from `books/`; book-local scripts must find shared tools by walking up to `books/node_modules/`, because book projects may now be nested under `books/{target}/`.
 
 Markdown chapters are authoring sources only. During EPUB production, final chapters must be converted to XHTML, images/SVG/CSS/table resources must be copied into the EPUB package, and every used resource must be declared in OPF manifest. See `common/references/epub_assets_figures_tables.md`.

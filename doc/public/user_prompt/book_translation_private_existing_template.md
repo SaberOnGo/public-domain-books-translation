@@ -1,0 +1,72 @@
+# 非公版私人自用翻译执行 Prompt：已有源语言模板
+
+适用场景：用户提供本地电子书/文本文件，明确声明“仅个人学习自用、不传播、不商业使用”，且仓库里已经有对应语言方向模板，例如 `ja-zh-Hans`、`en-zh-Hans` 或 `grc-zh-Hans`。
+
+这个 prompt 不用于公版或可发布项目。它只创建 `books/private/{target}/{number}_{slug}/` 下的本地私人工程。`books/private/` 被 Git 忽略，里面的原文、译文、QA、EPUB 和 book-specific metadata 不得发布到 GitHub。
+
+用户入口必须包含：
+
+- 我要翻译的书：`{本地文件路径；可附书名、作者}`
+- 目标语言：`{例如 简体中文 / English / 日本語 / Español}`
+- 私人自用声明：`仅供个人学习自用；不传播；不用于商业。`
+
+把上面内容和下面 prompt 一起发给 AI Agent。
+
+```text
+你是在 public-domain-books-translation 仓库内工作的 EPUB 私人自用翻译 Agent。
+
+这是非公版私人自用任务，不是公开发布任务。用户已提供本地书源，并声明仅供个人学习自用、不传播、不用于商业。你必须使用 `private_use` 模式，严禁把该书的原文、译文、QA、EPUB 输出或 book-specific metadata 发布到 GitHub。
+
+用户入口：
+- 我要翻译的书：{用户填写的本地文件路径、书名、作者}
+- 目标语言：{用户填写}
+- 私人自用声明：仅供个人学习自用；不传播；不用于商业。
+
+执行规则：
+
+1. 第一件事必须读取仓库根目录 `AGENTS.md`。
+2. 然后读取当前任务相关模板文件，至少包括：
+   - `template/epub_pipeline/README.md`
+   - `template/epub_pipeline/common/README.md`
+   - `template/epub_pipeline/common/PIPELINE_SPEC.md`
+   - `template/epub_pipeline/common/metadata/rights_checklist.md`
+   - `template/epub_pipeline/common/metadata/source_evidence.md`
+   - `template/epub_pipeline/common/metadata/private_use_declaration.md`
+   - `template/epub_pipeline/common/references/quality_gate_framework.md`
+   - `template/epub_pipeline/common/references/stratified_random_spotcheck.md`
+   - `template/epub_pipeline/common/references/release_versioning.md`
+   - `template/epub_pipeline/common/references/cover_design_policy.md`
+   - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
+   - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
+   - 匹配的 `template/epub_pipeline/targets/{target}/`
+   - 匹配的 `template/epub_pipeline/{source-target}/`
+3. 不得依赖记忆、历史执行经验或假设；必须以当前仓库文件为准。
+4. 根据本地文件、书名、作者和目标语言，自动判断源语言、目标语言标签、source-target 模板和项目 slug。
+5. 必须确认 `template/epub_pipeline/{source-target}` 已存在；若不存在，改用 `doc/public/user_prompt/book_translation_private_new_template.md`。
+6. 必须使用以下模式创建工程，不得创建到公开 `books/{target}/`：
+
+```powershell
+cd books
+npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{用户本地文件路径}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
+```
+
+7. 工程必须位于 `books/private/{target}/{next_number}_{slug}/`。如果脚本没有创建到 `books/private/`，必须停止并修正。
+8. 必须记录：
+   - `metadata/private_use_declaration.md`
+   - `metadata/source_evidence.md`，source type 使用 `user_provided_local_file`
+   - `metadata/rights_checklist.md`，decision 使用 `PRIVATE_USE_PASS` 或 `FAIL`
+   - `state/pipeline_state.json.publication_mode = private_use`
+9. 不得自动查找非公版全文，不得使用盗版站、来源不明 EPUB、现代受版权保护译本或用户没有本地访问权的材料。
+10. 如果用户没有提供本地文件，必须停止；不能用本 prompt 继续。
+11. 私人自用模式只改变权利和目录边界，不降低质量要求。仍必须完成研究、试译、分章翻译、章节审校、质量门禁、EPUB 构建、EPUBCheck、读者可见内容检查、分层随机抽检和版本化私人产物。
+12. `output/release/` 下的 EPUB 只能作为私人自用版本化产物，不是公开 release，不得提交或发布到 GitHub。
+13. 最终报告必须包含：
+    - 私人工程路径 `books/private/{target}/{number}_{slug}/`
+    - 本地书源文件名和 SHA256，不要暴露不必要的本机绝对路径
+    - `metadata/private_use_declaration.md` 路径
+    - 私人 EPUB 产物路径
+    - 验证命令与结果
+    - 分层随机抽检轮次与最终 validation_report
+    - 修复摘要
+    - 明确说明：该产物仅限个人学习自用，不得传播，不得商业使用，不得发布到 GitHub
+```

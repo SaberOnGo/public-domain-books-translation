@@ -66,6 +66,10 @@ Here, “book info” means reader-visible pages added by the translation projec
 - 译者说明：仅在确有必要时说明译名原则、术语原则、版本选择或特殊排版处理。
 - 权利与发行说明：中文译本或目标语译本的项目授权状态。
 
+`publication_mode=private_use` 例外：不得把私人自用书籍信息页写成公版说明或公开授权页。应以目标语言简短标明“私人学习版本 / Personal study edition”、本地书源文件名或校验摘要、禁止传播、禁止商业使用。私人自用 EPUB 不是公开 release，不适用项目默认公开授权。
+
+`publication_mode=private_use` exception: do not describe the book-info page as a public-domain notice or public license page. Briefly label it in the target language as a personal study edition, record the local source file name or checksum summary, and state no redistribution and no commercial use. A private-use EPUB is not a public release and is not covered by the project's default public license.
+
 长度要求：
 
 - 书籍信息页应短而完整，提供基本背景即可。

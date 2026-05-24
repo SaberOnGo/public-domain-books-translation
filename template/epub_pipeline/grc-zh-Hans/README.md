@@ -2,10 +2,10 @@
 
 ## 目标 / Goal
 
-给 AI 这个语言模板目录 `TEMPLATE_ROOT`、共享模板目录 `COMMON_TEMPLATE_ROOT`、目标工程目录 `PROJECT_ROOT` 和原书来源 `SOURCE_URL`，AI 应能自动完成：
+给 AI 这个语言模板目录 `TEMPLATE_ROOT`、共享模板目录 `COMMON_TEMPLATE_ROOT`、目标工程目录 `PROJECT_ROOT` 和原书来源 `SOURCE_URL` 或私人本地书源，AI 应能自动完成：
 
-1. 下载/读取古希腊文公版底本。
-2. 核查来源、版权、版本、编辑者、扫描/OCR/转写状态。
+1. 下载/读取古希腊文公版或授权底本；若是非公版私人自用模式，则读取用户提供的本地书源。
+2. 核查来源、版权、版本、编辑者、扫描/OCR/转写状态和使用边界。
 3. 记录 source witnesses、章节编号、页码/行号体系和文本不确定性。
 4. 清洗、分章，并保留可追溯的原文证据。
 5. 完成通用翻译研究、古希腊文专项研究、本书专项研究和预翻译试译。
@@ -30,7 +30,8 @@ This template handles Ancient Greek source-language issues for Simplified Chines
 - `TEMPLATE_ROOT`：语言方向模板目录，即 `template/epub_pipeline/grc-zh-Hans`。
 - `COMMON_TEMPLATE_ROOT`：共享 EPUB 流水线目录，即 `template/epub_pipeline/common`。
 - `PROJECT_ROOT`：复制模板后的具体书籍工程目录；如未提供，AI 必须用 `books/scripts/create_book_project.py` 自动创建。
-- `SOURCE_URL`：古希腊文公版来源 URL，例如校勘版扫描、TEI/XML、Perseus、Wikisource、Internet Archive 或其他可核查来源。
+- `SOURCE_URL`：古希腊文公版或授权来源 URL，例如校勘版扫描、TEI/XML、Perseus、Wikisource、Internet Archive 或其他可核查来源。
+- `LOCAL_SOURCE_FILE`：可选，仅用于 `publication_mode=private_use` 的用户本地书源文件。
 
 可选输入：
 
@@ -49,7 +50,7 @@ This template handles Ancient Greek source-language issues for Simplified Chines
 
 之后所有抓取、研究、翻译、QA、EPUB 输出都只能写入新书籍工程目录。
 
-如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须是定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。
+如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须是定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地书源并声明个人自用、不传播、不商业使用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{book_id_slug}/`。
 
 Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `npm install`，再进入具体书籍目录运行 `npm run lint:publication`、`npm run build:epub`、`npm run check:epub`。本模板的 `package.json` 只提供本书脚本，依赖统一来自共享的 `books/node_modules/`，脚本必须向上查找共享依赖，不能假定书籍目录直接位于 `books/` 下。
 
@@ -134,7 +135,7 @@ Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `
 
 ## 硬门禁 / Hard Gates
 
-- 没有古希腊文公版来源证据，不得翻译。
+- 公开项目没有古希腊文公版或授权来源证据，不得翻译；私人自用项目没有本地书源文件和 `metadata/private_use_declaration.md`，不得翻译。
 - 未记录底本版本、编辑者或来源状态，不得预翻译。
 - OCR/转写未经说明，不得作为可靠正文批量翻译。
 - 未建立 `metadata/source_witness_manifest.md`，不得批量分章翻译。

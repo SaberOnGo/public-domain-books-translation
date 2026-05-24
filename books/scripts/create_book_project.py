@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import shutil
@@ -38,7 +39,23 @@ def parse_args() -> argparse.Namespace:
         default=[],
         help="Optional profile template under template/epub_pipeline/profiles/. Can be repeated.",
     )
-    parser.add_argument("--source-url", default="", help="Optional public-domain source URL to record in state.")
+    parser.add_argument(
+        "--mode",
+        choices=["public-domain", "private-use"],
+        default="public-domain",
+        help="Project mode. public-domain writes to books/{target}/; private-use writes to ignored books/private/{target}/.",
+    )
+    parser.add_argument("--source-url", default="", help="Optional public-domain or authorized source URL to record in state.")
+    parser.add_argument(
+        "--local-source-file",
+        default="",
+        help="Required for --mode private-use. User-provided local source file for personal study only.",
+    )
+    parser.add_argument(
+        "--private-use-declaration",
+        default="",
+        help="Required for --mode private-use. User declaration that output is personal study only, not redistributed, and not commercial.",
+    )
     parser.add_argument("--dry-run", action="store_true", help="Print the planned directory without copying files.")
     return parser.parse_args()
 
@@ -95,7 +112,72 @@ def copy_overlay(src: Path, dst: Path) -> None:
     shutil.copytree(src, dst, dirs_exist_ok=True, ignore=ignore)
 
 
-def update_state(project_root: Path, repo_root: Path, source_target: str, source_url: str) -> None:
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def build_private_use_record(local_source_file: str, declaration: str) -> dict[str, str | bool]:
+    source_path = Path(local_source_file).expanduser().resolve()
+    if not source_path.is_file():
+        raise SystemExit(f"--local-source-file must point to an existing file in private-use mode: {source_path}")
+    normalized_declaration = declaration.strip()
+    if not normalized_declaration:
+        raise SystemExit("--private-use-declaration is required in private-use mode.")
+    return {
+        "local_source_file_name": source_path.name,
+        "local_source_sha256": sha256_file(source_path),
+        "user_declaration": normalized_declaration,
+        "redistribution_allowed": False,
+        "commercial_use_allowed": False,
+        "github_publish_allowed": False,
+    }
+
+
+def write_private_use_declaration(project_root: Path, record: dict[str, str | bool]) -> None:
+    metadata_dir = project_root / "metadata"
+    metadata_dir.mkdir(parents=True, exist_ok=True)
+    declaration_path = metadata_dir / "private_use_declaration.md"
+    declaration_path.write_text(
+        "\n".join(
+            [
+                "# Private Use Declaration / 私人自用声明",
+                "",
+                "private_use_status: `PRIVATE_USE_PASS`",
+                "",
+                "## User Declaration / 用户声明",
+                "",
+                str(record["user_declaration"]),
+                "",
+                "## Source File Evidence / 本地书源证据",
+                "",
+                f"- Local source file name: {record['local_source_file_name']}",
+                f"- Local source SHA256: {record['local_source_sha256']}",
+                "",
+                "## Boundaries / 边界",
+                "",
+                "- Personal study only. / 仅限个人学习自用。",
+                "- No redistribution. / 不得传播。",
+                "- No commercial use. / 不得商业使用。",
+                "- Do not publish source text, translations, QA files, or EPUB output to GitHub. / 不得把原文、译文、QA 或 EPUB 输出发布到 GitHub。",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+
+def update_state(
+    project_root: Path,
+    repo_root: Path,
+    source_target: str,
+    source_url: str,
+    publication_mode: str,
+    private_use_record: dict[str, str | bool] | None,
+) -> None:
     state_file = project_root / "state" / "pipeline_state.json"
     if not state_file.exists():
         return
@@ -103,8 +185,11 @@ def update_state(project_root: Path, repo_root: Path, source_target: str, source
     data["project_root"] = project_root.relative_to(repo_root).as_posix()
     data["template_root"] = f"template/epub_pipeline/{source_target}"
     data["common_template_root"] = "template/epub_pipeline/common"
+    data["publication_mode"] = "private_use" if publication_mode == "private-use" else "public_domain"
     if source_url:
         data["source_url"] = source_url
+    if private_use_record is not None:
+        data["private_use"] = private_use_record
     state_file.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
@@ -114,6 +199,9 @@ def main() -> None:
     source_target = args.source_target.strip()
     target = args.target.strip() if args.target else infer_target(source_target, template_root)
     slug = clean_slug(args.book_slug)
+    private_use_record = None
+    if args.mode == "private-use":
+        private_use_record = build_private_use_record(args.local_source_file, args.private_use_declaration)
 
     common_root = template_root / "common"
     language_root = template_root / source_target
@@ -122,7 +210,7 @@ def main() -> None:
     if not language_root.is_dir():
         raise SystemExit(f"Missing language-pair template: {language_root}")
 
-    target_dir = books_root / target
+    target_dir = books_root / "private" / target if args.mode == "private-use" else books_root / target
     number = next_number(target_dir)
     project_root = target_dir / f"{number}_{slug}"
     if project_root.exists():
@@ -144,7 +232,9 @@ def main() -> None:
     copy_overlay(language_root, project_root)
     for profile_root in profile_roots:
         copy_overlay(profile_root, project_root)
-    update_state(project_root, repo_root, source_target, args.source_url)
+    if private_use_record is not None:
+        write_private_use_declaration(project_root, private_use_record)
+    update_state(project_root, repo_root, source_target, args.source_url, args.mode, private_use_record)
 
 
 if __name__ == "__main__":

@@ -5,7 +5,8 @@
 - `{TEMPLATE_ROOT}`：语言方向模板目录，即 `template/epub_pipeline/en-zh-Hans`。
 - `{COMMON_TEMPLATE_ROOT}`：共享模板目录，即 `template/epub_pipeline/common`。
 - `{PROJECT_ROOT}`：复制模板后的具体书籍工程目录，默认格式为 `books/zh-Hans/{number}_{book_id_slug}`。
-- `{SOURCE_URL}`：原书公版来源 URL。
+- `{SOURCE_URL}`：原书公版或授权来源 URL。私人自用模式可为空。
+- `{LOCAL_SOURCE_FILE}`：可选，仅用于用户提供本地书源的 `private_use` 模式。
 
 ```text
 你是自动化中文 EPUB 翻译出版代理。
@@ -14,6 +15,7 @@ PROJECT_ROOT = {PROJECT_ROOT}
 TEMPLATE_ROOT = {TEMPLATE_ROOT}
 COMMON_TEMPLATE_ROOT = {COMMON_TEMPLATE_ROOT}
 SOURCE_URL = {SOURCE_URL}
+LOCAL_SOURCE_FILE = {LOCAL_SOURCE_FILE}
 
 第一步：如果 PROJECT_ROOT 不存在，必须优先运行 `books/scripts/create_book_project.py` 自动创建 `books/zh-Hans/{number}_{book_id_slug}`，由脚本先把 COMMON_TEMPLATE_ROOT 复制到 PROJECT_ROOT，再把 TEMPLATE_ROOT 覆盖复制到 PROJECT_ROOT。
 
@@ -30,7 +32,7 @@ SOURCE_URL = {SOURCE_URL}
 
 硬性要求：
 
-- 先核查原文来源和版权/公版状态，不明确则停止。
+- 先核查原文来源和版权/公版/授权状态；若用户提供本地书源并声明个人自用、不传播、不商业使用，则进入 `private_use` 模式并记录 `metadata/private_use_declaration.md`。公开发布权利不明确且没有私人本地书源时停止。
 - 未完成模板复制，不得抓取原文。
 - 先完成通用翻译研究和本书专项翻译研究。
 - 正式翻译前必须完成 qa/pretranslation/pretranslation_report.md，且结论为 PASS。

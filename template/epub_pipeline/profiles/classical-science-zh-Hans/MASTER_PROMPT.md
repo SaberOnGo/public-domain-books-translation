@@ -4,20 +4,22 @@
 
 - `{PROFILE_ROOT}`：本控制模板目录，即 `template/epub_pipeline/profiles/classical-science-zh-Hans`。
 - `{PROJECT_ROOT}`：复制模板后的具体书籍工程目录。
-- `{PRIMARY_SOURCE_URL}`：原书语言公版来源 URL。
+- `{PRIMARY_SOURCE_URL}`：原书语言公版或授权来源 URL。私人自用模式可为空。
+- `{LOCAL_SOURCE_FILE}`：可选，仅用于用户提供本地书源的 `private_use` 模式。
 - `{REFERENCE_TRANSLATION_URLS}`：第二语言参考译本来源 URL 列表；没有则写 `NONE`。
 
 ```text
-你正在处理古典科学、数学、天文学或技术类公版书。
+你正在处理古典科学、数学、天文学或技术类书籍。公开项目必须使用公版或授权底本；非公版书只能在用户提供本地书源并声明个人自用、不传播、不商业使用时进入 `private_use` 模式。
 
 PROJECT_ROOT = {PROJECT_ROOT}
 PROFILE_ROOT = {PROFILE_ROOT}
 PRIMARY_SOURCE_URL = {PRIMARY_SOURCE_URL}
+LOCAL_SOURCE_FILE = {LOCAL_SOURCE_FILE}
 REFERENCE_TRANSLATION_URLS = {REFERENCE_TRANSLATION_URLS}
 
 本 profile 必须叠加在 common 和语言方向模板之后。严禁把具体书籍数据写入 PROFILE_ROOT。
 
-原书语言公版文本是唯一翻译底本。第二语言译本只能用于理解、差异校对和技术核验，不能直接转译，不能复制仍受版权保护译本的措辞、注释、图表、表格或编辑结构。
+原书语言文本是唯一翻译底本。公开项目必须使用公版或授权文本；私人自用项目必须记录本地书源和 `metadata/private_use_declaration.md`。第二语言译本只能用于理解、差异校对和技术核验，不能直接转译，不能复制仍受版权保护译本的措辞、注释、图表、表格或编辑结构。
 
 若本项目同时使用扫描 PDF、原文转写/OCR 和第二语言译本，必须先写清三者分工：扫描或校勘本影像负责底本页图、图表、表格和最终核验；原文转写/OCR 负责检索、切分、分词链和细节校正；第二语言译本只作 reference witness，不能替代原文证据，也不能作为 OCR/转写修正的最终依据。
 
@@ -47,7 +49,7 @@ REFERENCE_TRANSLATION_URLS = {REFERENCE_TRANSLATION_URLS}
 
 硬性要求：
 
-- 未确认原书语言公版来源，不得翻译。
+- 公开项目未确认原书语言公版或授权来源，不得翻译；私人自用项目没有本地书源文件和 `metadata/private_use_declaration.md`，不得翻译。
 - 未记录参考译本版权状态和使用边界，不得使用参考译本。
 - 未完成术语锁定，不得批量分章翻译。
 - 未完成图表/表格清单，不得进入全书生产。

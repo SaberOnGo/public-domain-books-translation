@@ -35,6 +35,8 @@ LifeBook 书坊是一个多语言公版书翻译与 EPUB 制作流程。它不�
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
 ```
 
+如果是非公版书，只能使用本地私人模式。用户必须提供自己的本地电子书文件，并明确声明仅供个人学习自用、不传播、不商业使用；AI 应创建 `books/private/{target}/{number}_{book_slug}/` 下的私人工程。`books/private/` 被 Git 忽略，里面的原文、译文、QA 和 EPUB 不能发布到 GitHub。
+
 ## AI 客户端
 
 本仓库不绑定模型。Codex App、Claude Code、OpenCode、aider、Antigravity 或其他能读取本地文件的 AI 客户端都可以用，只要它能读仓库、改文件、运行命令，并遵守 `AGENTS.md`。
@@ -46,7 +48,7 @@ LifeBook 书坊是一个多语言公版书翻译与 EPUB 制作流程。它不�
 - 仓库中的源码目录是 `tools/lifebook-launcher/source/`，供开发者打包和维护。
 - 它会自动维护 LifeBook 项目更新、检查/更新 OpenCode Desktop、支持 LifeBook Launcher 自更新，并允许用户设置开机自动启动。
 
-Launcher 不会保存 API Key，也不会把 OpenCode 本体放进本仓库。详见 [LifeBook Launcher 设计说明](./docs/lifebook-launcher/design.zh-CN.md) 和 [OpenCode 客户端说明](./docs/ai-clients/opencode.zh-CN.md)。
+Launcher 不会保存 API Key，也不会把 OpenCode 本体放进本仓库。OpenCode客户端使用见 [OpenCode 客户端说明](./docs/ai-clients/opencode.zh-CN.md)。
 
 ## 用户需要知道的重要目录
 
@@ -54,6 +56,7 @@ Launcher 不会保存 API Key，也不会把 OpenCode 本体放进本仓库。�
 - `.\tools\lifebook-launcher`：LifeBook Launcher 客户端安装启动目录。用户需要知道这个位置，以使用 LifeBook 项目和安装 OpenCode。
 - `.\doc\public\user_prompt`：公共启动提示词目录。用户想了解提示词细节，或想手动调整给 AI 的 prompt，可以看这里。
 - `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
+- `.\books\private`：本地私人自用书籍工程目录。这里用于用户提供本地书源的非公版个人学习翻译，已被 Git 忽略，不能发布到 GitHub。
 
 ## 仓库结构
 
@@ -87,9 +90,19 @@ books/{target}/{number}_{book_id_slug}/
 
 脚本会先复制 `template/epub_pipeline/common`，再覆盖对应语言方向模板。若书籍需要特殊 profile，再叠加 `profiles/{profile-target}/`。
 
+私人自用项目必须显式使用 `private-use` 模式：
+
+```powershell
+cd books
+npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
+```
+
+私人模式只改变权利与目录边界，不降低翻译、审校、EPUB 校验、分层随机抽检和版本化产物要求。私人模式生成的是个人自用产物，不是公开 release。
+
 ## 核心规则
 
-- 翻译前必须保留来源证据和版权核查记录。
+- 翻译前必须保留来源证据和版权核查记录；公开项目必须是公版或授权来源。
+- 非公版个人自用项目必须进入 `private_use` 模式，并保存在被 Git 忽略的 `books/private/` 下。
 - 不使用现代受版权保护译本、盗版站或来源不明 EPUB。
 - AI 初稿不能直接发布。
 - 具体书籍内容不能写回 `template/`。
@@ -124,6 +137,8 @@ npm run release:create
 每本源书都要单独核查版权。某文本在一个国家进入公版，不代表自动在所有地区都进入公版。
 
 本项目产生的译文、注释、封面、排版和 EPUB 打包等非代码内容，默认按 `CC BY-NC-SA 4.0` 发布；第三方商业使用必须另行取得 LifeBook 书坊及相关权利人的授权。
+
+`books/private/` 下的私人自用项目不属于公开发布内容，不适用默认公开授权，不得提交或发布到 GitHub。
 
 参见：
 

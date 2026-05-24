@@ -1,4 +1,4 @@
-# 公版书翻译执行 Prompt：没有源语言模板
+# 书籍翻译执行 Prompt：没有源语言模板
 
 适用场景：仓库里还没有对应语言方向模板，例如想做 `fr-zh-Hans`，但 `template/epub_pipeline/fr-zh-Hans/` 还不存在。
 
@@ -11,17 +11,17 @@
 把上面三项内容和下面 prompt 一起发给 AI Agent。
 
 ```text
-你是在 public-domain-books-translation 仓库内工作的 EPUB 公版书翻译出版 Agent。
+你是在 public-domain-books-translation 仓库内工作的 EPUB 翻译出版 Agent。公开项目必须使用公版或授权来源；非公版书只能在用户提供本地书源并声明个人自用、不传播、不商业使用时进入 `private_use` 模式。
 
 用户入口只提供三项内容：
 - 我要翻译的书：{用户填写}
 - 目标语言：{用户填写}
 - 自动选择 prompt 规则：没有源语言模板时执行本文件；已有源语言模板时改用 `doc/public/user_prompt/book_translation_existing_template.md`
 
-除此之外，源语言、可靠公版来源 URL、source-target 语言方向、目标语言标签、项目 slug、是否需要 profile、建书目录编号，都必须由你自动判断、自动查找、自动记录。不要要求用户补充这些技术字段，除非版权状态、来源权利或目标语言规则无法确认。
+除此之外，源语言、可靠公版/授权来源 URL 或私人本地书源模式、source-target 语言方向、目标语言标签、项目 slug、是否需要 profile、建书目录编号，都必须由你自动判断、自动记录。不要要求用户补充这些技术字段，除非版权状态、来源权利、目标语言规则无法确认，或用户请求非公版私人自用但没有提供本地书源文件。
 
 任务目标：
-在源语言方向模板尚不存在的情况下，先创建最小可复用的 `{source-target}` 语言方向模板，再用该模板创建并完成一本公版 EPUB 书籍项目。最终必须生成 `books/{target}/{number}_{slug}/output/release/` 下 latest_status=PASS 的可发布 EPUB。
+在源语言方向模板尚不存在的情况下，先创建最小可复用的 `{source-target}` 语言方向模板，再用该模板创建并完成一本 EPUB 书籍项目。公开项目最终必须生成 `books/{target}/{number}_{slug}/output/release/` 下 latest_status=PASS 的可发布 EPUB；私人自用项目必须位于被 Git 忽略的 `books/private/{target}/{number}_{slug}/`，其版本化 EPUB 只是个人自用产物，不得发布到 GitHub。
 
 第一阶段：读取规则与确认缺口
 
@@ -71,13 +71,13 @@
 第三阶段：验证模板可建书
 
 13. 运行 dry-run 验证 `books/scripts/create_book_project.py` 可以使用新模板创建项目。
-14. dry-run 通过后，正式创建 `books/{target}/{next_number}_{slug}/`。slug 由你根据书名和作者自动生成。
+14. dry-run 通过后，公开项目正式创建 `books/{target}/{next_number}_{slug}/`；私人自用项目使用 `--mode private-use --local-source-file ... --private-use-declaration ...` 创建 `books/private/{target}/{next_number}_{slug}/`。slug 由你根据书名和作者自动生成。
 15. create_book_project.py 必须先复制 common，再 overlay 新语言方向模板。所有后续具体书籍文件只能写入新书目录。
 
 第四阶段：自动查找来源与版权核查
 
-16. 若用户没有提供可靠来源 URL，必须自动查找可靠公版来源，例如 Project Gutenberg、Wikisource、Internet Archive、Gallica、青空文库、国家图书馆/大学馆藏等。
-17. 若用户给的是本地文件，必须核查本地文件来源、版权状态和提交权利；版权不清楚时停止。
+16. 若用户没有提供可靠来源 URL 且没有提供本地书源文件，必须自动查找可靠公版或授权来源，例如 Project Gutenberg、Wikisource、Internet Archive、Gallica、青空文库、国家图书馆/大学馆藏等；不得自动查找非公版全文。
+17. 若用户给的是本地文件并声明个人自用、不传播、不商业使用，记录 `metadata/private_use_declaration.md`，只允许私人自用工程继续；本地文件存在不等于可发布。若既无公版/授权来源又无本地书源，必须停止。
 18. 不得使用现代受版权保护译本、盗版站、来源不明 EPUB 或用户无权提交材料。
 19. 翻译前必须完成：
     - `metadata/source_evidence.md`
@@ -104,7 +104,7 @@
     - 覆盖实际存在的 paragraphs、tables、figures、formulas/proof blocks、captions/notes。
     - 每轮生成 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、Agent A/B 独立评审、fix_log、closure_check。
     - 任一层或任一 Agent 发现 P0/P1/P2、读者读不懂、事实/叙述关系误解、源语言句法硬搬、无依据润饰、术语/专名/译注/表格/图片/公式错误，必须修复、重建 EPUB，并用新 seed 追加下一轮抽检。
-    - 只有最后一轮无未关闭问题，且 `npm run review:random-validate:pass` 或等价 `--require-pass` 校验通过，才可退出抽检。
+    - 只有最后N轮无未关闭问题(N最小为1, 默认2, 输出高质量译本可选3)，且 `npm run review:random-validate:pass` 或等价 `--require-pass` 校验通过，才可退出抽检。
 26. 抽检和修复完成后必须重新生成 EPUB，并运行 `npm run release:create` 或等价 release 脚本，把可发布 EPUB 输出到 `output/release/`。
 27. `output/release/release_state.json` 的 `latest_status` 必须为 `PASS`。`output/book.epub` 不能单独作为完成依据。
 

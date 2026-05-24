@@ -19,6 +19,8 @@
 
 然後把下面這段貼給 AI，將 `{...}` 換成你的書名和目標語言：
 
+### 公版書翻譯 prompt
+
 ```text
 我要翻譯的書：{書名、作者（可選）；如果你已經有可靠來源連結，也可以貼上}
 目標語言：{例如 簡體中文}
@@ -28,6 +30,22 @@
 - 如無對應源語言模板，執行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版權或來源無法確認，不要讓我填寫技術欄位。請自動查找可靠公版來源，自動建立專案，完成翻譯、審校、EPUB 建置、分層隨機抽檢和 release。
+```
+
+## 個人自用書翻譯 prompt
+
+如果這是你自己已有的本地書源，只供個人學習自用，不傳播、不商業使用，可以使用下面這段：
+
+```text
+我要翻譯的書：{書名、本地目錄: XXX }
+目標語言： {例如 簡體中文}
+
+請自動選擇正確的翻譯 prompt：
+- 如已有對應源語言模板，執行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如無對應源語言模板，執行 doc/public/user_prompt/book_translation_private_new_template.md。
+
+這是我個人自用的，不傳播，不用於商業，使用我給出的本地書源。
+請自動建立專案，嚴格完成整個模板規定的系統翻譯流程，不允許有任何遺漏。
 ```
 
 ## 精修審校 prompt（可選）
@@ -55,11 +73,14 @@
 - `.\tools\lifebook-launcher`：LifeBook Launcher 用戶端安裝啟動目錄。使用者需要知道這個位置，以使用 LifeBook 專案和安裝 OpenCode。
 - `.\doc\public\user_prompt`：公共 prompt 放在這裡。想了解 prompt 細節，或想手動修改 prompt 時，看這個目錄。
 - `.\books\zh-Hans`：最重要的成書目錄。翻譯成簡體中文成功後，到對應書籍目錄裡找 `output\release\`；只有 release 目錄裡的成品才算可發布結果。
+- `.\books\private`：個人自用書籍專案目錄。非公版私人翻譯的原文、譯文、QA 和 EPUB 只應保存在這裡；此目錄被 Git 忽略，不發布到 GitHub。
 
-## 兩個公共 prompt 是什麼
+## 四個翻譯 prompt 是什麼
 
 - `doc/public/user_prompt/book_translation_existing_template.md`：倉庫已經有對應源語言模板時使用，例如日語到簡體中文、英語到簡體中文、古希臘語到簡體中文。
 - `doc/public/user_prompt/book_translation_new_template.md`：倉庫還沒有對應源語言模板時使用，例如第一次做法語到簡體中文。
+- `doc/public/user_prompt/book_translation_private_existing_template.md`：個人自用、本地書源、已有對應源語言模板時使用。
+- `doc/public/user_prompt/book_translation_private_new_template.md`：個人自用、本地書源、還沒有對應源語言模板時使用。
 - `doc/public/user_prompt/how_to_use_book_translation_prompts.md`：更短的小白版說明，只解釋怎麼填寫三項內容。
 
 如果你不確定該用哪個，就讓 AI 先檢查模板是否存在。普通用戶不需要理解 `source-target`、slug、profile、release version 或 npm 命令。

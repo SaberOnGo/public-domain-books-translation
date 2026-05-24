@@ -8,7 +8,7 @@ This directory contains shared workflow files for all language-pair templates.
 
 - `PIPELINE_SPEC.md`: state machine, project directory contract, naming rules, and done definition.
 - `automation_contract.md`: automation and template-protection rules.
-- `metadata/rights_checklist.md` and `metadata/source_evidence.md`: source and public-domain evidence templates.
+- `metadata/rights_checklist.md`, `metadata/source_evidence.md`, and `metadata/private_use_declaration.md`: source, rights, public-domain/licensed publication, and private-use evidence templates.
 - `preproduction/`: shared EPUB preproduction templates.
 - `references/`: language-neutral title, literary refinement, quality gate, EPUB asset, benchmark, and stratified random spot-check policies.
 - `assets/`: default EPUB resource directories for figures, images, styles, and table resources.
@@ -41,6 +41,10 @@ npm install
 ```
 
 不要在每个 `books/{target}/{number}_{book_id_slug}/` 目录里重复安装 `node_modules/`。具体书籍的 `package.json` 只保留脚本；`scripts/run_epubcheck.js` 等脚本必须向上查找共享的 `books/node_modules/`。
+
+Private-use projects live under ignored `books/private/{target}/{number}_{book_id_slug}/`. They use the same shared tooling, but their source text, translations, QA records, EPUB artifacts, and book-specific metadata must remain local and must not be published to GitHub.
+
+私人自用工程位于被忽略的 `books/private/{target}/{number}_{book_id_slug}/`。它们使用同一套共享工具，但其中的原文、译文、QA 记录、EPUB 产物和具体书籍 metadata 必须留在本地，不得发布到 GitHub。
 
 ## Publication Lint / 出版文本检查
 

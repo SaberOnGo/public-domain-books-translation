@@ -59,8 +59,14 @@ This file is for AI agents working from a downloaded copy of this repository.
 - Important files include prompts, workflow instructions, quality gates, review rubrics, policy notes, contribution instructions, and template README files. Code and purely machine-readable data are exempt.
 - 重要文件包括 prompt、工作流说明、质量门禁、评审规则、政策说明、贡献说明和模板 README。代码和纯机器读取数据除外。
 
-- Preserve public-domain source evidence and rights checks before translation. If rights are unclear, stop.
-- 翻译前必须保留公版来源证据和版权核查记录。版权状态不清楚时必须停止。
+- Preserve source evidence and rights checks before translation. Public release projects must have public-domain or licensed source evidence. If public release rights are unclear, stop.
+- 翻译前必须保留来源证据和版权核查记录。公开发布项目必须有公版或授权来源证据。公开发布权利状态不清楚时必须停止。
+
+- A user may request a strictly personal, non-commercial, non-redistributed translation of a non-public-domain book only in `private_use` mode. This requires a user-provided local source file and an explicit private-use declaration. Create the project under ignored `books/private/{target}/{number}_{book_id_slug}/`; never place private source text, translations, QA files, EPUB output, or book-specific metadata in publishable `books/{target}/` directories or GitHub.
+- 用户可以请求对非公版书做严格个人学习自用、非商业、不传播的翻译，但只能进入 `private_use` 模式。该模式必须有用户提供的本地书源文件和明确私人自用声明。工程必须创建在被忽略的 `books/private/{target}/{number}_{book_id_slug}/` 下；不得把私人原文、译文、QA、EPUB 输出或具体书籍 metadata 放入可发布的 `books/{target}/` 目录或 GitHub。
+
+- If the user says "do not care about copyright" but does not provide a local source file, do not search for non-public-domain full text. Automatically search only public-domain, authorized, or otherwise clearly lawful sources; if none is available, stop and ask for a local source file or authorization evidence.
+- 如果用户说“不用关心版权”但没有提供本地书源文件，不得自动查找非公版全文。只能自动查找公版、授权或其他权利清楚的合法来源；如果找不到，必须停止并要求用户提供本地书源文件或授权证据。
 
 - Do not use modern copyrighted translations, pirate sites, unclear EPUB downloads, or materials the contributor has no right to submit.
 - 不得使用现代受版权保护的译本、盗版站、来源不明 EPUB，或贡献者无权提交的材料。
@@ -71,6 +77,9 @@ This file is for AI agents working from a downloaded copy of this repository.
 - 不要把特定语言方向的脚本、数据集或探索文件放在仓库根目录。应放到 `research/{source-target}/...` 或对应语言方向模板中。
 - Scripts and prompts must not hard-code local absolute paths such as Windows drive paths or one contributor's workspace. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
 - 脚本和 prompt 不得写死本机绝对路径，例如 Windows 盘符路径或某个贡献者的工作目录。路径应基于脚本位置、仓库根目录或用户显式传入的参数解析。
+
+- If a script, prompt, launcher, or external AI client integration needs an environment variable for the LifeBook repository root, use `LIFEBOOK_HOME` as the only standard variable. Do not introduce parallel repository-root variables.
+- 如果脚本、prompt、启动器或外部 AI 客户端集成需要用环境变量表示 LifeBook 仓库根目录，只能使用统一变量 `LIFEBOOK_HOME`。不要再引入并行的仓库根目录变量。
 
 ## GitHub Push Commit Rules / GitHub 推送提交规则
 
