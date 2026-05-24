@@ -1,0 +1,34 @@
+# Book-project local artifacts.
+# Keep scripts, rules, metadata, Markdown QA conclusions, and release notes tracked.
+# Do not ignore final book release EPUBs here; decide that policy separately.
+
+# Build/cache output copied or regenerated during EPUB production.
+*/*/output/epub_work/
+*/*/output/*epub_source*/
+*/*/output/cover_source*.png
+*/*/output/cover_source_prompt.txt
+*/*/output/cover_fixed_centered*.png
+
+# Preproduction generated packages and facsimile work directories.
+*/*/preproduction/**/sample_book.epub
+*/*/preproduction/**/facsimile_work/
+
+# Local run logs and language/runtime caches.
+*/*/state/*.log
+*/*/**/__pycache__/
+*/*/**/*.pyc
+
+# Generated cover/source drafts. Final cover.jpg and EPUB-facing assets remain tracked.
+*/*/assets/**/cover_source*.png
+*/*/assets/**/cover_background*.png
+
+# QA generated binary evidence and scanner dumps. Keep Markdown/JSON review results tracked.
+*/*/qa/**/*.png
+*/*/qa/**/*.jpg
+*/*/qa/**/*.jpeg
+*/*/qa/**/*.webp
+*/*/qa/**/*.log
+*/*/qa/**/*.tmp
+*/*/qa/**/*.cache
+*/*/qa/**/*_rg_scan.txt
+*/*/qa/**/*rg_scan*.txt
