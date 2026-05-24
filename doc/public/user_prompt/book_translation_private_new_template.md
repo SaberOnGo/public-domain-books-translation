@@ -33,6 +33,10 @@
    - `template/epub_pipeline/common/metadata/source_evidence.md`
    - `template/epub_pipeline/common/metadata/private_use_declaration.md`
    - `template/epub_pipeline/common/references/` 中与来源、版权、封面、book-info、图表资产、质量门禁、随机抽检、release 有关的文件
+   - `template/epub_pipeline/modes/private_use/README.md`
+   - `template/epub_pipeline/modes/private_use/references/private_use_cover_policy.md`
+   - `template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md`
+   - `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md`
    - 匹配的 `template/epub_pipeline/targets/{target}/`
    - 至少一个现有语言方向模板，例如 `en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans`，只用于学习目录结构，不得照搬源语言规则
 3. 根据本地文件、书名、作者和目标语言，自动判断源语言、目标语言标签、source-target 名称和项目 slug。
@@ -59,37 +63,40 @@ npm run new:book -- {book_id_slug} --source-target {source-target} --mode privat
 
 13. 工程必须位于 `books/private/{target}/{next_number}_{slug}/`。如果脚本没有创建到 `books/private/`，必须停止并修正。
 14. create_book_project.py 必须先复制 common，再 overlay 新语言方向模板。所有后续具体书籍文件只能写入这个私人工程目录。
+15. create_book_project.py 还必须最后 overlay `template/epub_pipeline/modes/private_use/`。如果工程内缺少 `references/private_use_cover_policy.md`、`references/private_use_frontmatter_policy.md`、`references/private_use_artifact_policy.md` 或私人门禁脚本，必须停止修正。
 
 第四阶段：私人使用边界与来源记录
 
-15. 必须记录：
+16. 必须记录：
     - `metadata/private_use_declaration.md`
     - `metadata/source_evidence.md`，source type 使用 `user_provided_local_file`
     - `metadata/rights_checklist.md`，decision 使用 `PRIVATE_USE_PASS` 或 `FAIL`
     - `state/pipeline_state.json.publication_mode = private_use`
-16. 不得自动查找非公版全文，不得使用盗版站、来源不明 EPUB、现代受版权保护译本或用户没有本地访问权的材料。
-17. 如果用户没有提供本地文件，必须停止；不能用本 prompt 继续。
+17. `metadata/private_use_declaration.md` 和读者可见首页/前置页必须写明 `仅供个人自用，不传播，不商业使用`、风险由个人承担、LifeBook书坊仅发布 LifeBook 翻译发布系统且不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+18. 不得自动查找非公版全文，不得使用盗版站、来源不明 EPUB、现代受版权保护译本或用户没有本地访问权的材料。
+19. 如果用户没有提供本地文件，必须停止；不能用本 prompt 继续。
 
 第五阶段：完成私人书籍制作
 
-18. 私人自用模式只改变权利和目录边界，不降低质量要求。仍必须完成 book-specific research、style profile、预翻译 PASS、小样本 PASS。
-19. 分章翻译，完成每章译后控制、忠实度、可读性/意象、术语、章节 gate；只有 gate PASS 的章节进入 `chapters/final/`。
-20. 完成 `preproduction/stage1/production_spec.md`、样章 EPUB、全书 EPUB。
-21. 构建和发布前清理或重建 staging 输出，避免旧 XHTML、链接或资产污染新门禁。
-22. 必须运行并通过：
+20. 私人自用模式只改变权利和目录边界，不降低质量要求。仍必须完成 book-specific research、style profile、预翻译 PASS、小样本 PASS。
+21. 分章翻译，完成每章译后控制、忠实度、可读性/意象、术语、章节 gate；只有 gate PASS 的章节进入 `chapters/final/`。
+22. 完成 `preproduction/stage1/production_spec.md`、样章 EPUB、全书 EPUB。私人自用封面底部只写 `个人学习版`，不得放长版权声明；私人首页/前置页不得写公版说明，制作标识必须使用 `参考LifeBook书坊 个人自制`。
+23. 构建和发布前清理或重建 staging 输出，避免旧 XHTML、链接或资产污染新门禁。
+24. 必须运行并通过：
     - `npm run build:epub`
     - `npm run check:epub`
     - `npm run lint:publication` 或等价 publication lint
     - `npm run lint:assets` 或等价 asset manifest check
     - `npm run preflight:template`
+    - `npm run preflight:private-use`
     - `npm run cover:check`
-    - `npm run reader:check`
-23. 第一版全书 EPUB 后必须执行分层随机抽检，覆盖实际存在的 paragraphs、tables、figures、formulas/proof blocks、captions/notes，并保留 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、Agent A/B 独立评审、fix_log、closure_check。
-24. 抽检和修复完成后必须重新生成 EPUB，并运行 `npm run release:create` 或等价 release 脚本。`output/release/` 下的 EPUB 只能作为私人自用版本化产物，不是公开 release，不得提交或发布到 GitHub。
+    - `npm run reader:private-check`
+25. 第一版全书 EPUB 后必须执行分层随机抽检，覆盖实际存在的 paragraphs、tables、figures、formulas/proof blocks、captions/notes，并保留 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、Agent A/B 独立评审、fix_log、closure_check。
+26. 抽检和修复完成后必须重新生成 EPUB，并运行 `npm run private:artifact:create` 或等价 private artifact 脚本。私人 EPUB 产物必须位于 `output/private_artifacts/`，不是公开 release，不得提交或发布到 GitHub。
 
 第六阶段：最终报告
 
-25. 最终报告必须包含：
+27. 最终报告必须包含：
     - 新建语言方向模板路径
     - 私人工程路径 `books/private/{target}/{number}_{slug}/`
     - 本地书源文件名和 SHA256，不要暴露不必要的本机绝对路径

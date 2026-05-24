@@ -31,6 +31,9 @@ This file is for AI agents working from a downloaded copy of this repository.
 - Cover and book-info rules must be read as two separate policies, not merged from memory. `cover_design_policy.md` requires the cover to use the concise producer line `LifeBook 书坊 译制`; personal contributor names belong in `book-info.xhtml` and metadata according to `book_info_frontmatter_policy.md`.
 - 封面规则与书籍信息页规则必须作为两份独立 policy 读取，不得凭记忆合并。`cover_design_policy.md` 要求封面使用简洁署名 `LifeBook 书坊 译制`；个人贡献者名应按 `book_info_frontmatter_policy.md` 放入 `book-info.xhtml` 和 metadata。
 
+- The preceding cover and book-info rules are for public-domain or licensed publication projects. For `publication_mode=private_use`, agents must additionally read and follow `template/epub_pipeline/modes/private_use/`. Private-use covers use the bottom line `个人学习版`; private-use frontmatter must not contain public-domain notices and must use the producer line `参考LifeBook书坊 个人自制`.
+- 上述封面和书籍信息页规则用于公版或授权发布项目。`publication_mode=private_use` 时，Agent 必须额外读取并遵守 `template/epub_pipeline/modes/private_use/`。私人自用封面底部使用 `个人学习版`；私人自用首页/前置页不得包含公版说明，制作标识使用 `参考LifeBook书坊 个人自制`。
+
 - When a generated EPUB or staging directory already exists, clean or rebuild the staging output before running asset or publication lint, so old XHTML, links, or assets cannot pollute the new gate result.
 - 如果 EPUB 或中间构建目录已经存在，运行资产检查或出版检查前必须清理或重新生成 staging 输出，避免旧 XHTML、旧链接或旧资产污染新的门禁结果。
 
@@ -64,6 +67,9 @@ This file is for AI agents working from a downloaded copy of this repository.
 
 - A user may request a strictly personal, non-commercial, non-redistributed translation of a non-public-domain book only in `private_use` mode. This requires a user-provided local source file and an explicit private-use declaration. Create the project under ignored `books/private/{target}/{number}_{book_id_slug}/`; never place private source text, translations, QA files, EPUB output, or book-specific metadata in publishable `books/{target}/` directories or GitHub.
 - 用户可以请求对非公版书做严格个人学习自用、非商业、不传播的翻译，但只能进入 `private_use` 模式。该模式必须有用户提供的本地书源文件和明确私人自用声明。工程必须创建在被忽略的 `books/private/{target}/{number}_{book_id_slug}/` 下；不得把私人原文、译文、QA、EPUB 输出或具体书籍 metadata 放入可发布的 `books/{target}/` 目录或 GitHub。
+
+- Private-use projects must receive the `template/epub_pipeline/modes/private_use/` overlay through `books/scripts/create_book_project.py --mode private-use`. Their versioned EPUB artifacts are local private artifacts, not public releases; use `npm run private:artifact:create` or the private-mode `release:create` alias, and never publish `output/private_artifacts/` to GitHub.
+- 私人自用工程必须通过 `books/scripts/create_book_project.py --mode private-use` 复制 `template/epub_pipeline/modes/private_use/` 覆盖层。其带版本 EPUB 是本地私人产物，不是公开 release；使用 `npm run private:artifact:create` 或私人模式下的 `release:create` 别名，不得把 `output/private_artifacts/` 发布到 GitHub。
 
 - If the user says "do not care about copyright" but does not provide a local source file, do not search for non-public-domain full text. Automatically search only public-domain, authorized, or otherwise clearly lawful sources; if none is available, stop and ask for a local source file or authorization evidence.
 - 如果用户说“不用关心版权”但没有提供本地书源文件，不得自动查找非公版全文。只能自动查找公版、授权或其他权利清楚的合法来源；如果找不到，必须停止并要求用户提供本地书源文件或授权证据。

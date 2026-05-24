@@ -18,7 +18,7 @@
 12. 第一版全书 EPUB 后强制执行分层随机抽检模块，抽样正文段落、表格、图片、公式/证明块、图注和注释。
 13. 派生 2 个独立 Agent 做严格评审并评分。
 14. 根据评审和分层随机抽检结果回退到任意前置阶段返工；返工后必须定点关闭旧问题并使用新 seed 复抽。
-15. 随机抽检闭环通过后，生成 `output/release/book_vX.X.X.epub` 和中英文 `release_note_vX.X.X.md`。
+15. 随机抽检闭环通过后，公版或授权项目生成 `output/release/book_vX.X.X.epub` 和中英文 `release_note_vX.X.X.md`；`private_use` 项目生成 `output/private_artifacts/{title}_private_vX.X.X.epub` 和私人产物记录。
 16. 全阶段复审，总结经验教训，必要时递增模板版本。
 
 目标不是“从希腊文大概翻出来”，而是产出来源清楚、版本可追溯、译文可读、术语稳定、EPUB 制作质量合格的简体中文正本书。
@@ -50,7 +50,7 @@ This template handles Ancient Greek source-language issues for Simplified Chines
 
 之后所有抓取、研究、翻译、QA、EPUB 输出都只能写入新书籍工程目录。
 
-如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须是定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地书源并声明个人自用、不传播、不商业使用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{book_id_slug}/`。
+如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须是定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地书源并声明个人自用、不传播、不商业使用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{book_id_slug}/`，并最后叠加 `template/epub_pipeline/modes/private_use/` 覆盖层。
 
 Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `npm install`，再进入具体书籍目录运行 `npm run lint:publication`、`npm run build:epub`、`npm run check:epub`。本模板的 `package.json` 只提供本书脚本，依赖统一来自共享的 `books/node_modules/`，脚本必须向上查找共享依赖，不能假定书籍目录直接位于 `books/` 下。
 
@@ -101,7 +101,8 @@ Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `
 - `preproduction/stage1/production_spec.md`：全书制作规格。
 - `preproduction/stage2_sample/sample_book.epub`：样章 EPUB。
 - `reviews/random_spotcheck/round_XXX/`：分层随机抽检样本、证据、评审、修复和闭环记录。
-- `output/release/`：带版本号的 EPUB、release note、release state 和发布索引。
+- `output/release/`：公版或授权项目的带版本号 EPUB、release note、release state 和发布索引。
+- `output/private_artifacts/`：`private_use` 项目的本地私人产物、private artifact notes、private artifact state 和索引。
 - `reviews/scorecards/final_quality_score.md`：最终质量评分。
 
 如果无人干预，AI 只有在报告明确 `PASS` 时才可继续；若 `FAIL`，必须按回溯规则自行修正，不能跳过。
@@ -146,4 +147,5 @@ Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `
 - 第一版全书 EPUB 后未完成分层随机抽检，不得进入最终输出。
 - 表格、图片、公式、图注或注释实际存在时，不得只抽正文段落后宣布抽检通过。
 - `npm run review:random-validate:pass` 未通过，不得标记 `DONE`。
-- 未创建 `output/release/book_vX.X.X.epub`，或 `output/release/release_state.json.latest_status` 不是 `PASS`，不得标记 `DONE`。
+- 公版或授权项目未创建 `output/release/book_vX.X.X.epub`，或 `output/release/release_state.json.latest_status` 不是 `PASS`，不得标记 `DONE`。
+- `private_use` 项目未创建 `output/private_artifacts/{title}_private_vX.X.X.epub`，或 `output/private_artifacts/private_artifact_state.json.latest_status` 不是 `PASS`，不得标记 `DONE`。

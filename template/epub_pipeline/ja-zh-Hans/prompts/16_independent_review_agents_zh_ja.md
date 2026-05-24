@@ -105,7 +105,7 @@ python scripts/select_random_review_passages.py --source-dir chapters/final --ag
 - 章节标题、正文排版、版本说明页。
 - `nav.xhtml` 是否使用短目录题名；页面标题是否有合理层级和可选副标题。
 - 出版文本 lint 是否通过；是否还有分号滥用、异常空格、旧纸书页码目录或乱码。
-- metadata 是否完整：`LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明、作者信息、原书信息。
+- metadata 是否完整：公版或授权项目检查 `LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明、作者信息、原书信息；`private_use` 项目检查 `参考LifeBook书坊 个人自制`、个人自用/不传播/不商业使用、风险边界、本地书源证据，且不得含公版说明。
 - 文件体积是否异常。
 - EPUBCheck 是否 0 fatal、0 error。
 

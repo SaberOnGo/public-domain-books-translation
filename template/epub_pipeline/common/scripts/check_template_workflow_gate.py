@@ -36,6 +36,27 @@ REQUIRED_LOCAL_REFERENCES = [
     "references/release_versioning.md",
 ]
 
+PRIVATE_USE_SPEC_TOKEN = "template/epub_pipeline/modes/private_use/preproduction/stage1/_TEMPLATE.private_use_production_spec.md"
+
+PRIVATE_USE_REQUIRED_FILES = [
+    "references/private_use_cover_policy.md",
+    "references/private_use_frontmatter_policy.md",
+    "references/private_use_artifact_policy.md",
+    "preproduction/stage1/_TEMPLATE.private_use_production_spec.md",
+    "scripts/check_private_use_gate.py",
+    "scripts/check_private_reader_facing_policy.py",
+    "scripts/create_private_artifact.py",
+    "scripts/build_private_epub.js",
+]
+
+PRIVATE_USE_PACKAGE_SCRIPTS = [
+    "preflight:private-use",
+    "reader:private-check",
+    "build:private-epub",
+    "private:artifact:draft",
+    "private:artifact:create",
+]
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Check that a book project is using the standard template workflow gate.")
@@ -149,7 +170,7 @@ def production_specs(book_root: Path) -> list[Path]:
     return sorted(path for path in stage1.glob("*.md") if not path.name.startswith("_TEMPLATE"))
 
 
-def check_production_spec(book_root: Path, issues: list[dict]) -> None:
+def check_production_spec(book_root: Path, state_data: dict, issues: list[dict]) -> None:
     specs = production_specs(book_root)
     if not specs:
         add_issue(issues, "missing_book_production_spec", "Missing a book-specific preproduction/stage1/*.md production spec.")
@@ -158,6 +179,22 @@ def check_production_spec(book_root: Path, issues: list[dict]) -> None:
     for token in REQUIRED_SPEC_TOKENS:
         if token not in combined:
             add_issue(issues, "production_spec_missing_template_basis", f"Production spec must explicitly cite {token}.", ", ".join(rel(book_root, path) for path in specs))
+    publication_mode = state_data.get("publication_mode", "public_domain")
+    if publication_mode == "private_use":
+        if PRIVATE_USE_SPEC_TOKEN not in combined:
+            add_issue(
+                issues,
+                "private_production_spec_missing_template_basis",
+                f"Private-use production spec must explicitly cite {PRIVATE_USE_SPEC_TOKEN}.",
+                ", ".join(rel(book_root, path) for path in specs),
+            )
+    elif PRIVATE_USE_SPEC_TOKEN in combined:
+        add_issue(
+            issues,
+            "public_project_contains_private_use_reference",
+            "Public projects must not cite the private-use production spec.",
+            ", ".join(rel(book_root, path) for path in specs),
+        )
 
 
 def check_local_references(book_root: Path, issues: list[dict]) -> None:
@@ -167,7 +204,28 @@ def check_local_references(book_root: Path, issues: list[dict]) -> None:
             add_issue(issues, "missing_local_common_reference", "Book project must carry the common reference file copied from the template.", reference)
 
 
-def check_package_scripts(book_root: Path, issues: list[dict]) -> None:
+def check_private_use_overlay_files(book_root: Path, state_data: dict, issues: list[dict]) -> None:
+    publication_mode = state_data.get("publication_mode", "public_domain")
+    found_private_files = [path for path in PRIVATE_USE_REQUIRED_FILES if (book_root / path).exists()]
+    if publication_mode == "private_use":
+        for path in PRIVATE_USE_REQUIRED_FILES:
+            if not (book_root / path).exists():
+                add_issue(
+                    issues,
+                    "missing_private_use_overlay_file",
+                    "Private-use projects must carry the private_use mode overlay copied from template/epub_pipeline/modes/private_use/.",
+                    path,
+                )
+    elif found_private_files:
+        add_issue(
+            issues,
+            "public_project_contains_private_use_overlay",
+            "Public projects must not contain private-use mode overlay files.",
+            ", ".join(found_private_files),
+        )
+
+
+def check_package_scripts(book_root: Path, state_data: dict, issues: list[dict]) -> None:
     package_path = book_root / "package.json"
     if not package_path.exists():
         add_issue(issues, "missing_package_json", "Missing book-local package.json.", rel(book_root, package_path))
@@ -177,15 +235,36 @@ def check_package_scripts(book_root: Path, issues: list[dict]) -> None:
     for name in REQUIRED_PACKAGE_SCRIPTS:
         if name not in scripts:
             add_issue(issues, "missing_package_script", f"Missing package script {name!r}.", rel(book_root, package_path))
-    build = scripts.get("build:epub", "")
-    for required in ["preflight:template", "lint:publication", "lint:assets", "cover:check", "reader:check"]:
-        if required not in build:
-            add_issue(issues, "build_script_missing_gate", f"build:epub must run {required}.", rel(book_root, package_path))
-    for release_name in ["release:draft", "release:create"]:
-        command = scripts.get(release_name, "")
-        for required in ["preflight:template", "cover:check", "reader:check"]:
-            if required not in command:
-                add_issue(issues, "release_script_missing_gate", f"{release_name} must run {required}.", rel(book_root, package_path))
+    publication_mode = state_data.get("publication_mode", "public_domain")
+    if publication_mode == "private_use":
+        for name in PRIVATE_USE_PACKAGE_SCRIPTS:
+            if name not in scripts:
+                add_issue(issues, "missing_private_package_script", f"Missing private-use package script {name!r}.", rel(book_root, package_path))
+        if scripts.get("build:epub") != "npm run build:private-epub":
+            add_issue(issues, "private_build_script_not_isolated", "Private-use build:epub must delegate to build:private-epub.", rel(book_root, package_path))
+        private_build = scripts.get("build:private-epub", "")
+        for required in ["preflight:template", "preflight:private-use", "lint:publication", "lint:assets", "cover:check", "reader:private-check", "build_private_epub.js"]:
+            if required not in private_build:
+                add_issue(issues, "private_build_script_missing_gate", f"build:private-epub must run {required}.", rel(book_root, package_path))
+        private_release = scripts.get("private:artifact:create", "")
+        for required in ["preflight:template", "preflight:private-use", "cover:check", "reader:private-check", "create_private_artifact.py", "--status PASS", "--require-pass"]:
+            if required not in private_release:
+                add_issue(issues, "private_artifact_script_missing_gate", f"private:artifact:create must run {required}.", rel(book_root, package_path))
+        if scripts.get("release:create") != "npm run private:artifact:create":
+            add_issue(issues, "private_release_alias_not_isolated", "Private-use release:create must delegate to private:artifact:create.", rel(book_root, package_path))
+    else:
+        for name in PRIVATE_USE_PACKAGE_SCRIPTS:
+            if name in scripts:
+                add_issue(issues, "public_project_contains_private_package_script", f"Public projects must not define private-use package script {name!r}.", rel(book_root, package_path))
+        build = scripts.get("build:epub", "")
+        for required in ["preflight:template", "lint:publication", "lint:assets", "cover:check", "reader:check"]:
+            if required not in build:
+                add_issue(issues, "build_script_missing_gate", f"build:epub must run {required}.", rel(book_root, package_path))
+        for release_name in ["release:draft", "release:create"]:
+            command = scripts.get(release_name, "")
+            for required in ["preflight:template", "cover:check", "reader:check"]:
+                if required not in command:
+                    add_issue(issues, "release_script_missing_gate", f"{release_name} must run {required}.", rel(book_root, package_path))
 
 
 def main() -> None:
@@ -197,9 +276,10 @@ def main() -> None:
 
     check_numbered_project_path(book_root, repo_root, state_data, issues)
     check_state(book_root, repo_root, state_data, issues)
-    check_production_spec(book_root, issues)
+    check_production_spec(book_root, state_data, issues)
     check_local_references(book_root, issues)
-    check_package_scripts(book_root, issues)
+    check_private_use_overlay_files(book_root, state_data, issues)
+    check_package_scripts(book_root, state_data, issues)
 
     report = {
         "book_root": display_root(book_root, repo_root),

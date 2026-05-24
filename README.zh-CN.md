@@ -35,7 +35,7 @@ LifeBook 书坊是一个多语言公版书翻译与 EPUB 制作流程。它不�
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
 ```
 
-如果是非公版书，只能使用本地私人模式。用户必须提供自己的本地电子书文件，并明确声明仅供个人学习自用、不传播、不商业使用；AI 应创建 `books/private/{target}/{number}_{book_slug}/` 下的私人工程。`books/private/` 被 Git 忽略，里面的原文、译文、QA 和 EPUB 不能发布到 GitHub。
+如果是非公版书，只能使用本地私人模式。用户必须提供自己的本地电子书文件，并明确声明仅供个人学习自用、不传播、不商业使用；AI 应创建 `books/private/{target}/{number}_{book_slug}/` 下的私人工程。脚本还会叠加 `template/epub_pipeline/modes/private_use/`，把私人封面、首页/前置页和产物规则与公版发布规则隔离。`books/private/` 被 Git 忽略，里面的原文、译文、QA、EPUB 和私人产物不能发布到 GitHub。
 
 ## AI 客户端
 
@@ -66,6 +66,7 @@ Launcher 不会保存 API Key，也不会把 OpenCode 本体放进本仓库。Op
 - `template/epub_pipeline/{source-target}/`：具体语言方向的提示词、术语、文风和审校规则。
 - `template/epub_pipeline/targets/{target}/`：目标语言质量规则。
 - `template/epub_pipeline/profiles/{profile-target}/`：特殊书籍类型的附加规则。
+- `template/epub_pipeline/modes/private_use/`：只复制到非公版个人自用项目的模式覆盖层，包含私人封面、首页/前置页、私人产物和门禁脚本。
 - `books/{target}/{number}_{book_slug}/`：具体书籍工程。书籍内容只能写在这里。
 - `books/`：共享 Node.js 工具依赖，统一安装一次。
 - `doc/public/`：公开说明、prompt 使用文档和候选书资料。
@@ -88,7 +89,7 @@ npm run new:book -- {book_id_slug} --source-target {source-target}
 books/{target}/{number}_{book_id_slug}/
 ```
 
-脚本会先复制 `template/epub_pipeline/common`，再覆盖对应语言方向模板。若书籍需要特殊 profile，再叠加 `profiles/{profile-target}/`。
+脚本会先复制 `template/epub_pipeline/common`，再覆盖对应语言方向模板。若书籍需要特殊 profile，再叠加 `profiles/{profile-target}/`。私人自用项目还会最后叠加 `template/epub_pipeline/modes/private_use/`。
 
 私人自用项目必须显式使用 `private-use` 模式：
 
@@ -97,12 +98,13 @@ cd books
 npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
 ```
 
-私人模式只改变权利与目录边界，不降低翻译、审校、EPUB 校验、分层随机抽检和版本化产物要求。私人模式生成的是个人自用产物，不是公开 release。
+私人模式不降低翻译、审校、EPUB 校验、分层随机抽检要求，但会改变权利、读者可见措辞和产物语义。私人封面底部使用 `个人学习版`；私人首页/前置页使用 `参考LifeBook书坊 个人自制`，去掉所有公版说明，并写明仅供个人自用、不传播、不商业使用、风险由个人承担。私人产物写入 `output/private_artifacts/`，不是公开 release。
 
 ## 核心规则
 
 - 翻译前必须保留来源证据和版权核查记录；公开项目必须是公版或授权来源。
 - 非公版个人自用项目必须进入 `private_use` 模式，并保存在被 Git 忽略的 `books/private/` 下。
+- 私人自用项目必须带有 `modes/private_use` 覆盖层，不得复用公版封面、首页/前置页和公开 release 措辞。
 - 不使用现代受版权保护译本、盗版站或来源不明 EPUB。
 - AI 初稿不能直接发布。
 - 具体书籍内容不能写回 `template/`。
@@ -128,6 +130,16 @@ npm run review:random-validate:pass
 npm run release:create
 ```
 
+私人自用项目在同样完成 build、EPUBCheck 和分层随机抽检后，使用私人产物命令：
+
+```powershell
+npm run build:private-epub
+npm run check:epub
+npm run review:random-samples
+npm run review:random-validate:pass
+npm run private:artifact:create
+```
+
 ## 参与方式
 
 有价值的贡献包括：找公版来源、查版权、审译文、统一术语、测试 EPUB、反馈排版可读性、改进自动化脚本。优先做小而可复核的修改，不做无法追踪的大段重写。
@@ -138,7 +150,7 @@ npm run release:create
 
 本项目产生的译文、注释、封面、排版和 EPUB 打包等非代码内容，默认按 `CC BY-NC-SA 4.0` 发布；第三方商业使用必须另行取得 LifeBook 书坊及相关权利人的授权。
 
-`books/private/` 下的私人自用项目不属于公开发布内容，不适用默认公开授权，不得提交或发布到 GitHub。
+`books/private/` 下的私人自用项目不属于公开发布内容，不适用默认公开授权，不得提交或发布到 GitHub。任何私人译本仅供个人自用，不传播，不商业使用；相关风险由个人承担。LifeBook书坊仅发布 LifeBook 翻译发布系统，不承担任何因其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
 
 参见：
 

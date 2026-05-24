@@ -10,8 +10,8 @@ This guide is for people who want to use an AI client to make a translated publi
 2. **Let the AI read the rules.**
    You do not need to understand the repository rules. Ask the AI to choose the correct public prompt automatically.
 
-3. **Only treat the release result as finished.**
-   The AI will handle source checks, rights checks, translation, review, EPUB build, spot-check, and release. You only need to check the final `output/release/` folder.
+3. **Only treat the release or private artifact result as finished.**
+   The AI will handle source checks, rights checks, translation, review, EPUB build, spot-check, and release. For public-domain or licensed projects, check `output/release/`; for personal-use projects, check `output/private_artifacts/`.
 
 ## Easiest Starter Prompt
 
@@ -48,6 +48,8 @@ This is for my personal use only. It will not be redistributed and will not be u
 Automatically create the project and strictly complete the full systematic translation workflow required by the templates, with no omissions.
 ```
 
+Personal-use projects must be created under `books/private/{target}/{number}_{slug}/`. The final versioned artifact is under `output/private_artifacts/`; it is not a public release and must not be published to GitHub.
+
 ## Refinement Review Prompt (Optional)
 
 After the first EPUB has been generated, use this prompt if you want a stricter refinement pass. `N` means the number of consecutive clean rounds required before exit: `1` saves tokens, `3` is stricter and usually produces a higher-quality edition; use `2` if unsure.
@@ -64,7 +66,7 @@ Start 2 independent review agents for stratified random spot-checking. Run at le
 
 Exit condition: the most recent N consecutive rounds have no new blocking issues, and npm run review:random-validate:pass passes. N=1 is the lowest, token-saving strictness; N=3 is stricter and aims for a higher-quality reviewed edition. The user may choose the value.
 
-After passing, clean or rebuild staging, regenerate the EPUB, and run publication lint, asset manifest, cover output, reader-facing policy, EPUBCheck, and release scripts. The publishable EPUB must be written under this book's output/release/, and release_state.json.latest_status must be PASS. Report the release EPUB path, spot-check rounds, fix summary, validation command results, and remaining risks.
+After passing, clean or rebuild staging, regenerate the EPUB, and run publication lint, asset manifest, cover output, reader-facing policy, EPUBCheck, and release or private artifact scripts. For public-domain or licensed projects, the publishable EPUB must be written under this book's output/release/, and release_state.json.latest_status must be PASS. For personal-use projects, the final private artifact must be written under output/private_artifacts/, and private_artifact_state.json.latest_status must be PASS. Report the release EPUB or private artifact path, spot-check rounds, fix summary, validation command results, and remaining risks.
 ```
 
 ## Key Places To Know
@@ -73,7 +75,7 @@ After passing, clean or rebuild staging, regenerate the EPUB, and run publicatio
 - `.\tools\lifebook-launcher`: LifeBook Launcher client install and launch folder. Users need this path to use the LifeBook project and install OpenCode.
 - `.\doc\public\user_prompt`: the public prompts live here. Read or edit these if you want to understand or manually adjust the prompt.
 - `.\books\zh-Hans`: the most important output area for Simplified Chinese books. After translation succeeds, open the matching book folder and check `output\release\`; only release artifacts count as publishable results.
-- `.\books\private`: private-use book project folder. Non-public-domain private translations should keep source text, translations, QA, and EPUB output here only; this folder is ignored by Git and is not published to GitHub.
+- `.\books\private`: private-use book project folder. Non-public-domain private translations should keep source text, translations, QA, EPUB output, and `output\private_artifacts\` private artifacts here only; this folder is ignored by Git and is not published to GitHub.
 
 ## What Are The Four Translation Prompts?
 
@@ -102,7 +104,7 @@ If you do not want to handle project and client setup manually, use LifeBook Lau
 - Select or open this project.
 - Download or open the OpenCode client if needed, then configure the API key in OpenCode.
 - Paste the three items: book to translate, target language, and the prompt-selection rule. The full wording is in the [Easiest Starter Prompt](#easiest-starter-prompt).
-- After the AI finishes, check the book folder's `output/release/`.
+- After the AI finishes, check `output/release/` for public-domain or licensed projects, or `output/private_artifacts/` for personal-use projects.
 
 ## Codex App
 
@@ -112,7 +114,7 @@ If you do not want to handle project and client setup manually, use LifeBook Lau
 4. Paste the `/goal`.
 5. Let the AI read `AGENTS.md` and `template/`.
 6. Review the files it wants to change.
-7. Check the final `books/zh-Hans/.../output/release/` folder, or the matching `books/{target}/.../output/release/` folder for another target language.
+7. Check the final `books/zh-Hans/.../output/release/` folder, or the matching `books/{target}/.../output/release/` folder for another target language. For personal-use projects, check `books/private/{target}/.../output/private_artifacts/`.
 
 Codex App is useful for this repository because it makes it easy to review the files changed by the AI.
 
@@ -128,7 +130,7 @@ Codex App is useful for this repository because it makes it easy to review the f
 ## Common Mistakes To Avoid
 
 - Letting the AI translate the whole book before reading the templates.
-- Treating `output/book.epub` as final without `output/release/`.
+- Treating `output/book.epub` as final without `output/release/` for public projects or `output/private_artifacts/` for personal-use projects.
 - Starting translation before rights are clear.
 - Using a modern translation as source or reference.
 - Not adding a new spot-check round after a blocking issue.

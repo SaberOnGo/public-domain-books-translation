@@ -10,8 +10,8 @@
 2. **讓 AI 自己讀規則。**
    你不需要理解倉庫規則，只要要求 AI 自動選擇正確的公共 prompt。
 
-3. **最後只看 release 結果。**
-   AI 會自動完成來源核查、版權核查、翻譯、審校、EPUB 建置、抽檢和發布。你最後檢查 `output/release/` 裡的成品。
+3. **最後只看 release 或私人產物結果。**
+   AI 會自動完成來源核查、版權核查、翻譯、審校、EPUB 建置、抽檢和發布。公版或授權專案最後檢查 `output/release/`；個人自用專案最後檢查 `output/private_artifacts/`。
 
 ## 最簡單的啟動方式
 
@@ -48,6 +48,8 @@
 請自動建立專案，嚴格完成整個模板規定的系統翻譯流程，不允許有任何遺漏。
 ```
 
+個人自用專案必須建立在 `books/private/{target}/{number}_{slug}/`，最終版本化產物在 `output/private_artifacts/`，不是公開 release，不得發布到 GitHub。
+
 ## 精修審校 prompt（可選）
 
 第一版 EPUB 已經生成後，如果想繼續提高譯本品質，可以再使用下面這段。`N` 是「連續無問題輪數」：`1` 最省 token，`3` 更嚴格，品質要求更高；不確定時填 `2`。
@@ -64,7 +66,7 @@
 
 退出條件：最近連續 N 輪均無新增阻塞問題，且 npm run review:random-validate:pass 通過。N=1 為最低強度，較省 token；N=3 更嚴格，審校後譯本品質更高，用戶可自行調整。
 
-通過後清理或重建 staging，重新生成 EPUB，執行 publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck 和 release 腳本。最終可發布 EPUB 必須輸出到該書 output/release/，release_state.json.latest_status 必須為 PASS。報告 release EPUB 路徑、抽檢輪次、修復摘要、驗證命令結果和剩餘風險。
+通過後清理或重建 staging，重新生成 EPUB，執行 publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck，以及 release 或 private artifact 腳本。公版或授權專案的最終可發布 EPUB 必須輸出到該書 output/release/，release_state.json.latest_status 必須為 PASS。個人自用專案的最終私人產物必須輸出到 output/private_artifacts/，private_artifact_state.json.latest_status 必須為 PASS。報告 release EPUB 或 private artifact 路徑、抽檢輪次、修復摘要、驗證命令結果和剩餘風險。
 ```
 
 ## 你需要知道的關鍵位置
@@ -73,7 +75,7 @@
 - `.\tools\lifebook-launcher`：LifeBook Launcher 用戶端安裝啟動目錄。使用者需要知道這個位置，以使用 LifeBook 專案和安裝 OpenCode。
 - `.\doc\public\user_prompt`：公共 prompt 放在這裡。想了解 prompt 細節，或想手動修改 prompt 時，看這個目錄。
 - `.\books\zh-Hans`：最重要的成書目錄。翻譯成簡體中文成功後，到對應書籍目錄裡找 `output\release\`；只有 release 目錄裡的成品才算可發布結果。
-- `.\books\private`：個人自用書籍專案目錄。非公版私人翻譯的原文、譯文、QA 和 EPUB 只應保存在這裡；此目錄被 Git 忽略，不發布到 GitHub。
+- `.\books\private`：個人自用書籍專案目錄。非公版私人翻譯的原文、譯文、QA、EPUB 和 `output\private_artifacts\` 私人產物只應保存在這裡；此目錄被 Git 忽略，不發布到 GitHub。
 
 ## 四個翻譯 prompt 是什麼
 
@@ -102,7 +104,7 @@
 - 選擇或打開本專案。
 - 按需要下載或打開 OpenCode 用戶端，並在 OpenCode 中配置 API Key。
 - 貼上三項內容：我要翻譯的書、目標語言、自動選擇 prompt 的規則（見[最簡單的啟動方式](#最簡單的啟動方式)裡的完整範例）。
-- 等 AI 完成後，檢查書籍目錄裡的 `output/release/`。
+- 等 AI 完成後，公版或授權專案檢查書籍目錄裡的 `output/release/`；個人自用專案檢查 `output/private_artifacts/`。
 
 ## Codex App
 
@@ -112,7 +114,7 @@
 4. 貼上 `/goal`。
 5. 等 AI 先讀 `AGENTS.md` 和 `template/`。
 6. 審查它要修改的檔案。
-7. 最後檢查 `books/zh-Hans/.../output/release/`，或對應目標語言的 `books/{target}/.../output/release/`。
+7. 最後檢查 `books/zh-Hans/.../output/release/`，或對應目標語言的 `books/{target}/.../output/release/`；個人自用專案檢查 `books/private/{target}/.../output/private_artifacts/`。
 
 Codex App 適合本倉庫的長流程任務，因為它方便查看 AI 修改了哪些檔案。
 
@@ -128,7 +130,7 @@ Codex App 適合本倉庫的長流程任務，因為它方便查看 AI 修改了
 ## 常見錯誤
 
 - 讓 AI 不讀模板就直接翻整本。
-- 只生成 `output/book.epub`，沒有 `output/release/`。
+- 只生成 `output/book.epub`，公版專案沒有 `output/release/`，或個人自用專案沒有 `output/private_artifacts/`。
 - 版權未查清就開始翻譯。
 - 使用現代譯本作為參考或改寫來源。
 - 抽檢發現問題後沒有追加新一輪。

@@ -10,8 +10,8 @@
 2. **让 AI 自己读规则。**
    你不需要理解仓库规则，只要要求 AI 自动选择正确的公共 prompt。
 
-3. **最后只看 release 结果。**
-   AI 会自动完成来源核查、版权核查、翻译、审校、EPUB 构建、抽检和发布。你最后检查 `output/release/` 里的成品。
+3. **最后只看 release 或私人产物结果。**
+   AI 会自动完成来源核查、版权核查、翻译、审校、EPUB 构建、抽检和发布。公版或授权项目最后检查 `output/release/`；个人自用项目最后检查 `output/private_artifacts/`。
 
 ## 最简单的启动方式
 
@@ -48,6 +48,8 @@
 请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
 ```
 
+个人自用项目必须创建在 `books/private/{target}/{number}_{slug}/`，最终版本化产物在 `output/private_artifacts/`，不是公开 release，不得发布到 GitHub。
+
 ## 精修审校 prompt（可选）
 
 第一版 EPUB 已经生成后，如果你想继续提高译本质量，可以再使用下面这段。`N` 是“连续无问题轮数”：`1` 最省 token，`3` 更严格，质量要求更高；不确定时填 `2`。
@@ -64,7 +66,7 @@
 
 退出条件：最近连续 N 轮均无新增阻塞问题，且 npm run review:random-validate:pass 通过。N=1 为最低强度，较省 token；N=3 更严格，审校后译本质量更高，用户可自行调整。
 
-通过后清理或重建 staging，重新生成 EPUB，运行 publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck 和 release 脚本。最终可发布 EPUB 必须输出到该书 output/release/，release_state.json.latest_status 必须为 PASS。报告 release EPUB 路径、抽检轮次、修复摘要、验证命令结果和剩余风险。
+通过后清理或重建 staging，重新生成 EPUB，运行 publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck，以及 release 或 private artifact 脚本。公版或授权项目的最终可发布 EPUB 必须输出到该书 output/release/，release_state.json.latest_status 必须为 PASS。个人自用项目的最终私人产物必须输出到 output/private_artifacts/，private_artifact_state.json.latest_status 必须为 PASS。报告 release EPUB 或 private artifact 路径、抽检轮次、修复摘要、验证命令结果和剩余风险。
 ```
 
 ## 你需要知道的关键位置
@@ -73,7 +75,7 @@
 - `.\tools\lifebook-launcher`：LifeBook Launcher 客户端安装启动目录。用户需要知道这个位置，以使用 LifeBook 项目和安装 OpenCode。
 - `.\doc\public\user_prompt`：公共 prompt 放在这里。想了解提示词细节，或想手动修改 prompt 时，看这个目录。
 - `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
-- `.\books\private`：个人自用书籍工程目录。非公版私人翻译的原文、译文、QA 和 EPUB 只应保存在这里；该目录被 Git 忽略，不发布到 GitHub。
+- `.\books\private`：个人自用书籍工程目录。非公版私人翻译的原文、译文、QA、EPUB 和 `output\private_artifacts\` 私人产物只应保存在这里；该目录被 Git 忽略，不发布到 GitHub。
 
 ## 四个翻译 prompt 是什么
 
@@ -102,7 +104,7 @@
 - 选择或打开本项目。
 - 按需要下载或打开 OpenCode 客户端，并在 OpenCode 中配置 API Key。
 - 粘贴三项内容：我要翻译的书、目标语言、自动选择 prompt 的规则（见[最简单的启动方式](#最简单的启动方式)里的完整示例）。
-- 等 AI 完成后，检查书籍目录里的 `output/release/`。
+- 等 AI 完成后，公版或授权项目检查书籍目录里的 `output/release/`；个人自用项目检查 `output/private_artifacts/`。
 
 ## Codex App 用法
 
@@ -112,7 +114,7 @@
 4. 粘贴上面的 `/goal`。
 5. 等 AI 先读 `AGENTS.md` 和 `template/`。
 6. 审查它要改的文件；确认无误后让它继续。
-7. 最后检查 `books/zh-Hans/.../output/release/`，或对应目标语言的 `books/{target}/.../output/release/`。
+7. 最后检查 `books/zh-Hans/.../output/release/`，或对应目标语言的 `books/{target}/.../output/release/`；个人自用项目检查 `books/private/{target}/.../output/private_artifacts/`。
 
 Codex App 适合这个仓库的长流程任务，因为它方便查看 AI 修改了哪些文件。
 
@@ -128,7 +130,7 @@ Codex App 适合这个仓库的长流程任务，因为它方便查看 AI 修改
 ## 常见错误
 
 - 让 AI 不读模板，直接翻译整本。
-- 只生成 `output/book.epub`，没有 `output/release/`。
+- 只生成 `output/book.epub`，公版项目没有 `output/release/`，或个人自用项目没有 `output/private_artifacts/`。
 - 版权没查清就开始翻译。
 - 使用现代译本作为参考或改写对象。
 - 分层随机抽检发现问题后，没有追加新一轮。

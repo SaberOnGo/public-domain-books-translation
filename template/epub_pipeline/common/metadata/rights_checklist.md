@@ -28,6 +28,9 @@
 - Translation permitted:
 - Commercial redistribution risk:
 - Private-use declaration present:
+- Private-use local source file present:
+- Private-use personal risk accepted:
+- LifeBook system-provider boundary recorded:
 - GitHub publication permitted:
 
 ## Evidence
@@ -40,6 +43,6 @@
 - `PUBLICATION_PASS`, `LICENSED_PASS`, `PRIVATE_USE_PASS`, or `FAIL`:
 - Reason:
 
-Use `PUBLICATION_PASS` only when the source can be publicly released as public-domain. Use `LICENSED_PASS` only when the project records an explicit license or authorization. Use `PRIVATE_USE_PASS` only when the user supplied a local source file and an explicit personal-use, non-redistribution, non-commercial declaration; this does not permit GitHub publication. If `FAIL`, stop pipeline before translation.
+Use `PUBLICATION_PASS` only when the source can be publicly released as public-domain. Use `LICENSED_PASS` only when the project records an explicit license or authorization. Use `PRIVATE_USE_PASS` only when the user supplied a local source file and an explicit personal-use, non-redistribution, non-commercial declaration; this does not permit GitHub publication. `PRIVATE_USE_PASS` must also record that personal risk is borne by the individual user and that LifeBook Shufang publishes/provides only the LifeBook translation publishing system, without assuming copyright risk or liability caused by other individuals' translation, storage, redistribution, or use of non-public-domain content. If `FAIL`, stop pipeline before translation.
 
-只有来源可按公版公开发布时才使用 `PUBLICATION_PASS`。只有项目记录了明确授权时才使用 `LICENSED_PASS`。只有用户提供本地书源文件并明确声明个人自用、不传播、不商业使用时才使用 `PRIVATE_USE_PASS`；它不允许发布到 GitHub。如果是 `FAIL`，翻译前必须停止。
+只有来源可按公版公开发布时才使用 `PUBLICATION_PASS`。只有项目记录了明确授权时才使用 `LICENSED_PASS`。只有用户提供本地书源文件并明确声明个人自用、不传播、不商业使用时才使用 `PRIVATE_USE_PASS`；它不允许发布到 GitHub。`PRIVATE_USE_PASS` 还必须记录风险由个人承担，并记录 LifeBook书坊仅发布 LifeBook 翻译发布系统，不承担任何因其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。如果是 `FAIL`，翻译前必须停止。

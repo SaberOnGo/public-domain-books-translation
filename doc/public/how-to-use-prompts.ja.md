@@ -10,8 +10,8 @@
 2. **ルールは AI に読ませます。**
    ユーザーがリポジトリの規則を理解する必要はありません。正しい公開 prompt を AI に自動選択させてください。
 
-3. **完成扱いできるのは release 結果だけです。**
-   AI が出典確認、権利確認、翻訳、レビュー、EPUB ビルド、抜き取り検査、release を行います。最後に `output/release/` の成果物を確認してください。
+3. **完成扱いできるのは release または private artifact の結果だけです。**
+   AI が出典確認、権利確認、翻訳、レビュー、EPUB ビルド、抜き取り検査、release を行います。パブリックドメインまたは許諾済みプロジェクトでは `output/release/`、個人利用プロジェクトでは `output/private_artifacts/` を確認してください。
 
 ## いちばん簡単な開始 prompt
 
@@ -48,6 +48,8 @@
 プロジェクトを自動作成し、テンプレートが定める体系的な翻訳フロー全体を厳格に完了してください。いかなる漏れも許可しません。
 ```
 
+個人利用プロジェクトは `books/private/{target}/{number}_{slug}/` に作成してください。最終版の成果物は `output/private_artifacts/` に置かれます。これは公開 release ではなく、GitHub に公開してはいけません。
+
 ## 精密レビュー prompt（任意）
 
 最初の EPUB が生成されたあと、訳文の品質をさらに高めたい場合は次の prompt を使います。`N` は「問題なしの連続 round 数」です。`1` は token を節約する最低強度、`3` はより厳格で高品質を狙う設定です。迷う場合は `2` にします。
@@ -64,7 +66,7 @@
 
 終了条件：直近 N round 連続で新しい blocking issue がなく、npm run review:random-validate:pass が通ること。N=1 は token 節約向けの最低強度、N=3 はより厳格で、レビュー後の訳本品質を高める設定です。ユーザーが自由に選べます。
 
-通過後は staging を清掃または再構築し、EPUB を再生成し、publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck、release script を実行してください。公開可能な EPUB は必ずこの書籍の output/release/ に出力し、release_state.json.latest_status は PASS にしてください。release EPUB path、抜き取り検査 round、修正概要、検証コマンド結果、残りリスクを報告してください。
+通過後は staging を清掃または再構築し、EPUB を再生成し、publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck、および release または private artifact script を実行してください。パブリックドメインまたは許諾済みプロジェクトでは公開可能な EPUB をこの書籍の output/release/ に出力し、release_state.json.latest_status を PASS にしてください。個人利用プロジェクトでは最終 private artifact を output/private_artifacts/ に出力し、private_artifact_state.json.latest_status を PASS にしてください。release EPUB path または private artifact path、抜き取り検査 round、修正概要、検証コマンド結果、残りリスクを報告してください。
 ```
 
 ## 知っておくべき重要な場所
@@ -73,7 +75,7 @@
 - `.\tools\lifebook-launcher`：LifeBook Launcher クライアントのインストール・起動フォルダです。LifeBook プロジェクトを使い、OpenCode をインストールするためにユーザーが知っておくべき場所です。
 - `.\doc\public\user_prompt`：公開 prompt はここにあります。prompt の詳細を確認したり、手動で調整したりできます。
 - `.\books\zh-Hans`：もっとも重要な完成本の場所です。簡体字中国語への翻訳が完了したら、該当する書籍フォルダの `output\release\` を確認します。公開可能なのは release 成果物です。
-- `.\books\private`：個人利用の書籍プロジェクト用フォルダです。パブリックドメインではない私的翻訳の原文、訳文、QA、EPUB 出力はここだけに保存します。このフォルダは Git で無視され、GitHub には公開されません。
+- `.\books\private`：個人利用の書籍プロジェクト用フォルダです。パブリックドメインではない私的翻訳の原文、訳文、QA、EPUB 出力、`output\private_artifacts\` の私的成果物はここだけに保存します。このフォルダは Git で無視され、GitHub には公開されません。
 
 ## 4 つの翻訳 prompt とは
 
@@ -102,7 +104,7 @@
 - このプロジェクトを選ぶ、または開きます。
 - 必要に応じて OpenCode クライアントをダウンロードまたは開き、OpenCode で API Key を設定します。
 - 「翻訳したい本」「対象言語」「prompt 自動選択ルール」の 3 項目を貼り付けます。完全な書き方は[いちばん簡単な開始 prompt](#いちばん簡単な開始-prompt)にあります。
-- AI が完了したら、書籍フォルダの `output/release/` を確認します。
+- AI が完了したら、パブリックドメインまたは許諾済みプロジェクトでは書籍フォルダの `output/release/`、個人利用プロジェクトでは `output/private_artifacts/` を確認します。
 
 ## Codex App
 
@@ -112,7 +114,7 @@
 4. `/goal` を貼り付ける。
 5. AI が `AGENTS.md` と `template/` を読むのを待つ。
 6. 変更予定ファイルを確認する。
-7. 最後に `books/zh-Hans/.../output/release/`、または対象言語に対応する `books/{target}/.../output/release/` を確認する。
+7. 最後に `books/zh-Hans/.../output/release/`、または対象言語に対応する `books/{target}/.../output/release/` を確認する。個人利用プロジェクトでは `books/private/{target}/.../output/private_artifacts/` を確認する。
 
 Codex App は、AI が変更したファイルを確認しやすいので、このリポジトリの長い作業に向いています。
 
@@ -128,7 +130,7 @@ Codex App は、AI が変更したファイルを確認しやすいので、こ�
 ## よくあるミス
 
 - AI にテンプレートを読ませず、いきなり全訳させる。
-- `output/book.epub` だけで完成扱いし、`output/release/` を作らない。
+- `output/book.epub` だけで完成扱いし、公開プロジェクトで `output/release/`、個人利用プロジェクトで `output/private_artifacts/` を作らない。
 - 権利確認前に翻訳を始める。
 - 現代翻訳を参考・改写元にする。
 - 抜き取り検査で問題が出たのに新 round を追加しない。

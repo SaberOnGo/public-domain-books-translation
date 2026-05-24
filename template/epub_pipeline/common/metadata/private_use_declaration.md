@@ -28,11 +28,17 @@ Do not record a local absolute path in publishable files. A private project may 
 ## Boundaries / 边界
 
 - The project may translate, review, build EPUB, run stratified random spot-checks, and create private-use versioned artifacts for the user's personal study.
+- Personal risk is borne by the individual user.
+- LifeBook Shufang publishes only the LifeBook translation publishing system.
+- LifeBook Shufang does not assume copyright risk or liability caused by other individuals' translation, storage, redistribution, or use of non-public-domain content.
 - The project must not publish source text, translations, QA files, EPUB output, or book-specific metadata to GitHub.
 - The project must not treat private-use artifacts as public release artifacts.
 - If the user did not provide a local source file, the agent must search only public-domain, authorized, or otherwise clearly lawful sources.
 
 - 本工程可以为了用户个人学习进行翻译、审校、EPUB 构建、分层随机抽检，并生成私人自用版本化产物。
+- 风险由个人承担。
+- LifeBook书坊仅发布 LifeBook 翻译发布系统。
+- LifeBook书坊不承担任何因其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
 - 本工程不得把原文、译文、QA、EPUB 输出或具体书籍 metadata 发布到 GitHub。
 - 本工程不得把私人自用产物当作公开 release。
 - 如果用户没有提供本地书源文件，agent 只能查找公版、授权或其他权利清楚的合法来源。

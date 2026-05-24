@@ -36,6 +36,7 @@
    - `template/epub_pipeline/common/references/cover_design_policy.md`
    - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
    - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
+   - 若进入私人自用模式，还必须读取 `template/epub_pipeline/modes/private_use/README.md`、`references/private_use_cover_policy.md`、`references/private_use_frontmatter_policy.md`、`references/private_use_artifact_policy.md`
    - 匹配的 `template/epub_pipeline/targets/{target}/`
    - 匹配的 `template/epub_pipeline/{source-target}/`
 3. 不得依赖记忆、历史执行经验或假设；必须以当前仓库文件为准。
@@ -74,17 +75,17 @@
     - 每轮生成 `reviews/random_spotcheck/round_XXX/` 下的 seed、manifest、samples、evidence、Agent A/B 独立评审、fix_log、closure_check。
     - 任一层或任一 Agent 发现 P0/P1/P2、读者读不懂、事实/叙述关系误解、源语言句法硬搬、无依据润饰、术语/专名/译注/表格/图片/公式错误，必须修复、重建 EPUB，并用新 seed 追加下一轮抽检。
     - 只有最后N轮无未关闭问题(N最小为1, 默认2, 输出高质量译本可选3)，且 `npm run review:random-validate:pass` 或等价 `--require-pass` 校验通过，才可退出抽检。
-18. 抽检和修复完成后必须重新生成 EPUB，并运行 `npm run release:create` 或等价 release 脚本，把可发布 EPUB 输出到 `output/release/`。
-19. `output/release/release_state.json` 的 `latest_status` 必须为 `PASS`。
+18. 抽检和修复完成后必须重新生成 EPUB。公版或授权项目运行 `npm run release:create` 或等价 release 脚本，把可发布 EPUB 输出到 `output/release/`；私人自用项目运行 `npm run private:artifact:create` 或等价 private artifact 脚本，把本地私人产物输出到 `output/private_artifacts/`，不得生成或发布公开 release。
+19. 公版或授权项目的 `output/release/release_state.json.latest_status` 必须为 `PASS`；私人自用项目的 `output/private_artifacts/private_artifact_state.json.latest_status` 必须为 `PASS`。
 20. 若执行中发现模板存在可复用缺陷、缺漏或歧义，必须先在本书 QA/retrospective 中记录证据，修复当前书，再把可复用规则以最小必要改动回填到正确模板层级，并重新验证建书脚本和模板引用没有破坏。
 21. 最终不得提交未验证完成声明。最终报告必须包含：
     - 书籍项目路径
-    - release EPUB 路径
+    - release EPUB 路径，或私人自用项目的 private artifact 路径
     - source URL 或本地来源证据
     - 验证命令与结果
     - 抽检轮次与最终 validation_report
     - 修复摘要
     - 模板回填摘要
-    - `release_state.json.latest_status`
+    - `release_state.json.latest_status` 或 `private_artifact_state.json.latest_status`
     - 剩余风险
 ```

@@ -1,5 +1,5 @@
 请参考本项目下的对话历史"1-a_negro_explorer_at_the_north_pole",参考已有的epub书的制作:"a_negro_explorer_at_the_north_pole" 
-读取目录信息:"D:\project\49_public-domain-books-translation"
+读取 LifeBook 项目目录信息：优先使用当前工作目录；如需显式指定，使用环境变量 LIFEBOOK_HOME。
 按照模板要求严格执行规则,翻译:"### 20. The Ghost Pirates / 《幽灵海盗》
 - **作者**：William Hope Hodgson
 - **作者基本人生**：William Hope Hodgson (1877-1918)，英国作家，海洋恐怖文学和宇宙恐怖文学的先驱。在一战中阵亡。
@@ -19,7 +19,7 @@
 请查漏补缺,不可遗漏,写成'/goal'目标执行。
 ------------------------------------------------------------------
 请参考本项目下的对话历史"1-a_negro_explorer_at_the_north_pole",参考已有的epub书的制作:"a_negro_explorer_at_the_north_pole" 
-读取目录信息:"D:\project\49_public-domain-books-translation"
+读取 LifeBook 项目目录信息：优先使用当前工作目录；如需显式指定，使用环境变量 LIFEBOOK_HOME。
 按照模板要求严格执行规则,翻译:"### 17. Edison's Conquest of Mars / 《爱迪生征服火星》
 - **作者**：Garrett P. Serviss
 - **作者基本人生**：Garrett Putnam Serviss (1851-1929)，美国天文学家和早期科幻小说家。
@@ -33,8 +33,7 @@
 请参考对话:"1-a_negro_explorer_at_the_north_pole" 里的处理经验，对本书进行多次检查分析(也可以参考其他书的优秀的翻译、设计、及经验教训等, 在".\books"目录下) 。
 对于重要段落，高潮段落等，以及重要内容、细节等进行认真检查翻译、文学性等。
 文学性检查、"信达雅"检查要全书分析进行。
-按照模板要求生成封面,按照模板要求生成书籍首页信息，译者名：“LifeBook 书坊 SaberOnGo”,
- SaberOnGo 是我的github， 以后译者名都是"LifeBook 书坊" + 个人名.
+按照模板要求生成封面,按照模板要求生成书籍首页信息。公版或授权发布项目的译者/译制者按当前模板使用“LifeBook 书坊 + 个人名”；如果是 `private_use` 私人自用项目，必须改用 `参考LifeBook书坊 个人自制`，不得使用公开发布译制署名。
 请查漏补缺,不可遗漏,写成'/goal'目标执行。
 设置'/goal'目标，以精修本书，修复各种可能存在的细节问题。
 -----------
@@ -48,7 +47,7 @@
 ----------------------------------------------------------------------
 请参考本项目下的对话历史"1-a_negro_explorer_at_the_north_pole",
 参考已有的epub书的制作:"a_negro_explorer_at_the_north_pole"(也可以参考其他书的优秀的翻译、设计、及经验教训等, 在".\books"目录下) 
-读取目录信息:"D:\project\49_public-domain-books-translation"
+读取 LifeBook 项目目录信息：优先使用当前工作目录；如需显式指定，使用环境变量 LIFEBOOK_HOME。
 按照模板要求严格执行规则,翻译:
 "A Voyage Round the World《环球航海记》**（一句话：18世纪环球远征与海战叙事。）
    - 作者：George Anson（1697-1762，英国）
@@ -57,7 +56,7 @@
 ----------------------------------------------------------------------
 请参考本项目下的对话历史"1-a_negro_explorer_at_the_north_pole",
 参考已有的epub书的制作:"a_negro_explorer_at_the_north_pole"(也可以参考其他书的优秀的翻译、设计、及经验教训等, 在".\books"目录下) 
-读取目录信息:"D:\project\49_public-domain-books-translation"
+读取 LifeBook 项目目录信息：优先使用当前工作目录；如需显式指定，使用环境变量 LIFEBOOK_HOME。
 按照模板要求严格执行规则,翻译:
 "### 7. The Metal Monster / 《金属巨兽》
 - **作者**：A. Merritt
@@ -114,7 +113,7 @@ PAL古希腊转写本 + 英译本为主要正文文本，PDF核对正文并作�
 ------------------
 请按照模板要求，生成符合书的语境的封面图和书的”首页/前置页“，最后输出完整的epub电子书。
 -------------------------------------------------------
-在 ".\49_public-domain-books-translation" 中，
+在 LifeBook 项目根目录中，
 先严格依据 AGENTS.md、template/epub_pipeline/common、
 template/epub_pipeline/targets/zh-Hans/quality_framework、
 template/epub_pipeline/ja-zh-Hans 以及现有已完成书籍项目的实际结构，
@@ -137,8 +136,7 @@ EPUBCheck 或等价校验。必须执行分层随机抽检算法：以 reader-fa
 任一层或任一 Agent 发现 P0/P1/P2、读者读不懂、事实/叙述关系误解、日语句法硬搬、无依据润饰、术语/专名/译注/表格/图片/公式错误时，
 必须修复、重建 EPUB、追加新 seed 新一轮抽检；只有最后一轮没有未关闭问题且 npm run review:random-validate:pass
 或等价 --require-pass 校验通过后才可退出抽检。抽检和修复完成后必须重新生成 EPUB，
-并通过 npm run release:create 或等价 release 脚本把可发布 EPUB 输出到该书 output/release/，
-release_state.json.latest_status 必须为 PASS，
+并按项目模式生成最终版本化产物：公版或授权项目通过 npm run release:create 或等价 release 脚本把可发布 EPUB 输出到该书 output/release/，release_state.json.latest_status 必须为 PASS；`private_use` 私人自用项目必须通过 npm run private:artifact:create 或等价 private artifact 脚本输出到 output/private_artifacts/，private_artifact_state.json.latest_status 必须为 PASS，
 output/book.epub 不能单独作为完成依据。
 执行中如果发现 ja-zh-Hans 模板存在可复用缺陷、缺漏或歧义，
 必须先在该书 QA/retrospective 中记录证据，修复当前书，

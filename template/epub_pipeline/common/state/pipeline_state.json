@@ -50,6 +50,6 @@
     "skipping table, figure, formula, caption, or note strata in post-EPUB review",
     "reusing an old random spot-check seed after rework",
     "treating a 75% estimated fix probability as a release pass without closure verification",
-    "declaring DONE before output/release/release_state.json latest_status is PASS"
+    "declaring DONE before required release/private artifact state latest_status is PASS"
   ]
 }

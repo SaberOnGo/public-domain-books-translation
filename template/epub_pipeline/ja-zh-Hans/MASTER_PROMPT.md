@@ -32,7 +32,7 @@ LOCAL_SOURCE_FILE = {LOCAL_SOURCE_FILE}
 
 硬性要求：
 
-- 先核查日语原文来源、版权/公版/授权状态、底本文字形态和现代参考材料使用边界；若用户提供本地书源并声明个人自用、不传播、不商业使用，则进入 `private_use` 模式并记录 `metadata/private_use_declaration.md`。公开发布权利不明确且没有私人本地书源时停止。
+- 先核查日语原文来源、版权/公版/授权状态、底本文字形态和现代参考材料使用边界；若用户提供本地书源并声明个人自用、不传播、不商业使用，则进入 `private_use` 模式，读取并应用 `template/epub_pipeline/modes/private_use/` 覆盖层规则，记录 `metadata/private_use_declaration.md`。公开发布权利不明确且没有私人本地书源时停止。
 - 未完成模板复制，不得抓取原文。
 - 批量翻译前必须完成 `metadata/japanese_source_profile.md` 和 `qa/textual/japanese_textual_notes.md`。
 - 先完成通用翻译研究和本书专项翻译研究。
@@ -47,10 +47,10 @@ LOCAL_SOURCE_FILE = {LOCAL_SOURCE_FILE}
 - 必须先制作样章 EPUB；若 state/human_feedback_control.md 中 human_required=false，则自动检查并继续；若 true，则等待用户。
 - 样章 PASS 后才可制作全书 EPUB。
 - 第一版全书 EPUB 完成后必须执行分层随机抽检模块：运行确定性抽样脚本，抽样正文段落、表格、图片、公式/证明块、图注和注释，保留 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、评审、修复和闭环记录，并在最终输出前通过 `npm run review:random-validate:pass`。
-- 随机抽检闭环通过后必须执行版本化发布模块：运行 `npm run release:create`，生成 `output/release/book_vX.X.X.epub`、中英文 `release_notes.md`、`release_state.json` 和 `release_index.md`。
+- 随机抽检闭环通过后必须执行版本化产物模块：公版或授权项目运行 `npm run release:create`，生成 `output/release/book_vX.X.X.epub`、中英文 `release_notes.md`、`release_state.json` 和 `release_index.md`；`private_use` 项目运行 `npm run private:artifact:create`，生成 `output/private_artifacts/{title}_private_vX.X.X.epub`、`private_artifact_notes.md`、`private_artifact_state.json` 和 `private_artifact_index.md`。
 - 分层随机抽检通过后，必须派生 2 个独立 Agent 严格评审，并输出评分表。
 - 评审发现问题必须按 revision_route 回到对应阶段返工。
-- 最终生成 `output/book.epub`，并把可发布版本固化到 `output/release/book_vX.X.X.epub`。
+- 最终生成 `output/book.epub`。公版或授权项目把可发布版本固化到 `output/release/book_vX.X.X.epub`；`private_use` 项目把本地私人产物固化到 `output/private_artifacts/`，不得作为公开 release。
 - 必须运行 epubcheck 或等价校验，fatal/error 为 0 才可进入最终输出。
 - 完成后必须做全阶段复审，总结经验教训，写入 retrospective，并在需要时递增模板版本。
 - 译文要优秀、可读、有中文叙述气息；不得机械直译、不得越界发挥、不得省字式翻译，不得把日语汉字词未经判断照搬成中文，不得把官能或心理描写色情化、猎奇化、净化或道德说教化。

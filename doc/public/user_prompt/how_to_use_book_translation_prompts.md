@@ -8,7 +8,7 @@
 
 其他事情都交给 AI Agent 自动完成：找可靠公版/授权来源或记录私人本地书源、判断源语言、选择或创建模板、建立书籍项目、翻译、审校、构建 EPUB、随机抽检、生成 release 或私人版本化产物。
 
-## 用户需要知道的 4 个目录
+## 用户需要知道的 5 个目录
 
 - `.\template\epub_pipeline`：查看当前有哪些源语言/语言方向模板。用户不需要判断模板，但如果想确认“已有模板/没有模板”，看这里。
 - `.\tools\lifebook-launcher`：LifeBook Launcher 客户端安装启动目录。用户需要知道这个位置，以使用 LifeBook 项目和安装 OpenCode。
@@ -103,6 +103,8 @@
 
 给小白用户时，只给这一段即可：
 
+### 公版书翻译prompt
+
 ```text
 我要翻译的书：{书名、作者（可选）；如果有可靠来源链接也可以贴上}
 目标语言：{例如 简体中文}
@@ -113,6 +115,22 @@
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
 ```
+
+### 个人自用书翻译prompt
+
+```text
+我要翻译的书：{书名、本地目录: XXX }
+目标语言： {例如 简体中文}
+
+请自动选择正确的翻译 prompt：
+- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+
+这是我个人自用的,不传播,不用于商业,使用我给出的本地的书源。
+请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
+```
+
+私人自用项目必须输出到 `books/private/{target}/{number}_{slug}/`，最终版本化产物位于 `output/private_artifacts/`，不是公开 release，不得发布到 GitHub。
 
 ## EPUB 后精修审校 prompt（可选）
 
@@ -130,7 +148,7 @@
 
 退出条件：最近连续 N 轮均无新增阻塞问题，且 npm run review:random-validate:pass 通过。N=1 为最低强度，较省 token；N=3 更严格，审校后译本质量更高，用户可自行调整。
 
-通过后清理或重建 staging，重新生成 EPUB，运行 publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck 和 release 脚本。最终可发布 EPUB 必须输出到该书 output/release/，release_state.json.latest_status 必须为 PASS。报告 release EPUB 路径、抽检轮次、修复摘要、验证命令结果和剩余风险。
+通过后清理或重建 staging，重新生成 EPUB，运行 publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck，以及 release 或 private artifact 脚本。公版或授权项目的最终可发布 EPUB 必须输出到该书 output/release/，release_state.json.latest_status 必须为 PASS。私人自用项目的最终私人产物必须输出到 output/private_artifacts/，private_artifact_state.json.latest_status 必须为 PASS。报告 release EPUB 或 private artifact 路径、抽检轮次、修复摘要、验证命令结果和剩余风险。
 ```
 
 ## AI Agent 必须交付什么
@@ -139,11 +157,11 @@
 
 - 书籍项目路径。
 - 可靠公版来源或本地来源证据。
-- release EPUB 路径。
+- release EPUB 路径，或私人自用项目的 private artifact 路径。
 - 执行过的验证命令和结果。
 - 分层随机抽检轮次。
 - 修复摘要。
 - 如果有模板回填，说明回填了什么。
 - 剩余风险。
 
-如果没有 `output/release/` 下的 PASS release，就不算完成。
+公版或授权项目没有 `output/release/` 下的 PASS release，就不算完成。私人自用项目没有 `output/private_artifacts/` 下的 PASS private artifact，就不算完成。

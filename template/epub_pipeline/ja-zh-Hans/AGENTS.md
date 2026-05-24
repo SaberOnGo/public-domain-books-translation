@@ -56,8 +56,8 @@ This file is for AI agents using the `ja-zh-Hans` template.
 - After the first full-book EPUB and after each post-EPUB refinement pass, at least two independent agents must run the stratified random spot-check gate. The sampled population is reader-facing audit units, including paragraphs, tables, figures, formulas/proof blocks, captions, and notes. Both agents, fix closure, and `npm run review:random-validate:pass` must pass before refinement can be considered complete.
 - 第一版全书 EPUB 生成后，以及每轮 EPUB 后精校完成后，必须由至少两个独立 Agent 执行分层随机抽检门禁。抽样总体是读者可见审计单元，包括正文段落、表格、图片、公式/证明块、图注和注释。两个 Agent、修复闭环和 `npm run review:random-validate:pass` 都通过后，才可认为精校完成。
 
-- After random spot-check closure, create a versioned EPUB release under `output/release/`; `output/book.epub` alone is not a publishable final artifact.
-- 随机抽检闭环通过后，必须在 `output/release/` 下创建带版本号的 EPUB release；只有 `output/book.epub` 不是可发布最终产物。
+- After random spot-check closure, create a versioned artifact: public-domain or licensed projects use `output/release/`, while `private_use` projects use local-only `output/private_artifacts/`; `output/book.epub` alone is not a final artifact.
+- 随机抽检闭环通过后，必须创建带版本号产物：公版或授权项目使用 `output/release/`，`private_use` 项目使用仅限本地的 `output/private_artifacts/`；只有 `output/book.epub` 不是最终产物。
 
 ## Human Checkpoints / 人类可选检查点
 
@@ -77,9 +77,8 @@ This file is for AI agents using the `ja-zh-Hans` template.
 - `reviews/random_spotcheck/round_XXX/`
 - `reviews/agent_a/random_spotcheck_review.md`
 - `reviews/agent_b/random_spotcheck_review.md`
-- `output/release/book_vX.X.X.epub`
-- `output/release/release_notes.md`
-- `output/release/release_state.json`
+- Public/licensed: `output/release/book_vX.X.X.epub`, `output/release/release_notes.md`, `output/release/release_state.json`
+- Private-use: `output/private_artifacts/{title}_private_vX.X.X.epub`, `output/private_artifacts/private_artifact_notes.md`, `output/private_artifacts/private_artifact_state.json`
 - `reviews/scorecards/final_quality_score.md`
 
 If no human feedback is required, continue only when the relevant report says `PASS`.

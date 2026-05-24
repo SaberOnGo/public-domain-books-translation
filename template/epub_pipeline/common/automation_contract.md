@@ -15,7 +15,7 @@ AI 必须自动决定：
 - 如何构建并校验 EPUB。
 - 如何把 Markdown 章节转换为 XHTML，并把图像、SVG、CSS、表格等 EPUB 资源复制、登记到 OPF manifest。
 - 如何在第一版 EPUB 后执行分层随机抽检模块，生成正文、表格、图片、公式、图注/注释等读者可见审计单元样本，派生至少 2 个独立 Agent 评审，并根据抽检、修复闭环和新 seed 复抽结果自动返工或继续。
-- 如何在随机抽检闭环通过后创建带版本号的 EPUB release，把 `output/book.epub` 固化为 `output/release/{目标语言书名}_vX.X.X.epub`，并把最新中英文说明追加到累计 `release_notes.md` 顶部。
+- 如何在随机抽检闭环通过后创建带版本号的 EPUB 产物：公版或授权项目把 `output/book.epub` 固化为 `output/release/{目标语言书名}_vX.X.X.epub`，并把最新中英文说明追加到累计 `release_notes.md` 顶部；私人自用项目使用 `modes/private_use` 的脚本把本地私人产物写入 `output/private_artifacts/`。
 
 ## AI 不应询问用户
 
@@ -80,13 +80,14 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 
 ## EPUB 版本化发布自动化规则
 
-- 随机抽检模块执行后，AI 必须执行 `prompts/18a_release_versioning.md` 或等效 release 脚本；不得只留下 `output/book.epub` 就宣布完成。
+- 随机抽检模块执行后，公版或授权项目必须执行 `prompts/18a_release_versioning.md` 或等效 release 脚本；私人自用项目必须执行 `npm run private:artifact:create` 或等效 private artifact 脚本；不得只留下 `output/book.epub` 就宣布完成。
 - 版本号格式必须是 `v{main_version}.{sub_version}.{patch_version}`，默认首版 `v0.0.1`；没有人工明确变更 main/sub 时，每次迭代发布只递增 patch。
-- 所有版本化 EPUB 必须写入 `output/release/`，文件名为 `{目标语言书名}_vX.X.X.epub`，例如 `金属巨兽_v0.0.4.epub`；不得把多个版本平铺在 `output/` 根目录，不得使用英文 slug 或通用 `book_` 前缀。
-- 每个版本必须把中英文说明追加到累计 `release_notes.md` 顶部，记录发布原因、问题点、修复方式、QA 证据、风险和下一轮迭代。
+- 公版或授权项目的所有版本化 EPUB 必须写入 `output/release/`，文件名为 `{目标语言书名}_vX.X.X.epub`，例如 `金属巨兽_v0.0.4.epub`；不得把多个版本平铺在 `output/` 根目录，不得使用英文 slug 或通用 `book_` 前缀。
+- 私人自用项目的所有版本化 EPUB 必须写入 `output/private_artifacts/`，文件名为 `{目标语言书名}_private_vX.X.X.epub`；它不是公开 release，不得发布到 GitHub。
+- 每个版本必须把说明追加到累计 `release_notes.md` 或 `private_artifact_notes.md` 顶部，记录发布原因、问题点、修复方式、QA 证据、风险和下一轮迭代。
 - `DRAFT` release 可用于人工核查，但不得作为 `DONE` 依据。
-- `PASS` release 必须来自 `npm run review:random-validate:pass` 或等效 `--require-pass` 校验，且 `release_confidence >= 0.80`、EPUBCheck fatal/error 为 0、publication lint 无未解决问题。
-- 后续读者评论、人工审校、阅读行为分析、自动化 QA 或随机抽检发现的问题，必须进入下一轮修复和新的 patch release，不得覆盖旧 release 证据。
+- `PASS` release 或 private artifact 必须来自 `npm run review:random-validate:pass` 或等效 `--require-pass` 校验，且 `release_confidence >= 0.80`、EPUBCheck fatal/error 为 0、publication lint 无未解决问题。私人自用项目还必须通过 `preflight:private-use` 和 `reader:private-check`。
+- 后续读者评论、人工审校、阅读行为分析、自动化 QA 或随机抽检发现的问题，必须进入下一轮修复和新的 patch release 或 private artifact，不得覆盖旧产物证据。
 
 ## 失败处理
 

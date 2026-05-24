@@ -33,14 +33,18 @@ This policy centralizes cover requirements that were previously scattered across
 - 封面图像必须有可理解的替代文本，例如书名或“书名封面”。
 - 不能使用现代受版权保护的封面、插画、影视剧照、盗版图片或来源权利不明的图片。
 
+`publication_mode=private_use` 项目必须改读并遵守 `template/epub_pipeline/modes/private_use/references/private_use_cover_policy.md`。私人自用封面底部只写 `个人学习版`，不得写公版来源行，也不得把 `仅供个人自用，不传播，不商业使用` 这类长声明放到封面。
+
+`publication_mode=private_use` projects must additionally read and follow `template/epub_pipeline/modes/private_use/references/private_use_cover_policy.md`. A private-use cover uses only `个人学习版` at the bottom; it must not use a public-domain source line or place long rights disclaimers such as `仅供个人自用，不传播，不商业使用` on the cover.
+
 ## 设计目标 / Design Goals
 
 封面不是“能显示一张图”即可。封面必须承担四个读者信号：
 
 1. 书籍身份：目标语书名是第一视觉层级，原名或副标题是第二层级。
 2. 题材气质：视觉主题必须来自本书内容、时代、地域、人物或核心意象。
-3. 版本身份：封面使用简洁统一署名 `LifeBook 书坊 译制`，个人译者名放入书籍信息页。
-4. 公版来源：底部最多一行小字说明 Project Gutenberg 或其他公版来源，不得压过书名。
+3. 版本身份：公版或授权发布项目封面使用简洁统一署名 `LifeBook 书坊 译制`，个人译者名放入书籍信息页。
+4. 公版来源：公版或授权发布项目底部最多一行小字说明 Project Gutenberg 或其他公版来源，不得压过书名。私人自用项目底部只写 `个人学习版`。
 
 视觉上应做到：
 
@@ -109,8 +113,8 @@ Output:
 2. 原书名：小于主标题，居中对齐，尽量一行展示。
 3. 可选副标题或额外信息：仅在必要时使用，另起一行小字。
 4. 作者：目标语言常用译名 + “著”等本地化署名方式。
-5. 译制者：固定使用 `LifeBook 书坊 译制`。
-6. 来源说明：封面底部最多一行小字，例如“依据 Project Gutenberg #xxxxx 公版原文制作”。
+5. 译制者：公版或授权发布项目固定使用 `LifeBook 书坊 译制`；私人自用项目按 private-use 覆盖层规则处理。
+6. 来源说明：公版或授权发布项目封面底部最多一行小字，例如“依据 Project Gutenberg #xxxxx 公版原文制作”；私人自用项目只写 `个人学习版`。
 
 排版要求：
 

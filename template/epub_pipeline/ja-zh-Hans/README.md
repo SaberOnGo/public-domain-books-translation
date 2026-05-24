@@ -18,7 +18,7 @@
 12. 第一版全书 EPUB 后强制执行分层随机抽检模块，抽样正文段落、表格、图片、公式/证明块、图注和注释。
 13. 派生 2 个独立 Agent 做严格评审并评分。
 14. 根据评审和分层随机抽检结果回退到任意前置阶段返工；返工后必须定点关闭旧问题并使用新 seed 复抽。
-15. 随机抽检闭环通过后，生成 `output/release/book_vX.X.X.epub`、`release_notes.md`、`release_state.json` 和 `release_index.md`。
+15. 随机抽检闭环通过后，公版或授权项目生成 `output/release/book_vX.X.X.epub`、`release_notes.md`、`release_state.json` 和 `release_index.md`；`private_use` 项目生成 `output/private_artifacts/{title}_private_vX.X.X.epub` 和私人产物记录。
 16. 全阶段复审，总结经验教训，必要时递增模板版本。
 
 目标不是“把日文换成中文”，而是产出来源清楚、文体判断明确、中文可读、有文学质感、EPUB 制作质量合格的简体中文正本书。
@@ -46,7 +46,7 @@ This template handles Japanese source-language issues for Simplified Chinese EPU
 
 之后所有抓取、研究、翻译、QA、EPUB 输出都只能写入新书籍工程目录。
 
-如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地书源并声明个人自用、不传播、不商业使用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{book_id_slug}/`。
+如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地书源并声明个人自用、不传播、不商业使用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{book_id_slug}/`，并最后叠加 `template/epub_pipeline/modes/private_use/` 覆盖层。
 
 Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `npm install`，再进入具体书籍目录运行 `npm run lint:publication`、`npm run build:epub`、`npm run check:epub`。本模板的 `package.json` 只提供本书脚本，依赖统一来自共享的 `books/node_modules/`。
 
@@ -106,7 +106,8 @@ Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `
 - `preproduction/stage1/production_spec.md`
 - `preproduction/stage2_sample/sample_book.epub`
 - `reviews/random_spotcheck/round_XXX/`
-- `output/release/`
+- `output/release/`：公版或授权项目的版本化发布目录。
+- `output/private_artifacts/`：`private_use` 项目的本地私人产物目录。
 - `reviews/scorecards/final_quality_score.md`
 
 如果无人干预，AI 只有在报告明确 `PASS` 时才可继续；若 `FAIL`，必须按回溯规则自行修正，不能跳过。
@@ -147,4 +148,5 @@ Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `
 - 涉及官能、暴力、病态心理或权力关系时，未写明文学处理边界，不得批量翻译。
 - 第一版全书 EPUB 后未完成分层随机抽检，不得进入最终输出。
 - `npm run review:random-validate:pass` 未通过，不得标记 `DONE`。
-- 未创建 `output/release/book_vX.X.X.epub`，或 `output/release/release_state.json.latest_status` 不是 `PASS`，不得标记 `DONE`。
+- 公版或授权项目未创建 `output/release/book_vX.X.X.epub`，或 `output/release/release_state.json.latest_status` 不是 `PASS`，不得标记 `DONE`。
+- `private_use` 项目未创建 `output/private_artifacts/{title}_private_vX.X.X.epub`，或 `output/private_artifacts/private_artifact_state.json.latest_status` 不是 `PASS`，不得标记 `DONE`。

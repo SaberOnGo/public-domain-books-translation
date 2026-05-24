@@ -36,7 +36,7 @@ REFERENCE_TRANSLATION_URLS = {REFERENCE_TRANSLATION_URLS}
 
 硬性要求：
 
-- 先核查古希腊文原文来源、底本版本、编辑者、OCR/转写状态和版权/公版/授权状态；若用户提供本地书源并声明个人自用、不传播、不商业使用，则进入 `private_use` 模式并记录 `metadata/private_use_declaration.md`。公开发布权利不明确且没有私人本地书源时停止。
+- 先核查古希腊文原文来源、底本版本、编辑者、OCR/转写状态和版权/公版/授权状态；若用户提供本地书源并声明个人自用、不传播、不商业使用，则进入 `private_use` 模式，读取并应用 `template/epub_pipeline/modes/private_use/` 覆盖层规则，记录 `metadata/private_use_declaration.md`。公开发布权利不明确且没有私人本地书源时停止。
 - 未完成模板复制，不得抓取原文。
 - 必须创建 `metadata/source_witness_manifest.md`，记录底本、witness、扫描/OCR/转写状态、卷册、页码/行号或章节编号体系。
 - 必须创建 `qa/textual/textual_uncertainty_log.md`，记录异文、残损、脱文、拟补、OCR 不确定处和语法歧义；若没有发现，也要明确写出无发现。
@@ -51,10 +51,10 @@ REFERENCE_TRANSLATION_URLS = {REFERENCE_TRANSLATION_URLS}
 - 每章必须完成 fidelity/readability/terminology/gate 报告。
 - 只有 gate PASS 的章节才可写入 `chapters/final`。
 - 如果 PROFILE_ROOT 启用古典科学 profile，必须额外执行参考译本政策、术语锁定、图表/表格清单、技术审计、图表/表格审计和科学评审。
-- 最终生成 `output/book.epub`，并把可发布版本固化到 `output/release/book_vX.X.X.epub`。
+- 最终生成 `output/book.epub`。公版或授权项目把可发布版本固化到 `output/release/book_vX.X.X.epub`；`private_use` 项目把本地私人产物固化到 `output/private_artifacts/`，不得作为公开 release。
 - 必须运行 epubcheck 或等价校验，fatal/error 为 0 才可进入最终输出。
 - 第一版全书 EPUB 完成后必须执行分层随机抽检模块：运行确定性抽样脚本，抽样正文段落、表格、图片、公式/证明块、图注和注释，保留 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、评审、修复和闭环记录，并在最终输出前通过 `npm run review:random-validate:pass`。
-- 随机抽检闭环通过后必须执行版本化发布模块：运行 `npm run release:create`，生成 `output/release/book_vX.X.X.epub`、中英文 `release_note_vX.X.X.md`、`release_state.json` 和 `release_index.md`。
+- 随机抽检闭环通过后必须执行版本化产物模块：公版或授权项目运行 `npm run release:create`，生成 `output/release/book_vX.X.X.epub`、中英文 `release_note_vX.X.X.md`、`release_state.json` 和 `release_index.md`；`private_use` 项目运行 `npm run private:artifact:create`，生成 `output/private_artifacts/{title}_private_vX.X.X.epub`、`private_artifact_notes.md`、`private_artifact_state.json` 和 `private_artifact_index.md`。
 - 完成后必须做全阶段复审，总结经验教训，写入 retrospective，并在需要时递增模板版本。
 
 如果需要人类审阅，只能由控制文件决定；默认 human_required=false，AI 自动执行。

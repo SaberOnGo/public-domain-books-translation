@@ -2,9 +2,9 @@
 
 ## 目标 / Purpose
 
-把当前 `output/book.epub` 固化为带版本号的发布产物，并写入双语 release note。EPUB 必须像软件版本一样持续迭代：读者评论、人工审校、阅读行为分析、自动化 QA 和随机抽检修复都进入后续 patch version。
+把当前 `output/book.epub` 固化为带版本号的公开发布产物，并写入双语 release note。本步骤只用于公版或授权发布项目；`publication_mode=private_use` 项目必须改用 `modes/private_use` 的 `private:artifact:create` 流程。EPUB 必须像软件版本一样持续迭代：读者评论、人工审校、阅读行为分析、自动化 QA 和随机抽检修复都进入后续 patch version。
 
-Freeze the current `output/book.epub` into a versioned release artifact with a bilingual release note. The EPUB is managed like software: reader feedback, human review, reading-behavior analysis, automated QA, and random spot-check fixes all feed later patch releases.
+Freeze the current `output/book.epub` into a versioned public release artifact with a bilingual release note. This step is only for public-domain or licensed publication projects; `publication_mode=private_use` projects must use the `modes/private_use` `private:artifact:create` flow instead. The EPUB is managed like software: reader feedback, human review, reading-behavior analysis, automated QA, and random spot-check fixes all feed later patch releases.
 
 ## 必读 / Must Read
 

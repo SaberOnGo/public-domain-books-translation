@@ -1,8 +1,8 @@
 # EPUB 版本发布规则 / EPUB Release Versioning
 
-EPUB 成书应按软件发布方式管理。`output/book.epub` 是当前构建产物；正式或候选交付物必须写入 `output/release/`，并带版本号、发布说明和校验证据。
+EPUB 成书应按软件发布方式管理。`output/book.epub` 是当前构建产物；公版或授权项目的正式或候选交付物必须写入 `output/release/`，并带版本号、发布说明和校验证据。`publication_mode=private_use` 项目必须改用 `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md`，把本地私人产物写入 `output/private_artifacts/`。
 
-EPUB books should be managed like software releases. `output/book.epub` is the current build artifact; release or candidate artifacts must be written under `output/release/` with a version, release note, and validation evidence.
+EPUB books should be managed like software releases. `output/book.epub` is the current build artifact; public-domain or licensed release or candidate artifacts must be written under `output/release/` with a version, release note, and validation evidence. `publication_mode=private_use` projects must instead follow `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md` and write local private artifacts under `output/private_artifacts/`.
 
 ## 版本号 / Version Number
 
@@ -30,7 +30,7 @@ v0.0.1
 
 ## 目录 / Directory
 
-所有 release 文件写入：
+公版或授权项目的所有 release 文件写入：
 
 ```text
 output/release/
@@ -44,6 +44,14 @@ output/release/
 - `release_index.md`
 
 `output/` 根目录可以保留 `book.epub`、`epubcheck.json`、`publication_lint.json` 等当前构建产物，但不得把多个版本 EPUB 平铺在 `output/` 根目录。
+
+私人自用项目不使用 `output/release/` 表达公开发布，必须使用：
+
+```text
+output/private_artifacts/
+```
+
+具体规则见 `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md`。
 
 ## 发布说明 / Release Note
 
@@ -73,6 +81,13 @@ npm run release:draft
 npm run release:create
 ```
 
+私人自用项目使用：
+
+```powershell
+npm run private:artifact:draft
+npm run private:artifact:create
+```
+
 等效命令：
 
 ```powershell
@@ -88,9 +103,18 @@ python scripts/create_release.py --status PASS --require-pass
 
 一本书不得标记 `DONE`，除非：
 
+公版或授权项目：
+
 - 至少存在一个 `output/release/{目标语言书名}_vX.X.X.epub`。
 - `output/release/release_notes.md` 存在，且最新版本条目位于最上方。
 - `release_state.json.latest_status = PASS`。
 - release note 记录抽检、修复、风险和校验证据。
+
+私人自用项目：
+
+- 至少存在一个 `output/private_artifacts/{目标语言书名}_private_vX.X.X.epub`。
+- `output/private_artifacts/private_artifact_notes.md` 存在，且最新版本条目位于最上方。
+- `private_artifact_state.json.latest_status = PASS`。
+- private artifact note 记录抽检、修复、风险和校验证据，并明确该产物仅供个人自用、不传播、不商业使用、不得发布到 GitHub。
 
 这让 EPUB 可以像软件一样持续迭代：每次读者反馈或自动化检查产生修改，就发布一个新的 patch version。

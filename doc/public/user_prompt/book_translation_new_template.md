@@ -31,6 +31,7 @@
    - `template/epub_pipeline/common/README.md`
    - `template/epub_pipeline/common/preproduction/stage1/_TEMPLATE.production_spec.md`
    - `template/epub_pipeline/common/references/` 中与来源、版权、封面、book-info、图表资产、质量门禁、随机抽检、release 有关的文件
+   - 若进入私人自用模式，还必须读取 `template/epub_pipeline/modes/private_use/README.md`、`references/private_use_cover_policy.md`、`references/private_use_frontmatter_policy.md`、`references/private_use_artifact_policy.md`
    - 匹配的 `template/epub_pipeline/targets/{target}/`
    - 至少一个现有语言方向模板，例如 `en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans`，只用于学习目录结构，不得照搬源语言规则
    - 现有已完成书籍项目结构
@@ -72,7 +73,7 @@
 
 13. 运行 dry-run 验证 `books/scripts/create_book_project.py` 可以使用新模板创建项目。
 14. dry-run 通过后，公开项目正式创建 `books/{target}/{next_number}_{slug}/`；私人自用项目使用 `--mode private-use --local-source-file ... --private-use-declaration ...` 创建 `books/private/{target}/{next_number}_{slug}/`。slug 由你根据书名和作者自动生成。
-15. create_book_project.py 必须先复制 common，再 overlay 新语言方向模板。所有后续具体书籍文件只能写入新书目录。
+15. create_book_project.py 必须先复制 common，再 overlay 新语言方向模板。私人自用项目还必须最后 overlay `template/epub_pipeline/modes/private_use/`。所有后续具体书籍文件只能写入新书目录。
 
 第四阶段：自动查找来源与版权核查
 
@@ -105,8 +106,8 @@
     - 每轮生成 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、Agent A/B 独立评审、fix_log、closure_check。
     - 任一层或任一 Agent 发现 P0/P1/P2、读者读不懂、事实/叙述关系误解、源语言句法硬搬、无依据润饰、术语/专名/译注/表格/图片/公式错误，必须修复、重建 EPUB，并用新 seed 追加下一轮抽检。
     - 只有最后N轮无未关闭问题(N最小为1, 默认2, 输出高质量译本可选3)，且 `npm run review:random-validate:pass` 或等价 `--require-pass` 校验通过，才可退出抽检。
-26. 抽检和修复完成后必须重新生成 EPUB，并运行 `npm run release:create` 或等价 release 脚本，把可发布 EPUB 输出到 `output/release/`。
-27. `output/release/release_state.json` 的 `latest_status` 必须为 `PASS`。`output/book.epub` 不能单独作为完成依据。
+26. 抽检和修复完成后必须重新生成 EPUB。公版或授权项目运行 `npm run release:create` 或等价 release 脚本，把可发布 EPUB 输出到 `output/release/`；私人自用项目运行 `npm run private:artifact:create` 或等价 private artifact 脚本，把本地私人产物输出到 `output/private_artifacts/`，不得生成或发布公开 release。
+27. 公版或授权项目的 `output/release/release_state.json.latest_status` 必须为 `PASS`；私人自用项目的 `output/private_artifacts/private_artifact_state.json.latest_status` 必须为 `PASS`。`output/book.epub` 不能单独作为完成依据。
 
 第六阶段：模板回填与最终报告
 
@@ -118,12 +119,12 @@
 30. 最终报告必须包含：
     - 新建语言方向模板路径
     - 书籍项目路径
-    - release EPUB 路径
+    - release EPUB 路径，或私人自用项目的 private artifact 路径
     - source URL 或本地来源证据
     - 验证命令与结果
     - 抽检轮次与最终 validation_report
     - 修复摘要
     - 模板回填摘要
-    - `release_state.json.latest_status`
+    - `release_state.json.latest_status` 或 `private_artifact_state.json.latest_status`
     - 剩余风险
 ```

@@ -35,6 +35,8 @@ LifeBook 書坊是一套多語言公版書翻譯與 EPUB 製作流程。它不�
 除非版權或來源無法確認，不要讓我填寫技術欄位。請自動查找可靠公版來源，自動建立專案，完成翻譯、審校、EPUB 建置、分層隨機抽檢和 release。
 ```
 
+如果是非公版書，只能使用本地私人模式。使用者必須提供自己的本地電子書檔案，並明確聲明僅供個人學習自用、不傳播、不商業使用；AI 應建立 `books/private/{target}/{number}_{book_slug}/` 下的私人工程。腳本會疊加 `template/epub_pipeline/modes/private_use/`，把私人封面、首頁/前置頁和產物規則與公版發布規則隔離。`books/private/` 被 Git 忽略，裡面的原文、譯文、QA、EPUB 和私人產物不能發布到 GitHub。
+
 ## AI 用戶端
 
 本倉庫不綁定模型。Codex App、Claude Code、OpenCode、aider、Antigravity 或其他能讀取本機檔案的 AI 用戶端都可以使用，只要它能讀倉庫、改檔、執行命令，並遵守 `AGENTS.md`。
@@ -46,7 +48,7 @@ LifeBook 書坊是一套多語言公版書翻譯與 EPUB 製作流程。它不�
 - 倉庫中的原始碼目錄是 `tools/lifebook-launcher/source/`，供開發者打包和維護。
 - 它會自動維護 LifeBook 專案更新、檢查/更新 OpenCode Desktop、支援 LifeBook Launcher 自更新，並允許使用者設定開機自動啟動。
 
-Launcher 不會保存 API Key，也不會把 OpenCode 本體放進本倉庫。詳見 [LifeBook Launcher 設計說明](../docs/lifebook-launcher/design.zh-CN.md) 和 [OpenCode 用戶端說明](../docs/ai-clients/opencode.zh-CN.md)。
+Launcher 不會保存 API Key，也不會把 OpenCode 本體放進本倉庫。OpenCode 用戶端使用見 [OpenCode 用戶端說明](../docs/ai-clients/opencode.zh-CN.md)。
 
 ## 使用者需要知道的重要目錄
 
@@ -54,6 +56,7 @@ Launcher 不會保存 API Key，也不會把 OpenCode 本體放進本倉庫。�
 - `.\tools\lifebook-launcher`：LifeBook Launcher 用戶端安裝啟動目錄。使用者需要知道這個位置，以使用 LifeBook 專案和安裝 OpenCode。
 - `.\doc\public\user_prompt`：公共啟動 prompt 目錄。若想了解 prompt 細節，或手動調整給 AI 的 prompt，可以看這裡。
 - `.\books\zh-Hans`：最重要的成書目錄。翻譯成簡體中文成功後，到對應書籍目錄裡找 `output\release\`；只有 release 目錄裡的成品才算可發布結果。
+- `.\books\private`：本地私人自用書籍工程目錄。這裡用於使用者提供本地書源的非公版個人學習翻譯，已被 Git 忽略，不能發布到 GitHub。
 
 ## 倉庫結構
 
@@ -63,6 +66,7 @@ Launcher 不會保存 API Key，也不會把 OpenCode 本體放進本倉庫。�
 - `template/epub_pipeline/{source-target}/`：具體語言方向的 prompt、術語、文風和審校規則。
 - `template/epub_pipeline/targets/{target}/`：目標語言品質規則。
 - `template/epub_pipeline/profiles/{profile-target}/`：特殊書籍類型的附加規則。
+- `template/epub_pipeline/modes/private_use/`：只複製到非公版個人自用專案的模式覆蓋層，包含私人封面、首頁/前置頁、私人產物和門禁腳本。
 - `books/{target}/{number}_{book_slug}/`：具體書籍工程。書籍內容只能寫在這裡。
 - `books/`：共享 Node.js 工具依賴，統一安裝一次。
 - `doc/public/`：公開說明、prompt 使用文件和候選書資料。
@@ -85,11 +89,22 @@ npm run new:book -- {book_id_slug} --source-target {source-target}
 books/{target}/{number}_{book_id_slug}/
 ```
 
-腳本會先複製 `template/epub_pipeline/common`，再覆蓋對應語言方向模板。若書籍需要特殊 profile，再疊加 `profiles/{profile-target}/`。
+腳本會先複製 `template/epub_pipeline/common`，再覆蓋對應語言方向模板。若書籍需要特殊 profile，再疊加 `profiles/{profile-target}/`。私人自用專案還會最後疊加 `template/epub_pipeline/modes/private_use/`。
+
+私人自用專案必須明確使用 `private-use` 模式：
+
+```powershell
+cd books
+npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "僅供個人學習自用；不傳播；不用於商業。"
+```
+
+私人模式不降低翻譯、審校、EPUB 校驗、分層隨機抽檢要求，但會改變權利、讀者可見措辭和產物語義。私人封面底部使用 `個人學習版`；私人首頁/前置頁使用 `參考LifeBook書坊 個人自製`，去掉所有公版說明，並寫明僅供個人自用、不傳播、不商業使用、風險由個人承擔。私人產物寫入 `output/private_artifacts/`，不是公開 release。
 
 ## 核心規則
 
-- 翻譯前必須保留來源證據和版權核查記錄。
+- 翻譯前必須保留來源證據和版權核查記錄；公開專案必須是公版或授權來源。
+- 非公版個人自用專案必須進入 `private_use` 模式，並保存在被 Git 忽略的 `books/private/` 下。
+- 私人自用專案必須帶有 `modes/private_use` 覆蓋層，不得復用公版封面、首頁/前置頁和公開 release 措辭。
 - 不使用現代受版權保護譯本、盜版站或來源不明 EPUB。
 - AI 初稿不能直接發布。
 - 具體書籍內容不能寫回 `template/`。
@@ -115,6 +130,16 @@ npm run review:random-validate:pass
 npm run release:create
 ```
 
+私人自用專案在同樣完成 build、EPUBCheck 和分層隨機抽檢後，使用私人產物命令：
+
+```powershell
+npm run build:private-epub
+npm run check:epub
+npm run review:random-samples
+npm run review:random-validate:pass
+npm run private:artifact:create
+```
+
 ## 參與方式
 
 有價值的貢獻包括：找公版來源、查版權、審譯文、統一術語、測試 EPUB、回饋排版可讀性、改進自動化腳本。優先做小而可複核的修改，不做無法追蹤的大段重寫。
@@ -124,6 +149,8 @@ npm run release:create
 每本源書都要單獨核查版權。某文本在一個國家進入公版，不代表自動在所有地區都進入公版。
 
 本專案產生的譯文、註釋、封面、排版和 EPUB 打包等非程式碼內容，預設按 `CC BY-NC-SA 4.0` 發布；第三方商業使用必須另行取得 LifeBook 書坊及相關權利人的授權。
+
+`books/private/` 下的私人自用專案不屬於公開發布內容，不適用預設公開授權，不得提交或發布到 GitHub。任何私人譯本僅供個人自用，不傳播，不商業使用；相關風險由個人承擔。LifeBook書坊僅發布 LifeBook 翻譯發布系統，不承擔任何因其他個人翻譯、保存、傳播或使用非公版內容導致的版權風險及責任。
 
 參見：
 

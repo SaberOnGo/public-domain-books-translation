@@ -23,13 +23,29 @@ def write_minimal_template(repo_root: Path) -> None:
     common = repo_root / "template" / "epub_pipeline" / "common"
     language = repo_root / "template" / "epub_pipeline" / "en-zh-Hans"
     targets = repo_root / "template" / "epub_pipeline" / "targets" / "zh-Hans"
+    mode = repo_root / "template" / "epub_pipeline" / "modes" / "private_use"
     (common / "state").mkdir(parents=True, exist_ok=True)
     (common / "references").mkdir(parents=True, exist_ok=True)
     (common / "preproduction" / "stage1").mkdir(parents=True, exist_ok=True)
+    (common / "scripts").mkdir(parents=True, exist_ok=True)
     language.mkdir(parents=True, exist_ok=True)
     targets.mkdir(parents=True, exist_ok=True)
+    (mode / "references").mkdir(parents=True, exist_ok=True)
+    (mode / "preproduction" / "stage1").mkdir(parents=True, exist_ok=True)
+    (mode / "scripts").mkdir(parents=True, exist_ok=True)
     (common / "state" / "pipeline_state.json").write_text(
-        json.dumps({"status": "INIT"}, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(
+            {
+                "status": "INIT",
+                "quality_gate": {"release_state": "output/release/release_state.json"},
+                "forbidden_shortcuts": [
+                    "declaring DONE before output/release/release_state.json latest_status is PASS"
+                ],
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
     (common / "package.json").write_text(
@@ -60,6 +76,51 @@ def write_minimal_template(repo_root: Path) -> None:
         "release_versioning.md",
     ]:
         (common / "references" / name).write_text(f"# {name}\n", encoding="utf-8")
+    (mode / "README.md").write_text("# Private use mode\n", encoding="utf-8")
+    (mode / "references" / "private_use_cover_policy.md").write_text(
+        "# Private cover\n\n个人学习版\n", encoding="utf-8"
+    )
+    (mode / "references" / "private_use_frontmatter_policy.md").write_text(
+        "# Private frontmatter\n\n参考LifeBook书坊 个人自制\n", encoding="utf-8"
+    )
+    (mode / "references" / "private_use_artifact_policy.md").write_text(
+        "# Private artifacts\n", encoding="utf-8"
+    )
+    (mode / "preproduction" / "stage1" / "_TEMPLATE.private_use_production_spec.md").write_text(
+        "# Private production spec\n", encoding="utf-8"
+    )
+    for name in [
+        "check_private_use_gate.py",
+        "check_private_reader_facing_policy.py",
+        "create_private_artifact.py",
+        "build_private_epub.js",
+    ]:
+        (mode / "scripts" / name).write_text("print('private script placeholder')\n", encoding="utf-8")
+    (mode / "package.json").write_text(
+        json.dumps(
+            {
+                "scripts": {
+                    "preflight:template": "python scripts/check_template_workflow_gate.py --write-report",
+                    "preflight:private-use": "python scripts/check_private_use_gate.py --write-report",
+                    "cover:check": "python scripts/check_cover_output_assets.py --write-report",
+                    "reader:check": "python scripts/check_reader_facing_policy.py --write-report",
+                    "reader:private-check": "python scripts/check_private_reader_facing_policy.py --write-report",
+                    "lint:publication": "node scripts/publication_lint.js --write-report",
+                    "lint:assets": "node scripts/asset_manifest_check.js --write-report",
+                    "build:private-epub": "npm run preflight:template && npm run preflight:private-use && npm run lint:publication && npm run lint:assets && npm run cover:check && node scripts/build_private_epub.js && npm run reader:private-check",
+                    "build:epub": "npm run build:private-epub",
+                    "private:artifact:draft": "npm run preflight:template && npm run preflight:private-use && npm run cover:check && npm run reader:private-check && python scripts/create_private_artifact.py --status DRAFT",
+                    "private:artifact:create": "npm run preflight:template && npm run preflight:private-use && npm run cover:check && npm run reader:private-check && python scripts/create_private_artifact.py --status PASS --require-pass",
+                    "release:draft": "npm run private:artifact:draft",
+                    "release:create": "npm run private:artifact:create",
+                }
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
 
 def write_production_spec(book_root: Path) -> None:
@@ -73,6 +134,7 @@ def write_production_spec(book_root: Path) -> None:
                 "template/epub_pipeline/common/references/book_info_frontmatter_policy.md",
                 "template/epub_pipeline/common/references/epub_assets_figures_tables.md",
                 "template/epub_pipeline/common/references/quality_gate_framework.md",
+                "template/epub_pipeline/modes/private_use/preproduction/stage1/_TEMPLATE.private_use_production_spec.md",
             ]
         )
         + "\n",
@@ -118,7 +180,48 @@ class PrivateUseModeTests(unittest.TestCase):
             self.assertEqual(state["private_use"]["local_source_file_name"], "local-source.epub")
             self.assertEqual(state["private_use"]["redistribution_allowed"], False)
             self.assertEqual(state["private_use"]["commercial_use_allowed"], False)
-            self.assertTrue((project_root / "metadata" / "private_use_declaration.md").exists())
+            self.assertEqual(
+                state["quality_gate"]["release_state"],
+                "output/private_artifacts/private_artifact_state.json",
+            )
+            declaration = (project_root / "metadata" / "private_use_declaration.md").read_text(encoding="utf-8")
+            self.assertIn("风险由个人承担", declaration)
+            self.assertIn("LifeBook书坊仅发布 LifeBook 翻译发布系统", declaration)
+            self.assertTrue((project_root / "references" / "private_use_cover_policy.md").exists())
+            self.assertTrue((project_root / "references" / "private_use_frontmatter_policy.md").exists())
+            self.assertTrue((project_root / "references" / "private_use_artifact_policy.md").exists())
+            self.assertTrue((project_root / "scripts" / "check_private_use_gate.py").exists())
+            self.assertTrue((project_root / "scripts" / "create_private_artifact.py").exists())
+            package = json.loads((project_root / "package.json").read_text(encoding="utf-8"))
+            self.assertIn("private:artifact:create", package["scripts"])
+            self.assertEqual(package["scripts"]["release:create"], "npm run private:artifact:create")
+
+    def test_create_book_project_public_mode_does_not_copy_private_overlay(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            copy_script("books/scripts/create_book_project.py", repo)
+            write_minimal_template(repo)
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(repo / "books" / "scripts" / "create_book_project.py"),
+                    "public_book",
+                    "--source-target",
+                    "en-zh-Hans",
+                ],
+                cwd=repo,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            project_root = repo / "books" / "zh-Hans" / "1_public_book"
+            self.assertFalse((project_root / "references" / "private_use_cover_policy.md").exists())
+            self.assertFalse((project_root / "scripts" / "check_private_use_gate.py").exists())
+            package = json.loads((project_root / "package.json").read_text(encoding="utf-8"))
+            self.assertNotIn("private:artifact:create", package["scripts"])
 
     def test_template_workflow_gate_accepts_private_path_only_for_private_use_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -127,6 +230,7 @@ class PrivateUseModeTests(unittest.TestCase):
             write_minimal_template(repo)
             book_root = repo / "books" / "private" / "zh-Hans" / "1_private_book"
             shutil.copytree(repo / "template" / "epub_pipeline" / "common", book_root)
+            shutil.copytree(repo / "template" / "epub_pipeline" / "modes" / "private_use", book_root, dirs_exist_ok=True)
             write_production_spec(book_root)
             state_path = book_root / "state" / "pipeline_state.json"
             state = json.loads(state_path.read_text(encoding="utf-8"))
@@ -155,6 +259,88 @@ class PrivateUseModeTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn("template workflow gate PASS", result.stdout)
+
+    def test_template_workflow_gate_rejects_private_mode_without_overlay(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            copy_script("template/epub_pipeline/common/scripts/check_template_workflow_gate.py", repo)
+            write_minimal_template(repo)
+            book_root = repo / "books" / "private" / "zh-Hans" / "1_private_book"
+            shutil.copytree(repo / "template" / "epub_pipeline" / "common", book_root)
+            write_production_spec(book_root)
+            state_path = book_root / "state" / "pipeline_state.json"
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            state.update(
+                {
+                    "project_root": "books/private/zh-Hans/1_private_book",
+                    "common_template_root": "template/epub_pipeline/common",
+                    "template_root": "template/epub_pipeline/en-zh-Hans",
+                    "publication_mode": "private_use",
+                }
+            )
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            for path in [
+                book_root / "references" / "private_use_cover_policy.md",
+                book_root / "references" / "private_use_frontmatter_policy.md",
+                book_root / "references" / "private_use_artifact_policy.md",
+                book_root / "scripts" / "check_private_use_gate.py",
+            ]:
+                if path.exists():
+                    path.unlink()
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(repo / "template" / "epub_pipeline" / "common" / "scripts" / "check_template_workflow_gate.py"),
+                    "--book-root",
+                    str(book_root),
+                ],
+                cwd=repo,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("missing_private_use_overlay_file", result.stdout)
+
+    def test_template_workflow_gate_rejects_public_project_with_private_overlay(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            copy_script("template/epub_pipeline/common/scripts/check_template_workflow_gate.py", repo)
+            write_minimal_template(repo)
+            book_root = repo / "books" / "zh-Hans" / "1_public_book"
+            shutil.copytree(repo / "template" / "epub_pipeline" / "common", book_root)
+            shutil.copytree(repo / "template" / "epub_pipeline" / "modes" / "private_use", book_root, dirs_exist_ok=True)
+            write_production_spec(book_root)
+            state_path = book_root / "state" / "pipeline_state.json"
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            state.update(
+                {
+                    "project_root": "books/zh-Hans/1_public_book",
+                    "common_template_root": "template/epub_pipeline/common",
+                    "template_root": "template/epub_pipeline/en-zh-Hans",
+                    "publication_mode": "public_domain",
+                }
+            )
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(repo / "template" / "epub_pipeline" / "common" / "scripts" / "check_template_workflow_gate.py"),
+                    "--book-root",
+                    str(book_root),
+                ],
+                cwd=repo,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("public_project_contains_private_use_overlay", result.stdout)
 
 
 if __name__ == "__main__":

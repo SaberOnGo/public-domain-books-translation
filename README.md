@@ -35,7 +35,7 @@ Automatically choose the correct translation prompt:
 Do not ask me to fill technical fields unless rights or source evidence cannot be confirmed. Automatically find a reliable public-domain source, create the book project, complete translation, review, EPUB build, stratified random spot-check, and release.
 ```
 
-For non-public-domain books, use private-use mode only. The user must provide a local ebook file and explicitly declare personal study only, no redistribution, and no commercial use. The AI should create the project under `books/private/{target}/{number}_{book_slug}/`. `books/private/` is ignored by Git, and its source text, translations, QA records, and EPUB files must not be published to GitHub.
+For non-public-domain books, use private-use mode only. The user must provide a local ebook file and explicitly declare personal study only, no redistribution, and no commercial use. The AI should create the project under `books/private/{target}/{number}_{book_slug}/`; the script also overlays `template/epub_pipeline/modes/private_use/` so private cover, frontmatter, and artifact rules cannot be confused with public publication rules. `books/private/` is ignored by Git, and its source text, translations, QA records, EPUB files, and private artifacts must not be published to GitHub.
 
 ## AI Clients
 
@@ -66,6 +66,7 @@ The launcher does not store API keys and does not include OpenCode binaries in t
 - `template/epub_pipeline/{source-target}/`: language-pair rules, prompts, glossary guidance, and review rubrics.
 - `template/epub_pipeline/targets/{target}/`: target-language quality rules.
 - `template/epub_pipeline/profiles/{profile-target}/`: optional overlays for special book types.
+- `template/epub_pipeline/modes/private_use/`: private-use overlay copied only for non-public-domain personal-use projects. It contains private cover, frontmatter, artifact, and gate scripts.
 - `books/{target}/{number}_{book_slug}/`: actual book projects. Book-specific files belong here.
 - `books/`: shared Node.js tooling; install dependencies once here.
 - `doc/public/`: public instructions, prompt guides, and candidate-book notes.
@@ -88,7 +89,7 @@ The script creates:
 books/{target}/{number}_{book_id_slug}/
 ```
 
-It copies `template/epub_pipeline/common` first, then overlays the matching language-pair template. If a book needs a special profile, overlay the matching `profiles/{profile-target}/` after that.
+It copies `template/epub_pipeline/common` first, then overlays the matching language-pair template. If a book needs a special profile, overlay the matching `profiles/{profile-target}/` after that. Private-use projects receive one more overlay: `template/epub_pipeline/modes/private_use/`.
 
 Private-use projects must be created explicitly:
 
@@ -97,12 +98,13 @@ cd books
 npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "Personal study only; no redistribution; no commercial use."
 ```
 
-Private mode changes the rights and directory boundary only. Translation, review, EPUB validation, stratified random spot checks, and versioned artifacts still apply. Private artifacts are personal-use outputs, not public releases.
+Private mode keeps the translation and QA quality bar, but changes rights, reader-facing wording, and artifact semantics. Private covers use `个人学习版`; private frontmatter uses `参考LifeBook书坊 个人自制`, removes public-domain notices, and states personal-use/no-redistribution/no-commercial-use plus personal risk responsibility. Private artifacts are written under `output/private_artifacts/` and are personal-use outputs, not public releases.
 
 ## Core Rules
 
 - Preserve source evidence and rights checks before translation; public projects require public-domain or licensed sources.
 - Non-public-domain personal-use projects must use `private_use` mode and stay under ignored `books/private/`.
+- Private-use projects must carry the `modes/private_use` overlay and must not reuse public-domain cover/frontmatter/release wording.
 - Do not use modern copyrighted translations, pirate sites, or unclear EPUB downloads.
 - Raw AI output is not publishable.
 - Keep concrete book content out of `template/`.
@@ -128,6 +130,16 @@ npm run review:random-validate:pass
 npm run release:create
 ```
 
+For a private-use project, use the private artifact command after the same build, EPUBCheck, and random spot-check gates:
+
+```powershell
+npm run build:private-epub
+npm run check:epub
+npm run review:random-samples
+npm run review:random-validate:pass
+npm run private:artifact:create
+```
+
 ## Contributing
 
 Useful contributions include source research, rights review, translation review, terminology checks, EPUB testing, accessibility/layout feedback, and automation improvements. Small, traceable corrections are preferred over large unreviewable rewrites.
@@ -138,7 +150,7 @@ Each source book requires its own rights check. Public-domain status may vary by
 
 Non-code book content produced in this project is released under `CC BY-NC-SA 4.0` by default unless a file says otherwise. Third-party commercial use requires separate permission from LifeBook Shufang and relevant rights holders.
 
-Private-use projects under `books/private/` are not public project content, are not covered by the default public release license, and must not be committed or published to GitHub.
+Private-use projects under `books/private/` are not public project content, are not covered by the default public release license, and must not be committed or published to GitHub. Any private translation is for the individual user's personal study only, with no redistribution and no commercial use; the user's private use risk is their own. LifeBook Shufang publishes the reusable LifeBook translation publishing system only and does not assume copyright risk or liability caused by another person's private translation, storage, redistribution, or use of non-public-domain content.
 
 See:
 

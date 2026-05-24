@@ -18,6 +18,10 @@ This directory contains shared workflow files for all language-pair templates.
 - `state/`: initial pipeline state and human-feedback control files.
 - `Makefile`: generic EPUB build/check entry points.
 
+`common` is a shared base layer. Non-public-domain personal-use projects must receive the separate `template/epub_pipeline/modes/private_use/` overlay after common, language-pair, and profile layers. Do not copy private-use cover, frontmatter, artifact, or gate rules into public-domain projects.
+
+`common` 是共享基础层。非公版个人自用项目必须在 common、语言方向和 profile 层之后，再叠加独立的 `template/epub_pipeline/modes/private_use/`。不要把私人自用封面、首页/前置页、私人产物或门禁规则复制进公版项目。
+
 目标语言质量框架放在 `template/epub_pipeline/targets/{target}/`。源语言到目标语言的专用模板只应在确实需要不同翻译、排版或评审规则时覆盖或扩展 common 文件。
 
 Target-language quality frameworks live under `template/epub_pipeline/targets/{target}/`. Source-to-target-specific templates should override or extend common files only when the direction needs different translation, typography, or review rules.
@@ -42,9 +46,9 @@ npm install
 
 不要在每个 `books/{target}/{number}_{book_id_slug}/` 目录里重复安装 `node_modules/`。具体书籍的 `package.json` 只保留脚本；`scripts/run_epubcheck.js` 等脚本必须向上查找共享的 `books/node_modules/`。
 
-Private-use projects live under ignored `books/private/{target}/{number}_{book_id_slug}/`. They use the same shared tooling, but their source text, translations, QA records, EPUB artifacts, and book-specific metadata must remain local and must not be published to GitHub.
+Private-use projects live under ignored `books/private/{target}/{number}_{book_id_slug}/`. They use the same shared tooling and the private-use mode overlay, but their source text, translations, QA records, EPUB artifacts, private artifacts, and book-specific metadata must remain local and must not be published to GitHub.
 
-私人自用工程位于被忽略的 `books/private/{target}/{number}_{book_id_slug}/`。它们使用同一套共享工具，但其中的原文、译文、QA 记录、EPUB 产物和具体书籍 metadata 必须留在本地，不得发布到 GitHub。
+私人自用工程位于被忽略的 `books/private/{target}/{number}_{book_id_slug}/`。它们使用同一套共享工具和 private-use 模式覆盖层，但其中的原文、译文、QA 记录、EPUB 产物、私人产物和具体书籍 metadata 必须留在本地，不得发布到 GitHub。
 
 ## Publication Lint / 出版文本检查
 
@@ -66,6 +70,20 @@ node scripts/publication_lint.js --target={target-language} --write-report
 node scripts/asset_manifest_check.js --write-report
 python scripts/check_cover_output_assets.py --write-report
 python scripts/check_reader_facing_policy.py --write-report
+```
+
+Private-use projects must additionally run the private-use gates copied from `modes/private_use/`:
+
+```powershell
+python scripts/check_private_use_gate.py --write-report
+python scripts/check_private_reader_facing_policy.py --write-report
+```
+
+私人自用项目还必须额外运行从 `modes/private_use/` 复制来的私人门禁：
+
+```powershell
+python scripts/check_private_use_gate.py --write-report
+python scripts/check_private_reader_facing_policy.py --write-report
 ```
 
 These checks are common because template drift, unnumbered book paths, encoding damage, legacy print tables of contents, repeated spacing, missing image resources, missing output cover assets, reader-facing production notes, unmanifested SVG/PNG/CSS files, and path portability problems can affect any language.
@@ -153,7 +171,7 @@ See `references/stratified_random_spotcheck.md` and `prompts/16a_stratified_rand
 
 ## Versioned Release / 版本化发布
 
-`output/book.epub` is only the current build artifact. After random spot-check closure, the workflow must create a versioned release under `output/release/`. Release scripts must run the template workflow gate and cover output asset gate first:
+`output/book.epub` is only the current build artifact. After random spot-check closure, public-domain and licensed publication projects must create a versioned release under `output/release/`. Release scripts must run the template workflow gate and cover output asset gate first:
 
 ```powershell
 npm run release:create
@@ -161,7 +179,7 @@ npm run release:create
 
 `PASS` release creation requires the latest random spot-check validation to come from `npm run review:random-validate:pass`; a structural-only validation, missing output cover assets, or `DRAFT` release is not enough for `DONE`.
 
-`output/book.epub` 只是当前构建产物。随机抽检闭环通过后，流水线必须在 `output/release/` 下创建带版本号的发布产物。发布脚本必须先运行模板流程门禁和封面 output 资产门禁：
+`output/book.epub` 只是当前构建产物。随机抽检闭环通过后，公版和授权发布项目必须在 `output/release/` 下创建带版本号的发布产物。发布脚本必须先运行模板流程门禁和封面 output 资产门禁：
 
 ```powershell
 npm run release:create
@@ -170,3 +188,19 @@ npm run release:create
 正式 `PASS` release 要求最近一次随机抽检校验来自 `npm run review:random-validate:pass`；只做结构校验、缺少 output 封面资产或只生成 `DRAFT` release，不能作为 `DONE` 依据。
 
 Release artifacts are named with the target-language title plus version, for example `金属巨兽_v0.0.4.epub`, with `v0.0.1` as the default first version. Every release also needs the cumulative `release_notes.md`, `release_state.json`, and `release_index.md`. New release-note entries are inserted at the top of `release_notes.md`, like software changelogs. See `references/release_versioning.md` and `prompts/18a_release_versioning.md`.
+
+Private-use projects are different: they must create local-only versioned artifacts under `output/private_artifacts/` by running:
+
+```powershell
+npm run private:artifact:create
+```
+
+Private-use artifacts are not public releases and must not be submitted to GitHub.
+
+私人自用项目不同：它们必须通过以下命令在 `output/private_artifacts/` 下创建仅限本地的版本化产物：
+
+```powershell
+npm run private:artifact:create
+```
+
+私人自用产物不是公开 release，不得提交到 GitHub。

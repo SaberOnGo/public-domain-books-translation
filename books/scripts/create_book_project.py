@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create a numbered book project under books/{target}/."""
+"""Create a numbered book project under books/{target}/ or books/private/{target}/."""
 
 from __future__ import annotations
 
@@ -112,6 +112,13 @@ def copy_overlay(src: Path, dst: Path) -> None:
     shutil.copytree(src, dst, dirs_exist_ok=True, ignore=ignore)
 
 
+def private_use_mode_root(template_root: Path) -> Path:
+    mode_root = template_root / "modes" / "private_use"
+    if not mode_root.is_dir():
+        raise SystemExit(f"Missing private-use mode overlay: {mode_root}")
+    return mode_root
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -162,6 +169,9 @@ def write_private_use_declaration(project_root: Path, record: dict[str, str | bo
                 "- Personal study only. / 仅限个人学习自用。",
                 "- No redistribution. / 不得传播。",
                 "- No commercial use. / 不得商业使用。",
+                "- Personal risk is borne by the individual user. / 风险由个人承担。",
+                "- LifeBook Shufang publishes only the LifeBook translation publishing system. / LifeBook书坊仅发布 LifeBook 翻译发布系统。",
+                "- LifeBook Shufang does not assume copyright risk or liability caused by other individuals' translation, storage, redistribution, or use of non-public-domain content. / LifeBook书坊不承担任何因其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。",
                 "- Do not publish source text, translations, QA files, or EPUB output to GitHub. / 不得把原文、译文、QA 或 EPUB 输出发布到 GitHub。",
                 "",
             ]
@@ -190,6 +200,17 @@ def update_state(
         data["source_url"] = source_url
     if private_use_record is not None:
         data["private_use"] = private_use_record
+        quality_gate = data.get("quality_gate")
+        if isinstance(quality_gate, dict):
+            quality_gate["release_state"] = "output/private_artifacts/private_artifact_state.json"
+        shortcuts = data.get("forbidden_shortcuts")
+        if isinstance(shortcuts, list):
+            data["forbidden_shortcuts"] = [
+                "declaring DONE before output/private_artifacts/private_artifact_state.json latest_status is PASS"
+                if item == "declaring DONE before output/release/release_state.json latest_status is PASS"
+                else item
+                for item in shortcuts
+            ]
     state_file.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
@@ -222,6 +243,7 @@ def main() -> None:
         if not profile_root.is_dir():
             raise SystemExit(f"Missing profile template: {profile_root}")
         profile_roots.append(profile_root)
+    mode_roots = [private_use_mode_root(template_root)] if args.mode == "private-use" else []
 
     print(project_root.relative_to(repo_root).as_posix())
     if args.dry_run:
@@ -232,6 +254,8 @@ def main() -> None:
     copy_overlay(language_root, project_root)
     for profile_root in profile_roots:
         copy_overlay(profile_root, project_root)
+    for mode_root in mode_roots:
+        copy_overlay(mode_root, project_root)
     if private_use_record is not None:
         write_private_use_declaration(project_root, private_use_record)
     update_state(project_root, repo_root, source_target, args.source_url, args.mode, private_use_record)

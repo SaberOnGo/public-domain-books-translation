@@ -38,6 +38,10 @@
    - `template/epub_pipeline/common/references/cover_design_policy.md`
    - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
    - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
+   - `template/epub_pipeline/modes/private_use/README.md`
+   - `template/epub_pipeline/modes/private_use/references/private_use_cover_policy.md`
+   - `template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md`
+   - `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md`
    - 匹配的 `template/epub_pipeline/targets/{target}/`
    - 匹配的 `template/epub_pipeline/{source-target}/`
 3. 不得依赖记忆、历史执行经验或假设；必须以当前仓库文件为准。
@@ -59,8 +63,15 @@ npm run new:book -- {book_id_slug} --source-target {source-target} --mode privat
 9. 不得自动查找非公版全文，不得使用盗版站、来源不明 EPUB、现代受版权保护译本或用户没有本地访问权的材料。
 10. 如果用户没有提供本地文件，必须停止；不能用本 prompt 继续。
 11. 私人自用模式只改变权利和目录边界，不降低质量要求。仍必须完成研究、试译、分章翻译、章节审校、质量门禁、EPUB 构建、EPUBCheck、读者可见内容检查、分层随机抽检和版本化私人产物。
-12. `output/release/` 下的 EPUB 只能作为私人自用版本化产物，不是公开 release，不得提交或发布到 GitHub。
-13. 最终报告必须包含：
+12. 私人自用封面底部只写 `个人学习版`，不得放 `仅供个人自用，不传播，不商业使用` 这类长声明；私人首页/前置页不得写公版说明，制作标识必须使用 `参考LifeBook书坊 个人自制`，并写明 `仅供个人自用，不传播，不商业使用`、风险由个人承担、LifeBook书坊仅发布 LifeBook 翻译发布系统且不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+13. 抽检和修复完成后必须重新生成 EPUB，并运行：
+
+```powershell
+npm run private:artifact:create
+```
+
+14. 私人 EPUB 产物必须位于 `output/private_artifacts/`，不是公开 release，不得提交或发布到 GitHub。
+15. 最终报告必须包含：
     - 私人工程路径 `books/private/{target}/{number}_{slug}/`
     - 本地书源文件名和 SHA256，不要暴露不必要的本机绝对路径
     - `metadata/private_use_declaration.md` 路径

@@ -4,6 +4,7 @@
 
 - `TEMPLATE_ROOT`
 - `PROFILE_ROOT`：可选。特殊书型控制模板目录，例如 `template/epub_pipeline/profiles/classical-science-zh-Hans`。
+- `MODE_ROOT`：可选。模式覆盖层目录；非公版私人自用项目必须使用 `template/epub_pipeline/modes/private_use`。
 - `PROJECT_ROOT`
 - `SOURCE_URL`：公开模式或授权模式的来源 URL。
 - `LOCAL_SOURCE_FILE`：可选，仅用于 `publication_mode=private_use` 的用户本地书源文件。
@@ -16,6 +17,7 @@
 - 实际做书时，AI 必须通过 `books/scripts/create_book_project.py` 复制模板为独立书籍工程目录，例如 `books/{target}/{number}_{book_id_slug}/`。`{target}` 是输出电子书的目标语言标签，`{number}` 由脚本在该目标语言目录内自动递增分配。
 - 非公版私人自用书籍必须通过 `books/scripts/create_book_project.py --mode private-use --local-source-file ... --private-use-declaration ...` 创建到 `books/private/{target}/{number}_{book_id_slug}/`。`books/private/` 被 Git 忽略；其中的原文、译文、QA、EPUB 输出和具体书籍 metadata 不得发布到 GitHub。
 - 若启用 `PROFILE_ROOT`，必须先复制 `common` 和语言方向模板，再把 `PROFILE_ROOT` 覆盖复制到同一个书籍工程目录。
+- 若 `publication_mode=private_use`，必须最后叠加 `MODE_ROOT=template/epub_pipeline/modes/private_use`。私人自用封面、首页/前置页、私人产物和门禁脚本不得混入公版或授权发布项目。
 - 复制完成后，后续 `PROJECT_ROOT` 指向独立书籍工程目录。
 - AI 只能写入 `PROJECT_ROOT` 内文件。
 - 例外：`books/package.json`、`books/package-lock.json` 和被 Git 忽略的 `books/node_modules/` 是所有书籍共享的构建工具目录，不属于任何单本书的原文、译文、QA 或 EPUB 输出。
@@ -89,6 +91,9 @@
 - `references/epub_assets_figures_tables.md`：通用 EPUB 图片、图表、表格、资源目录、XHTML 转换和 OPF manifest 规则。
 - `references/stratified_random_spotcheck.md`：第一版 EPUB 后强制执行的分层随机抽检、修复闭环和退出置信度规则。
 - `references/release_versioning.md`：EPUB 按软件版本发布的版本号、release note、`output/release/` 目录和退出门禁规则。
+- `references/private_use_cover_policy.md`：仅由 `modes/private_use` 覆盖层提供。私人自用封面底部必须使用 `个人学习版`，不得放长版权免责声明或公版来源行。
+- `references/private_use_frontmatter_policy.md`：仅由 `modes/private_use` 覆盖层提供。私人自用首页/前置页不得包含公版说明，制作标识必须使用 `参考LifeBook书坊 个人自制`。
+- `references/private_use_artifact_policy.md`：仅由 `modes/private_use` 覆盖层提供。私人自用版本化产物写入 `output/private_artifacts/`，不是公开 release。
 - `automation_contract.md`：自动化执行合约。
 
 ### Chapters
@@ -157,11 +162,14 @@
 ### Output
 
 - `output/book.epub`：最终 EPUB。
-- `output/release/{目标语言书名}_vX.X.X.epub`：带版本号的 EPUB 发布产物，例如 `金属巨兽_v0.0.4.epub`；不得平铺在 `output/` 根目录，也不得使用英文 slug 或通用 `book_` 前缀。
-- `output/release/release_notes.md`：累计中英文发布说明；每次发布把最新版本条目插入文件顶部，必须记录发布原因、问题点、修复、QA 证据、风险和下一轮迭代。
-- `output/release/release_state.json`：当前 release 状态；`latest_status = PASS` 是 `DONE` 的必要条件。
-- `output/release/release_index.md`：所有版本的发布索引。
-- `publication_mode=private_use` 时，`output/release/` 下的版本化 EPUB 是私人自用产物，不是公开 release，不得提交到 GitHub。
+- `output/release/{目标语言书名}_vX.X.X.epub`：公版或授权项目的带版本号 EPUB 发布产物，例如 `金属巨兽_v0.0.4.epub`；不得平铺在 `output/` 根目录，也不得使用英文 slug 或通用 `book_` 前缀。
+- `output/release/release_notes.md`：公版或授权项目的累计中英文发布说明；每次发布把最新版本条目插入文件顶部，必须记录发布原因、问题点、修复、QA 证据、风险和下一轮迭代。
+- `output/release/release_state.json`：公版或授权项目的当前 release 状态；`latest_status = PASS` 是公开发布 `DONE` 的必要条件。
+- `output/release/release_index.md`：公版或授权项目的所有版本发布索引。
+- `output/private_artifacts/{目标语言书名}_private_vX.X.X.epub`：私人自用项目的本地版本化 EPUB 产物，不是公开 release，不得提交到 GitHub。
+- `output/private_artifacts/private_artifact_notes.md`：私人自用产物累计说明。
+- `output/private_artifacts/private_artifact_state.json`：私人自用产物状态；`latest_status = PASS` 是私人自用 `DONE` 的必要条件。
+- `output/private_artifacts/private_artifact_index.md`：私人自用产物索引。
 - `output/epubcheck.log` 或 `output/epubcheck.json`：EPUB 校验结果。
 - `output/publication_lint.json`：出版文本 lint 结果，检查编码污染、异常空格、旧纸书页码目录等问题。
 - `output/asset_manifest_check.json`：EPUB 资源引用检查结果，检查图片/样式资源是否存在、路径是否相对、OPF manifest 是否覆盖。
@@ -228,9 +236,10 @@ node scripts/asset_manifest_check.js --write-report
 - 最终退出前必须运行 `npm run review:random-validate:pass`。该命令失败时，不得进入 `FINAL_OUTPUT_PASS`、`RETROSPECTIVE_DONE` 或 `DONE`。
 - `npm run review:random-validate:pass` 必须计算并写入 `release_confidence = min_h confidence_h`。若 `release_confidence < 0.80`，即使 Agent 文字评审写了 PASS，也不得退出任务。
 - `npm run review:random-validate:pass` 还必须校验每个 Agent 的 `average_score >= 75`、`lowest_score >= 70`、`blocking_issue_count = 0`，以及闭环文件中的 `open_p0_p1_p2_count = 0`。
-- 分层随机抽检通过后，必须执行 `prompts/18a_release_versioning.md` 或等效命令 `npm run release:create`。正式发布必须生成 `output/release/{目标语言书名}_vX.X.X.epub`、`release_notes.md`、`release_state.json` 和 `release_index.md`。
-- `npm run release:create` 必须拒绝未使用 `--require-pass` 生成的随机抽检校验报告；结构性抽样校验或 `DRAFT` release 不得作为 `DONE` 的依据。
-- 每次 EPUB 内容、排版、metadata、图表、注释或抽检修复发生变化后，都必须创建新的 patch release。不得覆盖旧版本 EPUB；release note 必须追加到累计 `release_notes.md` 顶部，不得每次散落新建 release note 文件。
+- 分层随机抽检通过后，公版或授权项目必须执行 `prompts/18a_release_versioning.md` 或等效命令 `npm run release:create`。正式发布必须生成 `output/release/{目标语言书名}_vX.X.X.epub`、`release_notes.md`、`release_state.json` 和 `release_index.md`。
+- 分层随机抽检通过后，`publication_mode=private_use` 项目必须执行 `npm run private:artifact:create`。私人自用产物必须生成 `output/private_artifacts/{目标语言书名}_private_vX.X.X.epub`、`private_artifact_notes.md`、`private_artifact_state.json` 和 `private_artifact_index.md`。
+- `npm run release:create` 和 `npm run private:artifact:create` 必须拒绝未使用 `--require-pass` 生成的随机抽检校验报告；结构性抽样校验或 `DRAFT` 产物不得作为 `DONE` 的依据。
+- 每次 EPUB 内容、排版、metadata、图表、注释或抽检修复发生变化后，都必须创建新的 patch release 或 private artifact。不得覆盖旧版本 EPUB；release note 或 private artifact note 必须追加到累计文件顶部，不得每次散落新建 note 文件。
 - 如果已经发现系统性文学精修问题，必须在 `books/{target}/{number}_{book_id_slug}/goal/` 建立本书目标，并把可复用经验回填到 common、目标语言或语言方向模板。
 - 整本 EPUB 制作后，必须派生 2 个独立 Agent 评审。
 - 评审失败时必须通过 `reviews/revision_route.md` 回到对应前置阶段。
@@ -241,7 +250,7 @@ node scripts/asset_manifest_check.js --write-report
 必须同时满足：
 
 - `metadata/rights_checklist.md` 明确可继续：公开项目必须是 `PUBLICATION_PASS` 或 `LICENSED_PASS`；私人自用项目必须是 `PRIVATE_USE_PASS`。
-- 若 `publication_mode=private_use`，`metadata/private_use_declaration.md` 必须存在并记录用户本地书源文件名、SHA256、个人自用、不传播、不商业使用声明，且工程路径必须位于 `books/private/{target}/{number}_{book_id_slug}/`。
+- 若 `publication_mode=private_use`，`metadata/private_use_declaration.md` 必须存在并记录用户本地书源文件名、SHA256、个人自用、不传播、不商业使用声明、风险由个人承担、LifeBook书坊仅发布 LifeBook 翻译发布系统且不承担他人翻译/保存/传播/使用非公版内容导致的版权风险及责任；工程路径必须位于 `books/private/{target}/{number}_{book_id_slug}/`。
 - 若启用特殊书型 profile，`metadata/reference_witness_policy.md` 必须明确原文底本和第二语言参考译本的使用边界。
 - `qa/pretranslation/pretranslation_report.md` 结论为 `PASS`。
 - 所有章节存在 `qa/chapter_controls/*.control.md` 且结论为 `PASS`。
@@ -256,8 +265,10 @@ node scripts/asset_manifest_check.js --write-report
 - `reviews/random_spotcheck/random_sample_manifest.json`、`reviews/agent_a/random_spotcheck_review.md`、`reviews/agent_b/random_spotcheck_review.md` 和 `reviews/scorecards/random_spotcheck_score.md` 均指向或记录最近通过轮次。
 - `npm run review:random-validate:pass` 通过。
 - `output/book.epub` 存在。
-- `output/release/{目标语言书名}_vX.X.X.epub`、`output/release/release_notes.md`、`output/release/release_state.json` 和 `output/release/release_index.md` 存在。
-- `output/release/release_state.json.latest_status == PASS`，且 `release_notes.md` 顶部最新条目已记录随机抽检轮次、`release_confidence >= 0.80`、EPUBCheck、publication lint、修复闭环、风险和下一轮迭代。
+- 公版或授权项目：`output/release/{目标语言书名}_vX.X.X.epub`、`output/release/release_notes.md`、`output/release/release_state.json` 和 `output/release/release_index.md` 存在。
+- 公版或授权项目：`output/release/release_state.json.latest_status == PASS`，且 `release_notes.md` 顶部最新条目已记录随机抽检轮次、`release_confidence >= 0.80`、EPUBCheck、publication lint、修复闭环、风险和下一轮迭代。
+- 私人自用项目：`output/private_artifacts/{目标语言书名}_private_vX.X.X.epub`、`output/private_artifacts/private_artifact_notes.md`、`output/private_artifacts/private_artifact_state.json` 和 `output/private_artifacts/private_artifact_index.md` 存在。
+- 私人自用项目：`output/private_artifacts/private_artifact_state.json.latest_status == PASS`，且 `private_artifact_notes.md` 顶部最新条目已记录随机抽检轮次、`release_confidence >= 0.80`、EPUBCheck、publication lint、私人读者可见门禁、修复闭环和风险。
 - EPUBCheck 无 fatal/error。
 - `reviews/agent_a/review.md` 和 `reviews/agent_b/review.md` 均存在，且评分通过。
 - `reviews/revision_route.md` 中无未关闭 P0/P1/P2 必修项。

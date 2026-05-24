@@ -35,6 +35,8 @@ AI クライアントに渡す最小 prompt：
 権利または出典証拠を確認できない場合を除き、技術項目を私に入力させないでください。信頼できるパブリックドメイン原文を自動で探し、書籍プロジェクトを作成し、翻訳、レビュー、EPUB ビルド、層化ランダム抜き取り検査、release まで完了してください。
 ```
 
+パブリックドメインではない本は、ローカルの private-use モードだけで扱います。ユーザーは自分のローカル電子書籍ファイルを提供し、個人学習用のみ、再配布なし、商用利用なしと明示する必要があります。AI は `books/private/{target}/{number}_{book_slug}/` に private project を作成します。スクリプトは `template/epub_pipeline/modes/private_use/` を重ね、private-use の cover、frontmatter、artifact ルールを公開用ルールから分離します。`books/private/` は Git で無視され、原文、訳文、QA、EPUB、private artifact を GitHub に公開してはいけません。
+
 ## AI クライアント
 
 このリポジトリは特定のモデルに依存しません。Codex App、Claude Code、OpenCode、aider、Antigravity、その他ローカルファイルを扱える AI クライアントを利用できます。条件は、リポジトリを読めること、ファイル編集とコマンド実行ができること、`AGENTS.md` に従うことです。
@@ -46,7 +48,7 @@ AI クライアントに渡す最小 prompt：
 - このリポジトリ内のソースフォルダは `tools/lifebook-launcher/source/` で、開発者とパッケージ担当者向けです。
 - LifeBook プロジェクト更新の自動管理、OpenCode Desktop の確認/更新、LifeBook Launcher 自体の更新、自動起動設定を扱います。
 
-Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリに含めません。詳しくは [LifeBook Launcher 設計説明](../docs/lifebook-launcher/design.zh-CN.md) と [OpenCode クライアント説明](../docs/ai-clients/opencode.zh-CN.md) を参照してください。
+Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリに含めません。OpenCode クライアントの使い方は [OpenCode クライアント説明](../docs/ai-clients/opencode.zh-CN.md) を参照してください。
 
 ## ユーザーが知っておくべき重要フォルダ
 
@@ -54,6 +56,7 @@ Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリ�
 - `.\tools\lifebook-launcher`：LifeBook Launcher クライアントのインストール・起動フォルダです。LifeBook プロジェクトを使い、OpenCode をインストールするためにユーザーが知っておくべき場所です。
 - `.\doc\public\user_prompt`：公開スターター prompt の場所です。AI に渡す prompt の詳細を確認したり、手動で調整したりできます。
 - `.\books\zh-Hans`：もっとも重要な完成本の場所です。簡体字中国語への翻訳が完了したら、該当する書籍フォルダの `output\release\` を確認します。公開可能なのは release 成果物です。
+- `.\books\private`：ローカル private-use 書籍プロジェクト用フォルダです。ユーザー提供のローカル書源を使う非パブリックドメインの個人学習用翻訳はここに置きます。このフォルダは Git で無視され、GitHub に公開してはいけません。
 
 ## リポジトリ構成
 
@@ -63,6 +66,7 @@ Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリ�
 - `template/epub_pipeline/{source-target}/`：言語方向ごとの prompt、用語、文体、レビュー規則。
 - `template/epub_pipeline/targets/{target}/`：対象言語の品質ルール。
 - `template/epub_pipeline/profiles/{profile-target}/`：特殊な本の種類に対する追加ルール。
+- `template/epub_pipeline/modes/private_use/`：非パブリックドメインの個人利用プロジェクトだけにコピーされる mode overlay です。private-use cover、frontmatter、artifact、gate scripts を含みます。
 - `books/{target}/{number}_{book_slug}/`：実際の書籍プロジェクト。本固有の内容はここに置きます。
 - `books/`：共有 Node.js ツール依存関係。一度だけインストールします。
 - `doc/public/`：公開ガイド、prompt 説明、候補書籍資料。
@@ -85,11 +89,22 @@ npm run new:book -- {book_id_slug} --source-target {source-target}
 books/{target}/{number}_{book_id_slug}/
 ```
 
-スクリプトは `template/epub_pipeline/common` を先にコピーし、対応する言語方向テンプレートを重ねます。必要な場合は、その後 `profiles/{profile-target}/` を重ねます。
+スクリプトは `template/epub_pipeline/common` を先にコピーし、対応する言語方向テンプレートを重ねます。必要な場合は、その後 `profiles/{profile-target}/` を重ねます。private-use project では最後に `template/epub_pipeline/modes/private_use/` を重ねます。
+
+private-use project は明示的に `private-use` モードで作成します。
+
+```powershell
+cd books
+npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "個人学習用のみ。再配布なし。商用利用なし。"
+```
+
+private mode は翻訳、レビュー、EPUB 検証、層化ランダム抜き取り検査の品質基準を下げません。ただし権利境界、読者に見える文言、artifact の意味を変えます。private cover の下部は `个人学习版`、private frontmatter は `参考LifeBook书坊 个人自制` を使い、パブリックドメイン説明を削除し、個人利用のみ、再配布なし、商用利用なし、リスクは個人が負うことを明記します。private artifact は `output/private_artifacts/` に書き込み、公開 release ではありません。
 
 ## 基本ルール
 
-- 翻訳前に出典証拠と権利確認を残す。
+- 翻訳前に出典証拠と権利確認を残す。公開プロジェクトにはパブリックドメインまたは許諾済みの出典が必要です。
+- 非パブリックドメインの個人利用プロジェクトは `private_use` モードを使い、Git で無視される `books/private/` に置きます。
+- private-use project は `modes/private_use` overlay を持ち、公開用 cover、frontmatter、release 文言を再利用してはいけません。
 - 現代の著作権付き翻訳、海賊版サイト、出所不明の EPUB を使わない。
 - AI 初稿をそのまま公開しない。
 - 本固有の内容を `template/` に書かない。
@@ -115,6 +130,16 @@ npm run review:random-validate:pass
 npm run release:create
 ```
 
+private-use project では、同じ build、EPUBCheck、層化ランダム抜き取り検査を通した後、private artifact command を使います。
+
+```powershell
+npm run build:private-epub
+npm run check:epub
+npm run review:random-samples
+npm run review:random-validate:pass
+npm run private:artifact:create
+```
+
 ## 参加方法
 
 出典調査、権利確認、翻訳レビュー、用語確認、EPUB テスト、レイアウトの読みやすさのフィードバック、自動化改善などが役立ちます。大きな追跡不能の書き換えより、小さく確認できる修正を優先します。
@@ -124,6 +149,8 @@ npm run release:create
 各原書は個別に権利確認が必要です。ある国でパブリックドメインでも、すべての地域で自動的にパブリックドメインとは限りません。
 
 このプロジェクトで作られた翻訳、注記、表紙、組版、EPUB パッケージなどの非コードコンテンツは、別記がない限り `CC BY-NC-SA 4.0` で公開されます。第三者による商業利用には、LifeBook 書坊および関係する権利者からの別途許可が必要です。
+
+`books/private/` 下の private-use project は公開コンテンツではなく、既定の公開ライセンスの対象ではなく、GitHub に commit または公開してはいけません。private translation は個人利用のみ、再配布なし、商用利用なしです。関連リスクは個人が負います。LifeBook書坊は LifeBook 翻訳發布系統だけを公開し、他の個人による非パブリックドメイン内容の翻訳、保存、配布、利用から生じる著作権リスクまたは責任を負いません。
 
 参照：
 
