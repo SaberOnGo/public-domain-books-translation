@@ -3,6 +3,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { disable, enable, isEnabled } from "@tauri-apps/plugin-autostart";
 import {
   Apple,
+  ArrowLeft,
   BookOpen,
   CalendarDays,
   CheckCircle2,
@@ -24,6 +25,9 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
+  autoDetectProxySettings,
+  cancelLifeBookUpdate,
+  cancelNodeModulesInstall,
   cancelOpenCodeDownload,
   chooseRepoFolder,
   checkLauncherUpdates,
@@ -32,9 +36,15 @@ import {
   closeMainWindowToTray,
   downloadAndInstallLauncherUpdate,
   downloadAndOpenOpenCode,
+  exportLauncherLogs,
+  getDiagnosticLogSettings,
   getLauncherState,
+  getNodeModulesStatus,
+  getProxySettings,
   launchOpenCodeClient,
   listenLauncherDownloadProgress,
+  listenLifeBookProgress,
+  listenNodeModulesProgress,
   listenOpenCodeDownloadProgress,
   minimizeMainWindow,
   openBooksFolder,
@@ -42,30 +52,41 @@ import {
   prepareLifeBookProject,
   readProjectDocument,
   readProjectDocumentPath,
+  recordFrontendActivity,
   setRepoFolder,
+  setSaveLogsEnabled,
+  setAutoInstallNodeModules,
+  saveProxySettings,
   syncLifeBookProject,
+  startNodeModulesInstall,
+  testProxySettings,
   toggleMainWindowMaximized,
 } from "./api";
 import {
   ActivityItem,
   CommitInfo,
+  DiagnosticLogSettings,
   LauncherSettings,
   LauncherState,
   LauncherUpdateInfo,
   LifeBookUpdateInfo,
+  NetworkProxySettings,
+  NodeModulesStatus,
   OpenCodeLocalStatus,
   OpenCodeUpdateInfo,
   DownloadProgress,
   ProjectDocument,
+  ProxyTestResult,
 } from "./types";
 import launcherIconUrl from "../assets/lifebook-launcher-icon.png";
 
 const SETTINGS_KEY = "lifebook-launcher-settings";
-const LAUNCHER_VERSION = "v1.3.0";
+const LAUNCHER_VERSION = "v1.3.3";
 
 type Locale = "zh-CN" | "zh-TW" | "ja" | "en";
 type TabId = "overview" | "updates" | "tutorial" | "settings" | "logs";
 type TutorialKind = "readme" | "howto";
+type TutorialHistoryEntry = { kind: TutorialKind; document: ProjectDocument };
 type ToastTone = "info" | "success" | "warning" | "error";
 type FloatingToast = { id: number; message: string; tone: ToastTone };
 type DownloadHudState = "idle" | "downloading" | "cancelling" | "stopped" | "failed";
@@ -81,6 +102,7 @@ const defaultSettings: LauncherSettings = {
   autoStart: false,
   checkLauncherOnLaunch: true,
   checkOpenCodeOnLaunch: false,
+  saveLogsToLocal: true,
 };
 
 const zhCN = {
@@ -91,6 +113,28 @@ const zhCN = {
   networkProxy: "网络/代理",
   direct: "直连",
   proxied: "代理",
+  proxySettingsTitle: "代理设置",
+  proxySettingsDescription: "用于 LifeBook/GitHub 更新、Launcher 下载和 EPUB 工具依赖安装。常见本机代理端口：V2rayN HTTP 10809、SOCKS 10808；Clash HTTP 7890。",
+  proxyEnable: "启用代理",
+  proxyProtocol: "协议",
+  proxyHost: "IP/主机",
+  proxyPort: "端口",
+  proxyTest: "测试连接",
+  proxyAutoDetect: "自动识别",
+  proxySave: "保存代理",
+  proxyTesting: "正在测试代理...",
+  proxyAutoDetecting: "正在识别代理...",
+  proxyUntested: "未测试",
+  proxyDisabledStatus: "代理已关闭",
+  proxyPendingTest: "待测试",
+  proxySettingsSaved: "代理设置已保存",
+  proxySettingsAutoSaved: "代理设置已自动保存",
+  proxyAutoDetected: "已自动识别并启用可连接 GitHub 的代理",
+  proxyAutoDetectNotFound: "未识别到可连接 GitHub 的本机代理，可手动填写后测试。",
+  proxySettingsFailed: (error: string) => `代理设置保存失败：${error}`,
+  proxyTestSucceeded: (ms: number, version: string) => `代理可连接 GitHub：${ms} ms，${version}`,
+  proxyTestFailed: (error: string) => `代理测试失败：${error}`,
+  proxyTestAndApplied: (ms: number, version: string) => `已测试并应用代理：${ms} ms，${version}`,
   startup: "开机自启",
   enabled: "已启用",
   disabled: "未启用",
@@ -98,6 +142,19 @@ const zhCN = {
   selectRepo: "选择仓库",
   openBooks: "打开成书目录",
   repoRequired: "需选择仓库",
+  repoMissing: "项目缺失",
+  repoEmpty: "待准备",
+  repoInvalid: "目录不可用",
+  prepareProject: "重新准备项目",
+  workspaceUnavailableTitle: "LifeBook 项目目录不可用",
+  workspaceMissingDescription: (path: string) => `已设置的项目目录不存在：${path}`,
+  workspaceEmptyDescription: (path: string) => `已设置的项目目录为空，尚未下载 LifeBook：${path}`,
+  workspaceOccupiedDescription: (path: string) => `已设置的项目目录已有文件，但不是 LifeBook 项目：${path}`,
+  workspaceMissingHelp: "Launcher 会保留这个目录设置，但不会读取其他仓库。请重新准备 LifeBook，或更改为已有 LifeBook 项目/空目录。",
+  workspaceEmptyHelp: "点击“重新准备项目”会在该空目录下载 LifeBook；也可以更改为已有 LifeBook 项目或其他空目录。",
+  workspaceOccupiedHelp: "为避免覆盖用户文件，Launcher 不会在此目录自动下载。请选择空目录、已有 LifeBook 项目，或先自行整理该目录。",
+  noCommitsUnavailable: "LifeBook 项目尚未准备完成。恢复项目后这里会显示更新内容。",
+  tutorialUnavailable: "LifeBook 项目尚未准备完成。恢复项目后才能读取 README 和 How to use。",
   preparing: "准备中",
   projectReady: "项目已就绪",
   projectPath: "项目目录",
@@ -109,7 +166,7 @@ const zhCN = {
   lifeBookTitle: "LifeBook 项目",
   lifeBookSubtitle: "公共领域书籍翻译与协作系统",
   openCodeTitle: "OpenCode 客户端",
-  openCodeSubtitle: "跨平台翻译协作客户端",
+  openCodeSubtitle: "开源Agent GUI客户端",
   currentVersion: "当前版本",
   latestVersion: "最新版本",
   updateStatus: "更新状态",
@@ -164,14 +221,35 @@ const zhCN = {
   updateLifeBookProject: "更新 LifeBook",
   lifeBookUpdateStarted: "正在后台更新 LifeBook 项目...",
   lifeBookUpdateComplete: "LifeBook 项目已更新完成",
+  lifeBookProgressTitle: "LifeBook 项目准备与同步",
+  lifeBookProgressDefault: "正在处理 LifeBook...",
+  lifeBookDownloadStopped: "LifeBook 准备/同步已停止，可重试。",
+  lifeBookDownloadFailed: "LifeBook 准备/同步失败，可重试。",
+  nodeModulesTitle: "EPUB 构建依赖",
+  nodeModulesAutoInstallTitle: "后台自动安装 node_modules",
+  nodeModulesAutoInstallDescription: "LifeBook 项目准备好后，在后台安装 books/node_modules。不会阻塞 Launcher 操作，失败后可重试或让 AI 后续补装。",
+  nodeModulesReady: "依赖已准备完成",
+  nodeModulesMissing: "依赖尚未安装",
+  nodeModulesNotReady: "项目准备完成后会自动安装",
+  nodeModulesDisabled: "已关闭",
+  nodeModulesRetryHint: "失败，可重新勾选或重启后重试",
+  nodeModulesInstalling: "正在后台安装 node_modules",
+  nodeModulesInstallStarted: "正在后台安装 EPUB 构建依赖，不影响继续使用 Launcher。",
+  nodeModulesInstallStopped: "node_modules 安装已停止，可重试。",
+  nodeModulesInstallFailed: (error: string) => `node_modules 安装失败：${error}。后续可让 AI 补充安装。`,
+  nodeModulesStatusFailed: (error: string) => `读取 node_modules 状态失败：${error}`,
   clientLaunching: "正在启动",
   clientLaunchSucceeded: "启动成功",
   tutorialTitle: "教程",
   tutorialReadme: "README",
   tutorialHowTo: "How to use",
+  tutorialBack: "返回",
   tutorialCurrentDocument: "当前文档",
   tutorialLoading: "正在加载教程...",
   tutorialLoadFailed: (error: string) => `教程加载失败：${error}`,
+  copyCode: "复制",
+  codeCopied: "已复制",
+  codeCopyFailed: "复制失败",
   autoStartEnabled: "已开启开机自动启动 LifeBook Launcher。",
   autoStartDisabled: "已关闭开机自动启动。",
   autoStartFailed: (error: string) => `开机启动设置失败：${error}`,
@@ -213,6 +291,15 @@ const zhCN = {
   projectDirectoryChangeCancelled: "已取消更改 LifeBook 项目目录。",
   checkOpenCodeTitle: "自动检测更新 OpenCode",
   checkOpenCodeDescription: "只检查版本，不会自动下载 OpenCode。",
+  saveLogsTitle: "保存 LOG 到本地",
+  saveLogsDescription: (size: string) => `默认保存错误、关键操作、Git 输出和环境上下文；日志按容量循环保留，最多约 ${size}。`,
+  exportLogs: "导出 LOG",
+  exportLogsDescription: "导出最近日志和诊断上下文，便于定位用户机器上的问题。",
+  exportingLogs: "正在导出 LOG...",
+  logSettingsLoadFailed: (error: string) => `读取 LOG 设置失败：${error}`,
+  logSettingsSaved: "LOG 保存设置已更新",
+  logSettingsSaveFailed: (error: string) => `更新 LOG 设置失败：${error}`,
+  logExportFailed: (error: string) => `导出 LOG 失败：${error}`,
 };
 
 type Copy = typeof zhCN;
@@ -223,11 +310,46 @@ const zhTW: Copy = {
   projectStatus: "專案狀態",
   networkProxy: "網路/代理",
   direct: "直連",
+  proxySettingsTitle: "代理設定",
+  proxySettingsDescription: "用於 LifeBook/GitHub 更新、Launcher 下載和 EPUB 工具依賴安裝。常見本機代理埠：V2rayN HTTP 10809、SOCKS 10808；Clash HTTP 7890。",
+  proxyEnable: "啟用代理",
+  proxyProtocol: "協議",
+  proxyHost: "IP/主機",
+  proxyPort: "埠",
+  proxyTest: "測試連線",
+  proxyAutoDetect: "自動識別",
+  proxySave: "保存代理",
+  proxyTesting: "正在測試代理...",
+  proxyAutoDetecting: "正在識別代理...",
+  proxyUntested: "未測試",
+  proxyDisabledStatus: "代理已關閉",
+  proxyPendingTest: "待測試",
+  proxySettingsSaved: "代理設定已保存",
+  proxySettingsAutoSaved: "代理設定已自動保存",
+  proxyAutoDetected: "已自動識別並啟用可連接 GitHub 的代理",
+  proxyAutoDetectNotFound: "未識別到可連接 GitHub 的本機代理，可手動填寫後測試。",
+  proxySettingsFailed: (error) => `代理設定保存失敗：${error}`,
+  proxyTestSucceeded: (ms, version) => `代理可連接 GitHub：${ms} ms，${version}`,
+  proxyTestFailed: (error) => `代理測試失敗：${error}`,
+  proxyTestAndApplied: (ms, version) => `已測試並套用代理：${ms} ms，${version}`,
   startup: "開機自啟",
   quickActions: "快捷操作",
   selectRepo: "選擇倉庫",
   openBooks: "打開成書目錄",
   repoRequired: "需選擇倉庫",
+  repoMissing: "專案缺失",
+  repoEmpty: "待準備",
+  repoInvalid: "目錄不可用",
+  prepareProject: "重新準備專案",
+  workspaceUnavailableTitle: "LifeBook 專案目錄不可用",
+  workspaceMissingDescription: (path) => `已設定的專案目錄不存在：${path}`,
+  workspaceEmptyDescription: (path) => `已設定的專案目錄為空，尚未下載 LifeBook：${path}`,
+  workspaceOccupiedDescription: (path) => `已設定的專案目錄已有檔案，但不是 LifeBook 專案：${path}`,
+  workspaceMissingHelp: "Launcher 會保留此目錄設定，但不會讀取其他倉庫。請重新準備 LifeBook，或改為已有 LifeBook 專案/空目錄。",
+  workspaceEmptyHelp: "點擊「重新準備專案」會在該空目錄下載 LifeBook；也可以改為已有 LifeBook 專案或其他空目錄。",
+  workspaceOccupiedHelp: "為避免覆蓋使用者檔案，Launcher 不會在此目錄自動下載。請選擇空目錄、已有 LifeBook 專案，或先自行整理該目錄。",
+  noCommitsUnavailable: "LifeBook 專案尚未準備完成。恢復專案後，這裡會顯示更新內容。",
+  tutorialUnavailable: "LifeBook 專案尚未準備完成。恢復專案後才能讀取 README 和 How to use。",
   preparing: "準備中",
   projectReady: "專案已就緒",
   projectPath: "專案目錄",
@@ -238,6 +360,7 @@ const zhTW: Copy = {
   lifeBookTitle: "LifeBook 專案",
   lifeBookSubtitle: "公共領域書籍翻譯與協作系統",
   openCodeTitle: "OpenCode 用戶端",
+  openCodeSubtitle: "開源 Agent GUI 用戶端",
   currentVersion: "目前版本",
   latestVersion: "最新版本",
   updateStatus: "更新狀態",
@@ -298,10 +421,31 @@ const zhTW: Copy = {
   updateLifeBookProject: "更新 LifeBook",
   lifeBookUpdateStarted: "正在背景更新 LifeBook 專案...",
   lifeBookUpdateComplete: "LifeBook 專案已更新完成",
+  lifeBookProgressTitle: "LifeBook 專案準備與同步",
+  lifeBookProgressDefault: "正在處理 LifeBook...",
+  lifeBookDownloadStopped: "LifeBook 準備/同步已停止，可重試。",
+  lifeBookDownloadFailed: "LifeBook 準備/同步失敗，可重試。",
+  nodeModulesTitle: "EPUB 構建依賴",
+  nodeModulesAutoInstallTitle: "背景自動安裝 node_modules",
+  nodeModulesAutoInstallDescription: "LifeBook 專案準備好後，在背景安裝 books/node_modules。不會阻塞 Launcher 操作，失敗後可重試或讓 AI 後續補裝。",
+  nodeModulesReady: "依賴已準備完成",
+  nodeModulesMissing: "依賴尚未安裝",
+  nodeModulesNotReady: "專案準備完成後會自動安裝",
+  nodeModulesDisabled: "已關閉",
+  nodeModulesRetryHint: "失敗，可重新勾選或重啟後重試",
+  nodeModulesInstalling: "正在背景安裝 node_modules",
+  nodeModulesInstallStarted: "正在背景安裝 EPUB 構建依賴，不影響繼續使用 Launcher。",
+  nodeModulesInstallStopped: "node_modules 安裝已停止，可重試。",
+  nodeModulesInstallFailed: (error) => `node_modules 安裝失敗：${error}。後續可讓 AI 補充安裝。`,
+  nodeModulesStatusFailed: (error) => `讀取 node_modules 狀態失敗：${error}`,
   clientLaunching: "正在啟動",
   clientLaunchSucceeded: "啟動成功",
+  tutorialBack: "返回",
   tutorialLoading: "正在載入教程...",
   tutorialLoadFailed: (error) => `教程載入失敗：${error}`,
+  copyCode: "複製",
+  codeCopied: "已複製",
+  codeCopyFailed: "複製失敗",
   launcherUpdateStarted: "LifeBook Launcher 更新已下載，正在自動安裝並重新啟動。",
   confirmLauncherUpdate: (version) => `將自動下載並安裝 LifeBook Launcher ${version}。安裝時目前視窗會關閉，完成後會自動重新打開。是否繼續？`,
   openCodeMissing: "未偵測到 OpenCode Desktop，請先安裝用戶端。",
@@ -320,6 +464,15 @@ const zhTW: Copy = {
   projectDirectoryChangeCancelled: "已取消更改 LifeBook 專案目錄。",
   checkOpenCodeTitle: "自動偵測更新 OpenCode",
   checkOpenCodeDescription: "只檢查版本，不會自動下載 OpenCode。",
+  saveLogsTitle: "保存 LOG 到本機",
+  saveLogsDescription: (size) => `預設保存錯誤、關鍵操作、Git 輸出與環境上下文；日誌按容量循環保留，最多約 ${size}。`,
+  exportLogs: "匯出 LOG",
+  exportLogsDescription: "匯出最近日誌與診斷上下文，方便定位使用者電腦上的問題。",
+  exportingLogs: "正在匯出 LOG...",
+  logSettingsLoadFailed: (error) => `讀取 LOG 設定失敗：${error}`,
+  logSettingsSaved: "LOG 保存設定已更新",
+  logSettingsSaveFailed: (error) => `更新 LOG 設定失敗：${error}`,
+  logExportFailed: (error) => `匯出 LOG 失敗：${error}`,
 };
 
 const ja: Copy = {
@@ -330,6 +483,28 @@ const ja: Copy = {
   networkProxy: "ネットワーク/プロキシ",
   direct: "直結",
   proxied: "プロキシ",
+  proxySettingsTitle: "プロキシ設定",
+  proxySettingsDescription: "LifeBook/GitHub 更新、Launcher ダウンロード、EPUB ツール依存関係のインストールに使います。ローカルプロキシの例：V2rayN HTTP 10809、SOCKS 10808；Clash HTTP 7890。",
+  proxyEnable: "プロキシを有効化",
+  proxyProtocol: "プロトコル",
+  proxyHost: "IP/ホスト",
+  proxyPort: "ポート",
+  proxyTest: "接続テスト",
+  proxyAutoDetect: "自動検出",
+  proxySave: "保存",
+  proxyTesting: "プロキシをテストしています...",
+  proxyAutoDetecting: "プロキシを検出しています...",
+  proxyUntested: "未テスト",
+  proxyDisabledStatus: "プロキシは無効です",
+  proxyPendingTest: "テスト待ち",
+  proxySettingsSaved: "プロキシ設定を保存しました",
+  proxySettingsAutoSaved: "プロキシ設定を自動保存しました",
+  proxyAutoDetected: "GitHub に接続できるプロキシを自動検出して有効化しました",
+  proxyAutoDetectNotFound: "GitHub に接続できるローカルプロキシは見つかりませんでした。手動で入力してテストできます。",
+  proxySettingsFailed: (error) => `プロキシ設定の保存に失敗しました：${error}`,
+  proxyTestSucceeded: (ms, version) => `GitHub に接続できました：${ms} ms、${version}`,
+  proxyTestFailed: (error) => `プロキシテストに失敗しました：${error}`,
+  proxyTestAndApplied: (ms, version) => `テストして適用しました：${ms} ms、${version}`,
   startup: "自動起動",
   enabled: "有効",
   disabled: "無効",
@@ -337,6 +512,19 @@ const ja: Copy = {
   selectRepo: "リポジトリ選択",
   openBooks: "出力フォルダ",
   repoRequired: "選択が必要",
+  repoMissing: "プロジェクトなし",
+  repoEmpty: "準備待ち",
+  repoInvalid: "フォルダ使用不可",
+  prepareProject: "プロジェクトを再準備",
+  workspaceUnavailableTitle: "LifeBook プロジェクトフォルダを使用できません",
+  workspaceMissingDescription: (path) => `設定されたプロジェクトフォルダが存在しません：${path}`,
+  workspaceEmptyDescription: (path) => `設定されたプロジェクトフォルダは空で、LifeBook はまだダウンロードされていません：${path}`,
+  workspaceOccupiedDescription: (path) => `設定されたフォルダにはファイルがありますが、LifeBook プロジェクトではありません：${path}`,
+  workspaceMissingHelp: "Launcher はこの設定を保持しますが、別のリポジトリは読み込みません。LifeBook を再準備するか、既存プロジェクト/空フォルダを選択してください。",
+  workspaceEmptyHelp: "「プロジェクトを再準備」を押すと、この空フォルダに LifeBook をダウンロードします。既存プロジェクトや別の空フォルダも選択できます。",
+  workspaceOccupiedHelp: "ユーザーファイルを上書きしないため、このフォルダには自動ダウンロードしません。空フォルダ、既存の LifeBook プロジェクト、または整理済みフォルダを選択してください。",
+  noCommitsUnavailable: "LifeBook プロジェクトの準備が完了していません。復旧後に更新内容が表示されます。",
+  tutorialUnavailable: "LifeBook プロジェクトの準備が完了していません。復旧後に README と How to use を表示できます。",
   preparing: "準備中",
   projectReady: "準備完了",
   projectPath: "プロジェクトフォルダ",
@@ -348,7 +536,7 @@ const ja: Copy = {
   lifeBookTitle: "LifeBook プロジェクト",
   lifeBookSubtitle: "公共領域書籍の翻訳と協作システム",
   openCodeTitle: "OpenCode クライアント",
-  openCodeSubtitle: "クロスプラットフォーム翻訳協作クライアント",
+  openCodeSubtitle: "オープンソース Agent GUI クライアント",
   currentVersion: "現在",
   latestVersion: "最新",
   updateStatus: "更新状態",
@@ -415,11 +603,32 @@ const ja: Copy = {
   updateLifeBookProject: "LifeBook を更新",
   lifeBookUpdateStarted: "LifeBook プロジェクトをバックグラウンドで更新しています...",
   lifeBookUpdateComplete: "LifeBook プロジェクトを更新しました",
+  lifeBookProgressTitle: "LifeBook プロジェクトの準備と同期",
+  lifeBookProgressDefault: "LifeBook を処理しています...",
+  lifeBookDownloadStopped: "LifeBook の準備/同期を停止しました。再試行できます。",
+  lifeBookDownloadFailed: "LifeBook の準備/同期に失敗しました。再試行できます。",
+  nodeModulesTitle: "EPUB ビルド依存関係",
+  nodeModulesAutoInstallTitle: "node_modules をバックグラウンドで自動インストール",
+  nodeModulesAutoInstallDescription: "LifeBook プロジェクトの準備後、books/node_modules をバックグラウンドでインストールします。Launcher 操作はブロックせず、失敗後は再試行または AI に補完を依頼できます。",
+  nodeModulesReady: "依存関係は準備済みです",
+  nodeModulesMissing: "依存関係は未インストールです",
+  nodeModulesNotReady: "プロジェクト準備後に自動インストールします",
+  nodeModulesDisabled: "無効",
+  nodeModulesRetryHint: "失敗。再チェックまたは再起動後に再試行します",
+  nodeModulesInstalling: "node_modules をバックグラウンドでインストール中",
+  nodeModulesInstallStarted: "EPUB ビルド依存関係をバックグラウンドでインストールしています。Launcher は引き続き使えます。",
+  nodeModulesInstallStopped: "node_modules インストールを停止しました。再試行できます。",
+  nodeModulesInstallFailed: (error) => `node_modules インストールに失敗しました：${error}。後で AI に補完インストールを依頼できます。`,
+  nodeModulesStatusFailed: (error) => `node_modules 状態の読み込みに失敗：${error}`,
   clientLaunching: "起動中",
   clientLaunchSucceeded: "起動成功",
   tutorialTitle: "ガイド",
+  tutorialBack: "戻る",
   tutorialLoading: "ガイドを読み込み中...",
   tutorialLoadFailed: (error) => `ガイドの読み込みに失敗：${error}`,
+  copyCode: "コピー",
+  codeCopied: "コピー済み",
+  codeCopyFailed: "コピー失敗",
   launcherUpdateStarted: "LifeBook Launcher 更新をダウンロードしました。自動インストールして再起動します。",
   confirmLauncherUpdate: (version) => `LifeBook Launcher ${version} を自動ダウンロードしてインストールします。インストール中は現在のウィンドウを閉じ、完了後に自動で開きます。続行しますか？`,
   openCodeMissing: "OpenCode Desktop が見つかりません。先にクライアントをインストールしてください。",
@@ -439,6 +648,15 @@ const ja: Copy = {
   projectDirectoryChangeCancelled: "LifeBook プロジェクトフォルダの変更をキャンセルしました。",
   checkOpenCodeTitle: "OpenCode 更新を自動確認",
   checkOpenCodeDescription: "バージョン確認のみで、自動ダウンロードはしません。",
+  saveLogsTitle: "LOG をローカルに保存",
+  saveLogsDescription: (size) => `エラー、重要操作、Git 出力、環境コンテキストを既定で保存します。容量上限でローテーションし、最大約 ${size} です。`,
+  exportLogs: "LOG を書き出す",
+  exportLogsDescription: "最近のログと診断コンテキストを書き出し、ユーザー環境の問題調査に使います。",
+  exportingLogs: "LOG を書き出しています...",
+  logSettingsLoadFailed: (error) => `LOG 設定の読み込みに失敗：${error}`,
+  logSettingsSaved: "LOG 保存設定を更新しました",
+  logSettingsSaveFailed: (error) => `LOG 設定の更新に失敗：${error}`,
+  logExportFailed: (error) => `LOG の書き出しに失敗：${error}`,
 };
 
 const en: Copy = {
@@ -450,6 +668,28 @@ const en: Copy = {
   networkProxy: "Network/proxy",
   direct: "Direct",
   proxied: "Proxy",
+  proxySettingsTitle: "Proxy Settings",
+  proxySettingsDescription: "Used for LifeBook/GitHub updates, Launcher downloads, and EPUB tool dependency installs. Common local ports: V2rayN HTTP 10809, SOCKS 10808; Clash HTTP 7890.",
+  proxyEnable: "Enable proxy",
+  proxyProtocol: "Protocol",
+  proxyHost: "IP/host",
+  proxyPort: "Port",
+  proxyTest: "Test",
+  proxyAutoDetect: "Auto detect",
+  proxySave: "Save proxy",
+  proxyTesting: "Testing proxy...",
+  proxyAutoDetecting: "Detecting proxy...",
+  proxyUntested: "Not tested",
+  proxyDisabledStatus: "Proxy off",
+  proxyPendingTest: "Needs test",
+  proxySettingsSaved: "Proxy settings saved",
+  proxySettingsAutoSaved: "Proxy settings saved automatically",
+  proxyAutoDetected: "Detected and enabled a proxy that can reach GitHub",
+  proxyAutoDetectNotFound: "No local proxy that can reach GitHub was detected. You can still enter one manually and test it.",
+  proxySettingsFailed: (error) => `Failed to save proxy settings: ${error}`,
+  proxyTestSucceeded: (ms, version) => `Proxy can reach GitHub: ${ms} ms, ${version}`,
+  proxyTestFailed: (error) => `Proxy test failed: ${error}`,
+  proxyTestAndApplied: (ms, version) => `Tested and applied proxy: ${ms} ms, ${version}`,
   startup: "Startup",
   enabled: "Enabled",
   disabled: "Disabled",
@@ -457,6 +697,19 @@ const en: Copy = {
   selectRepo: "Select repo",
   openBooks: "Open books",
   repoRequired: "Repo needed",
+  repoMissing: "Project missing",
+  repoEmpty: "Ready to prepare",
+  repoInvalid: "Folder unavailable",
+  prepareProject: "Prepare project",
+  workspaceUnavailableTitle: "LifeBook project folder is unavailable",
+  workspaceMissingDescription: (path) => `The configured project folder does not exist: ${path}`,
+  workspaceEmptyDescription: (path) => `The configured project folder is empty and LifeBook has not been downloaded yet: ${path}`,
+  workspaceOccupiedDescription: (path) => `The configured folder contains files, but it is not a LifeBook project: ${path}`,
+  workspaceMissingHelp: "Launcher keeps this folder setting, but will not read another repository. Prepare LifeBook again, or choose an existing LifeBook project/empty folder.",
+  workspaceEmptyHelp: "Click Prepare project to download LifeBook into this empty folder, or choose an existing LifeBook project/another empty folder.",
+  workspaceOccupiedHelp: "To avoid overwriting user files, Launcher will not download into this folder automatically. Choose an empty folder, an existing LifeBook project, or clean the folder yourself.",
+  noCommitsUnavailable: "LifeBook is not ready yet. Update details will appear here after the project is restored.",
+  tutorialUnavailable: "LifeBook is not ready yet. README and How to use are available after the project is restored.",
   preparing: "Preparing",
   projectReady: "Project ready",
   projectPath: "Project folder",
@@ -468,7 +721,7 @@ const en: Copy = {
   lifeBookTitle: "LifeBook Project",
   lifeBookSubtitle: "Public-domain book translation workflow",
   openCodeTitle: "OpenCode Client",
-  openCodeSubtitle: "Cross-platform translation agent client",
+  openCodeSubtitle: "Open-source Agent GUI client",
   currentVersion: "Current",
   latestVersion: "Latest",
   updateStatus: "Status",
@@ -542,12 +795,33 @@ const en: Copy = {
   updateLifeBookProject: "Update LifeBook",
   lifeBookUpdateStarted: "Updating LifeBook project in the background...",
   lifeBookUpdateComplete: "LifeBook project update finished",
+  lifeBookProgressTitle: "LifeBook project prepare and sync",
+  lifeBookProgressDefault: "Working on LifeBook...",
+  lifeBookDownloadStopped: "LifeBook prepare/sync stopped. You can retry.",
+  lifeBookDownloadFailed: "LifeBook prepare/sync failed. You can retry.",
+  nodeModulesTitle: "EPUB build dependencies",
+  nodeModulesAutoInstallTitle: "Install node_modules in background",
+  nodeModulesAutoInstallDescription: "After the LifeBook project is ready, install books/node_modules in the background. Launcher remains usable; failures can be retried or completed later with AI help.",
+  nodeModulesReady: "Dependencies are ready",
+  nodeModulesMissing: "Dependencies are not installed",
+  nodeModulesNotReady: "Will install after the project is ready",
+  nodeModulesDisabled: "Off",
+  nodeModulesRetryHint: "Failed; re-check or restart to retry",
+  nodeModulesInstalling: "Installing node_modules in the background",
+  nodeModulesInstallStarted: "Installing EPUB build dependencies in the background. Launcher remains usable.",
+  nodeModulesInstallStopped: "node_modules install stopped. You can retry.",
+  nodeModulesInstallFailed: (error) => `node_modules install failed: ${error}. AI can help complete the install later.`,
+  nodeModulesStatusFailed: (error) => `Failed to read node_modules status: ${error}`,
   clientLaunching: "Launching",
   clientLaunchSucceeded: "Launch succeeded",
   tutorialTitle: "Guide",
+  tutorialBack: "Back",
   tutorialCurrentDocument: "Current document",
   tutorialLoading: "Loading guide...",
   tutorialLoadFailed: (error) => `Guide failed to load: ${error}`,
+  copyCode: "Copy",
+  codeCopied: "Copied",
+  codeCopyFailed: "Copy failed",
   launcherUpdateStarted: "LifeBook Launcher update downloaded. Installing and restarting automatically.",
   confirmLauncherUpdate: (version) => `Download and install LifeBook Launcher ${version} automatically? The current window will close during install and reopen after it finishes.`,
   openCodeMissing: "OpenCode Desktop was not detected. Install the client first.",
@@ -567,6 +841,15 @@ const en: Copy = {
   projectDirectoryChangeCancelled: "LifeBook project folder change cancelled.",
   checkOpenCodeTitle: "Auto-check OpenCode updates",
   checkOpenCodeDescription: "Only checks the version. It will not download automatically.",
+  saveLogsTitle: "Save LOG locally",
+  saveLogsDescription: (size) => `Save errors, key actions, Git output, and environment context by default. Logs rotate by size and keep about ${size} at most.`,
+  exportLogs: "Export LOG",
+  exportLogsDescription: "Export recent logs and diagnostic context for debugging user-machine issues.",
+  exportingLogs: "Exporting LOG...",
+  logSettingsLoadFailed: (error) => `Failed to read LOG settings: ${error}`,
+  logSettingsSaved: "LOG save setting updated",
+  logSettingsSaveFailed: (error) => `Failed to update LOG setting: ${error}`,
+  logExportFailed: (error) => `Failed to export LOG: ${error}`,
 };
 
 const copies: Record<Locale, Copy> = { "zh-CN": zhCN, "zh-TW": zhTW, ja, en };
@@ -602,10 +885,29 @@ function formatBytes(value: number) {
   return `${(value / 1024 / 1024).toFixed(1)} MB`;
 }
 
+function clampPercent(value: number) {
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.min(100, value));
+}
+
+function formatPercent(value: number) {
+  return `${clampPercent(value).toFixed(2)}%`;
+}
+
+function progressWidth(value: number) {
+  return `${clampPercent(value)}%`;
+}
+
 function formatDownloadProgress(copy: Copy, progress?: DownloadProgress | null) {
   if (!progress) return "";
+  if (progress.message) {
+    return `${progress.message} ${formatPercent(progress.percent)}`;
+  }
+  if (progress.totalBytes === 100 && progress.downloadedBytes <= 100) {
+    return `${copy.working} ${formatPercent(progress.percent)}`;
+  }
   const total = progress.totalBytes ? ` / ${formatBytes(progress.totalBytes)}` : "";
-  return `${copy.downloading} ${progress.percent}% (${formatBytes(progress.downloadedBytes)}${total})`;
+  return `${copy.downloading} ${formatPercent(progress.percent)} (${formatBytes(progress.downloadedBytes)}${total})`;
 }
 
 function sleep(ms: number) {
@@ -647,15 +949,33 @@ export default function App() {
   const [lifeBookUpdate, setLifeBookUpdate] = useState<LifeBookUpdateInfo | null>(null);
   const [openCodeUpdate, setOpenCodeUpdate] = useState<OpenCodeUpdateInfo | null>(null);
   const [openCodeLocalStatus, setOpenCodeLocalStatus] = useState<OpenCodeLocalStatus | null>(null);
-  const [tutorialKind, setTutorialKind] = useState<TutorialKind>("readme");
+  const [tutorialKind, setTutorialKind] = useState<TutorialKind>("howto");
   const [tutorialDoc, setTutorialDoc] = useState<ProjectDocument | null>(null);
+  const [tutorialHistory, setTutorialHistory] = useState<TutorialHistoryEntry[]>([]);
   const [tutorialLoading, setTutorialLoading] = useState(false);
   const [settings, setSettings] = useState<LauncherSettings>(loadSettings);
+  const [diagnosticLogSettings, setDiagnosticLogSettings] = useState<DiagnosticLogSettings | null>(null);
+  const [proxySettings, setProxySettings] = useState<NetworkProxySettings>({
+    enabled: false,
+    scheme: "http",
+    host: "127.0.0.1",
+    port: 7890,
+  });
+  const [proxyTestResult, setProxyTestResult] = useState<ProxyTestResult | null>(null);
+  const [proxyBusy, setProxyBusy] = useState<"test" | "detect" | null>(null);
+  const [nodeModulesStatus, setNodeModulesStatus] = useState<NodeModulesStatus | null>(null);
+  const [nodeModulesProgress, setNodeModulesProgress] = useState<DownloadProgress | null>(null);
+  const [nodeModulesDownloadState, setNodeModulesDownloadState] = useState<DownloadHudState>("idle");
+  const [nodeModulesDownloadMessage, setNodeModulesDownloadMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [refreshInProgress, setRefreshInProgress] = useState(false);
-  const [globalProgress, setGlobalProgress] = useState<{ percent: number; label: string } | null>(null);
   const [lifeBookPreparing, setLifeBookPreparing] = useState(false);
   const [lifeBookSyncing, setLifeBookSyncing] = useState(false);
+  const [lifeBookProgress, setLifeBookProgress] = useState<DownloadProgress | null>(null);
+  const [lifeBookDownloadState, setLifeBookDownloadState] = useState<DownloadHudState>("idle");
+  const [lifeBookDownloadMessage, setLifeBookDownloadMessage] = useState<string | null>(null);
+  const [lifeBookDownloadDismissed, setLifeBookDownloadDismissed] = useState(false);
+  const [lifeBookRetryMode, setLifeBookRetryMode] = useState<"prepare" | "sync">("sync");
   const [openCodeProgress, setOpenCodeProgress] = useState<DownloadProgress | null>(null);
   const [openCodeSyntheticProgress, setOpenCodeSyntheticProgress] = useState<DownloadProgress | null>(null);
   const [openCodeLaunchState, setOpenCodeLaunchState] = useState<"idle" | "starting" | "success">("idle");
@@ -675,6 +995,9 @@ export default function App() {
   const openCodeLaunchResetTimer = useRef<number | null>(null);
   const refreshInProgressRef = useRef(false);
   const lifeBookSyncingRef = useRef(false);
+  const lifeBookDownloadDismissedRef = useRef(false);
+  const nodeModulesAutoStartRef = useRef(false);
+  const startupInitializedRef = useRef(false);
   const launcherCheckInProgressRef = useRef(false);
   const launcherUpdateInProgressRef = useRef(false);
   const openCodeCheckInProgressRef = useRef(false);
@@ -683,6 +1006,7 @@ export default function App() {
   const floatingToastTimer = useRef<number | null>(null);
 
   const addActivity = useCallback((level: ActivityItem["level"], message: string) => {
+    void recordFrontendActivity(level, message).catch(() => undefined);
     setActivities((items) => [
       { id: `${Date.now()}-${Math.random()}`, time: nowLabel(), level, message },
       ...items,
@@ -699,6 +1023,132 @@ export default function App() {
       floatingToastTimer.current = null;
     }, 2200);
   }, []);
+
+  const refreshDiagnosticLogSettings = useCallback(async () => {
+    try {
+      const info = await getDiagnosticLogSettings();
+      setDiagnosticLogSettings(info);
+      setSettings((current) => {
+        const next = { ...current, saveLogsToLocal: info.saveLogs };
+        saveSettings(next);
+        return next;
+      });
+    } catch (error) {
+      addActivity("warning", copy.logSettingsLoadFailed(String(error)));
+    }
+  }, [addActivity, copy]);
+
+  const refreshProxySettings = useCallback(async () => {
+    try {
+      const proxy = await getProxySettings();
+      setProxySettings(proxy);
+    } catch (error) {
+      addActivity("warning", String(error));
+    }
+  }, [addActivity]);
+
+  const refreshNodeModulesStatus = useCallback(async () => {
+    try {
+      const status = await getNodeModulesStatus();
+      setNodeModulesStatus(status);
+      if (status.ready) {
+        setNodeModulesDownloadState("idle");
+        setNodeModulesDownloadMessage(null);
+      } else if (status.running) {
+        setNodeModulesDownloadState("downloading");
+      }
+    } catch (error) {
+      addActivity("warning", copy.nodeModulesStatusFailed(String(error)));
+    }
+  }, [addActivity, copy]);
+
+  const startLifeBookProgress = useCallback((mode: "prepare" | "sync") => {
+    setLifeBookRetryMode(mode);
+    setLifeBookDownloadDismissed(false);
+    lifeBookDownloadDismissedRef.current = false;
+    setLifeBookDownloadState("downloading");
+    setLifeBookDownloadMessage(null);
+    setLifeBookProgress({
+      percent: 0.01,
+      downloadedBytes: 0,
+      totalBytes: 100,
+      message: mode === "prepare" ? copy.preparingLifeBook : copy.lifeBookUpdateStarted,
+    });
+  }, [copy.lifeBookUpdateStarted, copy.preparingLifeBook]);
+
+  const finishLifeBookProgress = useCallback((message: string) => {
+    setLifeBookProgress((current) => ({
+      percent: 100,
+      downloadedBytes: 100,
+      totalBytes: 100,
+      message,
+    } satisfies DownloadProgress));
+    setLifeBookDownloadState("idle");
+    window.setTimeout(() => {
+      setLifeBookProgress(null);
+      setLifeBookDownloadMessage(null);
+    }, 900);
+  }, []);
+
+  const failLifeBookProgress = useCallback((error: unknown) => {
+    const raw = String(error);
+    const stopped = raw.includes("已停止") || raw.toLowerCase().includes("stopped");
+    const message = stopped ? copy.lifeBookDownloadStopped : copy.lifeBookDownloadFailed;
+    setLifeBookDownloadMessage(message);
+    setLifeBookDownloadState(stopped ? "stopped" : "failed");
+    addActivity(stopped ? "warning" : "error", stopped ? message : copy.lifeBookUpdateStopped(raw));
+    if (lifeBookDownloadDismissedRef.current) {
+      window.setTimeout(() => setLifeBookDownloadState("idle"), 900);
+    } else {
+      showFloatingToast(message, stopped ? "warning" : "error");
+    }
+  }, [addActivity, copy, showFloatingToast]);
+
+  const startNodeModulesInBackground = useCallback(async (silent = false) => {
+    if (nodeModulesDownloadState === "downloading" || nodeModulesDownloadState === "cancelling") return;
+    setNodeModulesDownloadState("downloading");
+    setNodeModulesDownloadMessage(null);
+    setNodeModulesProgress({
+      percent: 0.01,
+      downloadedBytes: 0,
+      totalBytes: 100,
+      message: copy.nodeModulesInstalling,
+      state: "downloading",
+    });
+    try {
+      const result = await startNodeModulesInstall();
+      if (!silent) {
+        addActivity("info", result.message || copy.nodeModulesInstallStarted);
+        showFloatingToast(copy.nodeModulesInstallStarted, "info");
+      }
+      await refreshNodeModulesStatus();
+    } catch (error) {
+      const message = copy.nodeModulesInstallFailed(String(error));
+      setNodeModulesDownloadMessage(message);
+      setNodeModulesDownloadState("failed");
+      addActivity("error", message);
+      showFloatingToast(message, "error");
+    }
+  }, [
+    addActivity,
+    copy,
+    nodeModulesDownloadState,
+    refreshNodeModulesStatus,
+    showFloatingToast,
+  ]);
+
+  const stopNodeModulesInstall = useCallback(async (removePartial = false) => {
+    setNodeModulesDownloadState("cancelling");
+    try {
+      await cancelNodeModulesInstall(removePartial);
+    } catch (error) {
+      const message = copy.nodeModulesInstallFailed(String(error));
+      setNodeModulesDownloadMessage(message);
+      setNodeModulesDownloadState("failed");
+      addActivity("error", message);
+      showFloatingToast(message, "error");
+    }
+  }, [addActivity, copy, showFloatingToast]);
 
   const askConfirm = useCallback((options: Omit<ConfirmDialogState, "resolve">) => {
     return new Promise<boolean>((resolve) => {
@@ -757,29 +1207,35 @@ export default function App() {
         }
         const result = await setRepoFolder(selected.repoRoot);
         addActivity(result.ok ? "success" : "info", result.message);
+        setTutorialDoc(null);
         await refreshState();
         if (lifeBookSyncingRef.current) return;
         lifeBookSyncingRef.current = true;
         setLifeBookPreparing(true);
+        startLifeBookProgress("prepare");
         addActivity("info", copy.preparingLifeBook);
         try {
           const info = await prepareLifeBookProject(locale);
           setLifeBookUpdate(info);
+          finishLifeBookProgress(copy.lifeBookReady);
           addActivity("success", copy.lifeBookReady);
         } catch (error) {
-          addActivity("warning", copy.lifeBookUpdateStopped(String(error)));
+          failLifeBookProgress(error);
         } finally {
           lifeBookSyncingRef.current = false;
           setLifeBookPreparing(false);
         }
         await refreshState();
+        await refreshNodeModulesStatus();
       }
     } catch (error) {
-      addActivity("error", String(error));
+      const message = String(error);
+      addActivity("error", message);
+      showFloatingToast(message, "error");
     } finally {
       setBusy(null);
     }
-  }, [addActivity, askConfirm, copy, locale, refreshState]);
+  }, [addActivity, askConfirm, copy, failLifeBookProgress, finishLifeBookProgress, locale, refreshNodeModulesStatus, refreshState, showFloatingToast, startLifeBookProgress]);
 
   const doOpenRepoFolder = useCallback(async () => {
     try {
@@ -803,69 +1259,69 @@ export default function App() {
     if (lifeBookSyncingRef.current) return;
     lifeBookSyncingRef.current = true;
     setLifeBookPreparing(true);
+    startLifeBookProgress("prepare");
     addActivity("info", copy.preparingLifeBook);
     try {
       const info = await prepareLifeBookProject(locale);
       setLifeBookUpdate(info);
+      finishLifeBookProgress(copy.lifeBookReady);
       addActivity("success", copy.lifeBookReady);
       await refreshState();
+      await refreshNodeModulesStatus();
     } catch (error) {
-      addActivity("error", copy.lifeBookUpdateStopped(String(error)));
+      failLifeBookProgress(error);
       await refreshState();
+      await refreshNodeModulesStatus();
     } finally {
       lifeBookSyncingRef.current = false;
       setLifeBookPreparing(false);
     }
-  }, [addActivity, copy, locale, refreshState]);
+  }, [addActivity, copy, failLifeBookProgress, finishLifeBookProgress, locale, refreshNodeModulesStatus, refreshState, startLifeBookProgress]);
 
   const prepareLifeBookInBackground = useCallback(async () => {
     if (lifeBookSyncingRef.current) return;
     lifeBookSyncingRef.current = true;
+    startLifeBookProgress("prepare");
     addActivity("info", copy.preparingLifeBook);
     try {
       const info = await prepareLifeBookProject(locale);
       setLifeBookUpdate(info);
+      finishLifeBookProgress(copy.lifeBookReady);
       addActivity("success", copy.lifeBookReady);
       await refreshState();
+      await refreshNodeModulesStatus();
     } catch (error) {
-      addActivity("warning", copy.lifeBookUpdateStopped(String(error)));
+      failLifeBookProgress(error);
       await refreshState();
+      await refreshNodeModulesStatus();
     } finally {
       lifeBookSyncingRef.current = false;
     }
-  }, [addActivity, copy, locale, refreshState]);
+  }, [addActivity, copy, failLifeBookProgress, finishLifeBookProgress, locale, refreshNodeModulesStatus, refreshState, startLifeBookProgress]);
 
   const syncLifeBookNow = useCallback(async () => {
     if (lifeBookSyncingRef.current) return;
     lifeBookSyncingRef.current = true;
     setLifeBookSyncing(true);
+    startLifeBookProgress("sync");
     addActivity("info", copy.lifeBookUpdateStarted);
-    setGlobalProgress({ percent: 8, label: copy.refreshLifeBookStep });
-    let syntheticPercent = 8;
-    const progressTimer = window.setInterval(() => {
-      syntheticPercent = Math.min(92, syntheticPercent + 7);
-      setGlobalProgress((current) => {
-        if (!current || current.label !== copy.refreshLifeBookStep) return current;
-        return { ...current, percent: Math.max(current.percent, syntheticPercent) };
-      });
-    }, 700);
     try {
       const info = await syncLifeBookProject(locale);
       setLifeBookUpdate(info);
       const doneMessage = info.hasUpdate ? copy.lifeBookFound(info.behindCount) : copy.lifeBookUpdateComplete;
-      setGlobalProgress({ percent: 100, label: doneMessage });
+      finishLifeBookProgress(doneMessage);
       addActivity(info.hasUpdate ? "warning" : "success", doneMessage);
       await refreshState();
+      await refreshNodeModulesStatus();
     } catch (error) {
-      addActivity("error", copy.lifeBookUpdateStopped(String(error)));
+      failLifeBookProgress(error);
       await refreshState();
+      await refreshNodeModulesStatus();
     } finally {
-      window.clearInterval(progressTimer);
-      window.setTimeout(() => setGlobalProgress(null), 900);
       lifeBookSyncingRef.current = false;
       setLifeBookSyncing(false);
     }
-  }, [addActivity, copy, locale, refreshState]);
+  }, [addActivity, copy, failLifeBookProgress, finishLifeBookProgress, locale, refreshNodeModulesStatus, refreshState, startLifeBookProgress]);
 
   const doUpdateLauncher = useCallback(async (knownUpdate?: LauncherUpdateInfo | null, skipConfirm = false) => {
     if (launcherUpdateInProgressRef.current) return;
@@ -1012,52 +1468,81 @@ export default function App() {
 
   const loadTutorial = useCallback(async (kind: TutorialKind) => {
     setTutorialKind(kind);
+    setTutorialHistory([]);
+    if (!state?.repoReady) {
+      setTutorialDoc(null);
+      showFloatingToast(copy.tutorialUnavailable, "warning");
+      return;
+    }
     setTutorialLoading(true);
     try {
       const doc = await readProjectDocument(kind, locale);
       setTutorialDoc(doc);
     } catch (error) {
       addActivity("error", copy.tutorialLoadFailed(String(error)));
+      showFloatingToast(copy.tutorialLoadFailed(String(error)), "error");
     } finally {
       setTutorialLoading(false);
     }
-  }, [addActivity, copy, locale]);
+  }, [addActivity, copy, locale, showFloatingToast, state?.repoReady]);
 
   const openTutorialLink = useCallback(async (href: string) => {
+    if (!state?.repoReady) {
+      setTutorialDoc(null);
+      showFloatingToast(copy.tutorialUnavailable, "warning");
+      return;
+    }
     setTutorialLoading(true);
     try {
       const doc = await readProjectDocumentPath(href, locale);
+      if (tutorialDoc) {
+        setTutorialHistory((items) => [...items.slice(-19), { kind: tutorialKind, document: tutorialDoc }]);
+      }
       setTutorialKind(doc.kind === "howto" ? "howto" : "readme");
       setTutorialDoc(doc);
     } catch (error) {
       addActivity("error", copy.tutorialLoadFailed(String(error)));
+      showFloatingToast(copy.tutorialLoadFailed(String(error)), "error");
     } finally {
       setTutorialLoading(false);
     }
-  }, [addActivity, copy, locale]);
+  }, [addActivity, copy, locale, showFloatingToast, state?.repoReady, tutorialDoc, tutorialKind]);
+
+  const goBackTutorial = useCallback(() => {
+    setTutorialHistory((items) => {
+      const previous = items[items.length - 1];
+      if (!previous) return items;
+      setTutorialKind(previous.kind);
+      setTutorialDoc(previous.document);
+      return items.slice(0, -1);
+    });
+  }, []);
 
   const refreshAllStatus = useCallback(async () => {
     setActiveTab("updates");
     if (refreshInProgressRef.current) return;
     refreshInProgressRef.current = true;
     setRefreshInProgress(true);
-    setGlobalProgress({ percent: 8, label: copy.refreshAllStarted });
     addActivity("info", copy.refreshAllStarted);
     await sleep(80);
     try {
-      setGlobalProgress({ percent: 22, label: copy.refreshLifeBookStep });
       await refreshState();
       if (!lifeBookSyncingRef.current) {
         lifeBookSyncingRef.current = true;
+        startLifeBookProgress("sync");
         try {
           const info = await syncLifeBookProject(locale);
           setLifeBookUpdate(info);
-          addActivity(info.hasUpdate ? "warning" : "success", info.hasUpdate ? copy.lifeBookFound(info.behindCount) : copy.lifeBookLatest);
+          const doneMessage = info.hasUpdate ? copy.lifeBookFound(info.behindCount) : copy.lifeBookLatest;
+          finishLifeBookProgress(doneMessage);
+          addActivity(info.hasUpdate ? "warning" : "success", doneMessage);
+        } catch (error) {
+          failLifeBookProgress(error);
         } finally {
           lifeBookSyncingRef.current = false;
         }
       }
-      setGlobalProgress({ percent: 68, label: copy.refreshOpenCodeStep });
+      await refreshNodeModulesStatus();
       await refreshOpenCodeLocalStatus();
       if (!openCodeCheckInProgressRef.current) {
         openCodeCheckInProgressRef.current = true;
@@ -1072,19 +1557,19 @@ export default function App() {
         }
       }
       await refreshState();
+      await refreshNodeModulesStatus();
       await refreshOpenCodeLocalStatus();
-      setGlobalProgress({ percent: 100, label: copy.refreshAllDone });
       addActivity("success", copy.refreshAllDone);
     } catch (error) {
       addActivity("error", copy.lifeBookUpdateStopped(String(error)));
       await refreshState();
+      await refreshNodeModulesStatus();
       await refreshOpenCodeLocalStatus();
     } finally {
-      window.setTimeout(() => setGlobalProgress(null), 900);
       refreshInProgressRef.current = false;
       setRefreshInProgress(false);
     }
-  }, [addActivity, copy, locale, refreshOpenCodeLocalStatus, refreshState]);
+  }, [addActivity, copy, failLifeBookProgress, finishLifeBookProgress, locale, refreshNodeModulesStatus, refreshOpenCodeLocalStatus, refreshState, showFloatingToast, startLifeBookProgress]);
 
   const doLaunchOpenCode = useCallback(async () => {
     if (openCodeLaunchState === "starting") return;
@@ -1135,6 +1620,38 @@ export default function App() {
     }
   }, [addActivity, copy, openCodeLaunchState, refreshOpenCodeLocalStatus, showFloatingToast]);
 
+  const stopLifeBookDownload = useCallback(async (dismissAfterStop = false) => {
+    if (lifeBookDownloadState !== "downloading" && lifeBookDownloadState !== "cancelling") return;
+    lifeBookDownloadDismissedRef.current = dismissAfterStop;
+    setLifeBookDownloadDismissed(dismissAfterStop);
+    setLifeBookDownloadState("cancelling");
+    try {
+      const result = await cancelLifeBookUpdate();
+      addActivity(result.ok ? "warning" : "error", result.message);
+    } catch (error) {
+      addActivity("error", copy.lifeBookUpdateStopped(String(error)));
+      showFloatingToast(copy.lifeBookUpdateStopped(String(error)), "error");
+    }
+  }, [addActivity, copy, lifeBookDownloadState, showFloatingToast]);
+
+  const retryLifeBookDownload = useCallback(() => {
+    setLifeBookDownloadDismissed(false);
+    lifeBookDownloadDismissedRef.current = false;
+    if (lifeBookRetryMode === "prepare") {
+      void prepareLifeBook();
+    } else {
+      void syncLifeBookNow();
+    }
+  }, [lifeBookRetryMode, prepareLifeBook, syncLifeBookNow]);
+
+  const closeLifeBookDownloadHud = useCallback(() => {
+    setLifeBookDownloadDismissed(true);
+    lifeBookDownloadDismissedRef.current = true;
+    if (lifeBookDownloadState !== "downloading" && lifeBookDownloadState !== "cancelling") {
+      setLifeBookDownloadState("idle");
+    }
+  }, [lifeBookDownloadState]);
+
   const stopOpenCodeDownload = useCallback(async (dismissAfterStop = false) => {
     if (openCodeDownloadState !== "downloading" && openCodeDownloadState !== "cancelling") return;
     openCodeDownloadDismissedRef.current = dismissAfterStop;
@@ -1168,6 +1685,16 @@ export default function App() {
       const next = { ...settings, [key]: value };
       setSettings(next);
       saveSettings(next);
+      if (key === "saveLogsToLocal") {
+        try {
+          const info = await setSaveLogsEnabled(value);
+          setDiagnosticLogSettings(info);
+          addActivity("success", copy.logSettingsSaved);
+        } catch (error) {
+          addActivity("error", copy.logSettingsSaveFailed(String(error)));
+          void refreshDiagnosticLogSettings();
+        }
+      }
       if (key === "autoStart") {
         try {
           if (value) {
@@ -1182,8 +1709,130 @@ export default function App() {
         }
       }
     },
-    [addActivity, copy, settings],
+    [addActivity, copy, refreshDiagnosticLogSettings, settings],
   );
+
+  const doExportLauncherLogs = useCallback(async () => {
+    addActivity("info", copy.exportingLogs);
+    try {
+      const result = await exportLauncherLogs();
+      addActivity(result.ok ? "success" : "info", result.message);
+    } catch (error) {
+      addActivity("error", copy.logExportFailed(String(error)));
+      showFloatingToast(copy.logExportFailed(String(error)), "error");
+    }
+  }, [addActivity, copy, showFloatingToast]);
+
+  const updateProxySettingsDraft = useCallback((next: NetworkProxySettings) => {
+    setProxySettings(next);
+    setProxyTestResult(null);
+    if (!next.enabled) {
+      void saveProxySettings(next)
+        .then((saved) => {
+          setProxySettings(saved);
+          void refreshState();
+          addActivity("info", copy.proxyDisabledStatus);
+        })
+        .catch((error) => {
+          const message = copy.proxySettingsFailed(String(error));
+          addActivity("error", message);
+          showFloatingToast(message, "error");
+        });
+    }
+  }, [addActivity, copy, refreshState, showFloatingToast]);
+
+  const doTestProxySettings = useCallback(async () => {
+    setProxyBusy("test");
+    setProxyTestResult(null);
+    addActivity("info", copy.proxyTesting);
+    try {
+      const result = await testProxySettings(proxySettings);
+      setProxyTestResult(result);
+      if (!result.ok) {
+        const message = result.message || copy.proxyTestFailed(copy.proxyUntested);
+        addActivity("warning", message);
+        showFloatingToast(message, "warning");
+        return;
+      }
+      const saved = await saveProxySettings(proxySettings);
+      setProxySettings(saved);
+      await refreshState();
+      const elapsed = result.elapsedMs ?? 0;
+      const version = result.httpVersion ?? "";
+      const message = copy.proxyTestAndApplied(elapsed, version);
+      addActivity("success", message);
+      showFloatingToast(message, "success");
+    } catch (error) {
+      const message = copy.proxyTestFailed(String(error));
+      addActivity("error", message);
+      showFloatingToast(message, "error");
+    } finally {
+      setProxyBusy(null);
+    }
+  }, [addActivity, copy, proxySettings, refreshState, showFloatingToast]);
+
+  const doAutoDetectProxySettings = useCallback(async (force = true, silent = false) => {
+    if (proxyBusy) return;
+    setProxyBusy("detect");
+    if (!silent) {
+      addActivity("info", copy.proxyAutoDetecting);
+    }
+    try {
+      const result = await autoDetectProxySettings(force);
+      if (result.proxy) {
+        setProxySettings(result.proxy);
+      }
+      if (result.test) {
+        setProxyTestResult(result.test);
+      }
+      await refreshState();
+      const message = result.detected ? copy.proxyAutoDetected : copy.proxyAutoDetectNotFound;
+      if (!silent || Boolean(result.test)) {
+        addActivity(result.detected ? "success" : "warning", result.message || message);
+        showFloatingToast(message, result.detected ? "success" : "warning");
+      }
+    } catch (error) {
+      if (!silent) {
+        const message = copy.proxyTestFailed(String(error));
+        addActivity("error", message);
+        showFloatingToast(message, "error");
+      }
+    } finally {
+      setProxyBusy(null);
+    }
+  }, [addActivity, copy, proxyBusy, refreshState, showFloatingToast]);
+
+  const updateAutoInstallNodeModules = useCallback(async (enabled: boolean) => {
+    try {
+      if (!enabled && (nodeModulesDownloadState === "downloading" || nodeModulesDownloadState === "cancelling")) {
+        void stopNodeModulesInstall(false);
+      }
+      const status = await setAutoInstallNodeModules(enabled);
+      setNodeModulesStatus(status);
+      if (!enabled) {
+        setNodeModulesProgress(null);
+        setNodeModulesDownloadMessage(null);
+        setNodeModulesDownloadState("idle");
+        nodeModulesAutoStartRef.current = false;
+        return;
+      }
+      if (enabled && status.repoReady && !status.ready && !status.running) {
+        nodeModulesAutoStartRef.current = false;
+        void startNodeModulesInBackground(false);
+      }
+    } catch (error) {
+      const message = copy.nodeModulesStatusFailed(String(error));
+      addActivity("error", message);
+      showFloatingToast(message, "error");
+    }
+  }, [
+    addActivity,
+    copy,
+    nodeModulesDownloadState,
+    showFloatingToast,
+    startNodeModulesInBackground,
+    stopNodeModulesInstall,
+  ]);
 
   const runWindowAction = useCallback(async (action: "minimize" | "maximize" | "close") => {
     try {
@@ -1198,17 +1847,23 @@ export default function App() {
   }, [addActivity]);
 
   useEffect(() => {
-    refreshState();
-    void refreshOpenCodeLocalStatus();
-    isEnabled()
-      .then((enabled) => {
-        setSettings((old) => {
-          const next = { ...old, autoStart: enabled };
-          saveSettings(next);
-          return next;
-        });
-      })
-      .catch(() => undefined);
+    if (!startupInitializedRef.current) {
+      startupInitializedRef.current = true;
+      refreshState();
+      void refreshProxySettings();
+      void doAutoDetectProxySettings(false, true);
+      void refreshNodeModulesStatus();
+      void refreshOpenCodeLocalStatus();
+      isEnabled()
+        .then((enabled) => {
+          setSettings((old) => {
+            const next = { ...old, autoStart: enabled };
+            saveSettings(next);
+            return next;
+          });
+        })
+        .catch(() => undefined);
+    }
 
     const unlistenOpenCode = listenOpenCodeDownloadProgress((progress) => {
       setOpenCodeProgress(progress);
@@ -1216,14 +1871,48 @@ export default function App() {
         setOpenCodeSyntheticProgress(null);
       }
     });
+    const unlistenLifeBook = listenLifeBookProgress((progress) => {
+      setLifeBookProgress(progress);
+      if (progress.percent > 0 && progress.percent < 100) {
+        setLifeBookDownloadState((current) => current === "idle" ? "downloading" : current);
+      }
+    });
+    const unlistenNodeModules = listenNodeModulesProgress((progress) => {
+      setNodeModulesProgress(progress);
+      setNodeModulesDownloadMessage(progress.message ?? null);
+      if (progress.state === "success") {
+        setNodeModulesDownloadState("idle");
+        void refreshNodeModulesStatus();
+        showFloatingToast(copy.nodeModulesReady, "success");
+      } else if (progress.state === "failed") {
+        setNodeModulesDownloadState("failed");
+        addActivity("error", progress.message || copy.nodeModulesMissing);
+      } else if (progress.state === "stopped") {
+        setNodeModulesDownloadState("stopped");
+        addActivity("warning", copy.nodeModulesInstallStopped);
+      } else if (progress.percent > 0 && progress.percent < 100) {
+        setNodeModulesDownloadState((current) => current === "idle" ? "downloading" : current);
+      }
+    });
     const unlistenLauncher = listenLauncherDownloadProgress((progress) => {
       setLauncherProgress(progress);
     });
     return () => {
       unlistenOpenCode.then((fn) => fn()).catch(() => undefined);
+      unlistenLifeBook.then((fn) => fn()).catch(() => undefined);
+      unlistenNodeModules.then((fn) => fn()).catch(() => undefined);
       unlistenLauncher.then((fn) => fn()).catch(() => undefined);
     };
-  }, [refreshOpenCodeLocalStatus, refreshState]);
+  }, [
+    addActivity,
+    copy,
+    doAutoDetectProxySettings,
+    refreshNodeModulesStatus,
+    refreshOpenCodeLocalStatus,
+    refreshProxySettings,
+    refreshState,
+    showFloatingToast,
+  ]);
 
   useEffect(() => {
     if (!hasTauriRuntime()) return undefined;
@@ -1247,6 +1936,24 @@ export default function App() {
       unlisten.then((fn) => fn()).catch(() => undefined);
     };
   }, []);
+
+  useEffect(() => {
+    void refreshDiagnosticLogSettings();
+  }, [refreshDiagnosticLogSettings]);
+
+  useEffect(() => {
+    if (!nodeModulesStatus?.repoReady) {
+      nodeModulesAutoStartRef.current = false;
+      return;
+    }
+    if (nodeModulesStatus.ready) {
+      nodeModulesAutoStartRef.current = true;
+      return;
+    }
+    if (!nodeModulesStatus.autoInstall || nodeModulesStatus.running || nodeModulesAutoStartRef.current) return;
+    nodeModulesAutoStartRef.current = true;
+    void startNodeModulesInBackground(true);
+  }, [nodeModulesStatus, startNodeModulesInBackground]);
 
   useEffect(() => {
     if (busy !== "opencode-update") return undefined;
@@ -1278,10 +1985,23 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (activeTab === "tutorial" && !tutorialDoc && !tutorialLoading) {
+    if (activeTab === "tutorial" && state?.repoReady && !tutorialDoc && !tutorialLoading) {
       void loadTutorial(tutorialKind);
     }
-  }, [activeTab, loadTutorial, tutorialDoc, tutorialKind, tutorialLoading]);
+  }, [activeTab, loadTutorial, state?.repoReady, tutorialDoc, tutorialKind, tutorialLoading]);
+
+  useEffect(() => {
+    setTutorialDoc(null);
+  }, [state?.repoRoot]);
+
+  useEffect(() => {
+    if (!state?.repoReady) {
+      setTutorialDoc(null);
+      setTutorialLoading(false);
+      setLifeBookUpdate(null);
+      setShowAllCommits(false);
+    }
+  }, [state?.repoReady, state?.repoRoot, state?.repoStatus]);
 
   useEffect(() => {
     return () => {
@@ -1298,17 +2018,39 @@ export default function App() {
   const displayedCommits = showAllCommits ? commits : commits.slice(0, 1);
   const firstCommit = commits[0];
   const repoReady = Boolean(state?.repoReady);
+  const repoStatus = state?.repoStatus ?? "missing";
+  const repoPath = state?.repoRoot || "D:\\LifeBook";
+  const repoCanAutoPrepare = !repoReady && (repoStatus === "missing" || repoStatus === "empty");
+  const repoIsEmpty = !repoReady && repoStatus === "empty";
+  const repoIsOccupied = !repoReady && repoStatus === "occupied";
+  const workspaceUnavailableDescription = repoIsOccupied
+    ? copy.workspaceOccupiedDescription(repoPath)
+    : repoIsEmpty
+      ? copy.workspaceEmptyDescription(repoPath)
+    : copy.workspaceMissingDescription(repoPath);
+  const workspaceUnavailableHelp = repoIsOccupied
+    ? copy.workspaceOccupiedHelp
+    : repoIsEmpty
+      ? copy.workspaceEmptyHelp
+      : copy.workspaceMissingHelp;
   const lifeBookBusy = lifeBookPreparing || lifeBookSyncing;
-  const latestLifeBookVersion = firstCommit ? versionFromDate(firstCommit.date) : repoReady ? copy.projectReady : copy.preparing;
+  const unavailableRepoLabel = repoIsOccupied ? copy.repoInvalid : repoIsEmpty ? copy.repoEmpty : copy.repoMissing;
+  const latestLifeBookVersion = firstCommit ? versionFromDate(firstCommit.date) : repoReady ? copy.projectReady : unavailableRepoLabel;
   const currentLifeBookVersion = repoReady
     ? state?.localCommitShort === "preview"
       ? "v2025.05.25"
       : state?.localCommitShort || copy.projectReady
     : lifeBookBusy
       ? copy.preparing
-      : copy.repoRequired;
-  const lifeBookStatus = lifeBookBusy ? copy.preparing : repoReady ? copy.projectReady : copy.repoRequired;
+      : unavailableRepoLabel;
+  const lifeBookStatus = lifeBookBusy ? copy.preparing : repoReady ? copy.projectReady : unavailableRepoLabel;
   const lifeBookStatusTone: "success" | "warning" | "muted" = lifeBookBusy ? "warning" : repoReady ? "success" : "muted";
+  const latestLifeBookUpdated = firstCommit ? commitDate(firstCommit) : repoReady ? commitDate(firstCommit) : unavailableRepoLabel;
+  const lifeBookPrimaryLabel = repoReady ? copy.openBooks : repoCanAutoPrepare ? copy.prepareProject : copy.changeProjectPath;
+  const LifeBookPrimaryIcon = repoReady ? FolderOpen : repoCanAutoPrepare ? Download : FolderOpen;
+  const lifeBookSecondaryLabel = repoReady ? copy.viewProject : repoCanAutoPrepare ? copy.changeProjectPath : copy.viewProject;
+  const lifeBookSecondaryIcon = FolderOpen;
+  const lifeBookMoreLabel = repoReady ? copy.updateLifeBookProject : repoCanAutoPrepare ? copy.prepareProject : copy.changeProjectPath;
   const openCodeAvailable = Boolean(openCodeLocalStatus?.clientAvailable ?? openCodeUpdate?.clientAvailable ?? state?.opencodeAvailable);
   const openCodeInstalledVersion = openCodeUpdate?.installedVersion ?? openCodeLocalStatus?.installedVersion ?? state?.opencodeInstalledVersion ?? null;
   const openCodeCurrent = openCodeAvailable ? openCodeInstalledVersion ?? copy.installed : copy.notInstalled;
@@ -1318,6 +2060,9 @@ export default function App() {
   const openCodePrimaryLabel = copy.checkUpdates;
   const openCodePrimaryIcon = RefreshCcw;
   const openCodeSecondaryLabel = copy.launchClient;
+  const showingLifeBookDownloadHud = lifeBookDownloadState !== "idle" && !lifeBookDownloadDismissed;
+  const lifeBookProgressLabel = formatDownloadProgress(copy, lifeBookProgress);
+  const lifeBookHudMessage = lifeBookDownloadMessage || lifeBookProgressLabel || copy.lifeBookProgressDefault;
   const openCodeVisibleProgress = busy === "opencode-update"
     ? (openCodeProgress && (openCodeProgress.downloadedBytes > 0 || openCodeProgress.percent > 0) ? openCodeProgress : openCodeSyntheticProgress ?? openCodeProgress)
     : null;
@@ -1326,9 +2071,11 @@ export default function App() {
   const launcherProgressLabel = formatDownloadProgress(copy, launcherVisibleProgress);
   const activeGlobalProgress = launcherVisibleProgress
     ? { percent: launcherVisibleProgress.percent, label: `${copy.checkLauncherTitle} ${launcherProgressLabel}` }
-    : globalProgress;
+    : null;
   const showingOpenCodeDownloadHud = openCodeDownloadState !== "idle" && !openCodeDownloadDismissed;
   const openCodeHudMessage = openCodeDownloadMessage || openCodeProgressLabel || copy.working;
+  const nodeModulesProgressLabel = formatDownloadProgress(copy, nodeModulesProgress);
+  const nodeModulesHudMessage = nodeModulesDownloadMessage || nodeModulesProgressLabel || copy.nodeModulesInstalling;
 
   const visibleActivities = useMemo(() => activities.slice(0, 5), [activities]);
 
@@ -1381,6 +2128,7 @@ export default function App() {
             proxyConfigured={Boolean(state?.proxyConfigured)}
             autoStart={settings.autoStart}
             projectReady={repoReady}
+            projectStatusValue={lifeBookStatus}
             quickActionsOpen={quickActionsOpen}
             onToggleQuickActions={() => setQuickActionsOpen((value) => !value)}
             onSelectRepo={() => {
@@ -1407,6 +2155,11 @@ export default function App() {
           <FloatingFeedback
             toast={floatingToast}
             globalProgress={activeTab === "overview" || activeTab === "updates" ? activeGlobalProgress : null}
+            lifeBookVisible={showingLifeBookDownloadHud}
+            lifeBookTitle={copy.lifeBookProgressTitle}
+            lifeBookState={lifeBookDownloadState}
+            lifeBookProgress={lifeBookProgress}
+            lifeBookMessage={lifeBookHudMessage}
             openCodeVisible={showingOpenCodeDownloadHud}
             openCodeTitle={copy.openCodeDownloadTitle}
             openCodeState={openCodeDownloadState}
@@ -1417,6 +2170,10 @@ export default function App() {
             onCancelOpenCode={() => void stopOpenCodeDownload(true)}
             onRetryOpenCode={retryOpenCodeDownload}
             onCloseOpenCode={closeOpenCodeDownloadHud}
+            onStopLifeBook={() => void stopLifeBookDownload(false)}
+            onCancelLifeBook={() => void stopLifeBookDownload(true)}
+            onRetryLifeBook={retryLifeBookDownload}
+            onCloseLifeBook={closeLifeBookDownloadHud}
           />
 
           {(activeTab === "overview" || activeTab === "updates") && (
@@ -1431,17 +2188,17 @@ export default function App() {
                   latest={latestLifeBookVersion}
                   status={lifeBookStatus}
                   statusTone={lifeBookStatusTone}
-                  latestUpdated={commitDate(firstCommit)}
-                  primaryLabel={copy.openBooks}
-                  primaryIcon={FolderOpen}
-                  secondaryLabel={copy.viewProject}
-                  secondaryIcon={FolderOpen}
+                  latestUpdated={latestLifeBookUpdated}
+                  primaryLabel={lifeBookPrimaryLabel}
+                  primaryIcon={LifeBookPrimaryIcon}
+                  secondaryLabel={lifeBookSecondaryLabel}
+                  secondaryIcon={lifeBookSecondaryIcon}
                   busy={busy === "repo-choose"}
                   busyText={copy.working}
-                  onPrimary={doOpenBooksFolder}
-                  onSecondary={doOpenRepoFolder}
-                  onMore={syncLifeBookNow}
-                  moreLabel={copy.updateLifeBookProject}
+                  onPrimary={repoReady ? doOpenBooksFolder : repoCanAutoPrepare ? prepareLifeBook : chooseRepo}
+                  onSecondary={repoReady ? doOpenRepoFolder : repoCanAutoPrepare ? chooseRepo : doOpenRepoFolder}
+                  onMore={repoReady ? syncLifeBookNow : repoCanAutoPrepare ? prepareLifeBook : chooseRepo}
+                  moreLabel={lifeBookMoreLabel}
                   moreBusy={lifeBookSyncing}
                   moreDisabled={lifeBookSyncing}
                   copy={copy}
@@ -1480,6 +2237,7 @@ export default function App() {
                 totalCount={commits.length}
                 latestVersion={latestLifeBookVersion}
                 showAll={showAllCommits}
+                emptyMessage={repoReady ? copy.noCommits : copy.noCommitsUnavailable}
                 onToggleShowAll={() => setShowAllCommits((value) => !value)}
               />
               <ActivityTable copy={copy} activities={visibleActivities} onViewFullLog={() => setActiveTab("logs")} />
@@ -1492,7 +2250,16 @@ export default function App() {
               kind={tutorialKind}
               document={tutorialDoc}
               loading={tutorialLoading}
+              canGoBack={tutorialHistory.length > 0}
+              repoReady={repoReady}
+              unavailableTitle={copy.workspaceUnavailableTitle}
+              unavailableDescription={workspaceUnavailableDescription}
+              unavailableHelp={workspaceUnavailableHelp}
+              recoverLabel={repoCanAutoPrepare ? copy.prepareProject : copy.changeProjectPath}
+              onRecover={repoCanAutoPrepare ? prepareLifeBook : chooseRepo}
+              onChangeProject={chooseRepo}
               onSelect={(kind) => void loadTutorial(kind)}
+              onBack={goBackTutorial}
               onOpenLink={(href) => void openTutorialLink(href)}
             />
           )}
@@ -1501,9 +2268,35 @@ export default function App() {
             <section className="settings-panel">
               <PanelHeading title={copy.settingsTitle} />
               <SettingToggle title={copy.autoStartTitle} description={copy.autoStartDescription} checked={settings.autoStart} onChange={(value) => updateSetting("autoStart", value)} />
-              <ProjectPathPanel copy={copy} path={state?.repoRoot || "D:\\LifeBook"} onChange={() => void chooseRepo()} />
+              <ProjectPathPanel copy={copy} path={repoPath} onChange={() => void chooseRepo()} />
               <SettingToggle title={copy.checkLauncherTitle} description={copy.checkLauncherDescription} checked={settings.checkLauncherOnLaunch} onChange={(value) => updateSetting("checkLauncherOnLaunch", value)} />
               <SettingToggle title={copy.checkOpenCodeTitle} description={copy.checkOpenCodeDescription} checked={settings.checkOpenCodeOnLaunch} onChange={(value) => updateSetting("checkOpenCodeOnLaunch", value)} />
+              <ProxySettingsPanel
+                copy={copy}
+                settings={proxySettings}
+                busy={proxyBusy}
+                result={proxyTestResult}
+                onChange={updateProxySettingsDraft}
+                onTest={() => void doTestProxySettings()}
+                onAutoDetect={() => void doAutoDetectProxySettings(true, false)}
+              />
+              <NodeModulesSettingsPanel
+                copy={copy}
+                status={nodeModulesStatus}
+                progress={nodeModulesProgress}
+                state={nodeModulesDownloadState}
+                message={nodeModulesHudMessage}
+                onToggle={(value) => void updateAutoInstallNodeModules(value)}
+                onStop={() => void stopNodeModulesInstall(false)}
+                onCancel={() => void stopNodeModulesInstall(true)}
+              />
+              <DiagnosticLogPanel
+                copy={copy}
+                settings={diagnosticLogSettings}
+                enabled={settings.saveLogsToLocal}
+                onToggle={(value) => updateSetting("saveLogsToLocal", value)}
+                onExport={() => void doExportLauncherLogs()}
+              />
             </section>
           )}
 
@@ -1520,6 +2313,7 @@ function StatusBar({
   proxyConfigured,
   autoStart,
   projectReady,
+  projectStatusValue,
   quickActionsOpen,
   onToggleQuickActions,
   onSelectRepo,
@@ -1532,6 +2326,7 @@ function StatusBar({
   proxyConfigured: boolean;
   autoStart: boolean;
   projectReady: boolean;
+  projectStatusValue: string;
   quickActionsOpen: boolean;
   onToggleQuickActions: () => void;
   onSelectRepo: () => void;
@@ -1542,7 +2337,7 @@ function StatusBar({
 }) {
   return (
     <section className="status-bar">
-      <StatusItem label={copy.projectStatus} icon={CheckCircle2} value={projectReady ? copy.running : copy.repoRequired} tone={projectReady ? "green" : "blue"} />
+      <StatusItem label={copy.projectStatus} icon={CheckCircle2} value={projectReady ? copy.running : projectStatusValue} tone={projectReady ? "green" : "blue"} />
       <StatusItem label={copy.networkProxy} icon={Globe2} value={proxyConfigured ? copy.proxied : copy.direct} tone={proxyConfigured ? "blue" : "green"} />
       <StatusItem label={copy.startup} icon={Power} value={autoStart ? copy.enabled : copy.disabled} tone={autoStart ? "green" : "blue"} />
       <div className="quick-action-wrap">
@@ -1554,7 +2349,7 @@ function StatusBar({
           <div className="quick-menu">
             <button type="button" onClick={onSelectRepo}>{copy.selectRepo}</button>
             <button type="button" onClick={onOpenRepo}>{copy.viewProject}</button>
-            <button type="button" onClick={onOpenBooks}>{copy.openBooks}</button>
+            <button type="button" disabled={!projectReady} onClick={onOpenBooks}>{copy.openBooks}</button>
             <button type="button" onClick={onCheckLauncher}>{copy.checkUpdates} Launcher</button>
             <button type="button" onClick={onCheckOpenCode}>{copy.checkUpdates} OpenCode</button>
           </div>
@@ -1588,19 +2383,57 @@ function TutorialPanel({
   kind,
   document,
   loading,
+  canGoBack,
+  repoReady,
+  unavailableTitle,
+  unavailableDescription,
+  unavailableHelp,
+  recoverLabel,
+  onRecover,
+  onChangeProject,
   onSelect,
+  onBack,
   onOpenLink,
 }: {
   copy: Copy;
   kind: TutorialKind;
   document: ProjectDocument | null;
   loading: boolean;
+  canGoBack: boolean;
+  repoReady: boolean;
+  unavailableTitle: string;
+  unavailableDescription: string;
+  unavailableHelp: string;
+  recoverLabel: string;
+  onRecover: () => void;
+  onChangeProject: () => void;
   onSelect: (kind: TutorialKind) => void;
+  onBack: () => void;
   onOpenLink: (href: string) => void;
 }) {
-  const html = useMemo(() => renderMarkdownToHtml(document?.content ?? ""), [document]);
-  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+  const html = useMemo(() => renderMarkdownToHtml(document?.content ?? "", copy), [copy, document]);
+  const handleClick = async (event: MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement | null;
+    const copyButton = target?.closest<HTMLButtonElement>("button[data-copy-code]");
+    if (copyButton) {
+      event.preventDefault();
+      event.stopPropagation();
+      const payload = copyButton.dataset.copyCode ?? "";
+      const originalLabel = copyButton.textContent || copy.copyCode;
+      try {
+        await copyTextToClipboard(decodeCodePayload(payload));
+        copyButton.textContent = copy.codeCopied;
+        copyButton.classList.add("copied");
+      } catch {
+        copyButton.textContent = copy.codeCopyFailed;
+        copyButton.classList.add("failed");
+      }
+      window.setTimeout(() => {
+        copyButton.textContent = originalLabel;
+        copyButton.classList.remove("copied", "failed");
+      }, 1500);
+      return;
+    }
     const link = target?.closest("a");
     const href = link?.getAttribute("href");
     if (!href) return;
@@ -1617,7 +2450,15 @@ function TutorialPanel({
   return (
     <section className="tutorial-panel">
       <div className="panel-title-row tutorial-title-row">
-        <PanelHeading title={copy.tutorialTitle} />
+        <div className="tutorial-heading-group">
+          {canGoBack && (
+            <button type="button" className="tutorial-back-button" onClick={onBack}>
+              <ArrowLeft size={18} />
+              <span>{copy.tutorialBack}</span>
+            </button>
+          )}
+          <PanelHeading title={copy.tutorialTitle} />
+        </div>
         <div className="tutorial-switch" role="tablist" aria-label={copy.tutorialTitle}>
           <button type="button" className={kind === "readme" ? "active" : undefined} onClick={() => onSelect("readme")}>{copy.tutorialReadme}</button>
           <button type="button" className={kind === "howto" ? "active" : undefined} onClick={() => onSelect("howto")}>{copy.tutorialHowTo}</button>
@@ -1625,10 +2466,22 @@ function TutorialPanel({
       </div>
       <div className="tutorial-doc-meta">
         <strong>{document?.title || copy.tutorialTitle}</strong>
-        <span>{copy.tutorialCurrentDocument}: {document?.path || copy.tutorialLoading}</span>
+        <span>{copy.tutorialCurrentDocument}: {repoReady ? document?.path || copy.tutorialLoading : unavailableDescription}</span>
       </div>
       <div className="tutorial-scroll">
-        {loading ? (
+        {!repoReady ? (
+          <div className="workspace-empty">
+            <strong>{unavailableTitle}</strong>
+            <p>{unavailableDescription}</p>
+            <p>{unavailableHelp}</p>
+            <div className="workspace-empty-actions">
+              <button type="button" onClick={onRecover}>{recoverLabel}</button>
+              {recoverLabel !== copy.changeProjectPath && (
+                <button type="button" className="secondary" onClick={onChangeProject}>{copy.changeProjectPath}</button>
+              )}
+            </div>
+          </div>
+        ) : loading ? (
           <div className="table-empty">{copy.tutorialLoading}</div>
         ) : (
           <div className="markdown-body" onClick={handleClick} dangerouslySetInnerHTML={{ __html: html }} />
@@ -1638,7 +2491,7 @@ function TutorialPanel({
   );
 }
 
-function renderMarkdownToHtml(source: string) {
+function renderMarkdownToHtml(source: string, copy: Copy) {
   const lines = source.replace(/\r\n/g, "\n").split("\n");
   const html: string[] = [];
   let inList = false;
@@ -1659,7 +2512,7 @@ function renderMarkdownToHtml(source: string) {
     if (trimmed.startsWith("```")) {
       closeList();
       if (inCode) {
-        html.push(`<pre><code>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
+        html.push(renderCodeBlock(codeLines.join("\n"), copy.copyCode));
         codeLines = [];
         inCode = false;
       } else {
@@ -1716,12 +2569,46 @@ function renderMarkdownToHtml(source: string) {
   }
   closeList();
   if (inCode) {
-    html.push(`<pre><code>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
+    html.push(renderCodeBlock(codeLines.join("\n"), copy.copyCode));
   }
   if (inHtmlBlock && htmlLines.length) {
     html.push(sanitizeTrustedDocHtml(htmlLines.join("\n")));
   }
   return html.join("\n");
+}
+
+function renderCodeBlock(code: string, copyLabel: string) {
+  return [
+    `<div class="code-block">`,
+    `<button type="button" class="code-copy-button" data-copy-code="${encodeCodePayload(code)}">${escapeHtml(copyLabel)}</button>`,
+    `<pre><code>${escapeHtml(code)}</code></pre>`,
+    `</div>`,
+  ].join("");
+}
+
+function encodeCodePayload(value: string) {
+  return encodeURIComponent(value);
+}
+
+function decodeCodePayload(value: string) {
+  return decodeURIComponent(value);
+}
+
+async function copyTextToClipboard(text: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const ok = document.execCommand("copy");
+  textarea.remove();
+  if (!ok) throw new Error("copy failed");
 }
 
 function formatInlineMarkdown(value: string) {
@@ -1760,6 +2647,11 @@ function sanitizeTrustedDocHtml(value: string) {
 function FloatingFeedback({
   toast,
   globalProgress,
+  lifeBookVisible,
+  lifeBookTitle,
+  lifeBookState,
+  lifeBookProgress,
+  lifeBookMessage,
   openCodeVisible,
   openCodeTitle,
   openCodeState,
@@ -1770,9 +2662,18 @@ function FloatingFeedback({
   onCancelOpenCode,
   onRetryOpenCode,
   onCloseOpenCode,
+  onStopLifeBook,
+  onCancelLifeBook,
+  onRetryLifeBook,
+  onCloseLifeBook,
 }: {
   toast: FloatingToast | null;
   globalProgress: { percent: number; label: string } | null;
+  lifeBookVisible: boolean;
+  lifeBookTitle: string;
+  lifeBookState: DownloadHudState;
+  lifeBookProgress?: DownloadProgress | null;
+  lifeBookMessage: string;
   openCodeVisible: boolean;
   openCodeTitle: string;
   openCodeState: DownloadHudState;
@@ -1783,8 +2684,14 @@ function FloatingFeedback({
   onCancelOpenCode: () => void;
   onRetryOpenCode: () => void;
   onCloseOpenCode: () => void;
+  onStopLifeBook: () => void;
+  onCancelLifeBook: () => void;
+  onRetryLifeBook: () => void;
+  onCloseLifeBook: () => void;
 }) {
-  if (!toast && !globalProgress && !openCodeVisible) return null;
+  if (!toast && !globalProgress && !lifeBookVisible && !openCodeVisible) return null;
+  const lifeBookPercent = lifeBookProgress?.percent ?? 0;
+  const lifeBookRunning = lifeBookState === "downloading" || lifeBookState === "cancelling";
   const openCodePercent = openCodeProgress?.percent ?? 0;
   const openCodeRunning = openCodeState === "downloading" || openCodeState === "cancelling";
   return (
@@ -1794,41 +2701,98 @@ function FloatingFeedback({
         <section className="floating-progress-card blue">
           <div className="floating-progress-header">
             <strong>{globalProgress.label}</strong>
-            <span>{globalProgress.percent}%</span>
+            <span>{formatPercent(globalProgress.percent)}</span>
           </div>
           <div className="progress-bar">
-            <span style={{ width: `${globalProgress.percent}%` }} />
+            <span style={{ width: progressWidth(globalProgress.percent) }} />
           </div>
         </section>
+      )}
+      {lifeBookVisible && (
+        <TaskProgressCard
+          accent="blue"
+          title={lifeBookTitle}
+          state={lifeBookState}
+          percent={lifeBookPercent}
+          message={lifeBookState === "cancelling" ? copy.working : lifeBookMessage}
+          running={lifeBookRunning}
+          copy={copy}
+          onStop={onStopLifeBook}
+          onCancel={onCancelLifeBook}
+          onRetry={onRetryLifeBook}
+          onClose={onCloseLifeBook}
+        />
       )}
       {openCodeVisible && (
-        <section className={`floating-progress-card green ${openCodeState}`}>
-          <div className="floating-progress-header">
-            <strong>{openCodeTitle}</strong>
-            <span>{openCodePercent}%</span>
-          </div>
-          <div className="progress-bar">
-            <span style={{ width: `${openCodePercent}%` }} />
-          </div>
-          <div className="floating-progress-footer">
-            <span>{openCodeState === "cancelling" ? copy.working : openCodeMessage}</span>
-            <div className="floating-progress-actions">
-              {openCodeRunning ? (
-                <>
-                  <button type="button" onClick={onStopOpenCode} disabled={openCodeState === "cancelling"}>{copy.stopDownload}</button>
-                  <button type="button" onClick={onCancelOpenCode} disabled={openCodeState === "cancelling"}>{copy.cancelDownload}</button>
-                </>
-              ) : (
-                <>
-                  <button type="button" onClick={onRetryOpenCode}>{copy.retry}</button>
-                  <button type="button" onClick={onCloseOpenCode}>{copy.close}</button>
-                </>
-              )}
-            </div>
-          </div>
-        </section>
+        <TaskProgressCard
+          accent="green"
+          title={openCodeTitle}
+          state={openCodeState}
+          percent={openCodePercent}
+          message={openCodeState === "cancelling" ? copy.working : openCodeMessage}
+          running={openCodeRunning}
+          copy={copy}
+          onStop={onStopOpenCode}
+          onCancel={onCancelOpenCode}
+          onRetry={onRetryOpenCode}
+          onClose={onCloseOpenCode}
+        />
       )}
     </div>
+  );
+}
+
+function TaskProgressCard({
+  accent,
+  title,
+  state,
+  percent,
+  message,
+  running,
+  copy,
+  onStop,
+  onCancel,
+  onRetry,
+  onClose,
+}: {
+  accent: "blue" | "green";
+  title: string;
+  state: DownloadHudState;
+  percent: number;
+  message: string;
+  running: boolean;
+  copy: Copy;
+  onStop: () => void;
+  onCancel: () => void;
+  onRetry: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <section className={`floating-progress-card ${accent} ${state}`}>
+      <div className="floating-progress-header">
+        <strong>{title}</strong>
+        <span>{formatPercent(percent)}</span>
+      </div>
+      <div className="progress-bar">
+        <span style={{ width: progressWidth(percent) }} />
+      </div>
+      <div className="floating-progress-footer">
+        <span>{message}</span>
+        <div className="floating-progress-actions">
+          {running ? (
+            <>
+              <button type="button" onClick={onStop} disabled={state === "cancelling"}>{copy.stopDownload}</button>
+              <button type="button" onClick={onCancel} disabled={state === "cancelling"}>{copy.cancelDownload}</button>
+            </>
+          ) : (
+            <>
+              <button type="button" onClick={onRetry}>{copy.retry}</button>
+              <button type="button" onClick={onClose}>{copy.close}</button>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -1899,7 +2863,7 @@ function ProductCard(props: {
       {props.progress && (
         <div className="progress-strip" aria-label={props.progressLabel}>
           <div className="progress-bar">
-            <span style={{ width: `${props.progress.percent}%` }} />
+            <span style={{ width: progressWidth(props.progress.percent) }} />
           </div>
           <strong>{props.progressLabel}</strong>
         </div>
@@ -1923,6 +2887,7 @@ function CommitTable({
   totalCount,
   latestVersion,
   showAll,
+  emptyMessage,
   onToggleShowAll,
 }: {
   copy: Copy;
@@ -1930,8 +2895,28 @@ function CommitTable({
   totalCount: number;
   latestVersion: string;
   showAll: boolean;
+  emptyMessage?: string;
   onToggleShowAll: () => void;
 }) {
+  const [hoverTooltip, setHoverTooltip] = useState<{ text: string; left: number; top: number } | null>(null);
+
+  const showTooltip = useCallback((target: HTMLElement, text: string) => {
+    const rect = target.getBoundingClientRect();
+    const margin = 18;
+    const tooltipWidth = Math.min(720, Math.max(320, window.innerWidth - margin * 2));
+    const left = Math.min(
+      Math.max(rect.left, margin),
+      Math.max(margin, window.innerWidth - tooltipWidth - margin),
+    );
+    const belowTop = rect.bottom + 10;
+    const top = belowTop < window.innerHeight - 120 ? belowTop : Math.max(margin, rect.top - 220);
+    setHoverTooltip({ text, left, top });
+  }, []);
+
+  const hideTooltip = useCallback(() => {
+    setHoverTooltip(null);
+  }, []);
+
   return (
     <section className="data-panel commit-panel">
       <div className="panel-title-row">
@@ -1958,13 +2943,22 @@ function CommitTable({
             </thead>
             <tbody>
               {commits.map((commit, index) => {
-                const tooltip = formatCommitTooltip(copy, commit);
+                const tooltipText = formatCommitTooltip(copy, commit);
                 return (
                   <tr key={`${commit.hash}-${commit.date}`}>
                     <td><RowIcon index={index} />{commit.date.slice(0, 16).replace("T", " ")}</td>
                     <td><code>{commit.hash}</code></td>
                     <td>{commit.title}</td>
-                    <td className="commit-summary-cell" title={tooltip} aria-label={tooltip}>
+                    <td
+                      className="commit-summary-cell"
+                      data-tooltip={tooltipText}
+                      aria-label={tooltipText}
+                      onMouseEnter={(event) => showTooltip(event.currentTarget, tooltipText)}
+                      onMouseLeave={hideTooltip}
+                      onFocus={(event) => showTooltip(event.currentTarget, tooltipText)}
+                      onBlur={hideTooltip}
+                      tabIndex={0}
+                    >
                       {commit.summary || copy.noCommits}
                     </td>
                   </tr>
@@ -1973,9 +2967,18 @@ function CommitTable({
             </tbody>
           </table>
         ) : (
-          <div className="table-empty">{copy.noCommits}</div>
+          <div className="table-empty">{emptyMessage ?? copy.noCommits}</div>
         )}
       </div>
+      {hoverTooltip && (
+        <div
+          className="commit-hover-tooltip"
+          role="tooltip"
+          style={{ left: hoverTooltip.left, top: hoverTooltip.top }}
+        >
+          {hoverTooltip.text}
+        </div>
+      )}
     </section>
   );
 }
@@ -2042,6 +3045,209 @@ function ProjectPathPanel({ copy, path, onChange }: { copy: Copy; path: string; 
         <FolderOpen size={16} />
         {copy.changeProjectPath}
       </button>
+    </div>
+  );
+}
+
+function ProxySettingsPanel({
+  copy,
+  settings,
+  busy,
+  result,
+  onChange,
+  onTest,
+  onAutoDetect,
+}: {
+  copy: Copy;
+  settings: NetworkProxySettings;
+  busy: "test" | "detect" | null;
+  result: ProxyTestResult | null;
+  onChange: (value: NetworkProxySettings) => void;
+  onTest: () => void;
+  onAutoDetect: () => void;
+}) {
+  const update = (patch: Partial<NetworkProxySettings>) => onChange({ ...settings, ...patch });
+  const portValue = settings.port ?? "";
+  const statusClass = !settings.enabled ? "muted" : result ? result.ok ? "success" : "error" : "muted";
+  const statusText = !settings.enabled
+    ? copy.proxyDisabledStatus
+    : result
+      ? result.ok
+        ? `${result.elapsedMs ?? 0} ms${result.httpVersion ? ` · ${result.httpVersion}` : ""}`
+        : result.message
+      : copy.proxyPendingTest;
+  return (
+    <div className="proxy-settings-panel">
+      <div className="proxy-settings-copy">
+        <strong>{copy.proxySettingsTitle}</strong>
+        <span>{copy.proxySettingsDescription}</span>
+      </div>
+      <div className="proxy-settings-grid">
+        <label className="proxy-toggle">
+          <input
+            type="checkbox"
+            checked={settings.enabled}
+            onChange={(event) => update({ enabled: event.currentTarget.checked })}
+          />
+          <span>{copy.proxyEnable}</span>
+        </label>
+        <label>
+          <span>{copy.proxyProtocol}</span>
+          <select
+            value={settings.scheme}
+            onChange={(event) => update({ scheme: event.currentTarget.value as NetworkProxySettings["scheme"] })}
+          >
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+            <option value="socks5">SOCKS5</option>
+            <option value="socks5h">SOCKS5H</option>
+          </select>
+        </label>
+        <label>
+          <span>{copy.proxyHost}</span>
+          <input
+            type="text"
+            value={settings.host}
+            placeholder="127.0.0.1"
+            onChange={(event) => update({ host: event.currentTarget.value })}
+          />
+        </label>
+        <label>
+          <span>{copy.proxyPort}</span>
+          <input
+            type="number"
+            min={1}
+            max={65535}
+            value={portValue}
+            placeholder="7890"
+            onChange={(event) => {
+              const value = event.currentTarget.value.trim();
+              update({ port: value ? Number(value) : null });
+            }}
+          />
+        </label>
+      </div>
+      <div className="proxy-actions">
+        <button className="panel-button" type="button" onClick={onAutoDetect} disabled={busy !== null}>
+          <RefreshCcw size={16} />
+          {busy === "detect" ? copy.proxyAutoDetecting : copy.proxyAutoDetect}
+        </button>
+        <button className="panel-button" type="button" onClick={onTest} disabled={busy !== null}>
+          <Globe2 size={16} />
+          {busy === "test" ? copy.proxyTesting : copy.proxyTest}
+        </button>
+        <span className={`proxy-inline-status ${statusClass}`}>{statusText}</span>
+      </div>
+    </div>
+  );
+}
+
+function NodeModulesSettingsPanel({
+  copy,
+  status,
+  progress,
+  state,
+  message,
+  onToggle,
+  onStop,
+  onCancel,
+}: {
+  copy: Copy;
+  status: NodeModulesStatus | null;
+  progress: DownloadProgress | null;
+  state: DownloadHudState;
+  message: string;
+  onToggle: (value: boolean) => void;
+  onStop: () => void;
+  onCancel: () => void;
+}) {
+  const running = state === "downloading" || state === "cancelling" || Boolean(status?.running);
+  const ready = Boolean(status?.ready);
+  const autoInstall = status?.autoInstall ?? true;
+  const failedOrStopped = state === "failed" || state === "stopped";
+  const statusText = !autoInstall
+    ? copy.nodeModulesDisabled
+    : failedOrStopped
+      ? copy.nodeModulesRetryHint
+      : running
+    ? copy.nodeModulesInstalling
+    : ready
+      ? copy.nodeModulesReady
+      : status?.repoReady
+        ? copy.nodeModulesMissing
+        : copy.nodeModulesNotReady;
+  const percent = progress?.percent ?? 0;
+  const showProgress = running || state === "failed" || state === "stopped";
+  return (
+    <div className="node-modules-settings-panel">
+      <label className="setting-row node-modules-setting-row">
+        <div className="node-modules-setting-copy">
+          <div className="setting-title-line">
+            <strong>{copy.nodeModulesAutoInstallTitle}</strong>
+            <span className={`setting-status-pill ${ready ? "success" : failedOrStopped ? "error" : running ? "working" : "muted"}`}>
+              {statusText}
+            </span>
+          </div>
+          <span>{copy.nodeModulesAutoInstallDescription}</span>
+          {showProgress && (
+            <div className={`node-modules-inline-progress ${state}`}>
+              <div className="floating-progress-header">
+                <strong>{copy.nodeModulesInstalling}</strong>
+                <span>{formatPercent(percent)}</span>
+              </div>
+              <div className="progress-bar">
+                <span style={{ width: progressWidth(percent) }} />
+              </div>
+              <div className="node-modules-progress-detail">{message}</div>
+              {running && (
+                <div className="node-modules-actions">
+                  <button className="panel-button" type="button" onClick={(event) => { event.preventDefault(); onStop(); }} disabled={state === "cancelling"}>{copy.stopDownload}</button>
+                  <button className="panel-button" type="button" onClick={(event) => { event.preventDefault(); onCancel(); }} disabled={state === "cancelling"}>{copy.cancelDownload}</button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        <input type="checkbox" checked={autoInstall} onChange={(event) => onToggle(event.target.checked)} />
+      </label>
+    </div>
+  );
+}
+
+function DiagnosticLogPanel({
+  copy,
+  settings,
+  enabled,
+  onToggle,
+  onExport,
+}: {
+  copy: Copy;
+  settings: DiagnosticLogSettings | null;
+  enabled: boolean;
+  onToggle: (value: boolean) => void;
+  onExport: () => void;
+}) {
+  const maxSize = formatBytes(settings?.maxTotalBytes ?? 24 * 1024 * 1024);
+  const logPath = settings?.logFile || "";
+  return (
+    <div className="diagnostic-log-panel">
+      <SettingToggle
+        title={copy.saveLogsTitle}
+        description={copy.saveLogsDescription(maxSize)}
+        checked={enabled}
+        onChange={onToggle}
+      />
+      <div className="project-path-row diagnostic-log-row">
+        <div className="project-path-copy">
+          <strong>{copy.exportLogs}</strong>
+          <span>{copy.exportLogsDescription}</span>
+          {logPath && <code title={logPath}>{logPath}</code>}
+        </div>
+        <button className="panel-button" type="button" onClick={onExport}>
+          <Download size={16} />
+          {copy.exportLogs}
+        </button>
+      </div>
     </div>
   );
 }

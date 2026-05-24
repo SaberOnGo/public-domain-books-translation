@@ -2,13 +2,18 @@ import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import {
   ActionResult,
+  DiagnosticLogSettings,
   DownloadProgress,
   LauncherUpdateInfo,
   LauncherState,
   LifeBookUpdateInfo,
+  NetworkProxySettings,
+  NodeModulesStatus,
   OpenCodeLocalStatus,
   OpenCodeUpdateInfo,
   ProjectDocument,
+  ProxyAutoDetectResult,
+  ProxyTestResult,
 } from "./types";
 
 declare global {
@@ -145,6 +150,149 @@ export function updateLifeBook() {
   return invoke<ActionResult>("update_lifebook");
 }
 
+export function cancelLifeBookUpdate() {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode." });
+  }
+  return invoke<ActionResult>("cancel_lifebook_update");
+}
+
+export function getDiagnosticLogSettings() {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<DiagnosticLogSettings>({
+      saveLogs: true,
+      logDir: "LifeBook/launcher/logs",
+      logFile: "LifeBook/launcher/logs/lifebook-launcher.log",
+      maxBytes: 4 * 1024 * 1024,
+      backupCount: 5,
+      maxTotalBytes: 24 * 1024 * 1024,
+    });
+  }
+  return invoke<DiagnosticLogSettings>("get_diagnostic_log_settings");
+}
+
+export function setSaveLogsEnabled(saveLogs: boolean) {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<DiagnosticLogSettings>({
+      saveLogs,
+      logDir: "LifeBook/launcher/logs",
+      logFile: "LifeBook/launcher/logs/lifebook-launcher.log",
+      maxBytes: 4 * 1024 * 1024,
+      backupCount: 5,
+      maxTotalBytes: 24 * 1024 * 1024,
+    });
+  }
+  return invoke<DiagnosticLogSettings>("set_save_logs_enabled", { saveLogs });
+}
+
+export function getProxySettings() {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<NetworkProxySettings>({
+      enabled: false,
+      scheme: "http",
+      host: "127.0.0.1",
+      port: 7890,
+    });
+  }
+  return invoke<NetworkProxySettings>("get_proxy_settings");
+}
+
+export function saveProxySettings(proxy: NetworkProxySettings) {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<NetworkProxySettings>(proxy);
+  }
+  return invoke<NetworkProxySettings>("save_proxy_settings", { proxy });
+}
+
+export function testProxySettings(proxy: NetworkProxySettings) {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<ProxyTestResult>({
+      ok: true,
+      message: "Preview mode: proxy test succeeded in 38 ms.",
+      elapsedMs: 38,
+      httpVersion: "HTTP/2",
+      targetUrl: "https://api.github.com/repos/SaberOnGo/public-domain-books-translation",
+    });
+  }
+  return invoke<ProxyTestResult>("test_proxy_settings", { proxy });
+}
+
+export function autoDetectProxySettings(force = true) {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<ProxyAutoDetectResult>({
+      detected: true,
+      proxy: { enabled: true, scheme: "http", host: "127.0.0.1", port: 7890 },
+      test: {
+        ok: true,
+        message: "Preview mode: proxy auto detection succeeded.",
+        elapsedMs: 36,
+        httpVersion: "HTTP/2",
+        targetUrl: "https://api.github.com/repos/SaberOnGo/public-domain-books-translation",
+      },
+      message: "Preview mode: detected local proxy.",
+    });
+  }
+  return invoke<ProxyAutoDetectResult>("auto_detect_proxy_settings", { force });
+}
+
+export function getNodeModulesStatus() {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<NodeModulesStatus>({
+      ready: true,
+      running: false,
+      autoInstall: true,
+      repoReady: true,
+      booksDir: "LifeBook/books",
+      nodeModulesDir: "LifeBook/books/node_modules",
+    });
+  }
+  return invoke<NodeModulesStatus>("get_node_modules_status");
+}
+
+export function setAutoInstallNodeModules(enabled: boolean) {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<NodeModulesStatus>({
+      ready: true,
+      running: false,
+      autoInstall: enabled,
+      repoReady: true,
+      booksDir: "LifeBook/books",
+      nodeModulesDir: "LifeBook/books/node_modules",
+    });
+  }
+  return invoke<NodeModulesStatus>("set_auto_install_node_modules", { enabled });
+}
+
+export function startNodeModulesInstall() {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode." });
+  }
+  return invoke<ActionResult>("start_node_modules_install");
+}
+
+export function cancelNodeModulesInstall(removePartial = false) {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode." });
+  }
+  return invoke<ActionResult>("cancel_node_modules_install", { removePartial });
+}
+
+export function exportLauncherLogs() {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode." });
+  }
+  return invoke<ActionResult>("export_launcher_logs");
+}
+
+export function recordFrontendActivity(level: string, message: string) {
+  if (!isTauriRuntime()) {
+    void level;
+    void message;
+    return Promise.resolve();
+  }
+  return invoke<void>("record_frontend_activity", { level, message });
+}
+
 export function readProjectDocument(kind: "readme" | "howto", locale: string) {
   if (!isTauriRuntime()) {
     const content = kind === "readme"
@@ -191,10 +339,10 @@ export function readProjectDocumentPath(relativePath: string, locale: string) {
 export function checkLauncherUpdates() {
   if (!isTauriRuntime()) {
     return Promise.resolve<LauncherUpdateInfo>({
-      installedVersion: "v1.3.0",
-      latestVersion: "v1.3.0",
+      installedVersion: "v1.3.2",
+      latestVersion: "v1.3.2",
       hasUpdate: false,
-      assetName: "LifeBook Launcher_1.3.0_x64-setup.exe",
+      assetName: "LifeBook Launcher_1.3.2_x64-setup.exe",
       assetSize: 2717961,
       assetUrl: "https://github.com/SaberOnGo/public-domain-books-translation/releases/latest",
       installRoot: "LifeBook/launcher/updates",
@@ -315,6 +463,30 @@ export function listenLauncherDownloadProgress(
     return Promise.resolve(() => undefined);
   }
   return listen<DownloadProgress>("launcher-download-progress", (event) => {
+    callback(event.payload);
+  });
+}
+
+export function listenLifeBookProgress(
+  callback: (payload: DownloadProgress) => void,
+) {
+  if (!isTauriRuntime()) {
+    void callback;
+    return Promise.resolve(() => undefined);
+  }
+  return listen<DownloadProgress>("lifebook-project-progress", (event) => {
+    callback(event.payload);
+  });
+}
+
+export function listenNodeModulesProgress(
+  callback: (payload: DownloadProgress) => void,
+) {
+  if (!isTauriRuntime()) {
+    void callback;
+    return Promise.resolve(() => undefined);
+  }
+  return listen<DownloadProgress>("node-modules-install-progress", (event) => {
     callback(event.payload);
   });
 }

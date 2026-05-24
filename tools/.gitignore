@@ -1,0 +1,26 @@
+# Generated dependency and build output under tools/.
+**/node_modules/
+**/dist/
+**/target/
+**/gen/
+**/.cache/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Local logs and temporary diagnostics.
+*.log
+*.tmp
+*.temp
+
+# Packaged application artifacts belong on GitHub Releases, not in Git.
+lifebook-launcher/*.exe
+lifebook-launcher/*.msi
+lifebook-launcher/*.msix
+lifebook-launcher/*.zip
+lifebook-launcher/*.7z
+lifebook-launcher/*.dmg
+lifebook-launcher/*.pkg
+lifebook-launcher/*.deb
+lifebook-launcher/*.rpm
+lifebook-launcher/*.AppImage

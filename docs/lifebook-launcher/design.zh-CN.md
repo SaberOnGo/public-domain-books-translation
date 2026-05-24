@@ -27,7 +27,7 @@ LifeBook Launcher 是本仓库面向普通用户的桌面入口。它不是 Open
 
 主窗口尺寸约 `1180 x 760`，最小尺寸约 `960 x 640`。
 
-- 左侧导航：总览、更新、设置、日志。
+- 左侧导航：总览、更新、教程、设置、日志。
 - 顶部状态栏：当前分支、本地改动状态、代理检测状态、开机自启状态。
 - 主区第一行：两个更新卡片。
   - `LifeBook 项目`：当前 commit、项目状态、按钮 `打开成书目录`、`查看项目`，更多菜单用于更改项目目录。
@@ -37,7 +37,8 @@ LifeBook Launcher 是本仓库面向普通用户的桌面入口。它不是 Open
   - GitHub 上的每条 commit 必须提供标题和详细正文摘要；正文必须分成 `ZH:`、`EN:`、`JA:` 三段，且语言标签必须独占一行，供 Launcher 按系统语言选择展示。
   - 区域固定高度，内容滚动。
 - 底部：活动日志，显示检查、下载、更新、失败原因。
-- 设置页：开机启动、LifeBook 项目目录、自动准备/更新 LifeBook、启动后自动检查 Launcher、发现新版 Launcher 时自动安装、启动后自动检查 OpenCode，并提供 Launcher 手动检查/下载/安装入口。
+- 设置页：开机启动、LifeBook 项目目录、自动检测更新 Launcher、自动检测更新 OpenCode，并提供 Launcher 手动检查/下载/安装入口。
+- LifeBook 准备/同步进度使用悬浮进度框展示，不挤压卡片布局。下载、fetch、pull 能解析到 Git 进度时显示实际百分比；解析不到时显示阶段进度。用户可以停止/取消，失败后可在同一悬浮框重试或关闭。
 
 ## LifeBook 更新规则
 
@@ -50,6 +51,24 @@ Launcher 默认管理一个 LifeBook 项目目录。Windows 默认目录是 `D:\
 5. 不做会覆盖用户文件的 reset、checkout 或强制 pull。
 6. 首页默认只显示最近一条 LifeBook commit；检查到远端更新后，更新内容区域展示可展开的 commit 列表。
 7. 更新内容依赖 GitHub commit 信息。推送前必须运行 `python tools/git/check_commit_messages.py --range origin/main..HEAD` 或当前分支对应 range，确认每个待推送 commit 都有标题和 `ZH:`、`EN:`、`JA:` 三段详细摘要；`ZH:`、`EN:`、`JA:` 必须各自独占一行，摘要从下一行开始。
+8. LifeBook 项目准备和同步必须通过 Tauri event 向前端发送进度，前端以悬浮进度框显示状态、停止/取消、失败重试和关闭操作。
+
+项目目录异常时遵循成熟桌面软件的工作区规则：
+
+- 已配置目录被删除：保留用户设置，标记为 `missing`，不读取其他仓库；界面只提供重新准备项目或更改目录。
+- 已配置目录为空：标记为 `empty`，允许在用户确认后下载 LifeBook。
+- 已配置目录非空但不是 LifeBook：标记为 `occupied`，不覆盖、不清空、不合并；界面提示选择空目录或已有 LifeBook 项目，并允许打开该目录让用户自行整理。
+- 教程、commit 更新内容等工作区依赖信息必须在项目不可用时清空，避免显示上一次目录的旧内容。
+
+## 项目目录与环境变量
+
+Launcher GUI 以本地配置文件中的 LifeBook 项目目录为唯一优先来源。跨平台路径解析顺序为：
+
+1. 用户在 Launcher 设置页选择的项目目录。
+2. `LIFEBOOK_HOME` 环境变量。
+3. 默认目录：Windows 为 `D:\LifeBook`，macOS / Linux 为用户主目录下的 `LifeBook`。
+
+`LIFEBOOK_HOME` 是 LifeBook 项目统一的项目根目录环境变量。Launcher 启动的 Git 子进程会注入 `LIFEBOOK_HOME`。项目脚本、公开 prompt 和外部客户端文档都不应写死某台电脑的绝对路径；需要显式项目根目录时，优先读取 `LIFEBOOK_HOME`，否则使用当前工作目录。
 
 ## OpenCode 更新规则
 

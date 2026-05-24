@@ -86,12 +86,55 @@ export type DownloadProgress = {
   percent: number;
   downloadedBytes: number;
   totalBytes: number;
+  message?: string | null;
+  state?: "downloading" | "success" | "failed" | "stopped" | null;
+};
+
+export type DiagnosticLogSettings = {
+  saveLogs: boolean;
+  logDir: string;
+  logFile: string;
+  maxBytes: number;
+  backupCount: number;
+  maxTotalBytes: number;
+};
+
+export type NetworkProxySettings = {
+  enabled: boolean;
+  scheme: "http" | "https" | "socks5" | "socks5h";
+  host: string;
+  port: number | null;
+};
+
+export type ProxyTestResult = {
+  ok: boolean;
+  message: string;
+  elapsedMs?: number | null;
+  httpVersion?: string | null;
+  targetUrl: string;
+};
+
+export type ProxyAutoDetectResult = {
+  detected: boolean;
+  proxy?: NetworkProxySettings | null;
+  test?: ProxyTestResult | null;
+  message: string;
+};
+
+export type NodeModulesStatus = {
+  ready: boolean;
+  running: boolean;
+  autoInstall: boolean;
+  repoReady: boolean;
+  booksDir: string;
+  nodeModulesDir: string;
 };
 
 export type LauncherSettings = {
   autoStart: boolean;
   checkLauncherOnLaunch: boolean;
   checkOpenCodeOnLaunch: boolean;
+  saveLogsToLocal: boolean;
 };
 
 export type ActivityItem = {

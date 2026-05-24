@@ -34,8 +34,8 @@ npm run tauri:build
 Windows 打包成功后会生成：
 
 ```text
-src-tauri\target\release\bundle\nsis\LifeBook Launcher_1.3.0_x64-setup.exe
-src-tauri\target\release\bundle\msi\LifeBook Launcher_1.3.0_x64_en-US.msi
+src-tauri\target\release\bundle\nsis\LifeBook Launcher_1.3.2_x64-setup.exe
+src-tauri\target\release\bundle\msi\LifeBook Launcher_1.3.2_x64_en-US.msi
 ```
 
 开发环境需要 Node.js 与 Rust。仓库已在本目录固定 Rust `1.88.0`，避免因本机默认 Rust 版本过旧导致 Tauri 依赖无法编译。
