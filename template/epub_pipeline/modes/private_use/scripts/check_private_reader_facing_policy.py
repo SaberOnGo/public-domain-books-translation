@@ -63,23 +63,41 @@ def add_issue(issues: list[dict], rule: str, path: str, detail: str) -> None:
     issues.append({"rule": rule, "path": path, "detail": detail})
 
 
-def iter_frontmatter_files(book_root: Path) -> list[Path]:
+def frontmatter_candidates(book_root: Path) -> list[Path]:
     roots = [
         book_root / "frontmatter",
         book_root / "output" / "epub_work" / "EPUB",
         book_root / "output" / "book_i_publication" / "epub_source" / "EPUB",
         book_root / "output" / "epub_source" / "EPUB",
     ]
-    files: list[Path] = []
-    for root in roots:
-        if not root.exists():
-            continue
-        for path in root.rglob("*"):
-            if not path.is_file() or path.suffix.lower() not in {".md", ".xhtml", ".html"}:
-                continue
-            stem = path.stem.lower().replace("_", "-")
-            if stem in {"cover", "book-info", "translator-note", "edition-note"}:
-                files.append(path)
+    names = [
+        "cover.md",
+        "cover.xhtml",
+        "cover.html",
+        "book_info.md",
+        "book-info.md",
+        "book_info.xhtml",
+        "book-info.xhtml",
+        "book_info.html",
+        "book-info.html",
+        "translator_note.md",
+        "translator-note.md",
+        "translator_note.xhtml",
+        "translator-note.xhtml",
+        "translator_note.html",
+        "translator-note.html",
+        "edition_note.md",
+        "edition-note.md",
+        "edition_note.xhtml",
+        "edition-note.xhtml",
+        "edition_note.html",
+        "edition-note.html",
+    ]
+    return [root / name for root in roots for name in names]
+
+
+def iter_frontmatter_files(book_root: Path) -> list[Path]:
+    files = [path for path in frontmatter_candidates(book_root) if path.is_file()]
     return sorted(set(files))
 
 
@@ -99,6 +117,14 @@ def check_forbidden_public_text(book_root: Path, files: list[Path], issues: list
 
 def check_cover(book_root: Path, files: list[Path], issues: list[dict]) -> None:
     cover_files = [path for path in files if path.stem.lower().replace("_", "-") == "cover"]
+    if not cover_files:
+        add_issue(
+            issues,
+            "missing_private_cover_frontmatter",
+            "cover.md|cover.xhtml",
+            "Private-use EPUB/frontmatter must contain a cover file with bottom line `个人学习版`.",
+        )
+        return
     for path in cover_files:
         text = path.read_text(encoding="utf-8", errors="replace")
         relative = rel(book_root, path)
@@ -110,6 +136,14 @@ def check_cover(book_root: Path, files: list[Path], issues: list[dict]) -> None:
 
 def check_book_info(book_root: Path, files: list[Path], issues: list[dict]) -> None:
     book_info_files = [path for path in files if path.stem.lower().replace("_", "-") == "book-info"]
+    if not book_info_files:
+        add_issue(
+            issues,
+            "missing_private_book_info_frontmatter",
+            "book_info.md|book-info.xhtml",
+            "Private-use EPUB/frontmatter must contain book-info with personal-use and risk-boundary wording.",
+        )
+        return
     for path in book_info_files:
         text = path.read_text(encoding="utf-8", errors="replace")
         relative = rel(book_root, path)

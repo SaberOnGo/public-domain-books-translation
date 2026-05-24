@@ -366,6 +366,35 @@ class PrivateUseModeTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("public_project_contains_private_use_overlay", result.stdout)
 
+    def test_private_reader_gate_rejects_missing_private_cover_and_book_info(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            book_root = Path(tmp) / "books" / "private" / "zh-Hans" / "1_private_book"
+            book_root.mkdir(parents=True)
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        REPO_ROOT
+                        / "template"
+                        / "epub_pipeline"
+                        / "modes"
+                        / "private_use"
+                        / "scripts"
+                        / "check_private_reader_facing_policy.py"
+                    ),
+                    "--book-root",
+                    str(book_root),
+                ],
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("missing_private_cover_frontmatter", result.stdout)
+            self.assertIn("missing_private_book_info_frontmatter", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
