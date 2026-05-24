@@ -1,28 +1,12 @@
 {
-  "name": "book-epub-private-use-project",
-  "version": "1.0.0",
-  "private": true,
-  "main": "index.js",
   "scripts": {
-    "preflight:template": "python scripts/check_template_workflow_gate.py --write-report",
     "preflight:private-use": "python scripts/check_private_use_gate.py --write-report",
-    "cover:check": "python scripts/check_cover_output_assets.py --write-report",
-    "lint:publication": "node scripts/publication_lint.js --write-report",
-    "lint:assets": "node scripts/asset_manifest_check.js --write-report",
-    "review:random-samples": "python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --target-confidence 0.80 --defect-rate 0.10 --profile auto",
-    "review:random-validate": "python scripts/validate_random_spotcheck.py --target-confidence 0.80",
-    "review:random-validate:pass": "python scripts/validate_random_spotcheck.py --target-confidence 0.80 --require-pass",
-    "reader:check": "python scripts/check_reader_facing_policy.py --write-report",
     "reader:private-check": "python scripts/check_private_reader_facing_policy.py --write-report",
     "build:private-epub": "npm run preflight:template && npm run preflight:private-use && npm run lint:publication && npm run lint:assets && npm run cover:check && node scripts/build_private_epub.js && npm run reader:private-check",
     "build:epub": "npm run build:private-epub",
     "private:artifact:draft": "npm run preflight:template && npm run preflight:private-use && npm run cover:check && npm run reader:private-check && python scripts/create_private_artifact.py --status DRAFT",
     "private:artifact:create": "npm run preflight:template && npm run preflight:private-use && npm run cover:check && npm run reader:private-check && python scripts/create_private_artifact.py --status PASS --require-pass",
     "release:draft": "npm run private:artifact:draft",
-    "release:create": "npm run private:artifact:create",
-    "fix:publication": "node scripts/publication_lint.js --fix --write-report",
-    "check:epub": "node scripts/run_epubcheck.js"
-  },
-  "description": "Private-use book-local npm scripts. Shared dependencies remain under books/node_modules.",
-  "license": "UNLICENSED"
+    "release:create": "npm run private:artifact:create"
+  }
 }

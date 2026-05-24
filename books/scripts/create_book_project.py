@@ -106,10 +106,37 @@ def next_number(target_dir: Path) -> int:
 
 
 def copy_overlay(src: Path, dst: Path) -> None:
+    src_root = src.resolve()
+
     def ignore(_dir: str, names: list[str]) -> set[str]:
-        return {name for name in names if name in {"node_modules", "__pycache__"}}
+        ignored = {name for name in names if name in {"node_modules", "__pycache__"}}
+        if Path(_dir).resolve() == src_root and "package.json" in names:
+            ignored.add("package.json")
+        return ignored
 
     shutil.copytree(src, dst, dirs_exist_ok=True, ignore=ignore)
+    package_src = src / "package.json"
+    if package_src.exists():
+        merge_package_json(package_src, dst / "package.json")
+
+
+def merge_package_json(src: Path, dst: Path) -> None:
+    overlay = json.loads(src.read_text(encoding="utf-8"))
+    base = json.loads(dst.read_text(encoding="utf-8")) if dst.exists() else {}
+    merged = dict(base)
+    base_scripts = base.get("scripts", {})
+    overlay_scripts = overlay.get("scripts", {})
+    if isinstance(base_scripts, dict) or isinstance(overlay_scripts, dict):
+        scripts = dict(base_scripts) if isinstance(base_scripts, dict) else {}
+        if isinstance(overlay_scripts, dict):
+            scripts.update(overlay_scripts)
+        merged["scripts"] = scripts
+    for key, value in overlay.items():
+        if key == "scripts":
+            continue
+        merged[key] = value
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    dst.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def private_use_mode_root(template_root: Path) -> Path:

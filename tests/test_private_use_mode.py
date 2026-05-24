@@ -19,6 +19,15 @@ def copy_script(src_relative: str, repo_root: Path) -> None:
     shutil.copy2(src, dst)
 
 
+def merge_package_scripts(package_path: Path, overlay_path: Path) -> None:
+    package = json.loads(package_path.read_text(encoding="utf-8"))
+    overlay = json.loads(overlay_path.read_text(encoding="utf-8"))
+    scripts = dict(package.get("scripts", {}))
+    scripts.update(overlay.get("scripts", {}))
+    package["scripts"] = scripts
+    package_path.write_text(json.dumps(package, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
 def write_minimal_template(repo_root: Path) -> None:
     common = repo_root / "template" / "epub_pipeline" / "common"
     language = repo_root / "template" / "epub_pipeline" / "en-zh-Hans"
@@ -100,19 +109,28 @@ def write_minimal_template(repo_root: Path) -> None:
         json.dumps(
             {
                 "scripts": {
-                    "preflight:template": "python scripts/check_template_workflow_gate.py --write-report",
                     "preflight:private-use": "python scripts/check_private_use_gate.py --write-report",
-                    "cover:check": "python scripts/check_cover_output_assets.py --write-report",
-                    "reader:check": "python scripts/check_reader_facing_policy.py --write-report",
                     "reader:private-check": "python scripts/check_private_reader_facing_policy.py --write-report",
-                    "lint:publication": "node scripts/publication_lint.js --write-report",
-                    "lint:assets": "node scripts/asset_manifest_check.js --write-report",
                     "build:private-epub": "npm run preflight:template && npm run preflight:private-use && npm run lint:publication && npm run lint:assets && npm run cover:check && node scripts/build_private_epub.js && npm run reader:private-check",
                     "build:epub": "npm run build:private-epub",
                     "private:artifact:draft": "npm run preflight:template && npm run preflight:private-use && npm run cover:check && npm run reader:private-check && python scripts/create_private_artifact.py --status DRAFT",
                     "private:artifact:create": "npm run preflight:template && npm run preflight:private-use && npm run cover:check && npm run reader:private-check && python scripts/create_private_artifact.py --status PASS --require-pass",
                     "release:draft": "npm run private:artifact:draft",
                     "release:create": "npm run private:artifact:create",
+                }
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (language / "package.json").write_text(
+        json.dumps(
+            {
+                "scripts": {
+                    "lint:publication": "node scripts/publication_lint.js --target=zh-Hans --write-report",
+                    "fix:publication": "node scripts/publication_lint.js --target=zh-Hans --fix --write-report",
                 }
             },
             ensure_ascii=False,
@@ -195,6 +213,9 @@ class PrivateUseModeTests(unittest.TestCase):
             package = json.loads((project_root / "package.json").read_text(encoding="utf-8"))
             self.assertIn("private:artifact:create", package["scripts"])
             self.assertEqual(package["scripts"]["release:create"], "npm run private:artifact:create")
+            self.assertIn("--target=zh-Hans", package["scripts"]["lint:publication"])
+            self.assertIn("--target=zh-Hans", package["scripts"]["fix:publication"])
+            self.assertIn("reader:check", package["scripts"])
 
     def test_create_book_project_public_mode_does_not_copy_private_overlay(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -230,7 +251,10 @@ class PrivateUseModeTests(unittest.TestCase):
             write_minimal_template(repo)
             book_root = repo / "books" / "private" / "zh-Hans" / "1_private_book"
             shutil.copytree(repo / "template" / "epub_pipeline" / "common", book_root)
+            base_package = json.loads((book_root / "package.json").read_text(encoding="utf-8"))
             shutil.copytree(repo / "template" / "epub_pipeline" / "modes" / "private_use", book_root, dirs_exist_ok=True)
+            (book_root / "package.json").write_text(json.dumps(base_package, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            merge_package_scripts(book_root / "package.json", repo / "template" / "epub_pipeline" / "modes" / "private_use" / "package.json")
             write_production_spec(book_root)
             state_path = book_root / "state" / "pipeline_state.json"
             state = json.loads(state_path.read_text(encoding="utf-8"))

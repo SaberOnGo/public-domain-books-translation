@@ -29,6 +29,7 @@ books/scripts/create_book_project.py --mode private-use --local-source-file ... 
 
 ## Scripts / 脚本
 
+- `package.json`: private-use script overlay only. It must add private gates and private artifact aliases without replacing language-pair scripts such as target-language `lint:publication` commands.
 - `scripts/check_private_use_gate.py`: verifies project mode, path, declaration, overlay files, and private package scripts.
 - `scripts/check_private_reader_facing_policy.py`: blocks public-domain/public-release wording in private frontmatter and enforces private cover/frontmatter wording.
 - `scripts/create_private_artifact.py`: creates versioned private artifacts under `output/private_artifacts/`.
