@@ -16,6 +16,30 @@ launcher-console.txt
 .opencode/package-lock.json
 .opencode/bun.lock
 books/*/*/output/epub_work/
+books/*/*/state/*.log
+books/*/*/assets/**/cover_source*.png
+books/*/*/assets/**/cover_background*.png
+books/*/*/output/cover_source*.png
+books/*/*/output/cover_source_prompt.txt
+books/*/*/output/cover_fixed_centered*.png
+
+# Large source/QA evidence stays local; keep rights/source notes, checksums,
+# small necessary crops, and final EPUB-facing assets in Git.
+books/zh-Hans/6_ptolemy_almagest_grc_zh_hans/source/facsimile/*.pdf
+books/zh-Hans/6_ptolemy_almagest_grc_zh_hans/qa/technical/page_screenshots/almagest-pdf-page-*.png
+books/zh-Hans/6_ptolemy_almagest_grc_zh_hans/qa/technical/page_screenshots/*contact_sheet*.jpg
+books/zh-Hans/6_ptolemy_almagest_grc_zh_hans/qa/technical/page_screenshots/*contact_sheet*.png
+books/zh-Hans/6_ptolemy_almagest_grc_zh_hans/qa/technical/page_screenshots/book_i11_page_028_large.jpg
+books/zh-Hans/6_ptolemy_almagest_grc_zh_hans/preproduction/stage2_sample/facsimile_work/source_pages/
+books/zh-Hans/6_ptolemy_almagest_grc_zh_hans/preproduction/stage2_sample/facsimile_work/*contact*.jpg
+books/zh-Hans/6_ptolemy_almagest_grc_zh_hans/preproduction/stage2_sample/facsimile_work/*contact*.png
+books/zh-Hans/6_ptolemy_almagest_grc_zh_hans/preproduction/stage2_sample/facsimile_work/debug_*.png
+
+# Legacy large fallback cover; final cover.jpg remains tracked.
+books/zh-Hans/1_pg20923_a_negro_explorer_at_the_north_pole/assets/cover.png
+
+# Launcher installers are published as project release attachments.
+tools/lifebook-launcher/*.exe
 
 # Local Codex/agent instructions and environment notes.
 # Keep project-specific operational preferences here instead of global memory.
