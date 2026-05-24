@@ -1,6 +1,6 @@
 [package]
 name = "lifebook-launcher"
-version = "1.3.3"
+version = "1.3.4"
 description = "LifeBook Launcher"
 authors = ["LifeBook Shufang"]
 edition = "2021"

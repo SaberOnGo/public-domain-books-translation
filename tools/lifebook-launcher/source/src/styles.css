@@ -1063,6 +1063,11 @@ button:disabled {
   min-height: 0;
 }
 
+.commit-panel.expanded {
+  grid-row: 3 / span 2;
+  min-height: min(520px, calc(100vh - 260px));
+}
+
 .activity-panel.expanded {
   grid-row: 2 / span 3;
 }

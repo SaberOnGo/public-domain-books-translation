@@ -7,6 +7,7 @@ use std::os::windows::process::CommandExt;
 use std::{
     env, fs,
     io::{Read, Write},
+    net::{IpAddr, TcpStream, ToSocketAddrs},
     path::{Path, PathBuf},
     process::{Command, Stdio},
     sync::atomic::{AtomicBool, Ordering},
@@ -45,9 +46,10 @@ const GIT_LOW_SPEED_LIMIT_BYTES: &str = "1024";
 const GIT_LOW_SPEED_TIME_SECONDS: &str = "60";
 const GIT_FETCH_TIMEOUT_SECONDS: u64 = 90;
 const PROXY_TEST_TIMEOUT_SECONDS: u64 = 8;
-const PROXY_AUTO_DETECT_TIMEOUT_SECONDS: u64 = 3;
+const PROXY_AUTO_DETECT_TIMEOUT_MS: u64 = 1200;
+const PROXY_PORT_PROBE_TIMEOUT_MS: u64 = 260;
 const GITHUB_CONNECTIVITY_TEST_URL: &str =
-    "https://api.github.com/repos/SaberOnGo/public-domain-books-translation";
+    "https://github.com/SaberOnGo/public-domain-books-translation.git/info/refs?service=git-upload-pack";
 const NPM_PRIMARY_REGISTRY: &str = "https://registry.npmjs.org/";
 const NPM_CN_REGISTRY: &str = "https://registry.npmmirror.com/";
 const NPM_INSTALL_TIMEOUT_SECONDS: u64 = 15 * 60;
@@ -775,11 +777,12 @@ async fn test_proxy_settings(proxy: NetworkProxySettings) -> Result<ProxyTestRes
                 "WARN",
                 format!("proxy automatic HTTP test failed, retrying HTTP/1.1: {auto_error}"),
             );
-            test_github_connectivity_via_proxy(&proxy_url, true)
-                .await
-                .map_err(|retry_error| {
-                    format!("代理测试失败。自动 HTTP：{auto_error}；HTTP/1.1 重试：{retry_error}")
-                })
+            match test_github_connectivity_via_proxy(&proxy_url, true).await {
+                Ok(result) => Ok(result),
+                Err(retry_error) => Ok(proxy_test_failure_result(format!(
+                    "代理测试失败。自动 HTTP：{auto_error}；HTTP/1.1 重试：{retry_error}"
+                ))),
+            }
         }
     }
 }
@@ -798,27 +801,25 @@ async fn auto_detect_proxy_settings(force: Option<bool>) -> Result<ProxyAutoDete
     }
 
     let mut last_error = String::new();
-    for candidate in proxy_detection_candidates() {
+    for candidate in proxy_detection_candidates_with_current(&current) {
+        let candidate_started_at = Instant::now();
+        if !proxy_candidate_port_open_quick(&candidate) {
+            last_error = proxy_candidate_label(&candidate, "本机端口未监听");
+            append_launcher_log(
+                "DEBUG",
+                format!("skip proxy auto detect candidate: {last_error}"),
+            );
+            continue;
+        }
         let Ok(Some(proxy_url)) = proxy_url_from_settings(&candidate) else {
             continue;
         };
-        let test = match test_github_connectivity_via_proxy_with_timeout(
+        let test = test_github_connectivity_via_proxy_with_timeout(
             &proxy_url,
             false,
-            Duration::from_secs(PROXY_AUTO_DETECT_TIMEOUT_SECONDS),
+            Duration::from_millis(PROXY_AUTO_DETECT_TIMEOUT_MS),
         )
-        .await
-        {
-            Ok(test) => Ok(test),
-            Err(_) => {
-                test_github_connectivity_via_proxy_with_timeout(
-                    &proxy_url,
-                    true,
-                    Duration::from_secs(PROXY_AUTO_DETECT_TIMEOUT_SECONDS),
-                )
-                .await
-            }
-        };
+        .await;
         match test {
             Ok(test) => {
                 let saved = write_proxy_config(candidate)?;
@@ -837,7 +838,13 @@ async fn auto_detect_proxy_settings(force: Option<bool>) -> Result<ProxyAutoDete
                 });
             }
             Err(error) => {
-                last_error = error;
+                let elapsed_ms = candidate_started_at.elapsed().as_millis();
+                last_error =
+                    proxy_candidate_label(&candidate, &format!("{error}（{elapsed_ms} ms）"));
+                append_launcher_log(
+                    "DEBUG",
+                    format!("proxy auto detect candidate failed: {last_error}"),
+                );
             }
         }
     }
@@ -2080,6 +2087,26 @@ fn update_lifebook_project_at(
         progress,
         GitProgressPhase::Fetch,
     )?;
+    let remote_ref = remote_default_ref(repo_root);
+    let (ahead_count, behind_count) = branch_divergence_counts(repo_root, &remote_ref)?;
+    if ahead_count > 0 && behind_count > 0 {
+        let message = lifebook_diverged_message(repo_root, &remote_ref, ahead_count, behind_count);
+        append_launcher_log("WARN", &message);
+        return Err(message);
+    }
+    if behind_count == 0 {
+        append_launcher_log(
+            "INFO",
+            format!(
+                "LifeBook repo has no remote updates after fetch repo_root={} ahead_count={ahead_count}",
+                display_path(repo_root)
+            ),
+        );
+        if let Some(emitter) = progress {
+            emitter.emit_key(94, "no_updates");
+        }
+        return Ok(());
+    }
     if let Some(emitter) = progress {
         emitter.emit_key(78, "pull_start");
     }
@@ -2755,16 +2782,7 @@ fn lifebook_update_info(
 
     let remote_ref = remote_default_ref(repo_root);
     let current_commit = git_output(repo_root, &["rev-parse", "--short", "HEAD"])?;
-    let counts = git_output(
-        repo_root,
-        &[
-            "rev-list",
-            "--left-right",
-            "--count",
-            &format!("HEAD...{remote_ref}"),
-        ],
-    )?;
-    let (ahead_count, behind_count) = parse_ahead_behind(&counts)?;
+    let (ahead_count, behind_count) = branch_divergence_counts(repo_root, &remote_ref)?;
     let commits = if behind_count > 0 {
         git_commits_between(repo_root, &remote_ref, locale)?
     } else {
@@ -3046,8 +3064,11 @@ fn proxy_settings_from_url(value: &str) -> Option<NetworkProxySettings> {
     })
 }
 
-fn proxy_detection_candidates() -> Vec<NetworkProxySettings> {
+fn proxy_detection_candidates_with_current(
+    current: &NetworkProxySettings,
+) -> Vec<NetworkProxySettings> {
     let mut candidates = Vec::new();
+    candidates.extend(proxy_candidate_variants(current));
     for name in [
         "HTTPS_PROXY",
         "HTTP_PROXY",
@@ -3066,6 +3087,7 @@ fn proxy_detection_candidates() -> Vec<NetworkProxySettings> {
     for value in [
         "http://127.0.0.1:7890",
         "http://127.0.0.1:7897",
+        "http://127.0.0.1:10808",
         "http://127.0.0.1:10809",
         "socks5h://127.0.0.1:10808",
         "socks5h://127.0.0.1:7891",
@@ -3078,6 +3100,74 @@ fn proxy_detection_candidates() -> Vec<NetworkProxySettings> {
         }
     }
     dedupe_proxy_candidates(candidates)
+}
+
+fn proxy_candidate_variants(current: &NetworkProxySettings) -> Vec<NetworkProxySettings> {
+    if !current.enabled || current.host.trim().is_empty() || current.port.unwrap_or(0) == 0 {
+        return Vec::new();
+    }
+    let Ok(primary_scheme) = normalized_proxy_scheme(&current.scheme) else {
+        return Vec::new();
+    };
+    let mut schemes = vec![primary_scheme.clone()];
+    for scheme in ["http", "socks5h", "socks5"] {
+        if !schemes.iter().any(|value| value == scheme) {
+            schemes.push(scheme.to_string());
+        }
+    }
+    schemes
+        .into_iter()
+        .map(|scheme| NetworkProxySettings {
+            enabled: true,
+            scheme,
+            host: current.host.trim().to_string(),
+            port: current.port,
+        })
+        .collect()
+}
+
+fn proxy_candidate_port_open_quick(candidate: &NetworkProxySettings) -> bool {
+    if !is_loopback_proxy_host(&candidate.host) {
+        return true;
+    }
+    let Some(port) = candidate.port else {
+        return false;
+    };
+    let host = candidate.host.trim().trim_matches(['[', ']']);
+    let address = if host.contains(':') {
+        format!("[{host}]:{port}")
+    } else {
+        format!("{host}:{port}")
+    };
+    let Ok(addresses) = address.to_socket_addrs() else {
+        return false;
+    };
+    let timeout = Duration::from_millis(PROXY_PORT_PROBE_TIMEOUT_MS);
+    addresses
+        .into_iter()
+        .any(|address| TcpStream::connect_timeout(&address, timeout).is_ok())
+}
+
+fn is_loopback_proxy_host(host: &str) -> bool {
+    let host = host.trim().trim_matches(['[', ']']).to_ascii_lowercase();
+    if host == "localhost" {
+        return true;
+    }
+    host.parse::<IpAddr>()
+        .map(|address| address.is_loopback())
+        .unwrap_or(false)
+}
+
+fn proxy_candidate_label(candidate: &NetworkProxySettings, detail: &str) -> String {
+    format!(
+        "{}://{}:{} {detail}",
+        candidate.scheme,
+        candidate.host,
+        candidate
+            .port
+            .map(|port| port.to_string())
+            .unwrap_or_else(|| "?".into())
+    )
 }
 
 fn dedupe_proxy_candidates(candidates: Vec<NetworkProxySettings>) -> Vec<NetworkProxySettings> {
@@ -3568,6 +3658,34 @@ fn parse_ahead_behind(value: &str) -> Result<(u32, u32), String> {
     Ok((ahead, behind))
 }
 
+fn branch_divergence_counts(repo_root: &Path, remote_ref: &str) -> Result<(u32, u32), String> {
+    let counts = git_output(
+        repo_root,
+        &[
+            "rev-list",
+            "--left-right",
+            "--count",
+            &format!("HEAD...{remote_ref}"),
+        ],
+    )?;
+    parse_ahead_behind(&counts)
+}
+
+fn lifebook_diverged_message(
+    repo_root: &Path,
+    remote_ref: &str,
+    ahead_count: u32,
+    behind_count: u32,
+) -> String {
+    format!(
+        "LifeBook 项目本地分支和 GitHub 已分叉，Launcher 为避免覆盖用户内容已停止自动更新。\n项目目录：{}\n远端分支：{}\n当前状态：本地多 {} 个 commit，GitHub 多 {} 个 commit。\nLauncher 不会自动 merge/rebase。请先确认这些本地 commit 是否要保留；如果只是想使用最新 LifeBook，建议在设置页选择一个新的空目录重新准备项目。",
+        display_path(repo_root),
+        remote_ref,
+        ahead_count,
+        behind_count
+    )
+}
+
 fn git_commits_between(
     repo_root: &Path,
     remote_ref: &str,
@@ -3785,16 +3903,49 @@ async fn test_github_connectivity_via_proxy_with_timeout(
     let elapsed_ms = started_at.elapsed().as_millis();
     let status = response.status();
     let version = format!("{:?}", response.version());
-    if !status.is_success() {
-        return Err(format!("GitHub 返回 HTTP status {status}"));
+    let outcome = github_connectivity_outcome(status, elapsed_ms, &version);
+    if !outcome.ok {
+        return Err(outcome.message);
     }
-    Ok(ProxyTestResult {
-        ok: true,
-        message: format!("代理可连接 GitHub，耗时 {elapsed_ms} ms。"),
+    Ok(outcome)
+}
+
+fn github_connectivity_outcome(
+    status: StatusCode,
+    elapsed_ms: u128,
+    http_version: &str,
+) -> ProxyTestResult {
+    let ok = status.is_success()
+        || matches!(
+            status,
+            StatusCode::FORBIDDEN | StatusCode::TOO_MANY_REQUESTS | StatusCode::UNAUTHORIZED
+        );
+    let message = if status.is_success() {
+        format!("代理可连接 GitHub，耗时 {elapsed_ms} ms。")
+    } else if ok {
+        format!(
+            "GitHub 已响应（HTTP {status}），代理链路可用，耗时 {elapsed_ms} ms。若更新仍失败，请查看 Git 分支状态、权限或限流信息。"
+        )
+    } else {
+        format!("GitHub 返回 HTTP status {status}，代理未通过连通性测试。")
+    };
+    ProxyTestResult {
+        ok,
+        message,
         elapsed_ms: Some(elapsed_ms),
-        http_version: Some(version),
+        http_version: Some(http_version.to_string()),
         target_url: GITHUB_CONNECTIVITY_TEST_URL.into(),
-    })
+    }
+}
+
+fn proxy_test_failure_result(message: String) -> ProxyTestResult {
+    ProxyTestResult {
+        ok: false,
+        message,
+        elapsed_ms: None,
+        http_version: None,
+        target_url: GITHUB_CONNECTIVITY_TEST_URL.into(),
+    }
 }
 
 async fn fetch_opencode_release() -> Result<GithubRelease, String> {
@@ -5202,6 +5353,45 @@ EN:
         assert_eq!(no_scheme.port, Some(7897));
 
         assert!(proxy_settings_from_url("not-a-valid-proxy").is_none());
+    }
+
+    #[test]
+    fn github_connectivity_status_treats_forbidden_as_reachable() {
+        let outcome = github_connectivity_outcome(StatusCode::FORBIDDEN, 429, "HTTP/2");
+
+        assert!(outcome.ok);
+        assert!(outcome.message.contains("GitHub 已响应"));
+        assert_eq!(outcome.elapsed_ms, Some(429));
+        assert_eq!(outcome.http_version.as_deref(), Some("HTTP/2"));
+    }
+
+    #[test]
+    fn proxy_detection_candidates_prioritize_current_proxy() {
+        let current = NetworkProxySettings {
+            enabled: true,
+            scheme: "http".into(),
+            host: "127.0.0.1".into(),
+            port: Some(10808),
+        };
+
+        let candidates = proxy_detection_candidates_with_current(&current);
+
+        assert_eq!(candidates.first().unwrap().scheme, "http");
+        assert_eq!(candidates.first().unwrap().host, "127.0.0.1");
+        assert_eq!(candidates.first().unwrap().port, Some(10808));
+        assert!(candidates
+            .iter()
+            .any(|candidate| candidate.scheme == "socks5h" && candidate.port == Some(10808)));
+    }
+
+    #[test]
+    fn lifebook_diverged_message_includes_safe_counts() {
+        let message = lifebook_diverged_message(Path::new(r"D:\LifeBook"), "origin/main", 3, 64);
+
+        assert!(message.contains("本地分支和 GitHub 已分叉"));
+        assert!(message.contains("本地多 3 个 commit"));
+        assert!(message.contains("GitHub 多 64 个 commit"));
+        assert!(message.contains("不会自动 merge/rebase"));
     }
 
     #[test]

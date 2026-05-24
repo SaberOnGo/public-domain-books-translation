@@ -81,7 +81,7 @@ import {
 import launcherIconUrl from "../assets/lifebook-launcher-icon.png";
 
 const SETTINGS_KEY = "lifebook-launcher-settings";
-const LAUNCHER_VERSION = "v1.3.3";
+const LAUNCHER_VERSION = "v1.3.4";
 
 type Locale = "zh-CN" | "zh-TW" | "ja" | "en";
 type TabId = "overview" | "updates" | "tutorial" | "settings" | "logs";
@@ -1764,6 +1764,7 @@ export default function App() {
       showFloatingToast(message, "success");
     } catch (error) {
       const message = copy.proxyTestFailed(String(error));
+      setProxyTestResult(proxyFailureResult(message));
       addActivity("error", message);
       showFloatingToast(message, "error");
     } finally {
@@ -1794,6 +1795,7 @@ export default function App() {
     } catch (error) {
       if (!silent) {
         const message = copy.proxyTestFailed(String(error));
+        setProxyTestResult(proxyFailureResult(message));
         addActivity("error", message);
         showFloatingToast(message, "error");
       }
@@ -2881,6 +2883,16 @@ function MetaPair({ label, value, highlight, tone }: { label: string; value: str
   );
 }
 
+function proxyFailureResult(message: string): ProxyTestResult {
+  return {
+    ok: false,
+    message,
+    elapsedMs: null,
+    httpVersion: null,
+    targetUrl: "",
+  };
+}
+
 function CommitTable({
   copy,
   commits,
@@ -2918,7 +2930,7 @@ function CommitTable({
   }, []);
 
   return (
-    <section className="data-panel commit-panel">
+    <section className={showAll ? "data-panel commit-panel expanded" : "data-panel commit-panel"}>
       <div className="panel-title-row">
         <PanelHeading title={copy.updateContent} />
         <div className="panel-actions">
