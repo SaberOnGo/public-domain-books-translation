@@ -1,0 +1,25 @@
+{
+  "current_version": "v0.0.3",
+  "main_version": 0,
+  "sub_version": 0,
+  "patch_version": 3,
+  "latest_epub": "痴人之爱_v0.0.3.epub",
+  "latest_release_note": "release_notes.md",
+  "latest_status": "PASS",
+  "latest_created_at": "2026-05-24T04:18:26Z",
+  "latest_sha256": "a6a22d30632396ef74782418b156bd5ede7e85140225c8904bf913073b4e76b7",
+  "latest_size_bytes": 324453,
+  "gate_summary": {
+    "random_spotcheck_round": "reviews/random_spotcheck/round_024",
+    "random_spotcheck_validation": "reviews/random_spotcheck/round_024/validation_report.json",
+    "release_confidence": 1.0,
+    "random_spotcheck_status": "PASS",
+    "random_spotcheck_require_pass": true,
+    "epubcheck_path": "output/epubcheck.json",
+    "epubcheck_fatal": 0,
+    "epubcheck_error": 0,
+    "epubcheck_warning": 0,
+    "publication_lint_path": "output/publication_lint.json",
+    "publication_lint_issue_count": 0
+  }
+}

@@ -1,6 +1,19 @@
-# Book-project local artifacts.
-# Keep scripts, rules, metadata, Markdown QA conclusions, and release notes tracked.
-# Do not ignore final book release EPUBs here; decide that policy separately.
+# Book-project publish policy.
+# By default, books/{target}/{number_slug}/ production trees are local working
+# state. GitHub tracks only versioned release artifacts under output/release/.
+# Keep one complete reference project below so downloaded copies still show the
+# expected book-project directory structure.
+
+private/
+
+*/*/*
+!*/*/output/
+*/*/output/*
+!*/*/output/release/
+!*/*/output/release/**
+
+!zh-Hans/7_shisei_tanizaki/
+!zh-Hans/7_shisei_tanizaki/**
 
 # Shared local-only tool cache. Use scripts/setup_local_tools.py to inspect or
 # populate it; third-party runtimes and archives must not be committed.

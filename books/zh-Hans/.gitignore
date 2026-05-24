@@ -1,0 +1,4 @@
+# zh-Hans target policy.
+# The active default rule lives in ../.gitignore so it also covers future
+# target-language directories. Under zh-Hans, 7_shisei_tanizaki is the complete
+# reference book project; every other book should publish only output/release/.
