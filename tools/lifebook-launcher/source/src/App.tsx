@@ -81,7 +81,7 @@ import {
 import launcherIconUrl from "../assets/lifebook-launcher-icon.png";
 
 const SETTINGS_KEY = "lifebook-launcher-settings";
-const LAUNCHER_VERSION = "v1.3.5";
+const LAUNCHER_VERSION = "v1.3.6";
 
 type Locale = "zh-CN" | "zh-TW" | "ja" | "en";
 type TabId = "overview" | "updates" | "tutorial" | "settings" | "logs";

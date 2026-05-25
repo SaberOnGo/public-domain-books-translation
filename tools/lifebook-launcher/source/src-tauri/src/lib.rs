@@ -31,6 +31,10 @@ const OPENCODE_REPO_RELEASE_DOWNLOAD_BASE: &str =
     "https://github.com/anomalyco/opencode/releases/download";
 const LIFEBOOK_LAUNCHER_REPO_API: &str =
     "https://api.github.com/repos/SaberOnGo/public-domain-books-translation/releases/latest";
+const LIFEBOOK_LAUNCHER_REPO_LATEST_RELEASE_URL: &str =
+    "https://github.com/SaberOnGo/public-domain-books-translation/releases/latest";
+const LIFEBOOK_LAUNCHER_REPO_RELEASE_DOWNLOAD_BASE: &str =
+    "https://github.com/SaberOnGo/public-domain-books-translation/releases/download";
 const LIFEBOOK_REPO_URL: &str = "https://github.com/SaberOnGo/public-domain-books-translation.git";
 const LIFEBOOK_HOME_ENV: &str = "LIFEBOOK_HOME";
 const LIFEBOOK_PROGRESS_EVENT: &str = "lifebook-project-progress";
@@ -3988,7 +3992,31 @@ async fn fetch_opencode_release_asset() -> Result<(String, GithubAsset), String>
 }
 
 async fn fetch_lifebook_launcher_release() -> Result<GithubRelease, String> {
-    fetch_github_release(LIFEBOOK_LAUNCHER_REPO_API, "LifeBook Launcher").await
+    match fetch_github_release(LIFEBOOK_LAUNCHER_REPO_API, "LifeBook Launcher").await {
+        Ok(release) => Ok(release),
+        Err(api_error) if should_use_public_release_fallback(&api_error) => {
+            append_launcher_log(
+                "WARN",
+                format!(
+                    "LifeBook Launcher GitHub API unavailable, using public release page fallback: {api_error}"
+                ),
+            );
+            let tag = fetch_latest_release_tag_from_public_page(
+                LIFEBOOK_LAUNCHER_REPO_LATEST_RELEASE_URL,
+                "LifeBook Launcher",
+            )
+            .await
+            .map_err(|fallback_error| {
+                format!("{api_error}；已尝试通过 GitHub 公开 release 页面获取 Launcher 版本，也失败：{fallback_error}")
+            })?;
+            let asset = lifebook_launcher_asset_from_tag(&tag)?;
+            Ok(GithubRelease {
+                tag_name: tag,
+                assets: vec![asset],
+            })
+        }
+        Err(error) => Err(error),
+    }
 }
 
 async fn fetch_github_release(api_url: &str, label: &str) -> Result<GithubRelease, String> {
@@ -4084,6 +4112,41 @@ fn opencode_asset_from_tag(tag: &str, asset_name: &str) -> GithubAsset {
         ),
         size: 0,
     }
+}
+
+fn lifebook_launcher_asset_from_tag(tag: &str) -> Result<GithubAsset, String> {
+    lifebook_launcher_asset_from_tag_for_platform(tag, std::env::consts::OS, std::env::consts::ARCH)
+}
+
+fn lifebook_launcher_asset_from_tag_for_platform(
+    tag: &str,
+    platform: &str,
+    arch: &str,
+) -> Result<GithubAsset, String> {
+    let version = normalize_version(tag);
+    if version.is_empty() {
+        return Err(format!(
+            "无法从 LifeBook Launcher release 标签解析版本：{tag}"
+        ));
+    }
+    let name = match (platform, arch) {
+        ("windows", "x86_64") => format!("LifeBook.Launcher_{version}_x64-setup.exe"),
+        ("windows", "aarch64") => format!("LifeBook.Launcher_{version}_arm64-setup.exe"),
+        _ => {
+            return Err(format!(
+                "LifeBook Launcher GitHub API 受限，且当前系统没有可推断的公开下载资产：{platform} {arch}"
+            ))
+        }
+    };
+    Ok(GithubAsset {
+        browser_download_url: github_release_download_url(
+            LIFEBOOK_LAUNCHER_REPO_RELEASE_DOWNLOAD_BASE,
+            tag,
+            &name,
+        ),
+        name,
+        size: 0,
+    })
 }
 
 fn github_release_download_url(base: &str, tag: &str, asset_name: &str) -> String {
@@ -4190,12 +4253,8 @@ fn launcher_update_root() -> Result<PathBuf, String> {
     Ok(base.join("LifeBook").join("launcher").join("updates"))
 }
 
-#[cfg(target_os = "windows")]
-fn schedule_launcher_update_install(installer: &Path) -> Result<(), String> {
-    const CREATE_NO_WINDOW: u32 = 0x08000000;
-    let current_exe = env::current_exe().map_err(|err| format!("无法定位当前 Launcher：{err}"))?;
-    let script = installer.with_file_name("install-lifebook-launcher.cmd");
-    let content = format!(
+fn windows_launcher_update_script_content(installer: &Path, app: &Path) -> String {
+    format!(
         r#"@echo off
 setlocal
 set "INSTALLER={installer}"
@@ -4203,16 +4262,34 @@ set "APP={app}"
 timeout /t 2 /nobreak >nul
 start /wait "" "%INSTALLER%" /S
 if exist "%APP%" start "" "%APP%"
-del "%~f0" >nul 2>nul
 endlocal
+exit /b 0
 "#,
         installer = installer.display(),
-        app = current_exe.display(),
-    );
+        app = app.display(),
+    )
+}
+
+fn windows_launcher_update_command_args(script: &Path) -> Vec<String> {
+    vec![
+        "/D".into(),
+        "/Q".into(),
+        "/C".into(),
+        "call".into(),
+        script.display().to_string(),
+    ]
+}
+
+#[cfg(target_os = "windows")]
+fn schedule_launcher_update_install(installer: &Path) -> Result<(), String> {
+    const CREATE_NO_WINDOW: u32 = 0x08000000;
+    let current_exe = env::current_exe().map_err(|err| format!("无法定位当前 Launcher：{err}"))?;
+    let script = installer.with_file_name("install-lifebook-launcher.cmd");
+    let content = windows_launcher_update_script_content(installer, &current_exe);
     fs::write(&script, content).map_err(|err| format!("无法写入 Launcher 更新脚本：{err}"))?;
+    let args = windows_launcher_update_command_args(&script);
     Command::new("cmd")
-        .arg("/C")
-        .arg(&script)
+        .args(args)
         .creation_flags(CREATE_NO_WINDOW)
         .spawn()
         .map_err(|err| format!("无法启动 Launcher 自动安装脚本：{err}"))?;
@@ -5418,6 +5495,58 @@ EN:
             "lifebook-launcher-v1.3.3",
             "v1.3.4"
         ));
+    }
+
+    #[test]
+    fn lifebook_launcher_public_fallback_builds_windows_asset_url() {
+        let asset = lifebook_launcher_asset_from_tag_for_platform(
+            "lifebook-launcher-v1.3.6",
+            "windows",
+            "x86_64",
+        )
+        .expect("Windows x64 fallback asset should be known");
+
+        assert_eq!(asset.name, "LifeBook.Launcher_1.3.6_x64-setup.exe");
+        assert_eq!(
+            asset.browser_download_url,
+            "https://github.com/SaberOnGo/public-domain-books-translation/releases/download/lifebook-launcher-v1.3.6/LifeBook.Launcher_1.3.6_x64-setup.exe"
+        );
+        assert_eq!(asset.size, 0);
+    }
+
+    #[test]
+    fn windows_launcher_update_script_does_not_self_delete_before_exit() {
+        let script = windows_launcher_update_script_content(
+            Path::new(
+                r"C:\Users\minicat\AppData\Local\LifeBook\launcher\updates\downloads\LifeBook.Launcher_1.3.6_x64-setup.exe",
+            ),
+            Path::new(r"C:\Users\minicat\AppData\Local\LifeBook Launcher\lifebook-launcher.exe"),
+        );
+
+        assert!(!script.contains("%~f0"));
+        assert!(!script.contains("del "));
+        assert!(script.contains("endlocal"));
+        assert!(script.trim_end().ends_with("exit /b 0"));
+    }
+
+    #[test]
+    fn windows_launcher_update_command_uses_hidden_call_without_start_wrapper() {
+        let args = windows_launcher_update_command_args(Path::new(
+            r"C:\Temp With Space\install-lifebook-launcher.cmd",
+        ));
+
+        assert_eq!(
+            args,
+            vec![
+                "/D".to_string(),
+                "/Q".to_string(),
+                "/C".to_string(),
+                "call".to_string(),
+                r"C:\Temp With Space\install-lifebook-launcher.cmd".to_string()
+            ]
+        );
+        assert!(!args.iter().any(|arg| arg.eq_ignore_ascii_case("start")));
+        assert!(!args.iter().any(|arg| arg.eq_ignore_ascii_case("/MIN")));
     }
 
     #[test]
