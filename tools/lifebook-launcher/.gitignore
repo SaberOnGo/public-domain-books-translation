@@ -1,0 +1,6 @@
+# Only the LifeBook Launcher source tree belongs in Git.
+# Generated installers, extracted toolchains, caches, logs, and other large
+# local artifacts under tools/lifebook-launcher/ must stay local.
+/*
+!/.gitignore
+!/source/

@@ -81,7 +81,7 @@ import {
 import launcherIconUrl from "../assets/lifebook-launcher-icon.png";
 
 const SETTINGS_KEY = "lifebook-launcher-settings";
-const LAUNCHER_VERSION = "v1.3.4";
+const LAUNCHER_VERSION = "v1.3.5";
 
 type Locale = "zh-CN" | "zh-TW" | "ja" | "en";
 type TabId = "overview" | "updates" | "tutorial" | "settings" | "logs";
@@ -283,7 +283,7 @@ const zhCN = {
   autoStartTitle: "开机自动启动 LifeBook Launcher",
   autoStartDescription: "电脑启动后自动打开 Launcher，并按下方设置检查更新。",
   checkLauncherTitle: "自动检测更新 Launcher",
-  checkLauncherDescription: "启动后自动检测新版；发现更新会显示悬浮下载进度，自动安装并重启。失败后下次启动会再试。",
+  checkLauncherDescription: "启动后自动检测新版；发现更新只提示，不会未经确认自动安装。",
   changeProjectPath: "更改目录",
   confirmProjectDirectoryTitle: "确认 LifeBook 项目目录",
   confirmProjectDirectoryDownload: (path: string) => `将在此目录准备 LifeBook 项目：\n${path}\n\n如果目录为空，会重新下载 LifeBook。非空且不是 LifeBook 项目的目录会被拒绝。是否继续？`,
@@ -456,7 +456,7 @@ const zhTW: Copy = {
   settingsTitle: "設定",
   autoStartDescription: "電腦啟動後自動打開 Launcher，並按下方設定檢查更新。",
   checkLauncherTitle: "自動偵測更新 Launcher",
-  checkLauncherDescription: "啟動後自動偵測新版；發現更新會顯示浮動下載進度，自動安裝並重新啟動。失敗後下次啟動會再試。",
+  checkLauncherDescription: "啟動後自動偵測新版；發現更新只會提示，不會未經確認自動安裝。",
   changeProjectPath: "更改目錄",
   confirmProjectDirectoryTitle: "確認 LifeBook 專案目錄",
   confirmProjectDirectoryDownload: (path) => `將在此目錄準備 LifeBook 專案：\n${path}\n\n如果目錄為空，會重新下載 LifeBook。非空且不是 LifeBook 專案的目錄會被拒絕。是否繼續？`,
@@ -640,7 +640,7 @@ const ja: Copy = {
   autoStartTitle: "LifeBook Launcher を自動起動",
   autoStartDescription: "PC 起動時に Launcher を開き、設定に従って更新を確認します。",
   checkLauncherTitle: "Launcher 更新を自動確認",
-  checkLauncherDescription: "起動後に新バージョンを確認し、更新があれば浮動進行状況を表示して自動インストール、再起動します。失敗時は次回起動時に再試行します。",
+  checkLauncherDescription: "起動後に新バージョンを確認します。更新があっても確認なしで自動インストールしません。",
   changeProjectPath: "フォルダ変更",
   confirmProjectDirectoryTitle: "LifeBook プロジェクトフォルダの確認",
   confirmProjectDirectoryDownload: (path) => `このフォルダに LifeBook プロジェクトを準備します：\n${path}\n\n空フォルダの場合は LifeBook を再ダウンロードします。空でなく LifeBook プロジェクトでもないフォルダは拒否されます。続行しますか？`,
@@ -833,7 +833,7 @@ const en: Copy = {
   autoStartTitle: "Start LifeBook Launcher with the computer",
   autoStartDescription: "Open Launcher after boot and check updates according to the settings below.",
   checkLauncherTitle: "Auto-check Launcher updates",
-  checkLauncherDescription: "After launch, check for a new Launcher version. If found, show floating download progress, install, and restart automatically. Failed attempts retry on next launch.",
+  checkLauncherDescription: "After launch, check for a new Launcher version. Updates are only reported and are never installed without confirmation.",
   changeProjectPath: "Change folder",
   confirmProjectDirectoryTitle: "Confirm LifeBook project folder",
   confirmProjectDirectoryDownload: (path) => `LifeBook will be prepared in this folder:\n${path}\n\nIf the folder is empty, LifeBook will be downloaded again. A non-empty folder that is not a LifeBook project will be rejected. Continue?`,
@@ -1361,7 +1361,7 @@ export default function App() {
       setLauncherUpdate(info);
       addActivity(info.hasUpdate ? "warning" : "success", info.hasUpdate ? copy.launcherFound(info.latestVersion) : copy.launcherLatest);
       if (promptWhenUpdate && info.hasUpdate) {
-        await doUpdateLauncher(info, true);
+        await doUpdateLauncher(info, false);
       }
     } catch (error) {
       addActivity("error", copy.launcherCheckFailed(String(error)));
@@ -1978,7 +1978,7 @@ export default function App() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       void prepareLifeBookInBackground();
-      if (settings.checkLauncherOnLaunch) void checkLauncher(true, true);
+      if (settings.checkLauncherOnLaunch) void checkLauncher(false, true);
       if (settings.checkOpenCodeOnLaunch) void checkOpenCode(true);
     }, 600);
     return () => window.clearTimeout(timer);

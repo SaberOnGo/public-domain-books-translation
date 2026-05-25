@@ -1,0 +1,33 @@
+# JavaScript dependencies and frontend build output.
+node_modules/
+dist/
+.vite/
+
+# Tauri/Rust generated output.
+src-tauri/target/
+src-tauri/gen/
+src-tauri/.cargo/
+
+# Packaged Launcher artifacts belong on GitHub Releases, not in Git.
+*.exe
+*.msi
+*.msix
+*.zip
+*.7z
+*.dmg
+*.pkg
+*.deb
+*.rpm
+*.AppImage
+
+# Temporary installer scripts and local diagnostics.
+install-lifebook-launcher.cmd
+install-lifebook-launcher.sh
+*.log
+*.tmp
+*.temp
+*.bak
+
+# OS/editor noise.
+.DS_Store
+Thumbs.db

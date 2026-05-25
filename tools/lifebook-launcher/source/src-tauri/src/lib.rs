@@ -4125,7 +4125,15 @@ fn launcher_current_version() -> String {
 }
 
 fn normalize_version(value: &str) -> String {
-    value.trim().trim_start_matches('v').to_ascii_lowercase()
+    let lower = value.trim().to_ascii_lowercase();
+    let candidate = if let Some((_, version)) = lower.rsplit_once("-v") {
+        version
+    } else if let Some(index) = lower.find(|ch: char| ch.is_ascii_digit()) {
+        &lower[index..]
+    } else {
+        lower.trim_start_matches('v')
+    };
+    candidate.trim_start_matches('v').to_string()
 }
 
 fn is_remote_version_newer(remote: &str, installed: &str) -> bool {
@@ -4203,7 +4211,7 @@ endlocal
     );
     fs::write(&script, content).map_err(|err| format!("无法写入 Launcher 更新脚本：{err}"))?;
     Command::new("cmd")
-        .args(["/C", "start", "", "/MIN"])
+        .arg("/C")
         .arg(&script)
         .creation_flags(CREATE_NO_WINDOW)
         .spawn()
@@ -5392,6 +5400,24 @@ EN:
         assert!(message.contains("本地多 3 个 commit"));
         assert!(message.contains("GitHub 多 64 个 commit"));
         assert!(message.contains("不会自动 merge/rebase"));
+    }
+
+    #[test]
+    fn launcher_release_tag_prefix_does_not_force_same_version_update() {
+        assert_eq!(normalize_version("lifebook-launcher-v1.3.4"), "1.3.4");
+        assert_eq!(normalize_version("lifebook-launcher-1.3.4"), "1.3.4");
+        assert!(!is_remote_version_newer(
+            "lifebook-launcher-v1.3.4",
+            "v1.3.4"
+        ));
+        assert!(is_remote_version_newer(
+            "lifebook-launcher-v1.3.5",
+            "v1.3.4"
+        ));
+        assert!(!is_remote_version_newer(
+            "lifebook-launcher-v1.3.3",
+            "v1.3.4"
+        ));
     }
 
     #[test]
