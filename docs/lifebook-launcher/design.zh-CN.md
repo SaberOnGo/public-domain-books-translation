@@ -20,7 +20,7 @@ LifeBook Launcher 是本仓库面向普通用户的桌面入口。它不是 Open
   - `LifeBook 项目`
   - `OpenCode 客户端`
 - LifeBook 项目由 Launcher 自动准备和更新；普通用户不需要手动点击“检查 LifeBook”或“更新 LifeBook”。
-- `本次 LifeBook 更新内容` 默认只显示最新一条 commit；有更多记录时再允许用户展开，固定高度滚动，避免撑爆界面。
+- `本次 LifeBook 更新内容` 默认显示 Launcher 可取得的全部历史 commit；窗口仍保持固定大小，更新内容区域右侧显示滚动条并在区域内滚动，避免撑爆界面。
 - 用户可设置是否开机自动启动 LifeBook Launcher。
 
 ## 主界面结构
@@ -38,18 +38,18 @@ LifeBook Launcher 是本仓库面向普通用户的桌面入口。它不是 Open
   - 区域固定高度，内容滚动。
 - 底部：活动日志，显示检查、下载、更新、失败原因。
 - 设置页：开机启动、LifeBook 项目目录、自动检测更新 Launcher、自动检测更新 OpenCode，并提供 Launcher 手动检查/下载/安装入口。
-- LifeBook 准备/同步进度使用悬浮进度框展示，不挤压卡片布局。下载、fetch、pull 能解析到 Git 进度时显示实际百分比；解析不到时显示阶段进度。用户可以停止/取消，失败后可在同一悬浮框重试或关闭。
+- LifeBook 准备/同步进度使用悬浮进度框展示，不挤压卡片布局。GitHub archive ZIP 下载能解析到字节进度时显示 KB、百分比和速度；解析不到时显示阶段进度。用户可以停止/取消，失败后可在同一悬浮框重试或关闭。
 
 ## LifeBook 更新规则
 
 Launcher 默认管理一个 LifeBook 项目目录。Windows 默认目录是 `D:\LifeBook`；其他系统默认在用户主目录下的 `LifeBook`。用户也可以在设置页选择已有 LifeBook 项目目录或空目录。
 
-1. 若项目目录不存在或为空，Launcher 自动执行 `git clone` 准备 LifeBook 项目。
+1. 若项目目录不存在或为空，Launcher 只能使用 GitHub archive ZIP 准备 LifeBook 项目；普通用户不需要预装 Git，也不会因为本机安装了 Git 而改用 `git clone`。
 2. 若项目目录已存在，必须包含 `AGENTS.md`、`template/epub_pipeline/` 和 `books/`，否则提示用户重新选择空目录或有效项目目录。
-3. 自动更新时执行 `git fetch origin --prune` 和 `git pull --ff-only`。
+3. 自动更新 LifeBook 内容时只允许 archive 模式：重新下载 GitHub archive，并只覆盖 manifest 记录且未被用户本地修改的托管文件；发现本地改动、同名非托管文件，或旧版 Git 托管目录没有 archive manifest 时停止，避免覆盖用户内容。
 4. 若工作区有本地改动，停止更新并提示用户先提交或备份。
 5. 不做会覆盖用户文件的 reset、checkout 或强制 pull。
-6. 首页默认只显示最近一条 LifeBook commit；检查到远端更新后，更新内容区域展示可展开的 commit 列表。
+6. 首页默认显示 Launcher 可取得的全部历史 LifeBook commit。更新内容区域固定高度，窗口尺寸不变，列表通过右侧滚动条滚动查看；如提供折叠按钮，只能作为用户主动切换到“只看最新”的辅助操作，不能作为默认状态。
 7. 更新内容依赖 GitHub commit 信息。推送前必须运行 `python tools/git/check_commit_messages.py --range origin/main..HEAD` 或当前分支对应 range，确认每个待推送 commit 都有标题和 `ZH:`、`EN:`、`JA:` 三段详细摘要；`ZH:`、`EN:`、`JA:` 必须各自独占一行，摘要从下一行开始。
 8. LifeBook 项目准备和同步必须通过 Tauri event 向前端发送进度，前端以悬浮进度框显示状态、停止/取消、失败重试和关闭操作。
 
@@ -68,7 +68,7 @@ Launcher GUI 以本地配置文件中的 LifeBook 项目目录为唯一优先来
 2. `LIFEBOOK_HOME` 环境变量。
 3. 默认目录：Windows 为 `D:\LifeBook`，macOS / Linux 为用户主目录下的 `LifeBook`。
 
-`LIFEBOOK_HOME` 是 LifeBook 项目统一的项目根目录环境变量。Launcher 启动的 Git 子进程会注入 `LIFEBOOK_HOME`。项目脚本、公开 prompt 和外部客户端文档都不应写死某台电脑的绝对路径；需要显式项目根目录时，优先读取 `LIFEBOOK_HOME`，否则使用当前工作目录。
+`LIFEBOOK_HOME` 是 LifeBook 项目统一的项目根目录环境变量。Launcher 启动的子进程会注入 `LIFEBOOK_HOME`。项目脚本、公开 prompt 和外部客户端文档都不应写死某台电脑的绝对路径；需要显式项目根目录时，优先读取 `LIFEBOOK_HOME`，否则使用当前工作目录。
 
 ## OpenCode 更新规则
 
@@ -104,7 +104,7 @@ Launcher 从本项目 GitHub release 检查自身安装包。发现新版时先�
 - 网络下载：Rust `reqwest`，下载进度通过 Tauri event 推送给前端。
 - 代理提示：检测常见 `HTTP_PROXY` / `HTTPS_PROXY` / `ALL_PROXY` 环境变量；网络失败时提示检查 VPN 或代理。
 - 本地打开安装包/目录：Rust `open`。
-- Git 操作：Rust 后端调用本机 `git`，并限制在配置的 LifeBook 项目目录执行；Windows release 构建和子进程使用无控制台方式启动，避免普通用户看到命令行窗口。
+- LifeBook 项目更新：首次准备和后续同步都只使用 GitHub archive ZIP，以适配没有 Git 的普通用户；旧版 Git 托管目录不会继续调用本机 `git`，需要用户选择新的空目录后重新用 archive 准备。archive 模式会记录托管文件 hash manifest，用于后续更新时判断是否可以安全覆盖。Windows release 构建和子进程使用无控制台方式启动，避免普通用户看到命令行窗口。
 
 ## 目录结构
 

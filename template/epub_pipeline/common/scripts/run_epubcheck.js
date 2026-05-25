@@ -36,6 +36,14 @@ function firstExisting(paths) {
   return paths.find((item) => item && fs.existsSync(item)) || null;
 }
 
+function findLifeBookPrivateJava() {
+  const fromEnv = firstExisting([process.env.LIFEBOOK_JAVA]);
+  if (fromEnv) return fromEnv;
+  const localAppData = process.env.LOCALAPPDATA;
+  if (!localAppData) return null;
+  return findJava(path.join(localAppData, 'LifeBook', 'runtimes', 'java'));
+}
+
 function findSharedTool(start, relativePath) {
   let dir = start;
   while (true) {
@@ -52,7 +60,7 @@ const jar = nodeModules
   ? path.join(nodeModules, 'epubchecker', 'vendors', 'epubcheck-5.2.1', 'epubcheck.jar')
   : null;
 
-const java = findJava(javaRoot) || findJava(findSharedTool(root, path.join('tools', 'zulu17-jre'))) || firstExisting([
+const java = findLifeBookPrivateJava() || findJava(javaRoot) || findJava(findSharedTool(root, path.join('tools', 'zulu17-jre'))) || firstExisting([
   process.env.JAVA_HOME && path.join(process.env.JAVA_HOME, 'bin', 'java.exe'),
 ]) || 'java';
 

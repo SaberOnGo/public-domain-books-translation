@@ -1,15 +1,21 @@
 {
   "name": "lifebook-launcher",
   "private": true,
-  "version": "1.3.6",
+  "version": "1.3.8",
   "type": "module",
   "scripts": {
+    "version:sync": "node scripts/sync-version.mjs",
+    "version:check": "node scripts/sync-version.mjs --check",
+    "predev": "npm run version:sync",
     "dev": "vite --host 127.0.0.1 --port 1420",
+    "prebuild": "npm run version:sync",
     "build": "tsc && vite build",
     "clean:cache": "node scripts/clean-build-cache.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 1420",
     "tauri": "tauri",
+    "pretauri:dev": "npm run version:sync",
     "tauri:dev": "tauri dev",
+    "pretauri:build": "npm run version:sync",
     "tauri:build": "tauri build"
   },
   "dependencies": {

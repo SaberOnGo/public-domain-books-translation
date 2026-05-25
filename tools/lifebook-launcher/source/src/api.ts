@@ -14,6 +14,7 @@ import {
   ProjectDocument,
   ProxyAutoDetectResult,
   ProxyTestResult,
+  RuntimeStatus,
 } from "./types";
 
 declare global {
@@ -263,6 +264,41 @@ export function setAutoInstallNodeModules(enabled: boolean) {
   return invoke<NodeModulesStatus>("set_auto_install_node_modules", { enabled });
 }
 
+export function getRuntimeStatus() {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<RuntimeStatus>({
+      ready: true,
+      privateReady: true,
+      running: false,
+      runtimeRoot: "LifeBook/runtimes",
+      python: {
+        ready: true,
+        privateReady: true,
+        version: "3.12.10",
+        source: "private",
+        path: "LifeBook/runtimes/python/python.exe",
+        message: "Python private runtime is ready.",
+      },
+      java: {
+        ready: true,
+        privateReady: true,
+        version: "17.0.19",
+        source: "private",
+        path: "LifeBook/runtimes/java/bin/java.exe",
+        message: "Java private runtime is ready.",
+      },
+    });
+  }
+  return invoke<RuntimeStatus>("get_runtime_status");
+}
+
+export function startRuntimePrepare() {
+  if (!isTauriRuntime()) {
+    return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode." });
+  }
+  return invoke<ActionResult>("start_runtime_prepare");
+}
+
 export function startNodeModulesInstall() {
   if (!isTauriRuntime()) {
     return Promise.resolve<ActionResult>({ ok: true, message: "Preview mode." });
@@ -487,6 +523,18 @@ export function listenNodeModulesProgress(
     return Promise.resolve(() => undefined);
   }
   return listen<DownloadProgress>("node-modules-install-progress", (event) => {
+    callback(event.payload);
+  });
+}
+
+export function listenRuntimeProgress(
+  callback: (payload: DownloadProgress) => void,
+) {
+  if (!isTauriRuntime()) {
+    void callback;
+    return Promise.resolve(() => undefined);
+  }
+  return listen<DownloadProgress>("runtime-install-progress", (event) => {
     callback(event.payload);
   });
 }

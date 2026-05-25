@@ -40,6 +40,19 @@ def java_from_java_home(env: dict[str, str] | None = None) -> Path | None:
     return None
 
 
+def java_from_lifebook_runtime(env: dict[str, str] | None = None) -> Path | None:
+    env = env or dict(os.environ)
+    lifebook_java = env.get("LIFEBOOK_JAVA")
+    if lifebook_java:
+        candidate = Path(lifebook_java)
+        if candidate.exists():
+            return candidate.resolve()
+    local_app_data = env.get("LOCALAPPDATA")
+    if not local_app_data:
+        return None
+    return find_java_in_tree(Path(local_app_data) / "LifeBook" / "runtimes" / "java")
+
+
 def java_from_path() -> Path | None:
     java = shutil.which("java")
     return Path(java).resolve() if java else None
@@ -94,6 +107,7 @@ def collect_status(books_root: Path) -> dict[str, Any]:
     books_root = Path(books_root).resolve()
     local_root = local_jre_root(books_root)
     local_java = find_java_in_tree(local_root)
+    lifebook_java = java_from_lifebook_runtime()
     java_home = java_from_java_home()
     path_java = java_from_path()
     epubcheck_jar = (
@@ -104,7 +118,7 @@ def collect_status(books_root: Path) -> dict[str, Any]:
         / "epubcheck-5.2.1"
         / "epubcheck.jar"
     )
-    available_java = local_java or java_home or path_java
+    available_java = local_java or lifebook_java or java_home or path_java
     return {
         "books_root": str(books_root),
         "local_tools_root": str(books_root / "tools"),
@@ -113,6 +127,7 @@ def collect_status(books_root: Path) -> dict[str, Any]:
             "path": str(local_root),
             "java_path": str(local_java) if local_java else "",
         },
+        "lifebook_java": str(lifebook_java) if lifebook_java else "",
         "java_home": str(java_home) if java_home else "",
         "path_java": str(path_java) if path_java else "",
         "java_available": available_java is not None,

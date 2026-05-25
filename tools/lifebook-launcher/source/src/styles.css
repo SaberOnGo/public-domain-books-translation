@@ -44,6 +44,90 @@ button:disabled {
   opacity: 0.7;
 }
 
+.runtime-bootstrap-shell {
+  display: grid;
+  place-items: center;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  padding: 26px;
+  background: #f7f9fc;
+}
+
+.runtime-bootstrap-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px 22px;
+  width: min(720px, 100%);
+  padding: 30px;
+  border: 1px solid #d8e1ee;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 20px 56px rgba(15, 23, 42, 0.18);
+}
+
+.runtime-bootstrap-card .logo-mark {
+  grid-row: span 2;
+}
+
+.runtime-bootstrap-kicker {
+  margin: 0 0 8px;
+  color: #0b63ce;
+  font-size: 13px;
+  font-weight: 780;
+}
+
+.runtime-bootstrap-card h1 {
+  margin: 0;
+  color: #101827;
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.runtime-bootstrap-description {
+  max-width: 560px;
+  margin: 10px 0 0;
+  color: #566274;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.runtime-bootstrap-progress {
+  grid-column: 2;
+  display: grid;
+  gap: 9px;
+}
+
+.runtime-bootstrap-message {
+  min-height: 22px;
+  color: #4f5968;
+  font-size: 13px;
+}
+
+.runtime-bootstrap-actions {
+  grid-column: 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.runtime-bootstrap-actions button {
+  min-width: 104px;
+  height: 38px;
+  border: 1px solid #cfd8e5;
+  border-radius: 8px;
+  color: #263241;
+  background: #ffffff;
+  font-weight: 720;
+}
+
+.runtime-bootstrap-actions button.primary {
+  color: #ffffff;
+  border-color: #126bea;
+  background: #126bea;
+}
+
 .launcher-frame {
   overflow: hidden;
   width: 100vw;
@@ -1064,8 +1148,7 @@ button:disabled {
 }
 
 .commit-panel.expanded {
-  grid-row: 3 / span 2;
-  min-height: min(520px, calc(100vh - 260px));
+  min-height: 0;
 }
 
 .activity-panel.expanded {
@@ -1435,6 +1518,42 @@ button:disabled {
 .node-modules-settings-panel {
   display: grid;
   gap: 8px;
+}
+
+.runtime-settings-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #e1e7ef;
+  border-radius: 8px;
+  background: #fbfcfe;
+}
+
+.runtime-settings-copy {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.runtime-settings-copy > span {
+  color: #667085;
+  font-size: 13px;
+}
+
+.runtime-tool-lines {
+  display: grid;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.runtime-tool-lines code {
+  overflow: hidden;
+  color: #3f4652;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .node-modules-actions {

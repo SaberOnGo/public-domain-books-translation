@@ -130,6 +130,24 @@ export type NodeModulesStatus = {
   nodeModulesDir: string;
 };
 
+export type RuntimeToolStatus = {
+  ready: boolean;
+  privateReady: boolean;
+  version: string;
+  source?: string | null;
+  path?: string | null;
+  message: string;
+};
+
+export type RuntimeStatus = {
+  ready: boolean;
+  privateReady: boolean;
+  running: boolean;
+  runtimeRoot: string;
+  python: RuntimeToolStatus;
+  java: RuntimeToolStatus;
+};
+
 export type LauncherSettings = {
   autoStart: boolean;
   checkLauncherOnLaunch: boolean;

@@ -230,7 +230,7 @@ with zipfile.ZipFile(out, "w") as zf:
         if path.is_file() and path.name != "mimetype":
             zf.write(path, path.relative_to(root).as_posix(), compress_type=zipfile.ZIP_DEFLATED)
 `;
-  const result = spawnSync('python', ['-c', code], { encoding: 'utf8' });
+  const result = spawnSync(process.execPath, [path.join(__dirname, 'run_python.js'), '-c', code], { encoding: 'utf8' });
   if (result.status !== 0) {
     process.stderr.write(result.stderr || result.stdout);
     process.exit(result.status || 1);

@@ -1,7 +1,11 @@
-use chrono::Local;
+use chrono::{DateTime, Local, NaiveDate};
 use futures_util::StreamExt;
-use reqwest::{header::RANGE, StatusCode};
+use reqwest::{
+    header::{HeaderMap, RANGE, RETRY_AFTER},
+    StatusCode,
+};
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 #[cfg(target_os = "windows")]
 use std::os::windows::process::CommandExt;
 use std::{
@@ -35,19 +39,39 @@ const LIFEBOOK_LAUNCHER_REPO_LATEST_RELEASE_URL: &str =
     "https://github.com/SaberOnGo/public-domain-books-translation/releases/latest";
 const LIFEBOOK_LAUNCHER_REPO_RELEASE_DOWNLOAD_BASE: &str =
     "https://github.com/SaberOnGo/public-domain-books-translation/releases/download";
+#[cfg(test)]
 const LIFEBOOK_REPO_URL: &str = "https://github.com/SaberOnGo/public-domain-books-translation.git";
+const LIFEBOOK_REPO_COMMITS_API: &str =
+    "https://api.github.com/repos/SaberOnGo/public-domain-books-translation/commits";
+const LIFEBOOK_REPO_COMMITS_PAGE_BASE: &str =
+    "https://github.com/SaberOnGo/public-domain-books-translation/commits";
+const LIFEBOOK_ARCHIVE_DOWNLOAD_BASE: &str =
+    "https://codeload.github.com/SaberOnGo/public-domain-books-translation/zip/refs/heads";
+const LIFEBOOK_ARCHIVE_REF: &str = "main";
+const LIFEBOOK_COMMIT_PAGE_SIZE: usize = 100;
+const LIFEBOOK_PUBLIC_COMMITS_MAX_PAGES: usize = 100;
+const LIFEBOOK_COMMIT_HISTORY_CACHE_TTL_SECONDS: u64 = 10 * 60;
+const GITHUB_RELEASE_CACHE_TTL_SECONDS: u64 = 10 * 60;
+const GITHUB_RATE_LIMIT_COOLDOWN_BUFFER_SECONDS: u64 = 30;
+const GITHUB_SECONDARY_RATE_LIMIT_MIN_COOLDOWN_SECONDS: u64 = 60;
 const LIFEBOOK_HOME_ENV: &str = "LIFEBOOK_HOME";
+const LIFEBOOK_PYTHON_ENV: &str = "LIFEBOOK_PYTHON";
+const LIFEBOOK_JAVA_ENV: &str = "LIFEBOOK_JAVA";
 const LIFEBOOK_PROGRESS_EVENT: &str = "lifebook-project-progress";
 const OPENCODE_DOWNLOAD_EVENT: &str = "opencode-download-progress";
 const LAUNCHER_DOWNLOAD_EVENT: &str = "launcher-download-progress";
 const NODE_MODULES_PROGRESS_EVENT: &str = "node-modules-install-progress";
+const RUNTIME_PROGRESS_EVENT: &str = "runtime-install-progress";
 const TRAY_SHOW_ID: &str = "tray_show";
 const TRAY_HIDE_ID: &str = "tray_hide";
 const TRAY_QUIT_ID: &str = "tray_quit";
 const LAUNCHER_LOG_MAX_BYTES: u64 = 4 * 1024 * 1024;
 const LAUNCHER_LOG_BACKUP_COUNT: usize = 5;
+#[cfg(test)]
 const GIT_LOW_SPEED_LIMIT_BYTES: &str = "1024";
+#[cfg(test)]
 const GIT_LOW_SPEED_TIME_SECONDS: &str = "60";
+#[cfg(test)]
 const GIT_FETCH_TIMEOUT_SECONDS: u64 = 90;
 const PROXY_TEST_TIMEOUT_SECONDS: u64 = 8;
 const PROXY_AUTO_DETECT_TIMEOUT_MS: u64 = 1200;
@@ -57,12 +81,37 @@ const GITHUB_CONNECTIVITY_TEST_URL: &str =
 const NPM_PRIMARY_REGISTRY: &str = "https://registry.npmjs.org/";
 const NPM_CN_REGISTRY: &str = "https://registry.npmmirror.com/";
 const NPM_INSTALL_TIMEOUT_SECONDS: u64 = 15 * 60;
+const EPUBCHECK_RELEASE_DOWNLOAD_BASE: &str = "https://github.com/w3c/epubcheck/releases/download";
+const PYTHON_RUNTIME_VERSION: &str = "3.12.10";
+const PYTHON_RUNTIME_DIR_NAME: &str = "python-3.12.10-embed-amd64";
+const PYTHON_RUNTIME_ARCHIVE: &str = "python-3.12.10-embed-amd64.zip";
+const PYTHON_RUNTIME_SHA256: &str =
+    "4ACBED6DD1C744B0376E3B1CF57CE906F9DC9E95E68824584C8099A63025A3C3";
+const PYTHON_RUNTIME_SIZE_BYTES: u64 = 11_133_606;
+const PYTHON_RUNTIME_URLS: &[&str] = &[
+    "https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip",
+    "https://mirrors.huaweicloud.com/python/3.12.10/python-3.12.10-embed-amd64.zip",
+    "https://registry.npmmirror.com/-/binary/python/3.12.10/python-3.12.10-embed-amd64.zip",
+];
+const JAVA_RUNTIME_VERSION: &str = "17.0.19";
+const JAVA_RUNTIME_DIR_NAME: &str = "zulu17.66.19-ca-jre17.0.19-win_x64";
+const JAVA_RUNTIME_ARCHIVE: &str = "zulu17.66.19-ca-jre17.0.19-win_x64.zip";
+const JAVA_RUNTIME_SHA256: &str =
+    "D6D0802E9BB5DA42A61E4891463CDE880F00A7BF5FE2BD41A4FF9260E52C4EBB";
+const JAVA_RUNTIME_SIZE_BYTES: u64 = 44_097_076;
+const JAVA_RUNTIME_URLS: &[&str] = &[
+    "https://cdn.azul.com/zulu/bin/zulu17.66.19-ca-jre17.0.19-win_x64.zip",
+    "https://static.azul.com/zulu/bin/zulu17.66.19-ca-jre17.0.19-win_x64.zip",
+];
+const RUNTIME_HTTP_CONNECT_TIMEOUT_SECONDS: u64 = 12;
+const RUNTIME_HTTP_REQUEST_TIMEOUT_SECONDS: u64 = 180;
 static LIFEBOOK_UPDATE_RUNNING: AtomicBool = AtomicBool::new(false);
 static LIFEBOOK_UPDATE_CANCEL_REQUESTED: AtomicBool = AtomicBool::new(false);
 static OPENCODE_DOWNLOAD_CANCEL_REQUESTED: AtomicBool = AtomicBool::new(false);
 static NODE_MODULES_INSTALL_RUNNING: AtomicBool = AtomicBool::new(false);
 static NODE_MODULES_INSTALL_CANCEL_REQUESTED: AtomicBool = AtomicBool::new(false);
 static NODE_MODULES_INSTALL_REMOVE_PARTIAL: AtomicBool = AtomicBool::new(false);
+static RUNTIME_PREPARE_RUNNING: AtomicBool = AtomicBool::new(false);
 
 fn launcher_log_path() -> Result<PathBuf, String> {
     let base = dirs::data_local_dir()
@@ -73,6 +122,20 @@ fn launcher_log_path() -> Result<PathBuf, String> {
         .join("launcher")
         .join("logs")
         .join("lifebook-launcher.log"))
+}
+
+fn launcher_cache_dir() -> Result<PathBuf, String> {
+    let base = dirs::data_local_dir()
+        .or_else(dirs::config_local_dir)
+        .ok_or_else(|| "无法定位用户本地数据目录。".to_string())?;
+    Ok(base.join("LifeBook").join("launcher").join("cache"))
+}
+
+fn now_unix_seconds() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_secs())
+        .unwrap_or(0)
 }
 
 fn append_launcher_log(level: &str, message: impl AsRef<str>) {
@@ -218,6 +281,23 @@ impl Drop for NodeModulesInstallGuard {
     }
 }
 
+struct RuntimePrepareGuard;
+
+impl RuntimePrepareGuard {
+    fn try_acquire() -> Result<Self, String> {
+        RUNTIME_PREPARE_RUNNING
+            .compare_exchange(false, true, Ordering::Acquire, Ordering::Relaxed)
+            .map(|_| RuntimePrepareGuard)
+            .map_err(|_| "Python / Java 运行环境正在后台准备，请等待当前任务完成。".to_string())
+    }
+}
+
+impl Drop for RuntimePrepareGuard {
+    fn drop(&mut self) {
+        RUNTIME_PREPARE_RUNNING.store(false, Ordering::Release);
+    }
+}
+
 #[derive(Clone)]
 struct LifeBookProgressEmitter {
     app: tauri::AppHandle,
@@ -229,6 +309,12 @@ struct NodeModulesProgressEmitter {
     app: tauri::AppHandle,
 }
 
+#[derive(Clone)]
+struct RuntimeProgressEmitter {
+    app: tauri::AppHandle,
+}
+
+#[cfg(test)]
 #[derive(Clone, Copy)]
 enum GitProgressPhase {
     Clone,
@@ -236,12 +322,21 @@ enum GitProgressPhase {
     Pull,
 }
 
+#[cfg(test)]
 #[derive(Clone, Copy, Debug)]
 enum GitHttpMode {
     Http2,
     Http11,
 }
 
+#[cfg(test)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum LifeBookInitialDownloadMethod {
+    GithubArchive,
+    GitClone,
+}
+
+#[cfg(test)]
 impl GitHttpMode {
     fn value(self) -> &'static str {
         match self {
@@ -270,7 +365,7 @@ struct LauncherState {
     opencode_available: bool,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 struct CommitInfo {
     hash: String,
@@ -278,6 +373,65 @@ struct CommitInfo {
     title: String,
     summary: String,
     full_message: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+struct CommitHistoryCache {
+    ref_name: String,
+    locale: String,
+    fetched_at_unix: u64,
+    source: String,
+    commits: Vec<CommitInfo>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+struct OpenCodeReleaseCache {
+    fetched_at_unix: u64,
+    latest_version: String,
+    asset: GithubAsset,
+}
+
+#[derive(Debug, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase")]
+struct GithubApiCooldownState {
+    latest_commit_until: Option<u64>,
+    commit_history_until: Option<u64>,
+    opencode_release_until: Option<u64>,
+}
+
+#[derive(Debug, Clone, Copy)]
+enum GithubApiCooldownKind {
+    LatestCommit,
+    CommitHistory,
+    OpenCodeRelease,
+}
+
+impl GithubApiCooldownKind {
+    fn label(self) -> &'static str {
+        match self {
+            GithubApiCooldownKind::LatestCommit => "latest-commit",
+            GithubApiCooldownKind::CommitHistory => "commit-history",
+            GithubApiCooldownKind::OpenCodeRelease => "opencode-release",
+        }
+    }
+
+    fn get(self, state: &GithubApiCooldownState) -> Option<u64> {
+        match self {
+            GithubApiCooldownKind::LatestCommit => state.latest_commit_until,
+            GithubApiCooldownKind::CommitHistory => state.commit_history_until,
+            GithubApiCooldownKind::OpenCodeRelease => state.opencode_release_until,
+        }
+    }
+
+    fn set(self, state: &mut GithubApiCooldownState, until: Option<u64>) {
+        match self {
+            GithubApiCooldownKind::LatestCommit => state.latest_commit_until = until,
+            GithubApiCooldownKind::CommitHistory => state.commit_history_until = until,
+            GithubApiCooldownKind::OpenCodeRelease => state.opencode_release_until = until,
+        }
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -412,6 +566,28 @@ struct NodeModulesStatus {
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
+struct RuntimeToolStatus {
+    ready: bool,
+    private_ready: bool,
+    version: String,
+    source: Option<String>,
+    path: Option<String>,
+    message: String,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct RuntimeStatus {
+    ready: bool,
+    private_ready: bool,
+    running: bool,
+    runtime_root: String,
+    python: RuntimeToolStatus,
+    java: RuntimeToolStatus,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 struct DiagnosticLogSettings {
     save_logs: bool,
     log_dir: String,
@@ -450,13 +626,94 @@ struct DownloadProgress {
     state: Option<String>,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+struct ArchiveProjectState {
+    source: String,
+    ref_name: String,
+    commit: Option<String>,
+    downloaded_at: String,
+    files: Vec<ArchiveManagedFile>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+struct ArchiveManagedFile {
+    path: String,
+    fingerprint: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct RemoteCommitRef {
+    sha: String,
+    date: Option<String>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum RuntimeKind {
+    Python,
+    Java,
+}
+
+impl RuntimeKind {
+    fn label(self) -> &'static str {
+        match self {
+            RuntimeKind::Python => "Python",
+            RuntimeKind::Java => "Java",
+        }
+    }
+
+    fn dir_name(self) -> &'static str {
+        match self {
+            RuntimeKind::Python => "python",
+            RuntimeKind::Java => "java",
+        }
+    }
+
+    fn env_name(self) -> &'static str {
+        match self {
+            RuntimeKind::Python => LIFEBOOK_PYTHON_ENV,
+            RuntimeKind::Java => LIFEBOOK_JAVA_ENV,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct RuntimePackage {
+    kind: RuntimeKind,
+    version: &'static str,
+    install_dir_name: &'static str,
+    archive_name: &'static str,
+    sha256: &'static str,
+    size_bytes: u64,
+    urls: &'static [&'static str],
+}
+
 #[derive(Debug, Deserialize)]
 struct GithubRelease {
     tag_name: String,
     assets: Vec<GithubAsset>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize)]
+struct GithubCommit {
+    sha: String,
+    commit: GithubCommitDetails,
+}
+
+#[derive(Debug, Deserialize)]
+struct GithubCommitDetails {
+    message: String,
+    author: Option<GithubCommitAuthor>,
+    committer: Option<GithubCommitAuthor>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GithubCommitAuthor {
+    date: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 struct GithubAsset {
     name: String,
     browser_download_url: String,
@@ -485,29 +742,46 @@ fn collect_launcher_state() -> Result<LauncherState, String> {
     let repo_root = configured_or_default_repo_root()?;
     let repo_status = repo_status_for_path(&repo_root);
     let repo_ready = repo_status == "ready";
-    let branch = if repo_ready {
-        git_output(&repo_root, &["branch", "--show-current"]).unwrap_or_else(|_| "unknown".into())
+    let archive_state = if repo_ready {
+        read_archive_project_state(&repo_root)
+    } else {
+        None
+    };
+    let branch = if let Some(state) = &archive_state {
+        format!("archive/{}", state.ref_name)
+    } else if repo_ready {
+        "archive-required".into()
     } else {
         "not-ready".into()
     };
-    let local_commit = if repo_ready {
-        git_output(&repo_root, &["rev-parse", "HEAD"]).unwrap_or_else(|_| "unknown".into())
+    let local_commit = if let Some(state) = &archive_state {
+        state
+            .commit
+            .clone()
+            .unwrap_or_else(|| "github-archive".into())
+    } else if repo_ready {
+        "legacy-git-disabled".into()
     } else {
         String::new()
     };
-    let local_commit_short = if repo_ready {
-        git_output(&repo_root, &["rev-parse", "--short", "HEAD"])
-            .unwrap_or_else(|_| "unknown".into())
+    let local_commit_short = if archive_state.is_some() {
+        "archive".into()
+    } else if repo_ready {
+        "legacy".into()
     } else {
         String::new()
     };
-    let remote_url = if repo_ready {
-        git_output(&repo_root, &["config", "--get", "remote.origin.url"])
-            .unwrap_or_else(|_| LIFEBOOK_REPO_URL.into())
+    let remote_url = if let Some(state) = &archive_state {
+        lifebook_archive_download_url(&state.ref_name)
     } else {
-        LIFEBOOK_REPO_URL.into()
+        lifebook_archive_download_url(LIFEBOOK_ARCHIVE_REF)
     };
-    let dirty = repo_ready && has_tracked_changes(&repo_root).unwrap_or(false);
+    let dirty = repo_ready
+        && if let Some(state) = &archive_state {
+            ensure_archive_managed_files_clean(&repo_root, state).is_err()
+        } else {
+            false
+        };
     let proxy_configured = is_proxy_configured();
     let platform = format!("{} {}", std::env::consts::OS, std::env::consts::ARCH);
     let install_root = opencode_install_root()?;
@@ -600,8 +874,7 @@ async fn check_lifebook_updates(locale: Option<String>) -> Result<LifeBookUpdate
     run_blocking(move || {
         let repo_root = active_lifebook_repo_root()?;
         if let Ok(_guard) = LifeBookUpdateGuard::try_acquire() {
-            let should_fetch = remote_matches_local_head(&repo_root).is_ok_and(|matches| !matches);
-            lifebook_update_info_best_effort(&repo_root, should_fetch, locale.as_deref())
+            lifebook_update_info_best_effort(&repo_root, false, locale.as_deref())
         } else {
             lifebook_update_info_best_effort(&repo_root, false, locale.as_deref())
         }
@@ -663,8 +936,12 @@ async fn prepare_lifebook_project(
         LIFEBOOK_UPDATE_CANCEL_REQUESTED.store(false, Ordering::Release);
         let progress = LifeBookProgressEmitter::new(app, locale.clone());
         progress.emit_key(5, "prepare_start");
-        ensure_lifebook_project_exists(&repo_root, Some(&progress))?;
-        let update_result = update_lifebook_project_at(&repo_root, Some(&progress));
+        let created = ensure_lifebook_project_exists(&repo_root, Some(&progress))?;
+        let update_result = if created {
+            Ok(())
+        } else {
+            update_lifebook_project_at(&repo_root, Some(&progress))
+        };
         progress.emit_key(96, "read_changes");
         let info = lifebook_update_info_best_effort(&repo_root, false, locale.as_deref());
         if update_result.is_ok() && info.is_ok() {
@@ -706,8 +983,12 @@ async fn sync_lifebook_project(
         LIFEBOOK_UPDATE_CANCEL_REQUESTED.store(false, Ordering::Release);
         let progress = LifeBookProgressEmitter::new(app, locale.clone());
         progress.emit_key(5, "sync_start");
-        ensure_lifebook_project_exists(&repo_root, Some(&progress))?;
-        let update_result = update_lifebook_project_at(&repo_root, Some(&progress));
+        let created = ensure_lifebook_project_exists(&repo_root, Some(&progress))?;
+        let update_result = if created {
+            Ok(())
+        } else {
+            update_lifebook_project_at(&repo_root, Some(&progress))
+        };
         progress.emit_key(96, "read_changes");
         let info = lifebook_update_info_best_effort(&repo_root, false, locale.as_deref());
         if update_result.is_ok() && info.is_ok() {
@@ -874,6 +1155,68 @@ fn get_node_modules_status() -> Result<NodeModulesStatus, String> {
 fn set_auto_install_node_modules(enabled: bool) -> Result<NodeModulesStatus, String> {
     write_auto_install_node_modules_config(enabled)?;
     collect_node_modules_status()
+}
+
+#[tauri::command]
+fn get_runtime_status() -> Result<RuntimeStatus, String> {
+    collect_runtime_status()
+}
+
+#[tauri::command]
+fn start_runtime_prepare(app: tauri::AppHandle) -> Result<ActionResult, String> {
+    let status = collect_runtime_status()?;
+    if !runtime_prepare_requires_download(&status) {
+        set_process_runtime_envs_from_status(&status);
+        return Ok(ActionResult {
+            ok: true,
+            message: "检测到可用 Python / Java 运行环境，直接进入 Launcher。".into(),
+            repo_root: None,
+            requires_download: Some(false),
+        });
+    }
+    if RUNTIME_PREPARE_RUNNING.load(Ordering::Acquire) {
+        return Ok(ActionResult {
+            ok: true,
+            message: "Python / Java 运行环境正在准备中...".into(),
+            repo_root: None,
+            requires_download: Some(true),
+        });
+    }
+    let guard = RuntimePrepareGuard::try_acquire()?;
+    let app_for_task = app.clone();
+    thread::spawn(move || {
+        let _guard = guard;
+        let emitter = RuntimeProgressEmitter::new(app_for_task.clone());
+        let result = prepare_private_runtimes(&app_for_task, Some(&emitter));
+        match result {
+            Ok(()) => {
+                set_process_runtime_envs();
+                emitter.emit(
+                    100.0,
+                    100,
+                    100,
+                    "Python / Java 运行环境已准备完成。".into(),
+                    Some("success"),
+                );
+            }
+            Err(error) => {
+                append_launcher_log("WARN", format!("runtime prepare failed: {error}"));
+                emitter.emit(
+                    100.0,
+                    0,
+                    0,
+                    format!("Python / Java 运行环境准备失败：{error}"),
+                    Some("failed"),
+                );
+            }
+        }
+    });
+    Ok(ActionResult {
+        ok: true,
+        message: "正在准备缺失的 Python / Java 运行环境...".into(),
+        repo_root: None,
+        requires_download: Some(true),
+    })
 }
 
 #[tauri::command]
@@ -1291,19 +1634,31 @@ fn open_books_folder() -> Result<ActionResult, String> {
 #[tauri::command]
 fn launch_opencode_client() -> Result<ActionResult, String> {
     let install_root = opencode_install_root()?;
-    if is_opencode_process_running() {
+    let repo_root = configured_or_default_repo_root()?;
+    if !repo_root.is_dir() {
+        return Err(format!(
+            "LifeBook 项目目录不可用，无法作为 OpenCode 工作目录启动：{}。请先在设置页选择有效目录。",
+            display_path(&repo_root)
+        ));
+    }
+    let working_dir = repo_root.canonicalize().unwrap_or(repo_root);
+    if let Some(candidate) = detected_opencode_client(&install_root) {
+        launch_opencode_candidate(&candidate, &working_dir)?;
         return Ok(ActionResult {
             ok: true,
-            message: "OpenCode 已启动。".into(),
+            message: format!(
+                "已启动 OpenCode：{}；工作目录：{}",
+                display_path(&candidate),
+                display_path(&working_dir)
+            ),
             repo_root: None,
             requires_download: None,
         });
     }
-    if let Some(candidate) = detected_opencode_client(&install_root) {
-        open::that(&candidate).map_err(|err| format!("无法启动 OpenCode：{err}"))?;
+    if is_opencode_process_running() {
         return Ok(ActionResult {
             ok: true,
-            message: format!("已启动 OpenCode：{}", candidate.display()),
+            message: "OpenCode 已在运行，但未找到可重新打开 LifeBook 工作目录的客户端入口。".into(),
             repo_root: None,
             requires_download: None,
         });
@@ -1312,11 +1667,119 @@ fn launch_opencode_client() -> Result<ActionResult, String> {
     Err("没有找到已安装的 OpenCode Desktop。请先点击“检查更新/更新 OpenCode”安装官方客户端；如果已经安装，请从系统应用菜单启动一次。".into())
 }
 
+#[cfg(target_os = "windows")]
+#[derive(Debug, PartialEq, Eq)]
+struct OpenCodeLaunchSpec {
+    program: PathBuf,
+    args: Vec<String>,
+    working_dir: PathBuf,
+}
+
+#[cfg(target_os = "windows")]
+fn windows_opencode_launch_spec(candidate: &Path, working_dir: &Path) -> OpenCodeLaunchSpec {
+    let is_shortcut = candidate
+        .extension()
+        .and_then(|value| value.to_str())
+        .is_some_and(|extension| extension.eq_ignore_ascii_case("lnk"));
+    if is_shortcut {
+        return OpenCodeLaunchSpec {
+            program: PathBuf::from("cmd"),
+            args: vec![
+                "/D".into(),
+                "/C".into(),
+                "start".into(),
+                "".into(),
+                "/D".into(),
+                display_path(working_dir),
+                display_path(candidate),
+                display_path(working_dir),
+            ],
+            working_dir: working_dir.to_path_buf(),
+        };
+    }
+    OpenCodeLaunchSpec {
+        program: candidate.to_path_buf(),
+        args: vec![display_path(working_dir)],
+        working_dir: working_dir.to_path_buf(),
+    }
+}
+
+fn launch_opencode_candidate(candidate: &Path, working_dir: &Path) -> Result<(), String> {
+    #[cfg(target_os = "windows")]
+    {
+        let spec = windows_opencode_launch_spec(candidate, working_dir);
+        let mut command = Command::new(&spec.program);
+        command
+            .args(&spec.args)
+            .current_dir(&spec.working_dir)
+            .env(LIFEBOOK_HOME_ENV, display_path(working_dir))
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null());
+        apply_runtime_env(&mut command);
+        command.creation_flags(0x08000000);
+        command.spawn().map_err(|err| {
+            format!(
+                "无法启动 OpenCode：{err}。客户端：{}；工作目录：{}",
+                display_path(candidate),
+                display_path(working_dir)
+            )
+        })?;
+        return Ok(());
+    }
+
+    #[cfg(target_os = "macos")]
+    {
+        let is_app_bundle = candidate
+            .extension()
+            .and_then(|value| value.to_str())
+            .is_some_and(|extension| extension.eq_ignore_ascii_case("app"));
+        let mut command = if is_app_bundle {
+            let mut command = Command::new("open");
+            command.args(["-a", &display_path(candidate), &display_path(working_dir)]);
+            command
+        } else {
+            let mut command = Command::new(candidate);
+            command.arg(working_dir);
+            command
+        };
+        command
+            .current_dir(working_dir)
+            .env(LIFEBOOK_HOME_ENV, display_path(working_dir))
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null());
+        apply_runtime_env(&mut command);
+        command
+            .spawn()
+            .map_err(|err| format!("无法启动 OpenCode：{err}"))?;
+        return Ok(());
+    }
+
+    #[cfg(all(not(target_os = "windows"), not(target_os = "macos")))]
+    {
+        let mut command = Command::new(candidate);
+        command
+            .arg(working_dir)
+            .current_dir(working_dir)
+            .env(LIFEBOOK_HOME_ENV, display_path(working_dir))
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null());
+        apply_runtime_env(&mut command);
+        command
+            .spawn()
+            .map_err(|err| format!("无法启动 OpenCode：{err}"))?;
+        Ok(())
+    }
+}
+
 #[cfg(test)]
 fn git_transfer_args(args: &[&str]) -> Vec<String> {
     git_transfer_args_for_mode(args, GitHttpMode::Http2)
 }
 
+#[cfg(test)]
 fn git_transfer_args_for_mode(args: &[&str], http_mode: GitHttpMode) -> Vec<String> {
     let mut git_args = vec![
         "-c".to_string(),
@@ -1336,20 +1799,6 @@ fn git_transfer_args_for_mode(args: &[&str], http_mode: GitHttpMode) -> Vec<Stri
     git_args
 }
 
-fn lifebook_clone_args(destination: &str) -> Vec<String> {
-    vec![
-        "clone".to_string(),
-        "--depth".to_string(),
-        "1".to_string(),
-        "--single-branch".to_string(),
-        "--filter=blob:none".to_string(),
-        "--no-tags".to_string(),
-        "--progress".to_string(),
-        LIFEBOOK_REPO_URL.to_string(),
-        destination.to_string(),
-    ]
-}
-
 fn taskkill_tree_args(pid: u32) -> Vec<String> {
     vec![
         "/PID".to_string(),
@@ -1363,7 +1812,7 @@ fn terminate_process_tree(child: &mut std::process::Child, reason: &str) {
     let pid = child.id();
     append_launcher_log(
         "WARN",
-        format!("terminating git process tree pid={pid} reason={reason}"),
+        format!("terminating process tree pid={pid} reason={reason}"),
     );
 
     #[cfg(target_os = "windows")]
@@ -1403,6 +1852,7 @@ fn terminate_process_tree(child: &mut std::process::Child, reason: &str) {
     }
 }
 
+#[cfg(test)]
 fn git_output(repo_root: &Path, args: &[&str]) -> Result<String, String> {
     append_launcher_log(
         "DEBUG",
@@ -1453,6 +1903,7 @@ fn git_output(repo_root: &Path, args: &[&str]) -> Result<String, String> {
     }
 }
 
+#[cfg(test)]
 fn git_exit_code(repo_root: &Path, args: &[&str]) -> Result<i32, String> {
     append_launcher_log(
         "DEBUG",
@@ -1503,6 +1954,7 @@ fn git_exit_code(repo_root: &Path, args: &[&str]) -> Result<i32, String> {
     }
 }
 
+#[cfg(test)]
 fn has_tracked_changes(repo_root: &Path) -> Result<bool, String> {
     let worktree_changed =
         git_exit_code(repo_root, &["diff", "--quiet", "--ignore-submodules", "--"])? == 1;
@@ -1516,6 +1968,7 @@ fn has_tracked_changes(repo_root: &Path) -> Result<bool, String> {
     Ok(staged_changed)
 }
 
+#[cfg(test)]
 fn git_output_with_timeout(
     repo_root: &Path,
     args: &[&str],
@@ -1541,6 +1994,7 @@ fn git_output_with_timeout(
     Err(last_error.unwrap_or_else(|| "Git 网络请求失败。".into()))
 }
 
+#[cfg(test)]
 fn git_output_with_timeout_once(
     repo_root: &Path,
     args: &[&str],
@@ -1650,6 +2104,7 @@ fn git_output_with_timeout_once(
     }
 }
 
+#[cfg(test)]
 fn git_output_with_progress(
     repo_root: &Path,
     args: &[&str],
@@ -1677,6 +2132,7 @@ fn git_output_with_progress(
     Err(last_error.unwrap_or_else(|| "Git 网络传输失败。".into()))
 }
 
+#[cfg(test)]
 fn git_output_with_progress_once(
     repo_root: &Path,
     args: &[&str],
@@ -1796,6 +2252,7 @@ fn git_output_with_progress_once(
     }
 }
 
+#[cfg(test)]
 fn git_progress_phase_name(phase: GitProgressPhase) -> &'static str {
     match phase {
         GitProgressPhase::Clone => "clone",
@@ -1804,6 +2261,7 @@ fn git_progress_phase_name(phase: GitProgressPhase) -> &'static str {
     }
 }
 
+#[cfg(test)]
 fn should_retry_git_transfer(error: &str) -> bool {
     let lower = error.to_ascii_lowercase();
     !lower.contains("已停止")
@@ -1821,6 +2279,7 @@ fn should_retry_git_transfer(error: &str) -> bool {
             || lower.contains("operation too slow"))
 }
 
+#[cfg(test)]
 fn read_git_progress_stderr<R: Read>(
     mut stderr: R,
     phase: GitProgressPhase,
@@ -1855,6 +2314,7 @@ fn read_git_progress_stderr<R: Read>(
     }
 }
 
+#[cfg(test)]
 fn git_progress_fragments_from_chunk(pending: &mut String, chunk: &str) -> Vec<String> {
     let mut fragments = Vec::new();
     for character in chunk.chars() {
@@ -1870,6 +2330,7 @@ fn git_progress_fragments_from_chunk(pending: &mut String, chunk: &str) -> Vec<S
     fragments
 }
 
+#[cfg(test)]
 fn handle_git_progress_fragment(
     phase: GitProgressPhase,
     progress_emitter: Option<&LifeBookProgressEmitter>,
@@ -1893,7 +2354,7 @@ fn handle_git_progress_fragment(
 fn ensure_lifebook_project_exists(
     repo_root: &Path,
     progress: Option<&LifeBookProgressEmitter>,
-) -> Result<(), String> {
+) -> Result<bool, String> {
     append_launcher_log(
         "INFO",
         format!(
@@ -1904,7 +2365,10 @@ fn ensure_lifebook_project_exists(
     );
     if is_lifebook_repo(repo_root) {
         write_launcher_config(repo_root)?;
-        return Ok(());
+        if read_archive_project_state(repo_root).is_none() {
+            adopt_existing_lifebook_archive_project(repo_root)?;
+        }
+        return Ok(false);
     }
 
     if repo_root.exists() && !is_dir_empty(repo_root) {
@@ -1918,7 +2382,7 @@ fn ensure_lifebook_project_exists(
         .parent()
         .ok_or_else(|| format!("无法解析 LifeBook 项目目录：{}", display_path(repo_root)))?;
     fs::create_dir_all(parent).map_err(|err| format!("无法创建 LifeBook 项目父目录：{err}"))?;
-    clone_lifebook_repo(parent, repo_root, progress)?;
+    download_lifebook_project(parent, repo_root, progress)?;
 
     if !is_lifebook_repo(repo_root) {
         return Err(format!(
@@ -1927,98 +2391,47 @@ fn ensure_lifebook_project_exists(
         ));
     }
 
-    write_launcher_config(repo_root)
+    write_launcher_config(repo_root)?;
+    Ok(true)
 }
 
-fn clone_lifebook_repo(
+fn archive_only_legacy_lifebook_message(repo_root: &Path) -> String {
+    format!(
+        "当前 LifeBook 项目不是 archive ZIP 托管目录：{}。{} 已禁止使用 Git 下载或更新 LifeBook 内容；请在设置页选择新的空目录，让 Launcher 通过 GitHub archive ZIP 重新准备项目。",
+        display_path(repo_root),
+        launcher_current_version()
+    )
+}
+
+fn lifebook_archive_only_download_error(error: String) -> String {
+    format!(
+        "LifeBook 项目下载失败。{} 禁止使用 Git 下载 LifeBook 内容，只能使用 GitHub archive ZIP；archive 下载错误：{error}",
+        launcher_current_version()
+    )
+}
+
+#[cfg(test)]
+fn lifebook_initial_download_methods() -> [LifeBookInitialDownloadMethod; 1] {
+    [LifeBookInitialDownloadMethod::GithubArchive]
+}
+
+fn download_lifebook_project(
     parent: &Path,
     repo_root: &Path,
     progress: Option<&LifeBookProgressEmitter>,
 ) -> Result<(), String> {
-    let clone_dir = managed_clone_dir(repo_root)?;
-    if let Some(emitter) = progress {
-        emitter.emit_key(10, "clone_start");
-    }
-    let destination = display_path(&clone_dir);
     append_launcher_log(
         "INFO",
         format!(
-            "cloning LifeBook repo parent={} temp_dir={destination} final_dir={}",
+            "using GitHub archive ZIP as the only LifeBook download method parent={} final_dir={}",
             display_path(parent),
             display_path(repo_root)
         ),
     );
-    let clone_args = lifebook_clone_args(&destination);
-    let clone_arg_refs: Vec<&str> = clone_args.iter().map(String::as_str).collect();
-    let mut last_error = None;
-    for mode in [GitHttpMode::Http2, GitHttpMode::Http11] {
-        if clone_dir.exists() {
-            append_launcher_log(
-                "WARN",
-                format!(
-                    "removing stale LifeBook temp clone dir {}",
-                    display_path(&clone_dir)
-                ),
-            );
-            fs::remove_dir_all(&clone_dir)
-                .map_err(|err| format!("无法整理上次未完成的 LifeBook 临时下载目录：{err}"))?;
-        }
-        match git_output_with_progress_once(
-            parent,
-            &clone_arg_refs,
-            progress,
-            GitProgressPhase::Clone,
-            mode,
-        ) {
-            Ok(_) => {
-                finalize_lifebook_clone(&clone_dir, repo_root)?;
-                return Ok(());
-            }
-            Err(error) if should_retry_git_transfer(&error) => {
-                append_launcher_log(
-                    "WARN",
-                    format!(
-                        "LifeBook clone failed with {:?}, retrying if possible: {error}",
-                        mode
-                    ),
-                );
-                last_error = Some(error);
-            }
-            Err(error) => return Err(error),
-        }
-    }
-    if clone_dir.exists() {
-        let _ = fs::remove_dir_all(&clone_dir);
-    }
-    let message = last_error.unwrap_or_else(|| "LifeBook 下载失败。".into());
-    return Err(format!(
-        "{message}\n建议：在设置页配置可用代理并测试通过后重试；如果直连 GitHub 长期低于 100 KiB/s，首次下载很容易中断。"
-    ));
+    download_lifebook_archive_repo(parent, repo_root, progress)
+        .map_err(lifebook_archive_only_download_error)
 }
-
-fn finalize_lifebook_clone(clone_dir: &Path, repo_root: &Path) -> Result<(), String> {
-    if repo_root.exists() {
-        if is_dir_empty(repo_root) {
-            fs::remove_dir_all(repo_root)
-                .map_err(|err| format!("无法替换空的 LifeBook 项目目录：{err}"))?;
-        } else if !is_lifebook_repo(repo_root) {
-            return Err(format!(
-                "LifeBook 项目目录已被其他文件占用：{}。请在设置里选择一个空目录，或先整理该目录。",
-                display_path(repo_root)
-            ));
-        }
-    }
-    fs::rename(&clone_dir, repo_root).map_err(|err| {
-        let message = format!(
-            "无法移动 LifeBook 下载目录到项目目录：{err}。临时目录：{}",
-            display_path(&clone_dir)
-        );
-        append_launcher_log("ERROR", &message);
-        message
-    })
-}
-
-fn managed_clone_dir(repo_root: &Path) -> Result<PathBuf, String> {
+fn managed_archive_dir(repo_root: &Path) -> Result<PathBuf, String> {
     let name = repo_root
         .file_name()
         .and_then(|value| value.to_str())
@@ -2026,7 +2439,661 @@ fn managed_clone_dir(repo_root: &Path) -> Result<PathBuf, String> {
     let parent = repo_root
         .parent()
         .ok_or_else(|| format!("无法解析 LifeBook 项目父目录：{}", display_path(repo_root)))?;
-    Ok(parent.join(format!(".{name}.lifebook-download")))
+    Ok(parent.join(format!(".{name}.lifebook-archive-download")))
+}
+
+fn lifebook_archive_download_url(ref_name: &str) -> String {
+    format!("{LIFEBOOK_ARCHIVE_DOWNLOAD_BASE}/{ref_name}")
+}
+
+fn archive_state_path(repo_root: &Path) -> PathBuf {
+    repo_root
+        .join(".lifebook-launcher")
+        .join("archive-state.json")
+}
+
+fn read_archive_project_state(repo_root: &Path) -> Option<ArchiveProjectState> {
+    let text = fs::read_to_string(archive_state_path(repo_root)).ok()?;
+    serde_json::from_str(&text).ok()
+}
+
+fn write_archive_project_state(
+    repo_root: &Path,
+    state: &ArchiveProjectState,
+) -> Result<(), String> {
+    let path = archive_state_path(repo_root);
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent).map_err(|err| err.to_string())?;
+    }
+    let text = serde_json::to_string_pretty(state).map_err(|err| err.to_string())?;
+    fs::write(path, text).map_err(|err| err.to_string())
+}
+
+fn adopt_existing_lifebook_archive_project(repo_root: &Path) -> Result<(), String> {
+    if read_archive_project_state(repo_root).is_some() {
+        return Ok(());
+    }
+    if !is_lifebook_repo(repo_root) {
+        return Err(format!(
+            "无法接管为 archive ZIP 更新目录，因为这不是有效 LifeBook 项目：{}",
+            display_path(repo_root)
+        ));
+    }
+    append_launcher_log(
+        "INFO",
+        format!(
+            "adopting existing LifeBook project for archive ZIP updates repo_root={}",
+            display_path(repo_root)
+        ),
+    );
+    let files = build_archive_manifest(repo_root)?;
+    let state = ArchiveProjectState {
+        source: "github-archive-adopted".into(),
+        ref_name: LIFEBOOK_ARCHIVE_REF.into(),
+        commit: None,
+        downloaded_at: chrono::Utc::now().to_rfc3339(),
+        files,
+    };
+    write_archive_project_state(repo_root, &state)
+}
+
+fn download_lifebook_archive_repo(
+    parent: &Path,
+    repo_root: &Path,
+    progress: Option<&LifeBookProgressEmitter>,
+) -> Result<(), String> {
+    let archive_dir = managed_archive_dir(repo_root)?;
+    if archive_dir.exists() {
+        append_launcher_log(
+            "WARN",
+            format!(
+                "removing stale LifeBook archive download dir {}",
+                display_path(&archive_dir)
+            ),
+        );
+        fs::remove_dir_all(&archive_dir)
+            .map_err(|err| format!("无法整理上次未完成的 LifeBook archive 临时目录：{err}"))?;
+    }
+    fs::create_dir_all(parent).map_err(|err| format!("无法创建 LifeBook 项目父目录：{err}"))?;
+    if let Some(emitter) = progress {
+        emitter.emit_key(12, "archive_download");
+    }
+    let archive_file = archive_dir.with_extension("zip");
+    if archive_file.exists() {
+        let _ = fs::remove_file(&archive_file);
+    }
+    let remote_commit = lifebook_latest_remote_commit_best_effort();
+    download_lifebook_archive_file(LIFEBOOK_ARCHIVE_REF, &archive_file, progress)?;
+    if let Some(emitter) = progress {
+        emitter.emit_key(58, "archive_extract");
+    }
+    let mut state =
+        extract_lifebook_archive_file(&archive_file, &archive_dir, LIFEBOOK_ARCHIVE_REF)?;
+    if let Some(remote) = remote_commit {
+        state.commit = Some(remote.sha);
+    }
+    let _ = fs::remove_file(&archive_file);
+    if !is_lifebook_repo(&archive_dir) {
+        let _ = fs::remove_dir_all(&archive_dir);
+        return Err("GitHub archive 下载完成后未找到有效 LifeBook 项目结构。".into());
+    }
+    write_archive_project_state(&archive_dir, &state)?;
+    finalize_lifebook_archive_install(&archive_dir, repo_root)
+}
+
+fn download_lifebook_archive_file(
+    ref_name: &str,
+    destination: &Path,
+    progress: Option<&LifeBookProgressEmitter>,
+) -> Result<(), String> {
+    let url = lifebook_archive_download_url(ref_name);
+    append_launcher_log("INFO", format!("downloading LifeBook archive url={url}"));
+    let client = http_blocking_client()?;
+    let mut response = client
+        .get(&url)
+        .header("User-Agent", "LifeBook-Launcher")
+        .send()
+        .map_err(|err| format!("下载 LifeBook archive 失败：{err}。请检查网络、VPN 或代理设置。"))?
+        .error_for_status()
+        .map_err(|err| {
+            format!("下载 LifeBook archive 失败：{err}。请检查网络、VPN 或代理设置。")
+        })?;
+    let total = response.content_length().unwrap_or_default();
+    let mut downloaded = 0_u64;
+    let started_at = Instant::now();
+    if let Some(parent) = destination.parent() {
+        fs::create_dir_all(parent).map_err(|err| err.to_string())?;
+    }
+    let mut file = fs::File::create(destination).map_err(|err| err.to_string())?;
+    let mut buffer = [0_u8; 64 * 1024];
+    loop {
+        if LIFEBOOK_UPDATE_CANCEL_REQUESTED.load(Ordering::Acquire) {
+            return Err(progress_message(progress, "stopped"));
+        }
+        let size = response
+            .read(&mut buffer)
+            .map_err(|err| format!("读取 LifeBook archive 失败：{err}"))?;
+        if size == 0 {
+            break;
+        }
+        file.write_all(&buffer[..size])
+            .map_err(|err| format!("写入 LifeBook archive 失败：{err}"))?;
+        downloaded += size as u64;
+        if let Some(emitter) = progress {
+            let percent = if total > 0 {
+                scale_percent(
+                    ((downloaded as f64 / total as f64) * 100.0).clamp(0.0, 100.0),
+                    12,
+                    58,
+                )
+            } else {
+                12.0
+            };
+            let detail = archive_download_detail(downloaded, total, started_at.elapsed());
+            emitter.emit(
+                percent,
+                format!(
+                    "{detail} - {}",
+                    lifebook_progress_message(emitter.locale.as_deref(), "archive_download")
+                ),
+            );
+        }
+    }
+    file.flush()
+        .map_err(|err| format!("写入 LifeBook archive 失败：{err}"))?;
+    if downloaded == 0 {
+        return Err("LifeBook archive 下载结果为空。".into());
+    }
+    Ok(())
+}
+
+fn archive_download_detail(downloaded: u64, total: u64, elapsed: Duration) -> String {
+    let percent = if total > 0 {
+        ((downloaded as f64 / total as f64) * 100.0).clamp(0.0, 100.0)
+    } else {
+        0.0
+    };
+    let seconds = elapsed.as_secs_f64().max(0.1);
+    let speed_bytes_per_second = downloaded as f64 / seconds;
+    if total > 0 {
+        format!(
+            "{percent:.2}% ({} / {}, {}/s)",
+            format_kb(downloaded as f64),
+            format_kb(total as f64),
+            format_kb(speed_bytes_per_second)
+        )
+    } else {
+        format!(
+            "{} ({}/s)",
+            format_kb(downloaded as f64),
+            format_kb(speed_bytes_per_second)
+        )
+    }
+}
+
+fn format_kb(bytes: f64) -> String {
+    format!("{:.1} KB", (bytes / 1024.0).max(0.0))
+}
+
+fn archive_state_matches_remote_commit(
+    state: &ArchiveProjectState,
+    remote: &RemoteCommitRef,
+) -> bool {
+    if !archive_update_required(state.commit.as_deref(), Some(&remote.sha)) {
+        return true;
+    }
+    state.source == "github-archive"
+        && state.commit.is_none()
+        && archive_state_downloaded_after_remote_commit(state, remote)
+}
+
+fn archive_state_downloaded_after_remote_commit(
+    state: &ArchiveProjectState,
+    remote: &RemoteCommitRef,
+) -> bool {
+    let Some(remote_date) = remote.date.as_deref() else {
+        return false;
+    };
+    let Ok(downloaded_at) = DateTime::parse_from_rfc3339(&state.downloaded_at) else {
+        return false;
+    };
+    let Ok(remote_date) = DateTime::parse_from_rfc3339(remote_date) else {
+        return false;
+    };
+    downloaded_at >= remote_date
+}
+
+fn archive_update_required(local_commit: Option<&str>, remote_commit: Option<&str>) -> bool {
+    match (local_commit, remote_commit) {
+        (Some(local), Some(remote)) => !commit_hash_matches(local, remote),
+        _ => true,
+    }
+}
+
+fn commit_hash_matches(local: &str, remote: &str) -> bool {
+    let local = local.trim();
+    let remote = remote.trim();
+    if local.is_empty() || remote.is_empty() {
+        return false;
+    }
+    local == remote
+        || (local.len() >= 7 && remote.starts_with(local))
+        || (remote.len() >= 7 && local.starts_with(remote))
+}
+
+fn extract_lifebook_archive_file(
+    archive_file: &Path,
+    destination: &Path,
+    ref_name: &str,
+) -> Result<ArchiveProjectState, String> {
+    if destination.exists() {
+        fs::remove_dir_all(destination).map_err(|err| err.to_string())?;
+    }
+    fs::create_dir_all(destination).map_err(|err| err.to_string())?;
+    extract_zip_archive(archive_file, destination)?;
+    flatten_extracted_archive_root(destination)?;
+    let files = build_archive_manifest(destination)?;
+    Ok(ArchiveProjectState {
+        source: "github-archive".into(),
+        ref_name: ref_name.into(),
+        commit: None,
+        downloaded_at: chrono::Utc::now().to_rfc3339(),
+        files,
+    })
+}
+
+#[cfg(target_os = "windows")]
+const LIFEBOOK_ARCHIVE_ZIP_ENV: &str = "LIFEBOOK_ARCHIVE_ZIP";
+#[cfg(target_os = "windows")]
+const LIFEBOOK_ARCHIVE_DEST_ENV: &str = "LIFEBOOK_ARCHIVE_DEST";
+
+#[cfg(target_os = "windows")]
+fn windows_expand_archive_command_script() -> &'static str {
+    "$ErrorActionPreference = 'Stop'; Expand-Archive -LiteralPath $env:LIFEBOOK_ARCHIVE_ZIP -DestinationPath $env:LIFEBOOK_ARCHIVE_DEST -Force"
+}
+
+#[cfg(target_os = "windows")]
+fn extract_zip_archive(archive_file: &Path, destination: &Path) -> Result<(), String> {
+    let mut command = Command::new("powershell");
+    command
+        .arg("-NoProfile")
+        .arg("-ExecutionPolicy")
+        .arg("Bypass")
+        .arg("-Command")
+        .arg(windows_expand_archive_command_script())
+        .env(LIFEBOOK_ARCHIVE_ZIP_ENV, archive_file.as_os_str())
+        .env(LIFEBOOK_ARCHIVE_DEST_ENV, destination.as_os_str());
+    command.creation_flags(0x08000000);
+    let output = command
+        .output()
+        .map_err(|err| format!("无法启动 PowerShell 解压 ZIP archive：{err}"))?;
+    if output.status.success() {
+        return Ok(());
+    }
+    let powershell_error = String::from_utf8_lossy(&output.stderr).trim().to_string();
+    match extract_zip_archive_with_tar(archive_file, destination) {
+        Ok(()) => Ok(()),
+        Err(tar_error) => Err(format!(
+            "解压 ZIP archive 失败：PowerShell: {powershell_error}; tar: {tar_error}"
+        )),
+    }
+}
+
+#[cfg(target_os = "windows")]
+fn extract_zip_archive_with_tar(archive_file: &Path, destination: &Path) -> Result<(), String> {
+    let mut command = Command::new("tar");
+    command
+        .arg("-xf")
+        .arg(archive_file)
+        .arg("-C")
+        .arg(destination);
+    command.creation_flags(0x08000000);
+    let output = command
+        .output()
+        .map_err(|err| format!("无法启动 tar 解压 ZIP archive：{err}"))?;
+    if output.status.success() {
+        Ok(())
+    } else {
+        Err(format!(
+            "tar 解压 ZIP archive 失败：{}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        ))
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn extract_zip_archive(archive_file: &Path, destination: &Path) -> Result<(), String> {
+    let output = Command::new("ditto")
+        .arg("-x")
+        .arg("-k")
+        .arg(display_path(archive_file))
+        .arg(display_path(destination))
+        .output()
+        .map_err(|err| format!("无法启动 ditto 解压 LifeBook archive：{err}"))?;
+    if output.status.success() {
+        return Ok(());
+    }
+    Err(format!(
+        "解压 LifeBook archive 失败：{}",
+        String::from_utf8_lossy(&output.stderr).trim()
+    ))
+}
+
+#[cfg(all(unix, not(target_os = "macos")))]
+fn extract_zip_archive(archive_file: &Path, destination: &Path) -> Result<(), String> {
+    let output = Command::new("unzip")
+        .arg("-q")
+        .arg(display_path(archive_file))
+        .arg("-d")
+        .arg(display_path(destination))
+        .output()
+        .map_err(|err| format!("无法启动 unzip 解压 LifeBook archive：{err}"))?;
+    if output.status.success() {
+        return Ok(());
+    }
+    Err(format!(
+        "解压 LifeBook archive 失败：{}",
+        String::from_utf8_lossy(&output.stderr).trim()
+    ))
+}
+
+fn flatten_extracted_archive_root(destination: &Path) -> Result<(), String> {
+    let entries = fs::read_dir(destination)
+        .map_err(|err| err.to_string())?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|err| err.to_string())?;
+    if entries.len() != 1 || !entries[0].path().is_dir() {
+        return Ok(());
+    }
+    let root = entries[0].path();
+    for entry in fs::read_dir(&root).map_err(|err| err.to_string())? {
+        let entry = entry.map_err(|err| err.to_string())?;
+        let from = entry.path();
+        let to = destination.join(entry.file_name());
+        fs::rename(&from, &to).map_err(|err| {
+            format!(
+                "无法整理 LifeBook archive 解压目录：{} -> {}：{err}",
+                display_path(&from),
+                display_path(&to)
+            )
+        })?;
+    }
+    fs::remove_dir_all(root).map_err(|err| err.to_string())
+}
+
+fn build_archive_manifest(root: &Path) -> Result<Vec<ArchiveManagedFile>, String> {
+    let mut files = Vec::new();
+    collect_archive_manifest_files(root, root, &mut files)?;
+    files.sort_by(|left, right| left.path.cmp(&right.path));
+    Ok(files)
+}
+
+fn collect_archive_manifest_files(
+    root: &Path,
+    current: &Path,
+    files: &mut Vec<ArchiveManagedFile>,
+) -> Result<(), String> {
+    for entry in fs::read_dir(current).map_err(|err| err.to_string())? {
+        let entry = entry.map_err(|err| err.to_string())?;
+        let path = entry.path();
+        let file_name = entry.file_name();
+        if archive_manifest_skips_dir(&file_name) {
+            continue;
+        }
+        if path.is_dir() {
+            collect_archive_manifest_files(root, &path, files)?;
+        } else if path.is_file() {
+            let relative = path
+                .strip_prefix(root)
+                .map_err(|err| err.to_string())?
+                .to_path_buf();
+            files.push(ArchiveManagedFile {
+                path: manifest_path(&relative),
+                fingerprint: file_fingerprint(&path)?,
+            });
+        }
+    }
+    Ok(())
+}
+
+fn archive_manifest_skips_dir(file_name: &std::ffi::OsStr) -> bool {
+    matches!(
+        file_name.to_string_lossy().as_ref(),
+        ".lifebook-launcher" | ".git" | "node_modules"
+    )
+}
+
+#[cfg(test)]
+fn safe_archive_entry_relative_path(name: &str) -> Result<PathBuf, String> {
+    let normalized = name.replace('\\', "/");
+    let mut parts = normalized.split('/').filter(|part| !part.is_empty());
+    let _github_root = parts
+        .next()
+        .ok_or_else(|| format!("LifeBook archive 条目路径无效：{name}"))?;
+    let mut relative = PathBuf::new();
+    let mut has_relative = false;
+    for part in parts {
+        if part == "." || part == ".." || part.contains(':') {
+            return Err(format!("LifeBook archive 条目路径不安全：{name}"));
+        }
+        relative.push(part);
+        has_relative = true;
+    }
+    if !has_relative {
+        return Err(format!(
+            "LifeBook archive 条目路径缺少仓库内相对路径：{name}"
+        ));
+    }
+    Ok(relative)
+}
+
+fn finalize_lifebook_archive_install(archive_dir: &Path, repo_root: &Path) -> Result<(), String> {
+    if repo_root.exists() {
+        if is_dir_empty(repo_root) {
+            fs::remove_dir_all(repo_root)
+                .map_err(|err| format!("无法替换空的 LifeBook 项目目录：{err}"))?;
+        } else {
+            return Err(format!(
+                "LifeBook 项目目录已被其他文件占用：{}。请在设置里选择一个空目录，或先整理该目录。",
+                display_path(repo_root)
+            ));
+        }
+    }
+    fs::rename(archive_dir, repo_root).map_err(|err| {
+        format!(
+            "无法移动 LifeBook archive 到项目目录：{err}。临时目录：{}",
+            display_path(archive_dir)
+        )
+    })
+}
+
+fn update_archive_managed_project(
+    repo_root: &Path,
+    progress: Option<&LifeBookProgressEmitter>,
+) -> Result<(), String> {
+    let old_state = read_archive_project_state(repo_root).ok_or_else(|| {
+        "当前 LifeBook 目录不是 Git 仓库，也没有 archive 托管记录。请在设置页选择一个新的空目录重新准备项目。".to_string()
+    })?;
+    let latest_remote_commit = lifebook_latest_remote_commit_best_effort();
+    if let Some(remote) = latest_remote_commit.as_ref() {
+        if archive_state_matches_remote_commit(&old_state, remote) {
+            let should_refresh_commit = old_state.commit.as_deref() != Some(remote.sha.as_str());
+            if should_refresh_commit {
+                let mut refreshed_state = old_state.clone();
+                refreshed_state.commit = Some(remote.sha.clone());
+                write_archive_project_state(repo_root, &refreshed_state)?;
+            }
+            append_launcher_log(
+                "INFO",
+                format!(
+                    "LifeBook archive already matches remote repo_root={} remote_commit={}",
+                    display_path(repo_root),
+                    remote.sha
+                ),
+            );
+            if let Some(emitter) = progress {
+                emitter.emit_key(100, "no_updates");
+            }
+            return Ok(());
+        }
+    }
+    ensure_archive_managed_files_clean(repo_root, &old_state)?;
+    if let Some(emitter) = progress {
+        emitter.emit_key(30, "archive_download");
+    }
+    let update_dir = managed_archive_dir(repo_root)?;
+    let archive_file = update_dir.with_extension("zip");
+    if archive_file.exists() {
+        let _ = fs::remove_file(&archive_file);
+    }
+    download_lifebook_archive_file(&old_state.ref_name, &archive_file, progress)?;
+    if let Some(emitter) = progress {
+        emitter.emit_key(72, "archive_extract");
+    }
+    let mut new_state =
+        extract_lifebook_archive_file(&archive_file, &update_dir, &old_state.ref_name)?;
+    if let Some(remote) = latest_remote_commit {
+        new_state.commit = Some(remote.sha);
+    }
+    let _ = fs::remove_file(&archive_file);
+    if let Some(emitter) = progress {
+        emitter.emit_key(86, "archive_sync");
+    }
+    let result = apply_archive_project_update(repo_root, &update_dir, &old_state, &new_state);
+    let _ = fs::remove_dir_all(&update_dir);
+    result
+}
+
+fn ensure_archive_managed_files_clean(
+    repo_root: &Path,
+    state: &ArchiveProjectState,
+) -> Result<(), String> {
+    for file in &state.files {
+        let relative = safe_manifest_relative_path(&file.path)?;
+        let local = repo_root.join(&relative);
+        if local.is_file() {
+            let current = file_fingerprint(&local)?;
+            if current != file.fingerprint {
+                return Err(format!(
+                    "检测到 archive 托管文件已被本地修改，已停止自动更新以避免覆盖：{}",
+                    file.path
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
+fn apply_archive_project_update(
+    repo_root: &Path,
+    update_root: &Path,
+    old_state: &ArchiveProjectState,
+    new_state: &ArchiveProjectState,
+) -> Result<(), String> {
+    use std::collections::HashMap;
+
+    let old_files: HashMap<&str, &ArchiveManagedFile> = old_state
+        .files
+        .iter()
+        .map(|file| (file.path.as_str(), file))
+        .collect();
+    let new_files: HashMap<&str, &ArchiveManagedFile> = new_state
+        .files
+        .iter()
+        .map(|file| (file.path.as_str(), file))
+        .collect();
+
+    for old_file in &old_state.files {
+        if new_files.contains_key(old_file.path.as_str()) {
+            continue;
+        }
+        let relative = safe_manifest_relative_path(&old_file.path)?;
+        let local = repo_root.join(&relative);
+        if local.is_file() {
+            let current = file_fingerprint(&local)?;
+            if current != old_file.fingerprint {
+                return Err(format!(
+                    "检测到待删除的托管文件已被本地修改，已停止自动更新：{}",
+                    old_file.path
+                ));
+            }
+            fs::remove_file(&local).map_err(|err| err.to_string())?;
+            remove_empty_parent_dirs(repo_root, local.parent());
+        }
+    }
+
+    for new_file in &new_state.files {
+        let relative = safe_manifest_relative_path(&new_file.path)?;
+        let source = update_root.join(&relative);
+        let local = repo_root.join(&relative);
+        if local.is_file() {
+            if let Some(old_file) = old_files.get(new_file.path.as_str()) {
+                let current = file_fingerprint(&local)?;
+                if current != old_file.fingerprint {
+                    return Err(format!(
+                        "检测到 archive 托管文件已被本地修改，已停止自动更新以避免覆盖：{}",
+                        new_file.path
+                    ));
+                }
+            } else if file_fingerprint(&local)? != new_file.fingerprint {
+                return Err(format!(
+                    "新版本 LifeBook 将创建文件，但本地已有同名非托管文件，已停止自动更新：{}",
+                    new_file.path
+                ));
+            }
+        }
+        if let Some(parent) = local.parent() {
+            fs::create_dir_all(parent).map_err(|err| err.to_string())?;
+        }
+        fs::copy(&source, &local).map_err(|err| err.to_string())?;
+    }
+
+    write_archive_project_state(repo_root, new_state)
+}
+
+fn remove_empty_parent_dirs(repo_root: &Path, mut current: Option<&Path>) {
+    while let Some(dir) = current {
+        if dir == repo_root || dir.ends_with(".lifebook-launcher") {
+            break;
+        }
+        match fs::remove_dir(dir) {
+            Ok(_) => current = dir.parent(),
+            Err(_) => break,
+        }
+    }
+}
+
+fn safe_manifest_relative_path(path: &str) -> Result<PathBuf, String> {
+    let relative = PathBuf::from(path);
+    if relative.is_absolute()
+        || path.contains("..")
+        || path.contains(':')
+        || path.replace('\\', "/").split('/').any(|part| part == "..")
+    {
+        return Err(format!("archive manifest 路径不安全：{path}"));
+    }
+    Ok(relative)
+}
+
+fn manifest_path(path: &Path) -> String {
+    path.components()
+        .map(|component| component.as_os_str().to_string_lossy())
+        .collect::<Vec<_>>()
+        .join("/")
+}
+
+fn content_fingerprint(data: &[u8]) -> String {
+    let mut hash = 0xcbf29ce484222325_u64;
+    for byte in data {
+        hash ^= *byte as u64;
+        hash = hash.wrapping_mul(0x100000001b3);
+    }
+    format!("{hash:016x}-{}", data.len())
+}
+
+fn file_fingerprint(path: &Path) -> Result<String, String> {
+    let data = fs::read(path).map_err(|err| err.to_string())?;
+    Ok(content_fingerprint(&data))
 }
 
 fn update_lifebook_project_at(
@@ -2046,81 +3113,17 @@ fn update_lifebook_project_at(
             display_path(repo_root)
         ));
     }
-    if let Some(emitter) = progress {
-        emitter.emit_key(8, "local_check");
+    if read_archive_project_state(repo_root).is_none() {
+        adopt_existing_lifebook_archive_project(repo_root)?;
     }
-    let dirty = has_tracked_changes(repo_root)?;
-    if dirty {
-        append_launcher_log(
-            "WARN",
-            format!(
-                "skip LifeBook update because tracked changes exist repo_root={}",
-                display_path(repo_root)
-            ),
-        );
-        return Err(
-            "检测到 LifeBook 项目目录内有本地修改。为避免覆盖用户文件，已跳过自动更新。".into(),
-        );
-    }
-    if let Some(emitter) = progress {
-        emitter.emit_key(18, "remote_check");
-    }
-    match remote_matches_local_head(repo_root) {
-        Ok(true) => {
-            append_launcher_log(
-                "INFO",
-                format!(
-                    "LifeBook repo already matches remote repo_root={}",
-                    display_path(repo_root)
-                ),
-            );
-            if let Some(emitter) = progress {
-                emitter.emit_key(94, "no_updates");
-            }
-            return Ok(());
-        }
-        Ok(false) => {}
-        Err(error) => return Err(error),
-    }
-    if let Some(emitter) = progress {
-        emitter.emit_key(30, "fetch_start");
-    }
-    git_output_with_progress(
-        repo_root,
-        &["fetch", "--progress", "origin", "--prune"],
-        progress,
-        GitProgressPhase::Fetch,
-    )?;
-    let remote_ref = remote_default_ref(repo_root);
-    let (ahead_count, behind_count) = branch_divergence_counts(repo_root, &remote_ref)?;
-    if ahead_count > 0 && behind_count > 0 {
-        let message = lifebook_diverged_message(repo_root, &remote_ref, ahead_count, behind_count);
-        append_launcher_log("WARN", &message);
-        return Err(message);
-    }
-    if behind_count == 0 {
-        append_launcher_log(
-            "INFO",
-            format!(
-                "LifeBook repo has no remote updates after fetch repo_root={} ahead_count={ahead_count}",
-                display_path(repo_root)
-            ),
-        );
-        if let Some(emitter) = progress {
-            emitter.emit_key(94, "no_updates");
-        }
-        return Ok(());
-    }
-    if let Some(emitter) = progress {
-        emitter.emit_key(78, "pull_start");
-    }
-    git_output_with_progress(
-        repo_root,
-        &["pull", "--progress", "--ff-only"],
-        progress,
-        GitProgressPhase::Pull,
-    )?;
-    Ok(())
+    append_launcher_log(
+        "INFO",
+        format!(
+            "LifeBook repo uses archive ZIP update path repo_root={}",
+            display_path(repo_root)
+        ),
+    );
+    update_archive_managed_project(repo_root, progress)
 }
 
 fn ensure_books_node_modules(
@@ -2168,6 +3171,25 @@ fn ensure_books_node_modules(
             Some("downloading"),
         );
     }
+    if books_node_modules_package_installed(repo_root) {
+        append_launcher_log(
+            "INFO",
+            format!(
+                "books/node_modules package already exists; preparing epubcheck vendor only repo_root={}",
+                display_path(repo_root)
+            ),
+        );
+        if let Some(emitter) = progress {
+            emitter.emit(
+                68.0,
+                0,
+                estimate_node_modules_total_bytes(&books_dir),
+                "node_modules 已存在，正在补齐 EPUB 校验工具...".into(),
+                Some("downloading"),
+            );
+        }
+        return ensure_epubchecker_vendor(&books_dir, progress);
+    }
     let primary = run_npm_install(
         repo_root,
         &books_dir,
@@ -2202,7 +3224,8 @@ fn ensure_books_node_modules(
                 )
             })
         }
-    }
+    }?;
+    ensure_epubchecker_vendor(&books_dir, progress)
 }
 
 fn run_npm_install(
@@ -2212,21 +3235,7 @@ fn run_npm_install(
     registry: &str,
     progress: Option<&NodeModulesProgressEmitter>,
 ) -> Result<(), String> {
-    let mut args = if package_lock.is_file() {
-        vec!["ci".to_string()]
-    } else {
-        vec!["install".to_string()]
-    };
-    args.extend([
-        "--omit=dev".to_string(),
-        "--no-audit".to_string(),
-        "--fund=false".to_string(),
-        format!("--registry={registry}"),
-        "--replace-registry-host=always".to_string(),
-        "--fetch-retries=3".to_string(),
-        "--fetch-retry-mintimeout=10000".to_string(),
-        "--fetch-retry-maxtimeout=60000".to_string(),
-    ]);
+    let args = npm_install_args(package_lock, registry);
     command_output_with_timeout_and_node_progress(
         books_dir,
         Some(repo_root),
@@ -2237,6 +3246,26 @@ fn run_npm_install(
         progress,
     )?;
     Ok(())
+}
+
+fn npm_install_args(package_lock: &Path, registry: &str) -> Vec<String> {
+    let mut args = if package_lock.is_file() {
+        vec!["ci".to_string()]
+    } else {
+        vec!["install".to_string()]
+    };
+    args.extend([
+        "--omit=dev".to_string(),
+        "--ignore-scripts".to_string(),
+        "--no-audit".to_string(),
+        "--fund=false".to_string(),
+        format!("--registry={registry}"),
+        "--replace-registry-host=always".to_string(),
+        "--fetch-retries=3".to_string(),
+        "--fetch-retry-mintimeout=10000".to_string(),
+        "--fetch-retry-maxtimeout=60000".to_string(),
+    ]);
+    args
 }
 
 fn collect_node_modules_status() -> Result<NodeModulesStatus, String> {
@@ -2257,13 +3286,834 @@ fn collect_node_modules_status() -> Result<NodeModulesStatus, String> {
     })
 }
 
+fn runtime_packages() -> [RuntimePackage; 2] {
+    [
+        RuntimePackage {
+            kind: RuntimeKind::Python,
+            version: PYTHON_RUNTIME_VERSION,
+            install_dir_name: PYTHON_RUNTIME_DIR_NAME,
+            archive_name: PYTHON_RUNTIME_ARCHIVE,
+            sha256: PYTHON_RUNTIME_SHA256,
+            size_bytes: PYTHON_RUNTIME_SIZE_BYTES,
+            urls: PYTHON_RUNTIME_URLS,
+        },
+        RuntimePackage {
+            kind: RuntimeKind::Java,
+            version: JAVA_RUNTIME_VERSION,
+            install_dir_name: JAVA_RUNTIME_DIR_NAME,
+            archive_name: JAVA_RUNTIME_ARCHIVE,
+            sha256: JAVA_RUNTIME_SHA256,
+            size_bytes: JAVA_RUNTIME_SIZE_BYTES,
+            urls: JAVA_RUNTIME_URLS,
+        },
+    ]
+}
+
+fn collect_runtime_status() -> Result<RuntimeStatus, String> {
+    let root = runtime_root()?;
+    let python = collect_runtime_tool_status(runtime_packages()[0], &root);
+    let java = collect_runtime_tool_status(runtime_packages()[1], &root);
+    let private_ready = python.private_ready && java.private_ready;
+    let status = RuntimeStatus {
+        ready: python.ready && java.ready,
+        private_ready,
+        running: RUNTIME_PREPARE_RUNNING.load(Ordering::Acquire),
+        runtime_root: display_path(&root),
+        python,
+        java,
+    };
+    if status.ready {
+        set_process_runtime_envs_from_status(&status);
+    }
+    Ok(status)
+}
+
+fn collect_runtime_tool_status(package: RuntimePackage, root: &Path) -> RuntimeToolStatus {
+    let private_path = runtime_private_executable_from_root(root, package);
+    let private_ready = private_path.as_ref().is_some_and(|path| path.is_file());
+    let env_path = if private_ready {
+        None
+    } else {
+        explicit_runtime_env_executable(package.kind)
+    };
+    let system_path = if private_ready || env_path.is_some() {
+        None
+    } else {
+        system_runtime_executable(package.kind)
+    };
+    let source = if private_ready {
+        Some("private".into())
+    } else if env_path.is_some() {
+        Some("env".into())
+    } else if system_path.is_some() {
+        Some("system".into())
+    } else {
+        None
+    };
+    let resolved_path = private_path
+        .filter(|path| path.is_file())
+        .or(env_path)
+        .or(system_path);
+    let ready = resolved_path.is_some();
+    let path = resolved_path.as_ref().map(|path| display_path(path));
+    let message = if private_ready {
+        format!("{} 私有运行时已准备完成。", package.kind.label())
+    } else if ready {
+        format!("{} 已检测到可用的本机运行时。", package.kind.label())
+    } else {
+        format!(
+            "{} 未检测到可用运行时，需要稍后安装。",
+            package.kind.label()
+        )
+    };
+    RuntimeToolStatus {
+        ready,
+        private_ready,
+        version: package.version.into(),
+        source,
+        path,
+        message,
+    }
+}
+
+fn runtime_prepare_requires_download(status: &RuntimeStatus) -> bool {
+    !status.ready
+}
+
+fn runtime_root() -> Result<PathBuf, String> {
+    let base = dirs::data_local_dir()
+        .or_else(dirs::config_local_dir)
+        .ok_or_else(|| "无法定位用户本地数据目录。".to_string())?;
+    Ok(base.join("LifeBook").join("runtimes"))
+}
+
+fn runtime_install_dir_from_root(root: &Path, package: RuntimePackage) -> PathBuf {
+    root.join(package.kind.dir_name())
+        .join(package.install_dir_name)
+}
+
+fn runtime_downloads_dir_from_root(root: &Path) -> PathBuf {
+    root.join("downloads")
+}
+
+fn runtime_private_executable_from_root(root: &Path, package: RuntimePackage) -> Option<PathBuf> {
+    let install_dir = runtime_install_dir_from_root(root, package);
+    match package.kind {
+        RuntimeKind::Python => {
+            #[cfg(target_os = "windows")]
+            let candidate = install_dir.join("python.exe");
+            #[cfg(not(target_os = "windows"))]
+            let candidate = install_dir.join("bin").join("python3");
+            candidate.is_file().then_some(candidate)
+        }
+        RuntimeKind::Java => find_runtime_executable(&install_dir, java_executable_name()),
+    }
+}
+
+fn java_executable_name() -> &'static str {
+    #[cfg(target_os = "windows")]
+    {
+        "java.exe"
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        "java"
+    }
+}
+
+fn runtime_resolved_executable(package: RuntimePackage) -> Option<PathBuf> {
+    let root = runtime_root().ok();
+    if let Some(root) = root.as_deref() {
+        if let Some(path) = runtime_private_executable_from_root(root, package) {
+            return Some(path);
+        }
+    }
+    explicit_runtime_env_executable(package.kind)
+        .or_else(|| system_runtime_executable(package.kind))
+}
+
+fn explicit_runtime_env_executable(kind: RuntimeKind) -> Option<PathBuf> {
+    let path = env::var_os(kind.env_name()).map(PathBuf::from)?;
+    runtime_executable_is_usable(kind, &path).then_some(path)
+}
+
+fn system_runtime_executable(kind: RuntimeKind) -> Option<PathBuf> {
+    match kind {
+        RuntimeKind::Python => system_python_executable(),
+        RuntimeKind::Java => system_java_executable(),
+    }
+}
+
+fn system_python_executable() -> Option<PathBuf> {
+    let probes: &[(&str, &[&str])] = &[
+        ("python", &["-c", "import sys; print(sys.executable)"]),
+        ("py", &["-3", "-c", "import sys; print(sys.executable)"]),
+        ("python3", &["-c", "import sys; print(sys.executable)"]),
+    ];
+    probes.iter().find_map(|(program, args)| {
+        command_first_stdout_path(program, args)
+            .filter(|path| runtime_executable_is_usable(RuntimeKind::Python, path))
+    })
+}
+
+fn system_java_executable() -> Option<PathBuf> {
+    if let Some(path) = env::var_os("JAVA_HOME")
+        .map(PathBuf::from)
+        .and_then(|java_home| java_home_executable_from_value(&java_home))
+        .filter(|path| runtime_executable_is_usable(RuntimeKind::Java, path))
+    {
+        return Some(path);
+    }
+
+    if let Some(path) = java_path_from_path_lookup()
+        .into_iter()
+        .find(|path| runtime_executable_is_usable(RuntimeKind::Java, path))
+    {
+        return Some(path);
+    }
+
+    common_java_install_roots()
+        .into_iter()
+        .filter(|root| root.is_dir())
+        .find_map(|root| {
+            find_runtime_executable_limited(&root, java_executable_name(), 5, 120)
+                .filter(|path| runtime_executable_is_usable(RuntimeKind::Java, path))
+        })
+}
+
+fn java_home_executable_from_value(java_home: &Path) -> Option<PathBuf> {
+    let candidate = java_home.join("bin").join(java_executable_name());
+    candidate.is_file().then_some(candidate)
+}
+
+fn command_first_stdout_path(program: &str, args: &[&str]) -> Option<PathBuf> {
+    let mut command = Command::new(program);
+    command
+        .args(args)
+        .stdin(Stdio::null())
+        .stderr(Stdio::null());
+    #[cfg(target_os = "windows")]
+    command.creation_flags(0x08000000);
+    let output = command.output().ok()?;
+    if !output.status.success() {
+        return None;
+    }
+    String::from_utf8_lossy(&output.stdout)
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .map(PathBuf::from)
+        .find(|path| path.is_file())
+}
+
+fn java_path_from_path_lookup() -> Vec<PathBuf> {
+    #[cfg(target_os = "windows")]
+    let lookup = ("where", vec!["java"]);
+    #[cfg(not(target_os = "windows"))]
+    let lookup = ("which", vec!["java"]);
+
+    let mut command = Command::new(lookup.0);
+    command
+        .args(lookup.1)
+        .stdin(Stdio::null())
+        .stderr(Stdio::null());
+    #[cfg(target_os = "windows")]
+    command.creation_flags(0x08000000);
+    let Ok(output) = command.output() else {
+        return Vec::new();
+    };
+    if !output.status.success() {
+        return Vec::new();
+    }
+    String::from_utf8_lossy(&output.stdout)
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .map(PathBuf::from)
+        .filter(|path| path.is_file())
+        .collect()
+}
+
+#[cfg(target_os = "windows")]
+fn common_java_install_roots() -> Vec<PathBuf> {
+    let mut roots = vec![
+        PathBuf::from(r"C:\Program Files\Java"),
+        PathBuf::from(r"C:\Program Files\Eclipse Adoptium"),
+        PathBuf::from(r"C:\Program Files\Zulu"),
+        PathBuf::from(r"C:\Program Files\Amazon Corretto"),
+    ];
+    if let Ok(entries) = fs::read_dir(r"C:\Program Files\Microsoft") {
+        roots.extend(entries.flatten().map(|entry| entry.path()).filter(|path| {
+            path.file_name()
+                .and_then(|value| value.to_str())
+                .is_some_and(|name| name.to_ascii_lowercase().contains("jdk"))
+        }));
+    }
+    roots
+}
+
+#[cfg(target_os = "macos")]
+fn common_java_install_roots() -> Vec<PathBuf> {
+    vec![PathBuf::from("/Library/Java/JavaVirtualMachines")]
+}
+
+#[cfg(all(unix, not(target_os = "macos")))]
+fn common_java_install_roots() -> Vec<PathBuf> {
+    vec![PathBuf::from("/usr/lib/jvm"), PathBuf::from("/usr/java")]
+}
+
+fn runtime_executable_is_usable(kind: RuntimeKind, path: &Path) -> bool {
+    if !path.is_file() {
+        return false;
+    }
+    let mut command = Command::new(path);
+    match kind {
+        RuntimeKind::Python => {
+            command.arg("--version");
+        }
+        RuntimeKind::Java => {
+            command.arg("-version");
+        }
+    }
+    command
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null());
+    #[cfg(target_os = "windows")]
+    command.creation_flags(0x08000000);
+    command
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false)
+}
+
+fn find_runtime_executable(root: &Path, executable_name: &str) -> Option<PathBuf> {
+    let entries = fs::read_dir(root).ok()?;
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_file()
+            && path
+                .file_name()
+                .and_then(|value| value.to_str())
+                .is_some_and(|name| name.eq_ignore_ascii_case(executable_name))
+        {
+            return Some(path);
+        }
+        if path.is_dir() {
+            if let Some(found) = find_runtime_executable(&path, executable_name) {
+                return Some(found);
+            }
+        }
+    }
+    None
+}
+
+fn find_runtime_executable_limited(
+    root: &Path,
+    executable_name: &str,
+    depth: usize,
+    remaining: usize,
+) -> Option<PathBuf> {
+    if depth == 0 || remaining == 0 {
+        return None;
+    }
+    let entries = fs::read_dir(root).ok()?;
+    let mut remaining = remaining;
+    for entry in entries.flatten() {
+        if remaining == 0 {
+            return None;
+        }
+        remaining -= 1;
+        let path = entry.path();
+        if path.is_file()
+            && path
+                .file_name()
+                .and_then(|value| value.to_str())
+                .is_some_and(|name| name.eq_ignore_ascii_case(executable_name))
+        {
+            return Some(path);
+        }
+        if path.is_dir() {
+            if let Some(found) =
+                find_runtime_executable_limited(&path, executable_name, depth - 1, remaining)
+            {
+                return Some(found);
+            }
+        }
+    }
+    None
+}
+
+fn prepare_private_runtimes(
+    _app: &tauri::AppHandle,
+    progress: Option<&RuntimeProgressEmitter>,
+) -> Result<(), String> {
+    let root = runtime_root()?;
+    fs::create_dir_all(&root).map_err(|err| err.to_string())?;
+    let packages = runtime_packages();
+    for (index, package) in packages.iter().enumerate() {
+        if runtime_resolved_executable(*package).is_some() {
+            if let Some(emitter) = progress {
+                let percent = if index == 0 { 45.0 } else { 90.0 };
+                emitter.emit(
+                    percent,
+                    package.size_bytes,
+                    package.size_bytes,
+                    format!("{} 已检测到可用运行时，跳过下载。", package.kind.label()),
+                    Some("downloading"),
+                );
+            }
+            continue;
+        }
+        prepare_runtime_package(&root, *package, progress, index)?;
+    }
+    if collect_runtime_status()?.ready {
+        Ok(())
+    } else {
+        Err("Python / Java 运行环境未全部准备完成。".into())
+    }
+}
+
+fn prepare_runtime_package(
+    root: &Path,
+    package: RuntimePackage,
+    progress: Option<&RuntimeProgressEmitter>,
+    index: usize,
+) -> Result<(), String> {
+    let start = if index == 0 { 2.0 } else { 47.0 };
+    let download_end = if index == 0 { 38.0 } else { 83.0 };
+    let extract_end = if index == 0 { 45.0 } else { 92.0 };
+    let downloads_dir = runtime_downloads_dir_from_root(root);
+    fs::create_dir_all(&downloads_dir).map_err(|err| err.to_string())?;
+    let archive = downloads_dir.join(package.archive_name);
+    let mut last_error = String::new();
+
+    if archive.is_file() && runtime_archive_sha256_matches(&archive, package.sha256) {
+        append_launcher_log(
+            "INFO",
+            format!(
+                "runtime archive already downloaded kind={} path={}",
+                package.kind.label(),
+                display_path(&archive)
+            ),
+        );
+    } else {
+        let _ = fs::remove_file(&archive);
+        for url in package.urls {
+            if let Some(emitter) = progress {
+                emitter.emit(
+                    start,
+                    0,
+                    package.size_bytes,
+                    format!("正在下载 {} 运行环境...", package.kind.label()),
+                    Some("downloading"),
+                );
+            }
+            match download_runtime_archive_from_url(
+                package,
+                url,
+                &archive,
+                progress,
+                start,
+                download_end,
+            )
+            .and_then(|_| verify_runtime_archive(&archive, package))
+            {
+                Ok(()) => {
+                    last_error.clear();
+                    break;
+                }
+                Err(error) => {
+                    last_error = format!("{url}: {error}");
+                    append_launcher_log(
+                        "WARN",
+                        format!(
+                            "runtime download failed kind={} url={} error={error}",
+                            package.kind.label(),
+                            url
+                        ),
+                    );
+                    let _ = fs::remove_file(&archive);
+                }
+            }
+        }
+        if !last_error.is_empty() {
+            return Err(format!(
+                "{} 运行环境下载失败，已尝试所有下载源。最后错误：{}",
+                package.kind.label(),
+                last_error
+            ));
+        }
+    }
+
+    if let Some(emitter) = progress {
+        emitter.emit(
+            download_end,
+            package.size_bytes,
+            package.size_bytes,
+            format!("正在校验并解压 {} 运行环境...", package.kind.label()),
+            Some("downloading"),
+        );
+    }
+    install_runtime_archive(root, package, &archive)?;
+    if let Some(emitter) = progress {
+        emitter.emit(
+            extract_end,
+            package.size_bytes,
+            package.size_bytes,
+            format!("{} 运行环境已准备完成。", package.kind.label()),
+            Some("downloading"),
+        );
+    }
+    Ok(())
+}
+
+fn download_runtime_archive_from_url(
+    package: RuntimePackage,
+    url: &str,
+    destination: &Path,
+    progress: Option<&RuntimeProgressEmitter>,
+    start_percent: f64,
+    end_percent: f64,
+) -> Result<(), String> {
+    append_launcher_log(
+        "INFO",
+        format!(
+            "downloading runtime kind={} url={url}",
+            package.kind.label()
+        ),
+    );
+    let client = runtime_http_blocking_client()?;
+    let mut response = client
+        .get(url)
+        .header("User-Agent", "LifeBook-Launcher")
+        .send()
+        .map_err(|err| format!("下载失败：{err}"))?
+        .error_for_status()
+        .map_err(|err| format!("下载失败：{err}"))?;
+    let total = response.content_length().unwrap_or(package.size_bytes);
+    let mut file = fs::File::create(destination).map_err(|err| err.to_string())?;
+    let mut buffer = [0_u8; 64 * 1024];
+    let mut downloaded = 0_u64;
+    let started_at = Instant::now();
+    let mut last_emit_at = Instant::now() - Duration::from_secs(2);
+    loop {
+        let read = response
+            .read(&mut buffer)
+            .map_err(|err| format!("读取下载数据失败：{err}"))?;
+        if read == 0 {
+            break;
+        }
+        file.write_all(&buffer[..read])
+            .map_err(|err| format!("写入下载文件失败：{err}"))?;
+        downloaded += read as u64;
+        if let Some(emitter) = progress {
+            if last_emit_at.elapsed() >= Duration::from_millis(300) {
+                let span = end_percent - start_percent;
+                let percent = if total > 0 {
+                    start_percent + (downloaded as f64 / total as f64) * span
+                } else {
+                    start_percent
+                };
+                emitter.emit(
+                    percent,
+                    downloaded,
+                    total,
+                    format!(
+                        "正在下载 {} 运行环境... {}",
+                        package.kind.label(),
+                        runtime_download_detail(downloaded, total, started_at.elapsed())
+                    ),
+                    Some("downloading"),
+                );
+                last_emit_at = Instant::now();
+            }
+        }
+    }
+    file.flush().map_err(|err| err.to_string())?;
+    if total > 0 && downloaded < total {
+        return Err(format!("下载未完成：{} / {} bytes", downloaded, total));
+    }
+    if let Some(emitter) = progress {
+        emitter.emit(
+            end_percent,
+            downloaded,
+            total,
+            format!(
+                "{} 运行环境下载完成。{}",
+                package.kind.label(),
+                runtime_download_detail(downloaded, total, started_at.elapsed())
+            ),
+            Some("downloading"),
+        );
+    }
+    Ok(())
+}
+
+fn verify_runtime_archive(archive: &Path, package: RuntimePackage) -> Result<(), String> {
+    let actual = sha256_file(archive)?;
+    if actual.eq_ignore_ascii_case(package.sha256) {
+        return Ok(());
+    }
+    Err(format!(
+        "{} SHA256 校验失败：期望 {}，实际 {}",
+        package.kind.label(),
+        package.sha256,
+        actual
+    ))
+}
+
+fn runtime_archive_sha256_matches(archive: &Path, expected: &str) -> bool {
+    sha256_file(archive).is_ok_and(|actual| actual.eq_ignore_ascii_case(expected))
+}
+
+fn sha256_file(path: &Path) -> Result<String, String> {
+    let mut file = fs::File::open(path).map_err(|err| err.to_string())?;
+    let mut hasher = Sha256::new();
+    let mut buffer = [0_u8; 64 * 1024];
+    loop {
+        let read = file.read(&mut buffer).map_err(|err| err.to_string())?;
+        if read == 0 {
+            break;
+        }
+        hasher.update(&buffer[..read]);
+    }
+    Ok(format!("{:X}", hasher.finalize()))
+}
+
+fn install_runtime_archive(
+    root: &Path,
+    package: RuntimePackage,
+    archive: &Path,
+) -> Result<(), String> {
+    let kind_root = root.join(package.kind.dir_name());
+    fs::create_dir_all(&kind_root).map_err(|err| err.to_string())?;
+    let final_dir = runtime_install_dir_from_root(root, package);
+    let temp_dir = kind_root.join(format!("{}.tmp", package.install_dir_name));
+    if temp_dir.exists() {
+        fs::remove_dir_all(&temp_dir).map_err(|err| err.to_string())?;
+    }
+    fs::create_dir_all(&temp_dir).map_err(|err| err.to_string())?;
+    extract_zip_archive(archive, &temp_dir)?;
+    flatten_extracted_archive_root(&temp_dir)?;
+    if final_dir.exists() {
+        fs::remove_dir_all(&final_dir).map_err(|err| err.to_string())?;
+    }
+    fs::rename(&temp_dir, &final_dir).map_err(|err| {
+        format!(
+            "无法安装 {} 运行环境：{} -> {}：{err}",
+            package.kind.label(),
+            display_path(&temp_dir),
+            display_path(&final_dir)
+        )
+    })?;
+    if runtime_private_executable_from_root(root, package).is_some_and(|path| path.is_file()) {
+        Ok(())
+    } else {
+        Err(format!("{} 解压后未找到可执行文件。", package.kind.label()))
+    }
+}
+
+fn runtime_download_detail(downloaded: u64, total: u64, elapsed: Duration) -> String {
+    let percent = download_percent(downloaded, total);
+    let seconds = elapsed.as_secs_f64().max(0.001);
+    let speed = (downloaded as f64 / seconds).round() as u64;
+    if total > 0 {
+        format!(
+            "{} ({} / {}, {}/s)",
+            format_runtime_percent(percent),
+            format_kb(downloaded as f64),
+            format_kb(total as f64),
+            format_kb(speed as f64)
+        )
+    } else {
+        format!(
+            "{} ({}, {}/s)",
+            format_runtime_percent(percent),
+            format_kb(downloaded as f64),
+            format_kb(speed as f64)
+        )
+    }
+}
+
+fn format_runtime_percent(value: f64) -> String {
+    format!("{:.2}%", clamp_progress_percent(value))
+}
+
 fn books_node_modules_ready(repo_root: &Path) -> bool {
+    epubchecker_vendor_jar_path(&repo_root.join("books")).is_some_and(|path| path.is_file())
+}
+
+fn books_node_modules_package_installed(repo_root: &Path) -> bool {
     repo_root
         .join("books")
         .join("node_modules")
         .join("epubchecker")
         .join("package.json")
         .is_file()
+}
+
+fn ensure_epubchecker_vendor(
+    books_dir: &Path,
+    progress: Option<&NodeModulesProgressEmitter>,
+) -> Result<(), String> {
+    let epubchecker_dir = books_dir.join("node_modules").join("epubchecker");
+    if !epubchecker_dir.join("package.json").is_file() {
+        return Err("npm 已完成但未找到 epubchecker 依赖。".into());
+    }
+    let version = epubchecker_epubcheck_version(&epubchecker_dir)?;
+    let jar = epubchecker_vendor_jar_path(books_dir)
+        .ok_or_else(|| "无法解析 epubcheck vendor jar 路径。".to_string())?;
+    if jar.is_file() {
+        append_launcher_log(
+            "INFO",
+            format!("epubcheck vendor already ready jar={}", display_path(&jar)),
+        );
+        return Ok(());
+    }
+
+    let vendors_dir = epubchecker_dir.join("vendors");
+    let archive_file = epubchecker_dir.join(format!("epubcheck-{version}.zip"));
+    let url = epubcheck_download_url(&version);
+    if let Some(emitter) = progress {
+        emitter.emit(
+            72.0,
+            0,
+            estimate_node_modules_total_bytes(books_dir),
+            format!("正在下载 EPUB 校验工具 epubcheck {version}..."),
+            Some("downloading"),
+        );
+    }
+    download_epubcheck_archive_file(&version, &url, &archive_file, progress)?;
+    if NODE_MODULES_INSTALL_CANCEL_REQUESTED.load(Ordering::Acquire) {
+        return Err("EPUB 构建依赖安装已停止。".into());
+    }
+    if let Some(emitter) = progress {
+        let size = file_size(&archive_file);
+        emitter.emit(
+            92.0,
+            size,
+            size,
+            format!("正在解压 EPUB 校验工具 epubcheck {version}..."),
+            Some("downloading"),
+        );
+    }
+    if vendors_dir.exists() {
+        fs::remove_dir_all(&vendors_dir).map_err(|err| err.to_string())?;
+    }
+    fs::create_dir_all(&vendors_dir).map_err(|err| err.to_string())?;
+    extract_zip_archive(&archive_file, &vendors_dir)?;
+    let _ = fs::remove_file(&archive_file);
+    if !jar.is_file() {
+        return Err(format!(
+            "epubcheck 下载解压后未找到校验工具：{}",
+            display_path(&jar)
+        ));
+    }
+    if let Some(emitter) = progress {
+        emitter.emit(
+            98.0,
+            file_size(&jar),
+            file_size(&jar),
+            format!("EPUB 校验工具 epubcheck {version} 已准备完成。"),
+            Some("downloading"),
+        );
+    }
+    Ok(())
+}
+
+fn epubchecker_vendor_jar_path(books_dir: &Path) -> Option<PathBuf> {
+    let epubchecker_dir = books_dir.join("node_modules").join("epubchecker");
+    let version = epubchecker_epubcheck_version(&epubchecker_dir).ok()?;
+    Some(
+        epubchecker_dir
+            .join("vendors")
+            .join(format!("epubcheck-{version}"))
+            .join("epubcheck.jar"),
+    )
+}
+
+fn epubchecker_epubcheck_version(epubchecker_dir: &Path) -> Result<String, String> {
+    let text = fs::read_to_string(epubchecker_dir.join("package.json"))
+        .map_err(|err| format!("无法读取 epubchecker package.json：{err}"))?;
+    let json: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|err| format!("无法解析 epubchecker package.json：{err}"))?;
+    json.get("epubcheckVersion")
+        .and_then(|value| value.as_str())
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(str::to_string)
+        .ok_or_else(|| "epubchecker package.json 缺少 epubcheckVersion。".into())
+}
+
+fn epubcheck_download_url(version: &str) -> String {
+    format!("{EPUBCHECK_RELEASE_DOWNLOAD_BASE}/v{version}/epubcheck-{version}.zip")
+}
+
+fn download_epubcheck_archive_file(
+    version: &str,
+    url: &str,
+    destination: &Path,
+    progress: Option<&NodeModulesProgressEmitter>,
+) -> Result<(), String> {
+    append_launcher_log("INFO", format!("downloading epubcheck archive url={url}"));
+    let client = http_blocking_client()?;
+    let mut response = client
+        .get(url)
+        .header("User-Agent", "LifeBook-Launcher")
+        .send()
+        .map_err(|err| {
+            format!("下载 epubcheck {version} 失败：{err}。请检查网络、VPN 或代理设置。")
+        })?
+        .error_for_status()
+        .map_err(|err| {
+            format!("下载 epubcheck {version} 失败：{err}。请检查网络、VPN 或代理设置。")
+        })?;
+    let total = response.content_length().unwrap_or_default();
+    if let Some(parent) = destination.parent() {
+        fs::create_dir_all(parent).map_err(|err| err.to_string())?;
+    }
+    let mut file = fs::File::create(destination).map_err(|err| err.to_string())?;
+    let mut downloaded = 0_u64;
+    let started_at = Instant::now();
+    let mut buffer = [0_u8; 64 * 1024];
+    loop {
+        if NODE_MODULES_INSTALL_CANCEL_REQUESTED.load(Ordering::Acquire) {
+            return Err("EPUB 构建依赖安装已停止。".into());
+        }
+        let size = response
+            .read(&mut buffer)
+            .map_err(|err| format!("读取 epubcheck {version} 下载数据失败：{err}"))?;
+        if size == 0 {
+            break;
+        }
+        file.write_all(&buffer[..size])
+            .map_err(|err| format!("写入 epubcheck {version} 下载文件失败：{err}"))?;
+        downloaded += size as u64;
+        if let Some(emitter) = progress {
+            let raw_percent = if total > 0 {
+                ((downloaded as f64 / total as f64) * 100.0).clamp(0.0, 100.0)
+            } else {
+                1.0
+            };
+            emitter.emit(
+                scale_percent(raw_percent, 72, 92),
+                downloaded,
+                total,
+                format!(
+                    "正在下载 EPUB 校验工具 epubcheck {version}... {}",
+                    archive_download_detail(downloaded, total, started_at.elapsed())
+                ),
+                Some("downloading"),
+            );
+        }
+    }
+    file.flush()
+        .map_err(|err| format!("写入 epubcheck {version} 下载文件失败：{err}"))?;
+    if downloaded == 0 {
+        return Err(format!("epubcheck {version} 下载结果为空。"));
+    }
+    Ok(())
 }
 
 #[derive(Clone, Copy, Debug, Default)]
@@ -2330,13 +4180,9 @@ fn node_modules_progress_detail(
 ) -> String {
     format!(
         "({current_files}/{total_files}), {} | {}/s",
-        format_mib(current_bytes),
-        format_mib(bytes_per_second)
+        format_kb(current_bytes as f64),
+        format_kb(bytes_per_second as f64)
     )
-}
-
-fn format_mib(bytes: u64) -> String {
-    format!("{:.2} MiB", bytes as f64 / 1024.0 / 1024.0)
 }
 
 fn remove_node_modules_dir_safely(repo_root: &Path) -> Result<(), String> {
@@ -2542,6 +4388,7 @@ impl LifeBookProgressEmitter {
         }
     }
 
+    #[cfg(test)]
     fn emit_git_progress(&self, phase: GitProgressPhase, line: &str) {
         if let Some((percent, key)) = git_progress_for_line(phase, line) {
             let mut message = lifebook_progress_message(self.locale.as_deref(), key);
@@ -2580,6 +4427,33 @@ impl NodeModulesProgressEmitter {
     }
 }
 
+impl RuntimeProgressEmitter {
+    fn new(app: tauri::AppHandle) -> Self {
+        Self { app }
+    }
+
+    fn emit(
+        &self,
+        percent: f64,
+        downloaded_bytes: u64,
+        total_bytes: u64,
+        message: String,
+        state: Option<&str>,
+    ) {
+        let payload = DownloadProgress {
+            percent: clamp_progress_percent(percent),
+            downloaded_bytes,
+            total_bytes,
+            message: Some(message),
+            state: state.map(|value| value.to_string()),
+        };
+        let _ = self.app.emit(RUNTIME_PROGRESS_EVENT, payload.clone());
+        if let Some(window) = self.app.get_webview_window("main") {
+            let _ = window.emit(RUNTIME_PROGRESS_EVENT, payload);
+        }
+    }
+}
+
 fn progress_message(progress: Option<&LifeBookProgressEmitter>, key: &str) -> String {
     lifebook_progress_message(progress.and_then(|emitter| emitter.locale.as_deref()), key)
 }
@@ -2598,6 +4472,17 @@ fn lifebook_progress_message(locale: Option<&str>, key: &str) -> String {
         "clone_start" if is_ja => "LifeBook をダウンロードしています...".into(),
         "clone_start" if is_en => "Downloading LifeBook...".into(),
         "clone_start" => "正在下载 LifeBook 项目...".into(),
+        "archive_download" if is_ja => {
+            "GitHub archive から LifeBook をダウンロードしています...".into()
+        }
+        "archive_download" if is_en => "Downloading LifeBook from GitHub archive...".into(),
+        "archive_download" => "正在通过 GitHub archive 下载 LifeBook 项目...".into(),
+        "archive_extract" if is_ja => "LifeBook archive を展開しています...".into(),
+        "archive_extract" if is_en => "Extracting the LifeBook archive...".into(),
+        "archive_extract" => "正在解压 LifeBook archive...".into(),
+        "archive_sync" if is_ja => "LifeBook archive の更新を同期しています...".into(),
+        "archive_sync" if is_en => "Syncing LifeBook archive files...".into(),
+        "archive_sync" => "正在同步 LifeBook archive 文件...".into(),
         "clone_compressing" if is_ja => "LifeBook ファイルを準備しています...".into(),
         "clone_compressing" if is_en => "Preparing LifeBook files...".into(),
         "clone_compressing" => "正在准备 LifeBook 文件...".into(),
@@ -2649,6 +4534,7 @@ fn lifebook_progress_message(locale: Option<&str>, key: &str) -> String {
     }
 }
 
+#[cfg(test)]
 fn git_progress_for_line(phase: GitProgressPhase, line: &str) -> Option<(f64, &'static str)> {
     let lower = line.to_ascii_lowercase();
     let raw = parse_git_percent(line)?;
@@ -2691,10 +4577,12 @@ fn scale_percent(value: f64, start: u8, end: u8) -> f64 {
     clamp_progress_percent(start as f64 + value.clamp(0.0, 100.0) * span / 100.0)
 }
 
+#[cfg(test)]
 fn parse_git_percent(line: &str) -> Option<f64> {
     parse_git_object_percent(line).or_else(|| parse_git_percent_token(line))
 }
 
+#[cfg(test)]
 fn parse_git_percent_token(line: &str) -> Option<f64> {
     let percent_index = line.find('%')?;
     let before_percent = &line[..percent_index];
@@ -2714,6 +4602,7 @@ fn parse_git_percent_token(line: &str) -> Option<f64> {
         .filter(|value| (0.0..=100.0).contains(value))
 }
 
+#[cfg(test)]
 fn parse_git_object_percent(line: &str) -> Option<f64> {
     let (current, total) = parse_git_object_counts(line)?;
     if total == 0 {
@@ -2722,6 +4611,7 @@ fn parse_git_object_percent(line: &str) -> Option<f64> {
     Some(((current as f64 / total as f64) * 100.0).clamp(0.0, 100.0))
 }
 
+#[cfg(test)]
 fn parse_git_object_counts(line: &str) -> Option<(u64, u64)> {
     let open_index = line.find('(')?;
     let rest = &line[open_index + 1..];
@@ -2733,6 +4623,7 @@ fn parse_git_object_counts(line: &str) -> Option<(u64, u64)> {
     Some((current, total))
 }
 
+#[cfg(test)]
 fn git_progress_detail(line: &str) -> Option<String> {
     let object_detail =
         parse_git_object_counts(line).map(|(current, total)| format!("{current}/{total}"));
@@ -2745,6 +4636,7 @@ fn git_progress_detail(line: &str) -> Option<String> {
     }
 }
 
+#[cfg(test)]
 fn git_transfer_detail(line: &str) -> Option<String> {
     line.split(',')
         .map(|part| {
@@ -2773,33 +4665,49 @@ fn clamp_progress_percent(value: f64) -> f64 {
 
 fn lifebook_update_info(
     repo_root: &Path,
-    fetch: bool,
+    _fetch: bool,
     locale: Option<&str>,
 ) -> Result<LifeBookUpdateInfo, String> {
-    if fetch {
-        git_output_with_timeout(
-            repo_root,
-            &["fetch", "origin", "--prune"],
-            Duration::from_secs(GIT_FETCH_TIMEOUT_SECONDS),
-        )?;
+    if read_archive_project_state(repo_root).is_some() {
+        return lifebook_archive_update_info(repo_root, locale);
     }
+    lifebook_archive_required_update_info(repo_root, locale)
+}
 
-    let remote_ref = remote_default_ref(repo_root);
-    let current_commit = git_output(repo_root, &["rev-parse", "--short", "HEAD"])?;
-    let (ahead_count, behind_count) = branch_divergence_counts(repo_root, &remote_ref)?;
-    let commits = if behind_count > 0 {
-        git_commits_between(repo_root, &remote_ref, locale)?
-    } else {
-        git_latest_commits(repo_root, 20, locale)?
-    };
-
+fn lifebook_archive_update_info(
+    repo_root: &Path,
+    locale: Option<&str>,
+) -> Result<LifeBookUpdateInfo, String> {
+    let state = read_archive_project_state(repo_root)
+        .ok_or_else(|| archive_only_legacy_lifebook_message(repo_root))?;
+    let commits = lifebook_commit_history_or_local(locale, || Ok(Vec::new()))?;
+    let current_commit = state
+        .commit
+        .or_else(|| commits.first().map(|commit| commit.hash.clone()))
+        .unwrap_or_else(|| "github-archive".into());
     Ok(LifeBookUpdateInfo {
         repo_root: display_path(repo_root),
-        current_commit: current_commit.trim().to_string(),
-        remote_ref,
-        behind_count,
-        ahead_count,
-        has_update: behind_count > 0,
+        current_commit,
+        remote_ref: format!("github-archive/{}", state.ref_name),
+        behind_count: 0,
+        ahead_count: 0,
+        has_update: false,
+        commits,
+    })
+}
+
+fn lifebook_archive_required_update_info(
+    repo_root: &Path,
+    locale: Option<&str>,
+) -> Result<LifeBookUpdateInfo, String> {
+    let commits = lifebook_commit_history_or_local(locale, || Ok(Vec::new()))?;
+    Ok(LifeBookUpdateInfo {
+        repo_root: display_path(repo_root),
+        current_commit: "legacy-git-disabled".into(),
+        remote_ref: format!("github-archive/{}", LIFEBOOK_ARCHIVE_REF),
+        behind_count: 0,
+        ahead_count: 0,
+        has_update: false,
         commits,
     })
 }
@@ -3400,10 +5308,40 @@ fn set_process_lifebook_env(repo_root: &Path) {
     env::set_var(LIFEBOOK_HOME_ENV, value);
 }
 
+fn set_process_runtime_envs() {
+    for package in runtime_packages() {
+        if let Some(path) = runtime_resolved_executable(package) {
+            env::set_var(package.kind.env_name(), display_path(&path));
+        }
+    }
+}
+
+fn set_process_runtime_envs_from_status(status: &RuntimeStatus) {
+    for (kind, tool) in [
+        (RuntimeKind::Python, &status.python),
+        (RuntimeKind::Java, &status.java),
+    ] {
+        if tool.ready {
+            if let Some(path) = tool.path.as_deref() {
+                env::set_var(kind.env_name(), path);
+            }
+        }
+    }
+}
+
+fn apply_runtime_env(command: &mut Command) {
+    for package in runtime_packages() {
+        if let Some(path) = runtime_resolved_executable(package) {
+            command.env(package.kind.env_name(), display_path(&path));
+        }
+    }
+}
+
 fn apply_network_env(command: &mut Command, repo_root: Option<&Path>) {
     if let Some(repo_root) = repo_root {
         command.env(LIFEBOOK_HOME_ENV, display_path(repo_root));
     }
+    apply_runtime_env(command);
     if let Some(proxy_url) = configured_proxy_url_best_effort() {
         command
             .env("HTTPS_PROXY", &proxy_url)
@@ -3612,6 +5550,7 @@ fn safe_project_relative_path(value: &str) -> Result<PathBuf, String> {
     Ok(path)
 }
 
+#[cfg(test)]
 fn remote_default_ref(repo_root: &Path) -> String {
     git_output(
         repo_root,
@@ -3622,6 +5561,7 @@ fn remote_default_ref(repo_root: &Path) -> String {
     .unwrap_or_else(|| "origin/main".into())
 }
 
+#[cfg(test)]
 fn remote_branch_from_ref(remote_ref: &str) -> String {
     remote_ref
         .trim()
@@ -3631,6 +5571,7 @@ fn remote_branch_from_ref(remote_ref: &str) -> String {
         .to_string()
 }
 
+#[cfg(test)]
 fn remote_matches_local_head(repo_root: &Path) -> Result<bool, String> {
     let local_head = git_output(repo_root, &["rev-parse", "HEAD"])?;
     let remote_ref = remote_default_ref(repo_root);
@@ -3647,6 +5588,7 @@ fn remote_matches_local_head(repo_root: &Path) -> Result<bool, String> {
     Ok(local_head.trim() == remote_hash.trim())
 }
 
+#[cfg(test)]
 fn parse_ahead_behind(value: &str) -> Result<(u32, u32), String> {
     let mut parts = value.split_whitespace();
     let ahead = parts
@@ -3662,6 +5604,7 @@ fn parse_ahead_behind(value: &str) -> Result<(u32, u32), String> {
     Ok((ahead, behind))
 }
 
+#[cfg(test)]
 fn branch_divergence_counts(repo_root: &Path, remote_ref: &str) -> Result<(u32, u32), String> {
     let counts = git_output(
         repo_root,
@@ -3675,6 +5618,7 @@ fn branch_divergence_counts(repo_root: &Path, remote_ref: &str) -> Result<(u32, 
     parse_ahead_behind(&counts)
 }
 
+#[cfg(test)]
 fn lifebook_diverged_message(
     repo_root: &Path,
     remote_ref: &str,
@@ -3690,39 +5634,37 @@ fn lifebook_diverged_message(
     )
 }
 
+#[cfg(test)]
 fn git_commits_between(
     repo_root: &Path,
     remote_ref: &str,
     locale: Option<&str>,
 ) -> Result<Vec<CommitInfo>, String> {
     let range = format!("HEAD..{remote_ref}");
-    git_log(repo_root, &range, 80, locale)
+    git_log(repo_root, &range, None, locale)
 }
 
-fn git_latest_commits(
-    repo_root: &Path,
-    max_count: usize,
-    locale: Option<&str>,
-) -> Result<Vec<CommitInfo>, String> {
-    git_log(repo_root, "HEAD", max_count, locale)
+#[cfg(test)]
+fn git_all_commits(repo_root: &Path, locale: Option<&str>) -> Result<Vec<CommitInfo>, String> {
+    git_log(repo_root, "HEAD", None, locale)
 }
 
+#[cfg(test)]
 fn git_log(
     repo_root: &Path,
     rev: &str,
-    max_count: usize,
+    max_count: Option<usize>,
     locale: Option<&str>,
 ) -> Result<Vec<CommitInfo>, String> {
     let format = "%h%x1f%ci%x1f%s%x1f%b%x1e";
-    let output = git_output(
-        repo_root,
-        &[
-            "log",
-            &format!("--max-count={max_count}"),
-            &format!("--pretty=format:{format}"),
-            rev,
-        ],
-    )?;
+    let mut args = vec!["log".to_string()];
+    if let Some(max_count) = max_count {
+        args.push(format!("--max-count={max_count}"));
+    }
+    args.push(format!("--pretty=format:{format}"));
+    args.push(rev.to_string());
+    let arg_refs = args.iter().map(String::as_str).collect::<Vec<_>>();
+    let output = git_output(repo_root, &arg_refs)?;
     let commits = output
         .split('\u{1e}')
         .filter_map(|entry| {
@@ -3735,16 +5677,835 @@ fn git_log(
             let date = parts.next().unwrap_or_default().trim().to_string();
             let title = parts.next().unwrap_or_default().trim().to_string();
             let body = parts.next().unwrap_or_default();
-            Some(CommitInfo {
-                hash,
-                date,
-                full_message: full_commit_message(&title, body),
-                title,
-                summary: localized_commit_summary(body, locale),
-            })
+            Some(commit_info_from_parts(hash, date, title, body, locale))
         })
         .collect();
     Ok(commits)
+}
+
+fn commit_history_cache_locale(locale: Option<&str>) -> String {
+    locale
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("default")
+        .chars()
+        .map(|ch| {
+            if ch.is_ascii_alphanumeric() || ch == '-' || ch == '_' {
+                ch
+            } else {
+                '_'
+            }
+        })
+        .collect()
+}
+
+fn commit_history_cache_path(locale: Option<&str>) -> Result<PathBuf, String> {
+    Ok(launcher_cache_dir()?.join(format!(
+        "lifebook-commit-history-{}.json",
+        commit_history_cache_locale(locale)
+    )))
+}
+
+fn github_api_cooldown_path() -> Result<PathBuf, String> {
+    Ok(launcher_cache_dir()?.join("github-api-cooldown.json"))
+}
+
+fn opencode_release_cache_path() -> Result<PathBuf, String> {
+    Ok(launcher_cache_dir()?.join("opencode-release.json"))
+}
+
+fn read_commit_history_cache(locale: Option<&str>) -> Option<CommitHistoryCache> {
+    let path = commit_history_cache_path(locale).ok()?;
+    let text = fs::read_to_string(path).ok()?;
+    let cache = serde_json::from_str::<CommitHistoryCache>(&text).ok()?;
+    commit_history_cache_has_usable_commits(&cache).then_some(cache)
+}
+
+fn write_commit_history_cache(locale: Option<&str>, source: &str, commits: &[CommitInfo]) {
+    if commits.is_empty() || !commits.iter().any(commit_has_meaningful_title) {
+        return;
+    }
+    let Ok(path) = commit_history_cache_path(locale) else {
+        return;
+    };
+    if let Some(parent) = path.parent() {
+        let _ = fs::create_dir_all(parent);
+    }
+    let cache = CommitHistoryCache {
+        ref_name: LIFEBOOK_ARCHIVE_REF.into(),
+        locale: commit_history_cache_locale(locale),
+        fetched_at_unix: now_unix_seconds(),
+        source: source.into(),
+        commits: commits.to_vec(),
+    };
+    if let Ok(text) = serde_json::to_string_pretty(&cache) {
+        let _ = fs::write(path, text);
+    }
+}
+
+fn cached_commit_history_if_fresh(locale: Option<&str>) -> Option<Vec<CommitInfo>> {
+    let cache = read_commit_history_cache(locale)?;
+    commit_history_cache_is_fresh(&cache, now_unix_seconds()).then_some(cache.commits)
+}
+
+fn cached_commit_history_any(locale: Option<&str>) -> Option<Vec<CommitInfo>> {
+    read_commit_history_cache(locale).map(|cache| cache.commits)
+}
+
+fn read_opencode_release_cache() -> Option<OpenCodeReleaseCache> {
+    let path = opencode_release_cache_path().ok()?;
+    let text = fs::read_to_string(path).ok()?;
+    serde_json::from_str::<OpenCodeReleaseCache>(&text).ok()
+}
+
+fn write_opencode_release_cache(latest_version: &str, asset: &GithubAsset) {
+    let Ok(path) = opencode_release_cache_path() else {
+        return;
+    };
+    if let Some(parent) = path.parent() {
+        let _ = fs::create_dir_all(parent);
+    }
+    let cache = OpenCodeReleaseCache {
+        fetched_at_unix: now_unix_seconds(),
+        latest_version: latest_version.to_string(),
+        asset: asset.clone(),
+    };
+    if let Ok(text) = serde_json::to_string_pretty(&cache) {
+        let _ = fs::write(path, text);
+    }
+}
+
+fn cached_opencode_release_if_fresh(asset_name: &str) -> Option<(String, GithubAsset)> {
+    let cache = read_opencode_release_cache()?;
+    opencode_release_cache_is_fresh(&cache, asset_name, now_unix_seconds())
+        .then_some((cache.latest_version, cache.asset))
+}
+
+fn cached_opencode_release_any(asset_name: &str) -> Option<(String, GithubAsset)> {
+    let cache = read_opencode_release_cache()?;
+    opencode_release_cache_matches_asset(&cache, asset_name)
+        .then_some((cache.latest_version, cache.asset))
+}
+
+fn opencode_release_cache_is_fresh(
+    cache: &OpenCodeReleaseCache,
+    asset_name: &str,
+    now: u64,
+) -> bool {
+    opencode_release_cache_matches_asset(cache, asset_name)
+        && now.saturating_sub(cache.fetched_at_unix) <= GITHUB_RELEASE_CACHE_TTL_SECONDS
+}
+
+fn opencode_release_cache_matches_asset(cache: &OpenCodeReleaseCache, asset_name: &str) -> bool {
+    !cache.latest_version.trim().is_empty()
+        && cache.asset.name == asset_name
+        && !cache.asset.browser_download_url.trim().is_empty()
+}
+
+fn commit_history_cache_is_fresh(cache: &CommitHistoryCache, now: u64) -> bool {
+    cache.ref_name == LIFEBOOK_ARCHIVE_REF
+        && commit_history_cache_has_usable_commits(cache)
+        && now.saturating_sub(cache.fetched_at_unix) <= LIFEBOOK_COMMIT_HISTORY_CACHE_TTL_SECONDS
+}
+
+fn commit_history_cache_has_usable_commits(cache: &CommitHistoryCache) -> bool {
+    !cache.commits.is_empty() && cache.commits.iter().any(commit_has_meaningful_title)
+}
+
+fn commit_has_meaningful_title(commit: &CommitInfo) -> bool {
+    !commit.title.trim().is_empty() && !commit_text_is_hash_only(&commit.title, &commit.hash)
+}
+
+fn commit_text_is_hash_only(text: &str, hash: &str) -> bool {
+    let normalized = text.trim().trim_matches('`').trim();
+    if normalized.is_empty() {
+        return true;
+    }
+    if normalized.eq_ignore_ascii_case(hash) {
+        return true;
+    }
+    let short = short_commit_hash(hash);
+    normalized.eq_ignore_ascii_case(&short)
+        || ((7..=40).contains(&normalized.len())
+            && normalized.chars().all(|ch| ch.is_ascii_hexdigit()))
+}
+
+fn read_github_api_cooldown_state() -> GithubApiCooldownState {
+    let Ok(path) = github_api_cooldown_path() else {
+        return GithubApiCooldownState::default();
+    };
+    fs::read_to_string(path)
+        .ok()
+        .and_then(|text| serde_json::from_str::<GithubApiCooldownState>(&text).ok())
+        .unwrap_or_default()
+}
+
+fn write_github_api_cooldown_state(state: &GithubApiCooldownState) {
+    let Ok(path) = github_api_cooldown_path() else {
+        return;
+    };
+    if let Some(parent) = path.parent() {
+        let _ = fs::create_dir_all(parent);
+    }
+    if let Ok(text) = serde_json::to_string_pretty(state) {
+        let _ = fs::write(path, text);
+    }
+}
+
+fn github_api_cooldown_active(kind: GithubApiCooldownKind) -> bool {
+    let state = read_github_api_cooldown_state();
+    kind.get(&state)
+        .is_some_and(|until| until > now_unix_seconds())
+}
+
+fn remember_github_api_cooldown(kind: GithubApiCooldownKind, until: u64) {
+    let mut state = read_github_api_cooldown_state();
+    kind.set(&mut state, Some(until));
+    write_github_api_cooldown_state(&state);
+    append_launcher_log(
+        "WARN",
+        format!(
+            "GitHub API cooldown active kind={} until_unix={until}",
+            kind.label()
+        ),
+    );
+}
+
+fn clear_github_api_cooldown(kind: GithubApiCooldownKind) {
+    let mut state = read_github_api_cooldown_state();
+    if kind.get(&state).is_some() {
+        kind.set(&mut state, None);
+        write_github_api_cooldown_state(&state);
+    }
+}
+
+fn remember_github_api_cooldown_from_failure(
+    kind: GithubApiCooldownKind,
+    status: StatusCode,
+    headers: &HeaderMap,
+    body: &str,
+) {
+    if !github_response_is_rate_limited(status, headers, body) {
+        return;
+    }
+    let until = github_rate_limit_cooldown_until(headers, now_unix_seconds())
+        .unwrap_or_else(|| now_unix_seconds() + GITHUB_SECONDARY_RATE_LIMIT_MIN_COOLDOWN_SECONDS);
+    remember_github_api_cooldown(kind, until);
+}
+
+fn github_response_is_rate_limited(status: StatusCode, headers: &HeaderMap, body: &str) -> bool {
+    if status != StatusCode::FORBIDDEN && status != StatusCode::TOO_MANY_REQUESTS {
+        return false;
+    }
+    let body = body.to_ascii_lowercase();
+    github_header_value(headers, "x-ratelimit-remaining").as_deref() == Some("0")
+        || headers.get(RETRY_AFTER).is_some()
+        || body.contains("rate limit")
+        || body.contains("secondary rate")
+        || body.contains("abuse detection")
+}
+
+fn github_rate_limit_cooldown_until(headers: &HeaderMap, now: u64) -> Option<u64> {
+    if let Some(reset) = github_header_value(headers, "x-ratelimit-reset")
+        .and_then(|value| value.parse::<u64>().ok())
+    {
+        if github_header_value(headers, "x-ratelimit-remaining").as_deref() == Some("0") {
+            return Some(reset + GITHUB_RATE_LIMIT_COOLDOWN_BUFFER_SECONDS);
+        }
+    }
+    if let Some(retry_after) = headers
+        .get(RETRY_AFTER)
+        .and_then(|value| value.to_str().ok())
+        .and_then(|value| value.trim().parse::<u64>().ok())
+    {
+        return Some(now + retry_after + GITHUB_RATE_LIMIT_COOLDOWN_BUFFER_SECONDS);
+    }
+    None
+}
+
+fn github_header_value(headers: &HeaderMap, name: &str) -> Option<String> {
+    headers
+        .get(name)
+        .and_then(|value| value.to_str().ok())
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(ToOwned::to_owned)
+}
+
+fn lifebook_commit_history_from_fallbacks<F>(
+    locale: Option<&str>,
+    local: F,
+) -> Result<Vec<CommitInfo>, String>
+where
+    F: FnOnce() -> Result<Vec<CommitInfo>, String>,
+{
+    github_lifebook_atom_commit_history(locale)
+        .inspect(|commits| write_commit_history_cache(locale, "atom", commits))
+        .or_else(|atom_error| {
+            append_launcher_log(
+                "WARN",
+                format!("unable to load LifeBook commit history from GitHub Atom feed: {atom_error}"),
+            );
+            github_lifebook_public_page_commit_history(locale)
+                .inspect(|commits| write_commit_history_cache(locale, "public-html", commits))
+        })
+        .or_else(|public_error| {
+            append_launcher_log(
+                "WARN",
+                format!(
+                    "unable to load LifeBook commit history from GitHub public commits pages: {public_error}"
+                ),
+            );
+            local()
+        })
+}
+
+fn lifebook_commit_history_or_local<F>(
+    locale: Option<&str>,
+    local: F,
+) -> Result<Vec<CommitInfo>, String>
+where
+    F: FnOnce() -> Result<Vec<CommitInfo>, String>,
+{
+    if let Some(commits) = cached_commit_history_if_fresh(locale) {
+        append_launcher_log(
+            "INFO",
+            "using cached LifeBook commit history because cache is fresh",
+        );
+        return Ok(commits);
+    }
+    if github_api_cooldown_active(GithubApiCooldownKind::CommitHistory) {
+        if let Some(commits) = cached_commit_history_any(locale) {
+            append_launcher_log(
+                "WARN",
+                "using cached LifeBook commit history because GitHub API is in cooldown",
+            );
+            return Ok(commits);
+        }
+        return lifebook_commit_history_from_fallbacks(locale, local);
+    }
+    match github_lifebook_commit_history(locale) {
+        Ok(commits) if !commits.is_empty() => {
+            write_commit_history_cache(locale, "api", &commits);
+            Ok(commits)
+        }
+        Ok(_) => lifebook_commit_history_from_fallbacks(locale, local),
+        Err(error) => {
+            append_launcher_log(
+                "WARN",
+                format!("unable to load full LifeBook commit history from GitHub API: {error}"),
+            );
+            if let Some(commits) = cached_commit_history_any(locale) {
+                append_launcher_log(
+                    "WARN",
+                    "using cached LifeBook commit history after GitHub API failure",
+                );
+                return Ok(commits);
+            }
+            lifebook_commit_history_from_fallbacks(locale, local)
+        }
+    }
+}
+
+fn lifebook_latest_remote_commit_best_effort() -> Option<RemoteCommitRef> {
+    if !github_api_cooldown_active(GithubApiCooldownKind::LatestCommit) {
+        match github_lifebook_latest_commit_ref() {
+            Ok(commit) => {
+                clear_github_api_cooldown(GithubApiCooldownKind::LatestCommit);
+                return Some(commit);
+            }
+            Err(api_error) => append_launcher_log(
+                "WARN",
+                format!("unable to load latest LifeBook commit from GitHub API: {api_error}"),
+            ),
+        }
+    }
+    github_lifebook_atom_latest_commit_ref()
+        .or_else(|atom_error| {
+            append_launcher_log(
+                "WARN",
+                format!("unable to load latest LifeBook commit from GitHub Atom feed: {atom_error}"),
+            );
+            github_lifebook_public_page_latest_commit_ref()
+        })
+        .map_err(|public_error| {
+            append_launcher_log(
+                "WARN",
+                format!(
+                    "unable to load latest LifeBook commit from GitHub public commits page: {public_error}"
+                ),
+            );
+            public_error
+        })
+        .ok()
+}
+
+fn github_lifebook_latest_commit_ref() -> Result<RemoteCommitRef, String> {
+    let client = http_blocking_client()?;
+    let url = format!("{LIFEBOOK_REPO_COMMITS_API}?sha={LIFEBOOK_ARCHIVE_REF}&per_page=1");
+    let response = client
+        .get(&url)
+        .timeout(Duration::from_secs(PROXY_TEST_TIMEOUT_SECONDS))
+        .header("User-Agent", "LifeBook-Launcher")
+        .send()
+        .map_err(|err| format!("unable to request latest LifeBook commit: {err}"))?;
+    if !response.status().is_success() {
+        let status = response.status();
+        let headers = response.headers().clone();
+        let body = response.text().unwrap_or_default();
+        remember_github_api_cooldown_from_failure(
+            GithubApiCooldownKind::LatestCommit,
+            status,
+            &headers,
+            &body,
+        );
+        let summary = github_error_summary(&body);
+        return Err(format!(
+            "latest LifeBook commit request failed: HTTP status {status}{summary} for url ({url})"
+        ));
+    }
+    let commits = response
+        .json::<Vec<GithubCommit>>()
+        .map_err(|err| format!("unable to parse latest LifeBook commit: {err}"))?;
+    commits
+        .into_iter()
+        .next()
+        .map(github_commit_to_remote_commit_ref)
+        .ok_or_else(|| "GitHub latest commit API returned no commits".into())
+}
+
+fn github_lifebook_public_page_latest_commit_ref() -> Result<RemoteCommitRef, String> {
+    let client = http_blocking_client()?;
+    let url = format!("{LIFEBOOK_REPO_COMMITS_PAGE_BASE}/{LIFEBOOK_ARCHIVE_REF}");
+    let response = client
+        .get(&url)
+        .timeout(Duration::from_secs(PROXY_TEST_TIMEOUT_SECONDS))
+        .header("User-Agent", "LifeBook-Launcher")
+        .send()
+        .map_err(|err| format!("unable to request LifeBook public commits page: {err}"))?;
+    if !response.status().is_success() {
+        return Err(format!(
+            "LifeBook public commits page request failed: HTTP status {} for url ({url})",
+            response.status()
+        ));
+    }
+    let html = response
+        .text()
+        .map_err(|err| format!("unable to read LifeBook public commits page: {err}"))?;
+    github_public_page_latest_commit_from_html(&html)
+        .ok_or_else(|| "GitHub public commits page did not contain a latest commit hash".into())
+}
+
+fn github_lifebook_atom_latest_commit_ref() -> Result<RemoteCommitRef, String> {
+    let client = http_blocking_client()?;
+    let url = format!("{LIFEBOOK_REPO_COMMITS_PAGE_BASE}/{LIFEBOOK_ARCHIVE_REF}.atom");
+    let response = client
+        .get(&url)
+        .timeout(Duration::from_secs(PROXY_TEST_TIMEOUT_SECONDS))
+        .header("User-Agent", "LifeBook-Launcher")
+        .send()
+        .map_err(|err| format!("unable to request LifeBook commit Atom feed: {err}"))?;
+    if !response.status().is_success() {
+        return Err(format!(
+            "LifeBook commit Atom feed request failed: HTTP status {} for url ({url})",
+            response.status()
+        ));
+    }
+    let feed = response
+        .text()
+        .map_err(|err| format!("unable to read LifeBook commit Atom feed: {err}"))?;
+    github_atom_latest_commit_from_feed(&feed)
+        .ok_or_else(|| "GitHub commit Atom feed did not contain a latest commit".into())
+}
+
+fn github_lifebook_commit_history(locale: Option<&str>) -> Result<Vec<CommitInfo>, String> {
+    let client = http_blocking_client()?;
+    let mut commits = Vec::new();
+    let mut page = 1usize;
+    loop {
+        let url = format!(
+            "{LIFEBOOK_REPO_COMMITS_API}?sha={LIFEBOOK_ARCHIVE_REF}&per_page={LIFEBOOK_COMMIT_PAGE_SIZE}&page={page}"
+        );
+        let response = client
+            .get(&url)
+            .header("User-Agent", "LifeBook-Launcher")
+            .send()
+            .map_err(|err| format!("unable to request LifeBook commit history: {err}"))?;
+        if !response.status().is_success() {
+            let status = response.status();
+            let headers = response.headers().clone();
+            let body = response.text().unwrap_or_default();
+            remember_github_api_cooldown_from_failure(
+                GithubApiCooldownKind::CommitHistory,
+                status,
+                &headers,
+                &body,
+            );
+            let summary = github_error_summary(&body);
+            if !commits.is_empty() {
+                append_launcher_log(
+                    "WARN",
+                    format!(
+                        "partial LifeBook commit history loaded before GitHub API failed page={page} status={status}{summary}"
+                    ),
+                );
+                return Ok(commits);
+            }
+            return Err(format!(
+                "LifeBook commits request failed: HTTP status {status}{summary} for url ({url})"
+            ));
+        }
+        let page_commits = response
+            .json::<Vec<GithubCommit>>()
+            .map_err(|err| format!("unable to parse LifeBook commit history: {err}"))?;
+        let page_len = page_commits.len();
+        if page_len == 0 {
+            break;
+        }
+        commits.extend(
+            page_commits
+                .into_iter()
+                .map(|commit| github_commit_to_commit_info(commit, locale)),
+        );
+        if page_len < LIFEBOOK_COMMIT_PAGE_SIZE {
+            break;
+        }
+        page += 1;
+    }
+    clear_github_api_cooldown(GithubApiCooldownKind::CommitHistory);
+    Ok(commits)
+}
+
+fn github_lifebook_public_page_commit_history(
+    locale: Option<&str>,
+) -> Result<Vec<CommitInfo>, String> {
+    let client = http_blocking_client()?;
+    let mut commits = Vec::new();
+    let mut next_url = format!("{LIFEBOOK_REPO_COMMITS_PAGE_BASE}/{LIFEBOOK_ARCHIVE_REF}");
+    for _ in 0..LIFEBOOK_PUBLIC_COMMITS_MAX_PAGES {
+        let response = client
+            .get(&next_url)
+            .header("User-Agent", "LifeBook-Launcher")
+            .send()
+            .map_err(|err| format!("unable to request LifeBook public commits page: {err}"))?;
+        if !response.status().is_success() {
+            return Err(format!(
+                "LifeBook public commits page request failed: HTTP status {} for url ({next_url})",
+                response.status()
+            ));
+        }
+        let html = response
+            .text()
+            .map_err(|err| format!("unable to read LifeBook public commits page: {err}"))?;
+        let mut page_commits = github_public_page_commits_from_html(&html, locale);
+        commits.append(&mut page_commits);
+        let Some(url) = github_public_commits_next_page_url(&html) else {
+            break;
+        };
+        next_url = url;
+    }
+    if commits.is_empty() {
+        Err("GitHub public commits page did not contain commit rows".into())
+    } else {
+        dedupe_commits_by_hash(commits)
+    }
+}
+
+fn github_lifebook_atom_commit_history(locale: Option<&str>) -> Result<Vec<CommitInfo>, String> {
+    let client = http_blocking_client()?;
+    let url = format!("{LIFEBOOK_REPO_COMMITS_PAGE_BASE}/{LIFEBOOK_ARCHIVE_REF}.atom");
+    let response = client
+        .get(&url)
+        .header("User-Agent", "LifeBook-Launcher")
+        .send()
+        .map_err(|err| format!("unable to request LifeBook commit Atom feed: {err}"))?;
+    if !response.status().is_success() {
+        return Err(format!(
+            "LifeBook commit Atom feed request failed: HTTP status {} for url ({url})",
+            response.status()
+        ));
+    }
+    let feed = response
+        .text()
+        .map_err(|err| format!("unable to read LifeBook commit Atom feed: {err}"))?;
+    let commits = github_atom_commits_from_feed(&feed, locale);
+    if commits.is_empty() {
+        Err("GitHub commit Atom feed did not contain commit entries".into())
+    } else {
+        Ok(commits)
+    }
+}
+
+fn github_atom_commits_from_feed(feed: &str, locale: Option<&str>) -> Vec<CommitInfo> {
+    let mut commits = Vec::new();
+    let mut rest = feed;
+    while let Some((_, after_start)) = rest.split_once("<entry>") {
+        let Some((entry, after_entry)) = after_start.split_once("</entry>") else {
+            break;
+        };
+        rest = after_entry;
+        let Some(id) = text_between(entry, "Grit::Commit/", "</id>") else {
+            continue;
+        };
+        let date = text_between(entry, "<updated>", "</updated>").unwrap_or_default();
+        let title = text_between(entry, "<title>", "</title>")
+            .map(|value| decode_xml_entities(&value).trim().to_string())
+            .unwrap_or_default();
+        let content = text_between(entry, "<content type=\"html\">", "</content>")
+            .map(|value| decode_xml_entities(&value))
+            .and_then(|value| pre_content_from_html(&value))
+            .unwrap_or_else(|| title.clone());
+        commits.push(commit_info_from_full_message(
+            short_commit_hash(id.trim()),
+            date.trim().to_string(),
+            &content,
+            locale,
+        ));
+    }
+    commits
+}
+
+fn github_atom_latest_commit_from_feed(feed: &str) -> Option<RemoteCommitRef> {
+    let (_, after_start) = feed.split_once("<entry>")?;
+    let (entry, _) = after_start.split_once("</entry>")?;
+    let id = text_between(entry, "Grit::Commit/", "</id>")?;
+    let date = text_between(entry, "<updated>", "</updated>")
+        .map(|value| value.trim().to_string())
+        .filter(|value| !value.is_empty());
+    Some(RemoteCommitRef {
+        sha: id.trim().to_string(),
+        date,
+    })
+}
+
+fn github_public_page_commits_from_html(html: &str, locale: Option<&str>) -> Vec<CommitInfo> {
+    let mut commits = Vec::new();
+    let marker = "/SaberOnGo/public-domain-books-translation/commit/";
+    let mut rest = html;
+    while let Some(marker_index) = rest.find(marker) {
+        let after_marker = &rest[marker_index + marker.len()..];
+        let hash = after_marker
+            .chars()
+            .take_while(|ch| ch.is_ascii_hexdigit())
+            .collect::<String>();
+        if hash.len() < 7 {
+            rest = after_marker;
+            continue;
+        }
+        let Some(title) = commit_title_after_marker(after_marker)
+            .filter(|title| !commit_text_is_hash_only(title, &hash))
+        else {
+            rest = after_marker;
+            continue;
+        };
+        let date = commit_group_date_before_marker(rest, marker_index);
+        commits.push(CommitInfo {
+            hash: short_commit_hash(&hash),
+            date,
+            title: title.clone(),
+            summary: localized_commit_summary(&title, locale),
+            full_message: title,
+        });
+        rest = after_marker;
+    }
+    dedupe_commits_by_hash(commits).unwrap_or_default()
+}
+
+#[cfg(test)]
+fn github_public_page_latest_commit_hash_from_html(html: &str) -> Option<String> {
+    github_public_page_latest_commit_from_html(html).map(|commit| commit.sha)
+}
+
+fn github_public_page_latest_commit_from_html(html: &str) -> Option<RemoteCommitRef> {
+    let marker = "/SaberOnGo/public-domain-books-translation/commit/";
+    let marker_index = html.find(marker)?;
+    let after_marker = &html[marker_index + marker.len()..];
+    let sha = after_marker
+        .chars()
+        .take_while(|ch| ch.is_ascii_hexdigit())
+        .collect::<String>();
+    if sha.len() < 7 {
+        return None;
+    }
+    Some(RemoteCommitRef {
+        sha,
+        date: github_public_page_commit_date_after_marker(after_marker),
+    })
+}
+
+fn github_public_page_commit_date_after_marker(value: &str) -> Option<String> {
+    let window = safe_utf8_prefix(value, 4000);
+    [
+        ("\"committedDate\":\"", "\""),
+        ("\"authoredDate\":\"", "\""),
+        ("\\\"committedDate\\\":\\\"", "\\\""),
+        ("\\\"authoredDate\\\":\\\"", "\\\""),
+        ("&quot;committedDate&quot;:&quot;", "&quot;"),
+        ("&quot;authoredDate&quot;:&quot;", "&quot;"),
+    ]
+    .into_iter()
+    .find_map(|(start, end)| text_between(window, start, end))
+    .map(|value| decode_xml_entities(&value))
+    .map(|value| value.trim().to_string())
+    .filter(|value| !value.is_empty())
+}
+
+fn commit_title_after_marker(value: &str) -> Option<String> {
+    let window = safe_utf8_prefix(value, 2400);
+    let span_start = window.find("<span>")? + "<span>".len();
+    let span_end = span_start + window[span_start..].find("</span>")?;
+    let title = decode_xml_entities(&window[span_start..span_end])
+        .trim()
+        .to_string();
+    (!title.is_empty()).then_some(title)
+}
+
+fn safe_utf8_prefix(value: &str, max_bytes: usize) -> &str {
+    if value.len() <= max_bytes {
+        return value;
+    }
+    let mut end = max_bytes;
+    while end > 0 && !value.is_char_boundary(end) {
+        end -= 1;
+    }
+    &value[..end]
+}
+
+fn commit_group_date_before_marker(value: &str, marker_index: usize) -> String {
+    let before = &value[..marker_index];
+    let Some(title_index) = before.rfind("data-testid=\"commit-group-title\"") else {
+        return String::new();
+    };
+    let group = &before[title_index..];
+    let Some(group_title) = text_between(group, ">", "</h3>") else {
+        return String::new();
+    };
+    github_commit_group_date_to_iso(&decode_xml_entities(&group_title))
+}
+
+fn github_commit_group_date_to_iso(value: &str) -> String {
+    let value = value.trim();
+    let date = value.strip_prefix("Commits on ").unwrap_or(value).trim();
+    NaiveDate::parse_from_str(date, "%B %d, %Y")
+        .map(|date| format!("{} 00:00", date.format("%Y-%m-%d")))
+        .unwrap_or_else(|_| date.to_string())
+}
+
+fn github_public_commits_next_page_url(html: &str) -> Option<String> {
+    let rel_index = html.find("rel=\"next\"")?;
+    let anchor_start = html[..rel_index].rfind("<a")?;
+    let anchor_end = rel_index + html[rel_index..].find('>')?;
+    let anchor = &html[anchor_start..=anchor_end];
+    let href = text_between(anchor, "href=\"", "\"")?;
+    let href = decode_xml_entities(&href);
+    if href.starts_with("http://") || href.starts_with("https://") {
+        Some(href)
+    } else if href.starts_with('/') {
+        Some(format!("https://github.com{href}"))
+    } else {
+        None
+    }
+}
+
+fn dedupe_commits_by_hash(commits: Vec<CommitInfo>) -> Result<Vec<CommitInfo>, String> {
+    let mut seen = std::collections::HashSet::new();
+    let commits = commits
+        .into_iter()
+        .filter(|commit| seen.insert(commit.hash.clone()))
+        .collect::<Vec<_>>();
+    if commits.is_empty() {
+        Err("commit list was empty after de-duplication".into())
+    } else {
+        Ok(commits)
+    }
+}
+
+fn github_commit_to_remote_commit_ref(commit: GithubCommit) -> RemoteCommitRef {
+    let date = commit
+        .commit
+        .committer
+        .as_ref()
+        .or(commit.commit.author.as_ref())
+        .map(|author| author.date.trim().to_string())
+        .filter(|value| !value.is_empty());
+    RemoteCommitRef {
+        sha: commit.sha,
+        date,
+    }
+}
+
+fn github_commit_to_commit_info(commit: GithubCommit, locale: Option<&str>) -> CommitInfo {
+    let date = commit
+        .commit
+        .author
+        .as_ref()
+        .or(commit.commit.committer.as_ref())
+        .map(|author| author.date.trim().to_string())
+        .unwrap_or_default();
+    commit_info_from_full_message(
+        short_commit_hash(&commit.sha),
+        date,
+        &commit.commit.message,
+        locale,
+    )
+}
+
+fn commit_info_from_full_message(
+    hash: String,
+    date: String,
+    message: &str,
+    locale: Option<&str>,
+) -> CommitInfo {
+    let normalized = message.replace("\r\n", "\n");
+    let (title, body) = normalized
+        .split_once('\n')
+        .map(|(title, body)| (title.trim().to_string(), body.trim().to_string()))
+        .unwrap_or_else(|| (normalized.trim().to_string(), String::new()));
+    commit_info_from_parts(hash, date, title, body, locale)
+}
+
+fn commit_info_from_parts(
+    hash: String,
+    date: String,
+    title: String,
+    body: impl AsRef<str>,
+    locale: Option<&str>,
+) -> CommitInfo {
+    let body = body.as_ref();
+    CommitInfo {
+        hash,
+        date,
+        full_message: full_commit_message(&title, body),
+        title,
+        summary: localized_commit_summary(body, locale),
+    }
+}
+
+fn short_commit_hash(hash: &str) -> String {
+    hash.chars().take(7).collect()
+}
+
+fn text_between(value: &str, start: &str, end: &str) -> Option<String> {
+    let start_index = value.find(start)? + start.len();
+    let end_index = start_index + value[start_index..].find(end)?;
+    Some(value[start_index..end_index].to_string())
+}
+
+fn pre_content_from_html(value: &str) -> Option<String> {
+    let pre_start = value.find("<pre")?;
+    let after_open = pre_start + value[pre_start..].find('>')? + 1;
+    let pre_end = after_open + value[after_open..].find("</pre>")?;
+    Some(value[after_open..pre_end].to_string())
+}
+
+fn decode_xml_entities(value: &str) -> String {
+    value
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&quot;", "\"")
+        .replace("&#39;", "'")
+        .replace("&#x27;", "'")
+        .replace("&amp;", "&")
 }
 
 fn full_commit_message(title: &str, body: &str) -> String {
@@ -3871,6 +6632,33 @@ fn http_client_auto() -> Result<reqwest::Client, String> {
         .map_err(|err| format!("无法初始化自动 HTTP 网络客户端：{err}"))
 }
 
+fn http_blocking_client() -> Result<reqwest::blocking::Client, String> {
+    let mut builder = reqwest::blocking::Client::builder().http1_only();
+    if let Some(proxy_url) = configured_proxy_url_best_effort() {
+        let proxy =
+            reqwest::Proxy::all(&proxy_url).map_err(|err| format!("代理配置无效：{err}"))?;
+        builder = builder.proxy(proxy);
+    }
+    builder
+        .build()
+        .map_err(|err| format!("无法初始化 HTTP 下载客户端：{err}"))
+}
+
+fn runtime_http_blocking_client() -> Result<reqwest::blocking::Client, String> {
+    let mut builder = reqwest::blocking::Client::builder()
+        .http1_only()
+        .connect_timeout(Duration::from_secs(RUNTIME_HTTP_CONNECT_TIMEOUT_SECONDS))
+        .timeout(Duration::from_secs(RUNTIME_HTTP_REQUEST_TIMEOUT_SECONDS));
+    if let Some(proxy_url) = configured_proxy_url_best_effort() {
+        let proxy =
+            reqwest::Proxy::all(&proxy_url).map_err(|err| format!("代理配置无效：{err}"))?;
+        builder = builder.proxy(proxy);
+    }
+    builder
+        .build()
+        .map_err(|err| format!("无法初始化运行环境下载客户端：{err}"))
+}
+
 async fn test_github_connectivity_via_proxy(
     proxy_url: &str,
     http1_only: bool,
@@ -3953,11 +6741,33 @@ fn proxy_test_failure_result(message: String) -> ProxyTestResult {
 }
 
 async fn fetch_opencode_release() -> Result<GithubRelease, String> {
-    fetch_github_release(OPENCODE_REPO_API, "OpenCode").await
+    fetch_github_release(
+        OPENCODE_REPO_API,
+        "OpenCode",
+        Some(GithubApiCooldownKind::OpenCodeRelease),
+    )
+    .await
 }
 
 async fn fetch_opencode_release_asset() -> Result<(String, GithubAsset), String> {
     let asset_name = opencode_asset_name()?;
+    if let Some(cached) = cached_opencode_release_if_fresh(&asset_name) {
+        append_launcher_log(
+            "INFO",
+            "using cached OpenCode GitHub release because cache is fresh",
+        );
+        return Ok(cached);
+    }
+    if github_api_cooldown_active(GithubApiCooldownKind::OpenCodeRelease) {
+        if let Some(cached) = cached_opencode_release_any(&asset_name) {
+            append_launcher_log(
+                "WARN",
+                "using cached OpenCode GitHub release because GitHub API is in cooldown",
+            );
+            return Ok(cached);
+        }
+        return fetch_opencode_release_asset_from_public_page(&asset_name, None).await;
+    }
     match fetch_opencode_release().await {
         Ok(release) => {
             let asset = release
@@ -3970,9 +6780,18 @@ async fn fetch_opencode_release_asset() -> Result<(String, GithubAsset), String>
                         "OpenCode release 中没有找到当前系统对应的 Desktop 安装包：{asset_name}"
                     )
                 })?;
+            clear_github_api_cooldown(GithubApiCooldownKind::OpenCodeRelease);
+            write_opencode_release_cache(&release.tag_name, &asset);
             Ok((release.tag_name, asset))
         }
         Err(api_error) if should_use_public_release_fallback(&api_error) => {
+            if let Some(cached) = cached_opencode_release_any(&asset_name) {
+                append_launcher_log(
+                    "WARN",
+                    format!("using cached OpenCode GitHub release after API failure: {api_error}"),
+                );
+                return Ok(cached);
+            }
             append_launcher_log(
                 "WARN",
                 format!("OpenCode GitHub API unavailable, using public release page fallback: {api_error}"),
@@ -3985,14 +6804,46 @@ async fn fetch_opencode_release_asset() -> Result<(String, GithubAsset), String>
             .map_err(|fallback_error| {
                 format!("{api_error}；已尝试通过 GitHub 公开 release 页面获取版本，也失败：{fallback_error}")
             })?;
-            Ok((tag.clone(), opencode_asset_from_tag(&tag, &asset_name)))
+            let asset = opencode_asset_from_tag(&tag, &asset_name);
+            write_opencode_release_cache(&tag, &asset);
+            Ok((tag, asset))
         }
         Err(error) => Err(error),
     }
 }
 
+async fn fetch_opencode_release_asset_from_public_page(
+    asset_name: &str,
+    api_error: Option<String>,
+) -> Result<(String, GithubAsset), String> {
+    if let Some(error) = &api_error {
+        append_launcher_log(
+            "WARN",
+            format!("OpenCode GitHub API unavailable, using public release page fallback: {error}"),
+        );
+    } else {
+        append_launcher_log(
+            "WARN",
+            "OpenCode GitHub API is in cooldown, using public release page fallback",
+        );
+    }
+    let tag =
+        fetch_latest_release_tag_from_public_page(OPENCODE_REPO_LATEST_RELEASE_URL, "OpenCode")
+            .await
+            .map_err(|fallback_error| {
+                if let Some(error) = api_error {
+                    format!("{error}; GitHub public release fallback also failed: {fallback_error}")
+                } else {
+                    fallback_error
+                }
+            })?;
+    let asset = opencode_asset_from_tag(&tag, asset_name);
+    write_opencode_release_cache(&tag, &asset);
+    Ok((tag, asset))
+}
+
 async fn fetch_lifebook_launcher_release() -> Result<GithubRelease, String> {
-    match fetch_github_release(LIFEBOOK_LAUNCHER_REPO_API, "LifeBook Launcher").await {
+    match fetch_github_release(LIFEBOOK_LAUNCHER_REPO_API, "LifeBook Launcher", None).await {
         Ok(release) => Ok(release),
         Err(api_error) if should_use_public_release_fallback(&api_error) => {
             append_launcher_log(
@@ -4019,9 +6870,14 @@ async fn fetch_lifebook_launcher_release() -> Result<GithubRelease, String> {
     }
 }
 
-async fn fetch_github_release(api_url: &str, label: &str) -> Result<GithubRelease, String> {
+async fn fetch_github_release(
+    api_url: &str,
+    label: &str,
+    cooldown_kind: Option<GithubApiCooldownKind>,
+) -> Result<GithubRelease, String> {
     let first_result =
-        fetch_github_release_with_client(http_client()?, api_url, label, "HTTP/1.1").await;
+        fetch_github_release_with_client(http_client()?, api_url, label, "HTTP/1.1", cooldown_kind)
+            .await;
     match first_result {
         Ok(release) => Ok(release),
         Err(error) if should_retry_with_auto_http(&error) => {
@@ -4029,9 +6885,15 @@ async fn fetch_github_release(api_url: &str, label: &str) -> Result<GithubReleas
                 "WARN",
                 format!("{label} release HTTP/1.1 failed, retrying with automatic HTTP transport: {error}"),
             );
-            fetch_github_release_with_client(http_client_auto()?, api_url, label, "automatic HTTP")
-                .await
-                .map_err(|retry_error| format!("{error}；automatic HTTP 重试也失败：{retry_error}"))
+            fetch_github_release_with_client(
+                http_client_auto()?,
+                api_url,
+                label,
+                "automatic HTTP",
+                cooldown_kind,
+            )
+            .await
+            .map_err(|retry_error| format!("{error}；automatic HTTP 重试也失败：{retry_error}"))
         }
         Err(error) => Err(error),
     }
@@ -4042,6 +6904,7 @@ async fn fetch_github_release_with_client(
     api_url: &str,
     label: &str,
     transport: &str,
+    cooldown_kind: Option<GithubApiCooldownKind>,
 ) -> Result<GithubRelease, String> {
     let response = client
         .get(api_url)
@@ -4058,7 +6921,11 @@ async fn fetch_github_release_with_client(
     }
     if !response.status().is_success() {
         let status = response.status();
+        let headers = response.headers().clone();
         let body = response.text().await.unwrap_or_default();
+        if let Some(kind) = cooldown_kind {
+            remember_github_api_cooldown_from_failure(kind, status, &headers, &body);
+        }
         let summary = github_error_summary(&body);
         return Err(format!(
             "{label} release 请求失败（{transport}）：HTTP status {status}{summary} for url ({api_url})。请检查网络、VPN 或代理设置。"
@@ -4969,6 +7836,7 @@ pub fn run() {
                 set_process_lifebook_env(&repo_root);
                 persist_user_lifebook_home_env(&repo_root);
             }
+            set_process_runtime_envs();
             configure_tray(app)?;
             Ok(())
         })
@@ -4991,6 +7859,8 @@ pub fn run() {
             save_proxy_settings,
             test_proxy_settings,
             auto_detect_proxy_settings,
+            get_runtime_status,
+            start_runtime_prepare,
             get_node_modules_status,
             set_auto_install_node_modules,
             start_node_modules_install,
@@ -5041,6 +7911,86 @@ mod tests {
     fn has_arg_pair(args: &[String], first: &str, second: &str) -> bool {
         args.windows(2)
             .any(|pair| pair[0] == first && pair[1] == second)
+    }
+
+    #[test]
+    fn runtime_packages_use_private_zip_fallbacks_and_sha256() {
+        let packages = runtime_packages();
+
+        assert_eq!(packages.len(), 2);
+        for package in packages {
+            assert!(
+                package.urls.len() >= 2,
+                "{} runtime should not depend on a single download source",
+                package.kind.label()
+            );
+            assert_eq!(package.sha256.len(), 64);
+            assert!(package.sha256.chars().all(|ch| ch.is_ascii_hexdigit()));
+            assert!(package.archive_name.ends_with(".zip"));
+            assert!(package.size_bytes > 1024 * 1024);
+        }
+    }
+
+    #[test]
+    fn runtime_download_detail_uses_kb_percent_and_speed() {
+        let detail = runtime_download_detail(768 * 1024, 2048 * 1024, Duration::from_secs(3));
+
+        assert_eq!(detail, "37.50% (768.0 KB / 2048.0 KB, 256.0 KB/s)");
+        assert!(!detail.contains("MB"));
+        assert!(!detail.contains("MiB"));
+    }
+
+    #[test]
+    fn runtime_private_paths_stay_under_lifebook_runtime_root() {
+        let root = temp_test_path("runtime-root");
+        let package = runtime_packages()[0];
+        let dir = runtime_install_dir_from_root(&root, package);
+
+        assert!(dir.starts_with(root.join(package.kind.dir_name())));
+        assert!(dir.ends_with(package.install_dir_name));
+    }
+
+    #[test]
+    fn system_ready_runtime_does_not_require_private_download() {
+        let python = RuntimeToolStatus {
+            ready: true,
+            private_ready: false,
+            version: PYTHON_RUNTIME_VERSION.into(),
+            source: Some("system".into()),
+            path: Some(r"C:\Python313\python.exe".into()),
+            message: "Python system runtime is available.".into(),
+        };
+        let java = RuntimeToolStatus {
+            ready: true,
+            private_ready: false,
+            version: JAVA_RUNTIME_VERSION.into(),
+            source: Some("system".into()),
+            path: Some(r"C:\Program Files\Java\bin\java.exe".into()),
+            message: "Java system runtime is available.".into(),
+        };
+        let status = RuntimeStatus {
+            ready: true,
+            private_ready: false,
+            running: false,
+            runtime_root: r"C:\Users\tester\AppData\Local\LifeBook\runtimes".into(),
+            python,
+            java,
+        };
+
+        assert!(!runtime_prepare_requires_download(&status));
+    }
+
+    #[test]
+    fn java_home_runtime_path_is_supported_without_path_lookup() {
+        let root = temp_test_path("java-home-runtime");
+        let bin = root.join("bin");
+        fs::create_dir_all(&bin).unwrap();
+        let java = bin.join(java_executable_name());
+        fs::write(&java, "test").unwrap();
+
+        assert_eq!(java_home_executable_from_value(&root), Some(java));
+
+        let _ = fs::remove_dir_all(root);
     }
 
     #[test]
@@ -5157,21 +8107,405 @@ mod tests {
     }
 
     #[test]
-    fn lifebook_clone_args_use_shallow_single_branch_checkout() {
+    fn github_commit_message_becomes_localized_commit_info() {
+        let info = commit_info_from_full_message(
+            "e9554c8".into(),
+            "2026-05-25T00:46:00Z".into(),
+            "Refine Chinese translation annotation policy\n\nZH:\n- 为简体中文目标质量标准补充规则。\n\nEN:\n- Refine the Chinese annotation policy.\n\nJA:\n- 中国語注釈ポリシーを改善。",
+            Some("zh-CN"),
+        );
+        assert_eq!(info.hash, "e9554c8");
+        assert_eq!(info.date, "2026-05-25T00:46:00Z");
+        assert_eq!(info.title, "Refine Chinese translation annotation policy");
+        assert_eq!(info.summary, "为简体中文目标质量标准补充规则。");
+        assert!(info.full_message.contains("EN:"));
+    }
+
+    #[test]
+    fn github_atom_feed_parses_commit_body_without_api() {
+        let feed = r#"
+<feed>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/e9554c823ba19254664123654e4528e121e0fc8c</id>
+    <title>Refine Chinese translation annotation policy</title>
+    <updated>2026-05-25T00:46:30Z</updated>
+    <content type="html">&lt;pre&gt;Refine Chinese translation annotation policy
+
+ZH:
+- 中文摘要
+
+EN:
+- English summary&lt;/pre&gt;</content>
+  </entry>
+</feed>
+"#;
+        let commits = github_atom_commits_from_feed(feed, Some("zh-CN"));
+
+        assert_eq!(commits.len(), 1);
+        assert_eq!(commits[0].hash, "e9554c8");
+        assert_eq!(commits[0].date, "2026-05-25T00:46:30Z");
+        assert_eq!(commits[0].summary, "中文摘要");
+    }
+
+    #[test]
+    fn github_public_commits_page_parses_rows_and_next_url_without_api() {
+        let html = r#"
+<h3 data-testid="commit-group-title">Commits on May 25, 2026</h3>
+<li data-commit-link="/SaberOnGo/public-domain-books-translation/commit/e9554c823ba19254664123654e4528e121e0fc8c">
+  <a href="/SaberOnGo/public-domain-books-translation/commit/e9554c823ba19254664123654e4528e121e0fc8c"><span>Refine Chinese translation annotation policy</span></a>
+</li>
+<nav><a rel="next" href="/SaberOnGo/public-domain-books-translation/commits/main?after=e9554c823ba19254664123654e4528e121e0fc8c+34">Next</a></nav>
+"#;
+        let commits = github_public_page_commits_from_html(html, Some("zh-CN"));
+        let next = github_public_commits_next_page_url(html).unwrap();
+
+        assert_eq!(commits.len(), 1);
+        assert_eq!(commits[0].hash, "e9554c8");
+        assert_eq!(commits[0].date, "2026-05-25 00:00");
         assert_eq!(
-            lifebook_clone_args("D:\\LifeBook2"),
+            commits[0].title,
+            "Refine Chinese translation annotation policy"
+        );
+        assert_eq!(
+            next,
+            "https://github.com/SaberOnGo/public-domain-books-translation/commits/main?after=e9554c823ba19254664123654e4528e121e0fc8c+34"
+        );
+    }
+
+    #[test]
+    fn github_public_commits_page_rejects_hash_only_rows() {
+        let html = r#"
+<h3 data-testid="commit-group-title">Commits on May 25, 2026</h3>
+<a href="/SaberOnGo/public-domain-books-translation/commit/e9554c823ba19254664123654e4528e121e0fc8c"><span>e9554c8</span></a>
+"#;
+
+        let commits = github_public_page_commits_from_html(html, Some("zh-CN"));
+
+        assert!(
+            commits.is_empty(),
+            "GitHub HTML fallback must not surface hash-only rows as commit titles"
+        );
+    }
+
+    #[test]
+    fn fresh_commit_history_cache_is_valid_for_ten_minutes() {
+        let cache = CommitHistoryCache {
+            ref_name: LIFEBOOK_ARCHIVE_REF.into(),
+            locale: "zh-CN".into(),
+            fetched_at_unix: 1_000,
+            source: "api".into(),
+            commits: vec![commit_info_from_full_message(
+                "e9554c8".into(),
+                "2026-05-25T00:46:30Z".into(),
+                "Refine Chinese translation annotation policy\n\nZH:\n- 中文摘要",
+                Some("zh-CN"),
+            )],
+        };
+
+        assert!(commit_history_cache_is_fresh(&cache, 1_599));
+        assert!(!commit_history_cache_is_fresh(&cache, 1_601));
+    }
+
+    #[test]
+    fn github_rate_limit_cooldown_uses_reset_header() {
+        let mut headers = reqwest::header::HeaderMap::new();
+        headers.insert("x-ratelimit-remaining", "0".parse().unwrap());
+        headers.insert("x-ratelimit-reset", "2000".parse().unwrap());
+
+        assert_eq!(
+            github_rate_limit_cooldown_until(&headers, 1_000),
+            Some(2_030)
+        );
+    }
+
+    #[test]
+    fn opencode_release_cache_is_remote_only_and_valid_for_ten_minutes() {
+        let cache = OpenCodeReleaseCache {
+            fetched_at_unix: 2_000,
+            latest_version: "v1.15.10".into(),
+            asset: GithubAsset {
+                name: "opencode-desktop-win-x64.exe".into(),
+                browser_download_url:
+                    "https://github.com/anomalyco/opencode/releases/download/v1.15.10/opencode-desktop-win-x64.exe"
+                        .into(),
+                size: 123,
+            },
+        };
+
+        assert!(opencode_release_cache_is_fresh(
+            &cache,
+            "opencode-desktop-win-x64.exe",
+            2_599
+        ));
+        assert!(!opencode_release_cache_is_fresh(
+            &cache,
+            "opencode-desktop-win-x64.exe",
+            2_601
+        ));
+        assert!(!opencode_release_cache_is_fresh(
+            &cache,
+            "opencode-desktop-aarch64.dmg",
+            2_100
+        ));
+    }
+
+    #[test]
+    fn commit_title_after_marker_does_not_slice_inside_utf8_character() {
+        let mut html = "a".repeat(2399);
+        html.push('，');
+        html.push_str("<span>Title after boundary</span>");
+
+        let result = std::panic::catch_unwind(|| commit_title_after_marker(&html));
+
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn archive_update_not_required_when_commit_hash_matches() {
+        assert!(!archive_update_required(
+            Some("e9554c823ba19254664123654e4528e121e0fc8c"),
+            Some("e9554c823ba19254664123654e4528e121e0fc8c")
+        ));
+        assert!(!archive_update_required(
+            Some("e9554c8"),
+            Some("e9554c823ba19254664123654e4528e121e0fc8c")
+        ));
+        assert!(!archive_update_required(
+            Some("e9554c823ba19254664123654e4528e121e0fc8c"),
+            Some("e9554c8")
+        ));
+        assert!(archive_update_required(
+            Some("c2bd00b"),
+            Some("e9554c823ba19254664123654e4528e121e0fc8c")
+        ));
+        assert!(archive_update_required(None, Some("e9554c8")));
+        assert!(archive_update_required(Some("e9554c8"), None));
+    }
+
+    #[test]
+    fn archive_state_without_commit_matches_when_downloaded_after_remote_commit() {
+        let state = ArchiveProjectState {
+            source: "github-archive".into(),
+            ref_name: "main".into(),
+            commit: None,
+            downloaded_at: "2026-05-25T08:52:45Z".into(),
+            files: Vec::new(),
+        };
+        let remote = RemoteCommitRef {
+            sha: "e9554c823ba19254664123654e4528e121e0fc8c".into(),
+            date: Some("2026-05-25T00:46:30Z".into()),
+        };
+
+        assert!(archive_state_matches_remote_commit(&state, &remote));
+    }
+
+    #[test]
+    fn adopted_archive_state_without_commit_still_requires_update() {
+        let state = ArchiveProjectState {
+            source: "github-archive-adopted".into(),
+            ref_name: "main".into(),
+            commit: None,
+            downloaded_at: "2026-05-25T08:52:45Z".into(),
+            files: Vec::new(),
+        };
+        let remote = RemoteCommitRef {
+            sha: "e9554c823ba19254664123654e4528e121e0fc8c".into(),
+            date: Some("2026-05-25T00:46:30Z".into()),
+        };
+
+        assert!(!archive_state_matches_remote_commit(&state, &remote));
+    }
+
+    #[test]
+    fn github_public_latest_commit_hash_parses_first_full_hash() {
+        let html = r#"
+<li data-commit-link="/SaberOnGo/public-domain-books-translation/commit/e9554c823ba19254664123654e4528e121e0fc8c" data-hydro-click="{&quot;payload&quot;:{&quot;committedDate&quot;:&quot;2026-05-25T08:46:30.000+08:00&quot;}}"></li>
+<li data-commit-link="/SaberOnGo/public-domain-books-translation/commit/c2bd00b9ba19254664123654e4528e121e0fc8c"></li>
+"#;
+
+        assert_eq!(
+            github_public_page_latest_commit_hash_from_html(html),
+            Some("e9554c823ba19254664123654e4528e121e0fc8c".into())
+        );
+        assert_eq!(
+            github_public_page_latest_commit_from_html(html).and_then(|commit| commit.date),
+            Some("2026-05-25T08:46:30.000+08:00".into())
+        );
+    }
+
+    #[test]
+    fn lifebook_initial_download_prefers_github_archive_for_user_machines() {
+        let methods = lifebook_initial_download_methods();
+
+        assert_eq!(
+            methods.first(),
+            Some(&LifeBookInitialDownloadMethod::GithubArchive)
+        );
+        assert_eq!(methods.len(), 1);
+        assert!(!methods.contains(&LifeBookInitialDownloadMethod::GitClone));
+    }
+
+    #[test]
+    fn existing_lifebook_repo_without_archive_state_can_be_adopted() {
+        let root = temp_test_path("archive-adopt-existing-lifebook");
+        let _ = fs::remove_dir_all(&root);
+        fs::create_dir_all(root.join("template").join("epub_pipeline")).unwrap();
+        fs::write(
+            root.join("template")
+                .join("epub_pipeline")
+                .join("README.md"),
+            "template",
+        )
+        .unwrap();
+        fs::create_dir_all(root.join("books")).unwrap();
+        fs::create_dir_all(root.join("books").join("node_modules").join("tool")).unwrap();
+        fs::write(
+            root.join("books")
+                .join("node_modules")
+                .join("tool")
+                .join("index.js"),
+            "generated",
+        )
+        .unwrap();
+        fs::create_dir_all(root.join(".git")).unwrap();
+        fs::write(root.join(".git").join("HEAD"), "ref: refs/heads/main").unwrap();
+        fs::write(root.join("AGENTS.md"), "test").unwrap();
+
+        adopt_existing_lifebook_archive_project(&root)
+            .expect("existing LifeBook directory should be adopted for archive updates");
+        let state = read_archive_project_state(&root).expect("archive state should be written");
+
+        assert_eq!(state.source, "github-archive-adopted");
+        assert_eq!(state.ref_name, LIFEBOOK_ARCHIVE_REF);
+        assert!(state.files.iter().any(|file| file.path == "AGENTS.md"));
+        assert!(state
+            .files
+            .iter()
+            .any(|file| file.path == "template/epub_pipeline/README.md"));
+        assert!(!state.files.iter().any(|file| file.path.starts_with(".git")));
+        assert!(!state
+            .files
+            .iter()
+            .any(|file| file.path.contains("node_modules")));
+
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[cfg(target_os = "windows")]
+    #[test]
+    fn windows_expand_archive_command_uses_environment_paths() {
+        let script = windows_expand_archive_command_script();
+
+        assert!(script.contains("$env:LIFEBOOK_ARCHIVE_ZIP"));
+        assert!(script.contains("$env:LIFEBOOK_ARCHIVE_DEST"));
+        assert!(!script.contains("$args"));
+    }
+
+    #[cfg(target_os = "windows")]
+    #[test]
+    fn opencode_launch_uses_lifebook_directory_as_cwd_and_argument() {
+        let candidate = Path::new(r"C:\Users\minicat\AppData\Local\Programs\OpenCode\OpenCode.exe");
+        let working_dir = Path::new(r"D:\LifeBook");
+
+        let spec = windows_opencode_launch_spec(candidate, working_dir);
+
+        assert_eq!(spec.program, candidate);
+        assert_eq!(spec.working_dir, working_dir);
+        assert_eq!(spec.args, vec![r"D:\LifeBook".to_string()]);
+    }
+
+    #[cfg(target_os = "windows")]
+    #[test]
+    fn opencode_shortcut_launch_sets_start_directory() {
+        let candidate = Path::new(
+            r"C:\Users\minicat\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OpenCode.lnk",
+        );
+        let working_dir = Path::new(r"D:\LifeBook");
+
+        let spec = windows_opencode_launch_spec(candidate, working_dir);
+
+        assert_eq!(spec.program, PathBuf::from("cmd"));
+        assert_eq!(
+            spec.args,
             vec![
-                "clone",
-                "--depth",
-                "1",
-                "--single-branch",
-                "--filter=blob:none",
-                "--no-tags",
-                "--progress",
-                LIFEBOOK_REPO_URL,
-                "D:\\LifeBook2",
+                "/D".to_string(),
+                "/C".to_string(),
+                "start".to_string(),
+                "".to_string(),
+                "/D".to_string(),
+                r"D:\LifeBook".to_string(),
+                candidate.display().to_string(),
+                r"D:\LifeBook".to_string(),
             ]
         );
+        assert_eq!(spec.working_dir, working_dir);
+    }
+
+    #[test]
+    fn lifebook_archive_download_url_targets_main_branch_zipball() {
+        assert_eq!(
+            lifebook_archive_download_url("main"),
+            "https://codeload.github.com/SaberOnGo/public-domain-books-translation/zip/refs/heads/main"
+        );
+    }
+
+    #[test]
+    fn archive_download_detail_uses_kb_units_and_speed() {
+        let detail = archive_download_detail(768 * 1024, 2048 * 1024, Duration::from_secs(3));
+
+        assert_eq!(detail, "37.50% (768.0 KB / 2048.0 KB, 256.0 KB/s)");
+        assert!(!detail.contains("MB"));
+        assert!(!detail.contains("MiB"));
+    }
+
+    #[test]
+    fn archive_entry_paths_strip_github_root_and_reject_traversal() {
+        assert_eq!(
+            safe_archive_entry_relative_path("public-domain-books-translation-main/AGENTS.md")
+                .unwrap(),
+            PathBuf::from("AGENTS.md")
+        );
+        assert_eq!(
+            safe_archive_entry_relative_path(
+                "public-domain-books-translation-main/template/epub_pipeline/README.md"
+            )
+            .unwrap(),
+            PathBuf::from("template")
+                .join("epub_pipeline")
+                .join("README.md")
+        );
+        assert!(safe_archive_entry_relative_path(
+            "public-domain-books-translation-main/../evil.txt"
+        )
+        .is_err());
+        assert!(safe_archive_entry_relative_path("single-root-only").is_err());
+    }
+
+    #[test]
+    fn archive_manifest_detects_local_managed_file_modification() {
+        let root = temp_test_path("archive-managed-conflict");
+        let _ = fs::remove_dir_all(&root);
+        fs::create_dir_all(&root).expect("test root should be created");
+        let file = root.join("README.md");
+        fs::write(&file, "original").expect("managed file should be written");
+        let old_manifest = vec![ArchiveManagedFile {
+            path: "README.md".into(),
+            fingerprint: content_fingerprint(b"original"),
+        }];
+        let state = ArchiveProjectState {
+            source: "github-archive".into(),
+            ref_name: "main".into(),
+            commit: None,
+            downloaded_at: "test".into(),
+            files: old_manifest,
+        };
+        fs::write(&file, "user edit").expect("managed file should be modified");
+
+        let result = ensure_archive_managed_files_clean(&root, &state);
+
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("README.md"));
+        fs::remove_dir_all(&root).expect("test root should be cleaned");
     }
 
     #[test]
@@ -5499,27 +8833,32 @@ EN:
 
     #[test]
     fn lifebook_launcher_public_fallback_builds_windows_asset_url() {
-        let asset = lifebook_launcher_asset_from_tag_for_platform(
-            "lifebook-launcher-v1.3.6",
-            "windows",
-            "x86_64",
-        )
-        .expect("Windows x64 fallback asset should be known");
+        let launcher_version = launcher_current_version();
+        let tag = format!("lifebook-launcher-{launcher_version}");
+        let normalized_version = normalize_version(&launcher_version);
+        let expected_asset = format!("LifeBook.Launcher_{normalized_version}_x64-setup.exe");
+        let asset = lifebook_launcher_asset_from_tag_for_platform(&tag, "windows", "x86_64")
+            .expect("Windows x64 fallback asset should be known");
 
-        assert_eq!(asset.name, "LifeBook.Launcher_1.3.6_x64-setup.exe");
+        assert_eq!(asset.name, expected_asset);
         assert_eq!(
             asset.browser_download_url,
-            "https://github.com/SaberOnGo/public-domain-books-translation/releases/download/lifebook-launcher-v1.3.6/LifeBook.Launcher_1.3.6_x64-setup.exe"
+            format!(
+                "https://github.com/SaberOnGo/public-domain-books-translation/releases/download/{tag}/{}",
+                asset.name
+            )
         );
         assert_eq!(asset.size, 0);
     }
 
     #[test]
     fn windows_launcher_update_script_does_not_self_delete_before_exit() {
+        let launcher_version = normalize_version(&launcher_current_version());
+        let download_path = format!(
+            r"C:\Users\minicat\AppData\Local\LifeBook\launcher\updates\downloads\LifeBook.Launcher_{launcher_version}_x64-setup.exe"
+        );
         let script = windows_launcher_update_script_content(
-            Path::new(
-                r"C:\Users\minicat\AppData\Local\LifeBook\launcher\updates\downloads\LifeBook.Launcher_1.3.6_x64-setup.exe",
-            ),
+            Path::new(&download_path),
             Path::new(r"C:\Users\minicat\AppData\Local\LifeBook Launcher\lifebook-launcher.exe"),
         );
 
@@ -5553,11 +8892,85 @@ EN:
     fn node_modules_progress_detail_formats_files_bytes_and_rate() {
         assert_eq!(
             node_modules_progress_detail(774, 7029, 14_459_863, 9_332_326),
-            "(774/7029), 13.79 MiB | 8.90 MiB/s"
+            "(774/7029), 14121.0 KB | 9113.6 KB/s"
         );
         assert_eq!(
             node_modules_progress_detail(0, 0, 0, 0),
-            "(0/0), 0.00 MiB | 0.00 MiB/s"
+            "(0/0), 0.0 KB | 0.0 KB/s"
+        );
+    }
+
+    #[test]
+    fn node_modules_ready_requires_epubchecker_vendor_jar() {
+        let root = temp_test_path("node-modules-ready-requires-epubcheck");
+        let _ = fs::remove_dir_all(&root);
+        let epubchecker_dir = root.join("books").join("node_modules").join("epubchecker");
+        fs::create_dir_all(&epubchecker_dir).expect("epubchecker directory should be created");
+        fs::write(
+            epubchecker_dir.join("package.json"),
+            r#"{"epubcheckVersion":"5.2.1"}"#,
+        )
+        .expect("epubchecker package metadata should be written");
+
+        assert!(
+            !books_node_modules_ready(&root),
+            "epubchecker package without the vendored jar is not ready"
+        );
+
+        let jar = epubchecker_dir
+            .join("vendors")
+            .join("epubcheck-5.2.1")
+            .join("epubcheck.jar");
+        fs::create_dir_all(jar.parent().unwrap()).expect("vendor directory should be created");
+        fs::write(&jar, "jar").expect("vendor jar should be written");
+
+        assert!(books_node_modules_ready(&root));
+
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn node_modules_package_detects_epubchecker_without_vendor() {
+        let root = temp_test_path("node-modules-package-detects-partial");
+        let _ = fs::remove_dir_all(&root);
+        let epubchecker_dir = root.join("books").join("node_modules").join("epubchecker");
+        fs::create_dir_all(&epubchecker_dir).expect("epubchecker directory should be created");
+        fs::write(
+            epubchecker_dir.join("package.json"),
+            r#"{"epubcheckVersion":"5.2.1"}"#,
+        )
+        .expect("epubchecker package metadata should be written");
+
+        assert!(books_node_modules_package_installed(&root));
+        assert!(!books_node_modules_ready(&root));
+
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn npm_install_args_ignore_dependency_install_scripts() {
+        let root = temp_test_path("npm-install-args");
+        let _ = fs::remove_dir_all(&root);
+        fs::create_dir_all(&root).expect("test directory should be created");
+        let lock = root.join("package-lock.json");
+        fs::write(&lock, "{}").expect("package lock should be written");
+
+        let args = npm_install_args(&lock, NPM_PRIMARY_REGISTRY);
+
+        assert_eq!(args.first().map(String::as_str), Some("ci"));
+        assert!(args.iter().any(|arg| arg == "--ignore-scripts"));
+        assert!(args
+            .iter()
+            .any(|arg| arg == "--registry=https://registry.npmjs.org/"));
+
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn epubcheck_download_url_targets_w3c_release_zip() {
+        assert_eq!(
+            epubcheck_download_url("5.2.1"),
+            "https://github.com/w3c/epubcheck/releases/download/v5.2.1/epubcheck-5.2.1.zip"
         );
     }
 

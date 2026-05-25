@@ -41,11 +41,13 @@ import {
   getLauncherState,
   getNodeModulesStatus,
   getProxySettings,
+  getRuntimeStatus,
   launchOpenCodeClient,
   listenLauncherDownloadProgress,
   listenLifeBookProgress,
   listenNodeModulesProgress,
   listenOpenCodeDownloadProgress,
+  listenRuntimeProgress,
   minimizeMainWindow,
   openBooksFolder,
   openRepoFolder,
@@ -59,6 +61,7 @@ import {
   saveProxySettings,
   syncLifeBookProject,
   startNodeModulesInstall,
+  startRuntimePrepare,
   testProxySettings,
   toggleMainWindowMaximized,
 } from "./api";
@@ -77,11 +80,13 @@ import {
   DownloadProgress,
   ProjectDocument,
   ProxyTestResult,
+  RuntimeStatus,
 } from "./types";
 import launcherIconUrl from "../assets/lifebook-launcher-icon.png";
+import launcherVersionManifest from "../launcher-version.json";
 
 const SETTINGS_KEY = "lifebook-launcher-settings";
-const LAUNCHER_VERSION = "v1.3.6";
+const LAUNCHER_VERSION = `v${launcherVersionManifest.version}`;
 
 type Locale = "zh-CN" | "zh-TW" | "ja" | "en";
 type TabId = "overview" | "updates" | "tutorial" | "settings" | "logs";
@@ -90,6 +95,7 @@ type TutorialHistoryEntry = { kind: TutorialKind; document: ProjectDocument };
 type ToastTone = "info" | "success" | "warning" | "error";
 type FloatingToast = { id: number; message: string; tone: ToastTone };
 type DownloadHudState = "idle" | "downloading" | "cancelling" | "stopped" | "failed";
+type RuntimeBootstrapState = "checking" | "preparing" | "ready" | "failed";
 type ConfirmDialogState = {
   title: string;
   message: string;
@@ -230,6 +236,7 @@ const zhCN = {
   nodeModulesAutoInstallDescription: "LifeBook 项目准备好后，在后台安装 books/node_modules。不会阻塞 Launcher 操作，失败后可重试或让 AI 后续补装。",
   nodeModulesReady: "依赖已准备完成",
   nodeModulesMissing: "依赖尚未安装",
+  nodeModulesIncomplete: "node_modules 未安装完整，可重试",
   nodeModulesNotReady: "项目准备完成后会自动安装",
   nodeModulesDisabled: "已关闭",
   nodeModulesRetryHint: "失败，可重新勾选或重启后重试",
@@ -238,6 +245,21 @@ const zhCN = {
   nodeModulesInstallStopped: "node_modules 安装已停止，可重试。",
   nodeModulesInstallFailed: (error: string) => `node_modules 安装失败：${error}。后续可让 AI 补充安装。`,
   nodeModulesStatusFailed: (error: string) => `读取 node_modules 状态失败：${error}`,
+  runtimeBootstrapTitle: "正在检查运行环境",
+  runtimeBootstrapDescription: "优先使用本机已有 Python / Java；缺少时才下载到 LifeBook 私有目录，不写系统 PATH，不需要管理员权限。",
+  runtimeBootstrapChecking: "正在检查 Python / Java 运行环境...",
+  runtimeBootstrapPreparing: "正在准备缺失的 Python / Java 运行环境...",
+  runtimeBootstrapReady: "Python / Java 运行环境已准备完成",
+  runtimeBootstrapFailed: "Python / Java 运行环境准备失败，Launcher 将继续打开，可稍后重试。",
+  runtimeBootstrapRetry: "重试",
+  runtimeBootstrapContinue: "稍后安装，进入 Launcher",
+  runtimeStatusTitle: "Python / Java 运行环境",
+  runtimeStatusReady: "构建环境已准备完成",
+  runtimeStatusMissing: "EPUB 构建环境未准备，可重试",
+  runtimeStatusDescription: "用于 EPUB 构建脚本。Launcher 优先使用本机已有环境；缺少时才准备 LifeBook 私有运行时。",
+  runtimeStatusLoadFailed: (error: string) => `读取 Python / Java 运行环境状态失败：${error}`,
+  runtimePrepareStarted: "正在准备 Python / Java 运行环境...",
+  runtimePrepareFailed: (error: string) => `Python / Java 运行环境准备失败：${error}`,
   clientLaunching: "正在启动",
   clientLaunchSucceeded: "启动成功",
   tutorialTitle: "教程",
@@ -430,6 +452,7 @@ const zhTW: Copy = {
   nodeModulesAutoInstallDescription: "LifeBook 專案準備好後，在背景安裝 books/node_modules。不會阻塞 Launcher 操作，失敗後可重試或讓 AI 後續補裝。",
   nodeModulesReady: "依賴已準備完成",
   nodeModulesMissing: "依賴尚未安裝",
+  nodeModulesIncomplete: "node_modules 未安裝完整，可重試",
   nodeModulesNotReady: "專案準備完成後會自動安裝",
   nodeModulesDisabled: "已關閉",
   nodeModulesRetryHint: "失敗，可重新勾選或重啟後重試",
@@ -612,6 +635,7 @@ const ja: Copy = {
   nodeModulesAutoInstallDescription: "LifeBook プロジェクトの準備後、books/node_modules をバックグラウンドでインストールします。Launcher 操作はブロックせず、失敗後は再試行または AI に補完を依頼できます。",
   nodeModulesReady: "依存関係は準備済みです",
   nodeModulesMissing: "依存関係は未インストールです",
+  nodeModulesIncomplete: "node_modules が未完成です。再試行できます",
   nodeModulesNotReady: "プロジェクト準備後に自動インストールします",
   nodeModulesDisabled: "無効",
   nodeModulesRetryHint: "失敗。再チェックまたは再起動後に再試行します",
@@ -804,6 +828,7 @@ const en: Copy = {
   nodeModulesAutoInstallDescription: "After the LifeBook project is ready, install books/node_modules in the background. Launcher remains usable; failures can be retried or completed later with AI help.",
   nodeModulesReady: "Dependencies are ready",
   nodeModulesMissing: "Dependencies are not installed",
+  nodeModulesIncomplete: "node_modules is incomplete; retry is available",
   nodeModulesNotReady: "Will install after the project is ready",
   nodeModulesDisabled: "Off",
   nodeModulesRetryHint: "Failed; re-check or restart to retry",
@@ -812,6 +837,21 @@ const en: Copy = {
   nodeModulesInstallStopped: "node_modules install stopped. You can retry.",
   nodeModulesInstallFailed: (error) => `node_modules install failed: ${error}. AI can help complete the install later.`,
   nodeModulesStatusFailed: (error) => `Failed to read node_modules status: ${error}`,
+  runtimeBootstrapTitle: "Checking runtime environment",
+  runtimeBootstrapDescription: "LifeBook uses existing Python / Java first. Missing runtimes are downloaded into LifeBook's private folder without changing system PATH or requiring administrator permission.",
+  runtimeBootstrapChecking: "Checking Python / Java runtimes...",
+  runtimeBootstrapPreparing: "Preparing missing Python / Java runtimes...",
+  runtimeBootstrapReady: "Python / Java runtimes are ready",
+  runtimeBootstrapFailed: "Python / Java runtime preparation failed. Launcher will continue to open and you can retry later.",
+  runtimeBootstrapRetry: "Retry",
+  runtimeBootstrapContinue: "Skip for now",
+  runtimeStatusTitle: "Python / Java runtime",
+  runtimeStatusReady: "Build environment is ready",
+  runtimeStatusMissing: "EPUB build environment is not ready; retry is available",
+  runtimeStatusDescription: "Used by EPUB build scripts. Launcher uses existing runtimes first and prepares private runtimes only when needed.",
+  runtimeStatusLoadFailed: (error) => `Failed to read Python / Java runtime status: ${error}`,
+  runtimePrepareStarted: "Preparing Python / Java runtime...",
+  runtimePrepareFailed: (error) => `Python / Java runtime preparation failed: ${error}`,
   clientLaunching: "Launching",
   clientLaunchSucceeded: "Launch succeeded",
   tutorialTitle: "Guide",
@@ -881,8 +921,8 @@ function nowLabel() {
 }
 
 function formatBytes(value: number) {
-  if (!value) return "0 MB";
-  return `${(value / 1024 / 1024).toFixed(1)} MB`;
+  if (!value) return "0.0 KB";
+  return `${(value / 1024).toFixed(1)} KB`;
 }
 
 function clampPercent(value: number) {
@@ -901,6 +941,9 @@ function progressWidth(value: number) {
 function formatDownloadProgress(copy: Copy, progress?: DownloadProgress | null) {
   if (!progress) return "";
   if (progress.message) {
+    if (progress.message.includes("%") || progress.message.includes("KB")) {
+      return progress.message;
+    }
     return `${progress.message} ${formatPercent(progress.percent)}`;
   }
   if (progress.totalBytes === 100 && progress.downloadedBytes <= 100) {
@@ -963,6 +1006,11 @@ export default function App() {
   });
   const [proxyTestResult, setProxyTestResult] = useState<ProxyTestResult | null>(null);
   const [proxyBusy, setProxyBusy] = useState<"test" | "detect" | null>(null);
+  const [runtimeStatus, setRuntimeStatus] = useState<RuntimeStatus | null>(null);
+  const [runtimeProgress, setRuntimeProgress] = useState<DownloadProgress | null>(null);
+  const [runtimeBootstrapState, setRuntimeBootstrapState] = useState<RuntimeBootstrapState>(hasTauriRuntime() ? "checking" : "ready");
+  const [runtimeBootstrapMessage, setRuntimeBootstrapMessage] = useState<string | null>(null);
+  const [runtimeBootstrapBlocking, setRuntimeBootstrapBlocking] = useState(hasTauriRuntime());
   const [nodeModulesStatus, setNodeModulesStatus] = useState<NodeModulesStatus | null>(null);
   const [nodeModulesProgress, setNodeModulesProgress] = useState<DownloadProgress | null>(null);
   const [nodeModulesDownloadState, setNodeModulesDownloadState] = useState<DownloadHudState>("idle");
@@ -983,7 +1031,7 @@ export default function App() {
   const [openCodeDownloadMessage, setOpenCodeDownloadMessage] = useState<string | null>(null);
   const [openCodeDownloadDismissed, setOpenCodeDownloadDismissed] = useState(false);
   const [launcherProgress, setLauncherProgress] = useState<DownloadProgress | null>(null);
-  const [showAllCommits, setShowAllCommits] = useState(false);
+  const [showAllCommits, setShowAllCommits] = useState(true);
   const [quickActionsOpen, setQuickActionsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
   const [floatingToast, setFloatingToast] = useState<FloatingToast | null>(null);
@@ -993,6 +1041,8 @@ export default function App() {
   ]);
   const openCodeDownloadStartedAt = useRef<number | null>(null);
   const openCodeLaunchResetTimer = useRef<number | null>(null);
+  const runtimeBootstrapReleaseTimer = useRef<number | null>(null);
+  const runtimeBootstrapStartedRef = useRef(false);
   const refreshInProgressRef = useRef(false);
   const lifeBookSyncingRef = useRef(false);
   const lifeBookDownloadDismissedRef = useRef(false);
@@ -1047,6 +1097,95 @@ export default function App() {
     }
   }, [addActivity]);
 
+  const refreshRuntimeStatus = useCallback(async () => {
+    try {
+      const status = await getRuntimeStatus();
+      setRuntimeStatus(status);
+      return status;
+    } catch (error) {
+      addActivity("warning", copy.runtimeStatusLoadFailed(String(error)));
+      return null;
+    }
+  }, [addActivity, copy]);
+
+  const startRuntimeBootstrap = useCallback(async (blocking: boolean) => {
+    if (runtimeBootstrapReleaseTimer.current) {
+      window.clearTimeout(runtimeBootstrapReleaseTimer.current);
+      runtimeBootstrapReleaseTimer.current = null;
+    }
+    setRuntimeBootstrapBlocking(blocking);
+    setRuntimeBootstrapState("checking");
+    setRuntimeBootstrapMessage(copy.runtimeBootstrapChecking);
+    setRuntimeProgress({
+      percent: 0.01,
+      downloadedBytes: 0,
+      totalBytes: 100,
+      message: copy.runtimeBootstrapChecking,
+      state: "downloading",
+    });
+    try {
+      const status = await getRuntimeStatus();
+      setRuntimeStatus(status);
+      if (status.ready) {
+        setRuntimeBootstrapState("ready");
+        setRuntimeBootstrapMessage(copy.runtimeBootstrapReady);
+        setRuntimeProgress({
+          percent: 100,
+          downloadedBytes: 100,
+          totalBytes: 100,
+          message: copy.runtimeBootstrapReady,
+          state: "success",
+        });
+        runtimeBootstrapReleaseTimer.current = window.setTimeout(() => {
+          setRuntimeBootstrapBlocking(false);
+          setRuntimeProgress(null);
+          runtimeBootstrapReleaseTimer.current = null;
+        }, blocking ? 450 : 800);
+        return;
+      }
+      setRuntimeBootstrapState("preparing");
+      setRuntimeBootstrapMessage(copy.runtimeBootstrapPreparing);
+      const result = await startRuntimePrepare();
+      if (result.requiresDownload === false) {
+        const refreshed = await refreshRuntimeStatus();
+        setRuntimeBootstrapState("ready");
+        setRuntimeBootstrapMessage(refreshed?.ready ? copy.runtimeBootstrapReady : result.message);
+        setRuntimeProgress({
+          percent: 100,
+          downloadedBytes: 100,
+          totalBytes: 100,
+          message: refreshed?.ready ? copy.runtimeBootstrapReady : result.message,
+          state: "success",
+        });
+        runtimeBootstrapReleaseTimer.current = window.setTimeout(() => {
+          setRuntimeBootstrapBlocking(false);
+          setRuntimeProgress(null);
+          runtimeBootstrapReleaseTimer.current = null;
+        }, blocking ? 450 : 800);
+        return;
+      }
+      addActivity("info", copy.runtimePrepareStarted);
+    } catch (error) {
+      const message = copy.runtimePrepareFailed(String(error));
+      setRuntimeBootstrapState("failed");
+      setRuntimeBootstrapMessage(message);
+      setRuntimeProgress({
+        percent: 100,
+        downloadedBytes: 0,
+        totalBytes: 0,
+        message,
+        state: "failed",
+      });
+      addActivity("warning", message);
+      if (blocking) {
+        runtimeBootstrapReleaseTimer.current = window.setTimeout(() => {
+          setRuntimeBootstrapBlocking(false);
+          runtimeBootstrapReleaseTimer.current = null;
+        }, 1400);
+      }
+    }
+  }, [addActivity, copy, refreshRuntimeStatus]);
+
   const refreshNodeModulesStatus = useCallback(async () => {
     try {
       const status = await getNodeModulesStatus();
@@ -1056,6 +1195,12 @@ export default function App() {
         setNodeModulesDownloadMessage(null);
       } else if (status.running) {
         setNodeModulesDownloadState("downloading");
+      } else {
+        setNodeModulesDownloadState((current) => {
+          if (current === "downloading" || current === "cancelling") return "failed";
+          return current;
+        });
+        setNodeModulesDownloadMessage((current) => current || (status.repoReady ? copy.nodeModulesIncomplete : null));
       }
     } catch (error) {
       addActivity("warning", copy.nodeModulesStatusFailed(String(error)));
@@ -1149,6 +1294,19 @@ export default function App() {
       showFloatingToast(message, "error");
     }
   }, [addActivity, copy, showFloatingToast]);
+
+  const retryRuntimePrepare = useCallback(() => {
+    runtimeBootstrapStartedRef.current = true;
+    void startRuntimeBootstrap(true);
+  }, [startRuntimeBootstrap]);
+
+  const continueAfterRuntimeBootstrap = useCallback(() => {
+    if (runtimeBootstrapReleaseTimer.current) {
+      window.clearTimeout(runtimeBootstrapReleaseTimer.current);
+      runtimeBootstrapReleaseTimer.current = null;
+    }
+    setRuntimeBootstrapBlocking(false);
+  }, []);
 
   const askConfirm = useCallback((options: Omit<ConfirmDialogState, "resolve">) => {
     return new Promise<boolean>((resolve) => {
@@ -1423,6 +1581,41 @@ export default function App() {
       setBusy(null);
     }
   }, [addActivity, copy, openCodeUpdate, refreshOpenCodeLocalStatus, refreshState, showFloatingToast]);
+
+  useEffect(() => {
+    const unlistenRuntime = listenRuntimeProgress((progress) => {
+      setRuntimeProgress(progress);
+      setRuntimeBootstrapMessage(progress.message ?? null);
+      if (progress.state === "success") {
+        setRuntimeBootstrapState("ready");
+        void refreshRuntimeStatus();
+        if (runtimeBootstrapReleaseTimer.current) window.clearTimeout(runtimeBootstrapReleaseTimer.current);
+        runtimeBootstrapReleaseTimer.current = window.setTimeout(() => {
+          setRuntimeBootstrapBlocking(false);
+          setRuntimeProgress(null);
+          runtimeBootstrapReleaseTimer.current = null;
+        }, 650);
+      } else if (progress.state === "failed") {
+        setRuntimeBootstrapState("failed");
+        addActivity("warning", progress.message || copy.runtimeBootstrapFailed);
+        void refreshRuntimeStatus();
+        if (runtimeBootstrapReleaseTimer.current) window.clearTimeout(runtimeBootstrapReleaseTimer.current);
+        runtimeBootstrapReleaseTimer.current = window.setTimeout(() => {
+          setRuntimeBootstrapBlocking(false);
+          runtimeBootstrapReleaseTimer.current = null;
+        }, 1400);
+      } else if (progress.percent > 0 && progress.percent < 100) {
+        setRuntimeBootstrapState("preparing");
+      }
+    });
+    if (!runtimeBootstrapStartedRef.current) {
+      runtimeBootstrapStartedRef.current = true;
+      void startRuntimeBootstrap(true);
+    }
+    return () => {
+      unlistenRuntime.then((fn) => fn()).catch(() => undefined);
+    };
+  }, [addActivity, copy, refreshRuntimeStatus, startRuntimeBootstrap]);
 
   const checkOpenCode = useCallback(async (background = false, installWhenNeeded = false) => {
     if (openCodeCheckInProgressRef.current) return;
@@ -1849,11 +2042,13 @@ export default function App() {
   }, [addActivity]);
 
   useEffect(() => {
+    if (runtimeBootstrapBlocking) return undefined;
     if (!startupInitializedRef.current) {
       startupInitializedRef.current = true;
       refreshState();
       void refreshProxySettings();
       void doAutoDetectProxySettings(false, true);
+      void refreshRuntimeStatus();
       void refreshNodeModulesStatus();
       void refreshOpenCodeLocalStatus();
       isEnabled()
@@ -1875,8 +2070,15 @@ export default function App() {
     });
     const unlistenLifeBook = listenLifeBookProgress((progress) => {
       setLifeBookProgress(progress);
+      setLifeBookDownloadMessage(progress.message ?? null);
       if (progress.percent > 0 && progress.percent < 100) {
         setLifeBookDownloadState((current) => current === "idle" ? "downloading" : current);
+      } else if (progress.percent >= 100 || progress.state === "success") {
+        setLifeBookDownloadState("idle");
+      } else if (progress.state === "failed") {
+        setLifeBookDownloadState("failed");
+      } else if (progress.state === "stopped") {
+        setLifeBookDownloadState("stopped");
       }
     });
     const unlistenNodeModules = listenNodeModulesProgress((progress) => {
@@ -1889,9 +2091,11 @@ export default function App() {
       } else if (progress.state === "failed") {
         setNodeModulesDownloadState("failed");
         addActivity("error", progress.message || copy.nodeModulesMissing);
+        void refreshNodeModulesStatus();
       } else if (progress.state === "stopped") {
         setNodeModulesDownloadState("stopped");
         addActivity("warning", copy.nodeModulesInstallStopped);
+        void refreshNodeModulesStatus();
       } else if (progress.percent > 0 && progress.percent < 100) {
         setNodeModulesDownloadState((current) => current === "idle" ? "downloading" : current);
       }
@@ -1912,9 +2116,19 @@ export default function App() {
     refreshNodeModulesStatus,
     refreshOpenCodeLocalStatus,
     refreshProxySettings,
+    refreshRuntimeStatus,
     refreshState,
+    runtimeBootstrapBlocking,
     showFloatingToast,
   ]);
+
+  useEffect(() => {
+    if (nodeModulesDownloadState !== "downloading" && nodeModulesDownloadState !== "cancelling") return undefined;
+    const timer = window.setInterval(() => {
+      void refreshNodeModulesStatus();
+    }, 1500);
+    return () => window.clearInterval(timer);
+  }, [nodeModulesDownloadState, refreshNodeModulesStatus]);
 
   useEffect(() => {
     if (!hasTauriRuntime()) return undefined;
@@ -2001,7 +2215,7 @@ export default function App() {
       setTutorialDoc(null);
       setTutorialLoading(false);
       setLifeBookUpdate(null);
-      setShowAllCommits(false);
+      setShowAllCommits(true);
     }
   }, [state?.repoReady, state?.repoRoot, state?.repoStatus]);
 
@@ -2078,8 +2292,22 @@ export default function App() {
   const openCodeHudMessage = openCodeDownloadMessage || openCodeProgressLabel || copy.working;
   const nodeModulesProgressLabel = formatDownloadProgress(copy, nodeModulesProgress);
   const nodeModulesHudMessage = nodeModulesDownloadMessage || nodeModulesProgressLabel || copy.nodeModulesInstalling;
+  const runtimeProgressLabel = formatDownloadProgress(copy, runtimeProgress);
 
   const visibleActivities = useMemo(() => activities.slice(0, 5), [activities]);
+
+  if (runtimeBootstrapBlocking) {
+    return (
+      <RuntimeBootstrapScreen
+        copy={copy}
+        state={runtimeBootstrapState}
+        progress={runtimeProgress}
+        message={runtimeBootstrapMessage || runtimeProgressLabel || copy.runtimeBootstrapChecking}
+        onRetry={retryRuntimePrepare}
+        onContinue={continueAfterRuntimeBootstrap}
+      />
+    );
+  }
 
   return (
     <div className={isMaximized ? "launcher-frame maximized" : "launcher-frame"}>
@@ -2281,6 +2509,11 @@ export default function App() {
                 onChange={updateProxySettingsDraft}
                 onTest={() => void doTestProxySettings()}
                 onAutoDetect={() => void doAutoDetectProxySettings(true, false)}
+              />
+              <RuntimeSettingsPanel
+                copy={copy}
+                status={runtimeStatus}
+                onRetry={retryRuntimePrepare}
               />
               <NodeModulesSettingsPanel
                 copy={copy}
@@ -2644,6 +2877,63 @@ function sanitizeTrustedDocHtml(value: string) {
     .replace(/\son\w+="[^"]*"/gi, "")
     .replace(/\son\w+='[^']*'/gi, "")
     .replace(/javascript:/gi, "");
+}
+
+function RuntimeBootstrapScreen({
+  copy,
+  state,
+  progress,
+  message,
+  onRetry,
+  onContinue,
+}: {
+  copy: Copy;
+  state: RuntimeBootstrapState;
+  progress: DownloadProgress | null;
+  message: string;
+  onRetry: () => void;
+  onContinue: () => void;
+}) {
+  const percent = progress?.percent ?? (state === "checking" ? 0.01 : state === "ready" ? 100 : 1);
+  const isFailed = state === "failed";
+  return (
+    <div className="runtime-bootstrap-shell">
+      <section className={`runtime-bootstrap-card ${state}`}>
+        <LogoMark large />
+        <div>
+          <p className="runtime-bootstrap-kicker">LifeBook Launcher</p>
+          <h1>{copy.runtimeBootstrapTitle}</h1>
+          <p className="runtime-bootstrap-description">{copy.runtimeBootstrapDescription}</p>
+        </div>
+        <div className="runtime-bootstrap-progress">
+          <div className="floating-progress-header">
+            <strong>
+              {state === "checking"
+                ? copy.runtimeBootstrapChecking
+                : state === "ready"
+                  ? copy.runtimeBootstrapReady
+                  : isFailed
+                    ? copy.runtimeBootstrapFailed
+                    : copy.runtimeBootstrapPreparing}
+            </strong>
+            <span>{formatPercent(percent)}</span>
+          </div>
+          <div className="progress-bar">
+            <span style={{ width: progressWidth(percent) }} />
+          </div>
+          <div className="runtime-bootstrap-message">{message}</div>
+        </div>
+        {state !== "ready" && (
+          <div className="runtime-bootstrap-actions">
+            <button type="button" onClick={onContinue}>{copy.runtimeBootstrapContinue}</button>
+            {isFailed && (
+              <button type="button" className="primary" onClick={onRetry}>{copy.runtimeBootstrapRetry}</button>
+            )}
+          </div>
+        )}
+      </section>
+    </div>
+  );
 }
 
 function FloatingFeedback({
@@ -3150,6 +3440,43 @@ function ProxySettingsPanel({
         </button>
         <span className={`proxy-inline-status ${statusClass}`}>{statusText}</span>
       </div>
+    </div>
+  );
+}
+
+function RuntimeSettingsPanel({
+  copy,
+  status,
+  onRetry,
+}: {
+  copy: Copy;
+  status: RuntimeStatus | null;
+  onRetry: () => void;
+}) {
+  const ready = Boolean(status?.ready);
+  const running = Boolean(status?.running);
+  const text = ready ? copy.runtimeStatusReady : copy.runtimeStatusMissing;
+  return (
+    <div className="runtime-settings-panel">
+      <div className="runtime-settings-copy">
+        <div className="setting-title-line">
+          <strong>{copy.runtimeStatusTitle}</strong>
+          <span className={`setting-status-pill ${ready ? "success" : running ? "working" : "error"}`}>
+            {text}
+          </span>
+        </div>
+        <span>{copy.runtimeStatusDescription}</span>
+        <div className="runtime-tool-lines">
+          <code>Python {status?.python.version ?? "3.12"}: {status?.python.path || status?.python.message || "-"}</code>
+          <code>Java {status?.java.version ?? "17"}: {status?.java.path || status?.java.message || "-"}</code>
+        </div>
+      </div>
+      {!ready && (
+        <button className="panel-button" type="button" onClick={onRetry} disabled={running}>
+          <RefreshCcw size={16} />
+          {copy.runtimeBootstrapRetry}
+        </button>
+      )}
     </div>
   );
 }
