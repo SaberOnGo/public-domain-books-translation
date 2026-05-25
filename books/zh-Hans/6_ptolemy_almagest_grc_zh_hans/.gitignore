@@ -1,0 +1,9 @@
+# This book is published from release artifacts only.
+# Keep the local production tree out of GitHub.
+
+*
+!.gitignore
+!output/
+output/*
+!output/release/
+!output/release/**
