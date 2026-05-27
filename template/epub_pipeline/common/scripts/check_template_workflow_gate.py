@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import re
 from pathlib import Path
@@ -27,6 +28,23 @@ REQUIRED_PACKAGE_SCRIPTS = [
     "release:draft",
     "release:create",
 ]
+
+REQUIRED_GLOSSARY_COLUMNS = {
+    "type",
+    "source_term",
+    "target_term",
+    "display_policy",
+    "note_text",
+    "exception_reason",
+    "forbidden_body_renderings",
+}
+
+TERM_TYPES_REQUIRING_DISPLAY_POLICY = {
+    "historical_term",
+    "technical_term",
+    "industry_term",
+    "symbol",
+}
 
 REQUIRED_LOCAL_REFERENCES = [
     "references/cover_design_policy.md",
@@ -267,6 +285,161 @@ def check_package_scripts(book_root: Path, state_data: dict, issues: list[dict])
                     add_issue(issues, "release_script_missing_gate", f"{release_name} must run {required}.", rel(book_root, package_path))
 
 
+def pass_marker_found(text: str, marker_names: tuple[str, ...]) -> bool:
+    for marker in marker_names:
+        pattern = rf"(?im)^\s*{re.escape(marker)}\s*[:=]\s*[\"']?PASS[\"']?\s*(?:#.*)?$"
+        if re.search(pattern, text):
+            return True
+    if re.search(r"(?im)^结论\s*[:：]\s*PASS\s*$", text):
+        return True
+    if re.search(r"(?im)^PASS\s*$", text):
+        return True
+    return False
+
+
+def true_marker_found(text: str, marker_names: tuple[str, ...]) -> bool:
+    for marker in marker_names:
+        pattern = rf"(?im)^\s*{re.escape(marker)}\s*[:=]\s*[\"']?true[\"']?\s*(?:#.*)?$"
+        if re.search(pattern, text):
+            return True
+    return False
+
+
+def reader_body_without_notes(text: str) -> str:
+    note_heading = re.compile(r"(?im)^\s{0,3}#{1,6}\s*(译注|注释|脚注|尾注|术语说明|术语表|notes|endnotes|footnotes)\b.*$")
+    match = note_heading.search(text)
+    if match:
+        text = text[: match.start()]
+    kept_lines = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if re.match(r"^\[\^?.+?\]\s*[:：]", stripped):
+            continue
+        kept_lines.append(line)
+    return "\n".join(kept_lines)
+
+
+def split_forbidden_renderings(value: str) -> list[str]:
+    return [item.strip() for item in re.split(r"[|；;]", value or "") if item.strip()]
+
+
+def check_glossary_schema_and_forbidden_renderings(book_root: Path, issues: list[dict]) -> None:
+    glossary_path = book_root / "glossary" / "terms.csv"
+    if not glossary_path.exists():
+        return
+    try:
+        with glossary_path.open("r", encoding="utf-8-sig", newline="") as handle:
+            reader = csv.DictReader(handle)
+            fieldnames = set(reader.fieldnames or [])
+            missing = sorted(REQUIRED_GLOSSARY_COLUMNS - fieldnames)
+            if missing:
+                add_issue(
+                    issues,
+                    "glossary_terms_missing_display_columns",
+                    f"glossary/terms.csv must include columns for term display policy and forbidden body renderings: {', '.join(missing)}.",
+                    rel(book_root, glossary_path),
+                )
+                return
+            rows = list(reader)
+    except csv.Error as exc:
+        add_issue(issues, "glossary_terms_csv_invalid", f"Could not parse glossary/terms.csv: {exc}", rel(book_root, glossary_path))
+        return
+
+    for index, row in enumerate(rows, start=2):
+        term_type = (row.get("type") or "").strip()
+        source_term = (row.get("source_term") or "").strip()
+        target_term = (row.get("target_term") or "").strip()
+        display_policy = (row.get("display_policy") or "").strip()
+        if term_type in TERM_TYPES_REQUIRING_DISPLAY_POLICY and (source_term or target_term) and not display_policy:
+            add_issue(
+                issues,
+                "glossary_term_missing_display_policy",
+                f"High-risk term row {index} must set display_policy.",
+                rel(book_root, glossary_path),
+            )
+        if display_policy == "body_parenthetical_exception" and not (row.get("exception_reason") or "").strip():
+            add_issue(
+                issues,
+                "glossary_term_parenthetical_exception_without_reason",
+                f"Term row {index} allows body parenthetical source terms but has no exception_reason.",
+                rel(book_root, glossary_path),
+            )
+
+    final_dir = book_root / "chapters" / "final"
+    if not final_dir.exists():
+        return
+    final_bodies = []
+    for chapter in sorted(path for path in final_dir.glob("*.md") if not path.name.startswith("_")):
+        text = reader_body_without_notes(chapter.read_text(encoding="utf-8", errors="replace"))
+        final_bodies.append((chapter, text))
+    if not final_bodies:
+        return
+
+    for index, row in enumerate(rows, start=2):
+        for forbidden in split_forbidden_renderings(row.get("forbidden_body_renderings") or ""):
+            for chapter, body in final_bodies:
+                if forbidden and forbidden in body:
+                    add_issue(
+                        issues,
+                        "glossary_forbidden_body_rendering_found",
+                        f"Forbidden body rendering from glossary row {index} appears in chapter body: {forbidden!r}. Move source-term explanation to notes/glossary or revise the term.",
+                        rel(book_root, chapter),
+                    )
+
+
+def check_chapter_quality_artifacts(book_root: Path, issues: list[dict]) -> None:
+    final_dir = book_root / "chapters" / "final"
+    if not final_dir.exists():
+        return
+    final_chapters = sorted(path for path in final_dir.glob("*.md") if not path.name.startswith("_"))
+    if not final_chapters:
+        return
+    controls_dir = book_root / "qa" / "chapter_controls"
+    gates_dir = book_root / "qa" / "gates"
+    for chapter in final_chapters:
+        control = controls_dir / f"{chapter.stem}.control.md"
+        if not control.exists():
+            add_issue(
+                issues,
+                "missing_chapter_post_translation_control",
+                "Every chapters/final chapter must have qa/chapter_controls/{chapter}.control.md before it can enter final.",
+                rel(book_root, control),
+            )
+        else:
+            text = control.read_text(encoding="utf-8", errors="replace")
+            if not pass_marker_found(text, ("control_status", "status")):
+                add_issue(
+                    issues,
+                    "chapter_post_translation_control_not_pass",
+                    "Chapter post-translation full check must be PASS before the chapter can remain in chapters/final or the workflow can continue.",
+                    rel(book_root, control),
+                )
+            if not true_marker_found(text, ("allow_next_chapter",)):
+                add_issue(
+                    issues,
+                    "chapter_post_translation_control_not_closed",
+                    "Chapter post-translation full check must set allow_next_chapter: true before the chapter can remain in chapters/final or the workflow can continue.",
+                    rel(book_root, control),
+                )
+        gate = gates_dir / f"{chapter.stem}.gate.md"
+        if not gate.exists():
+            add_issue(
+                issues,
+                "missing_chapter_quality_gate",
+                "Every chapters/final chapter must have qa/gates/{chapter}.gate.md.",
+                rel(book_root, gate),
+            )
+        else:
+            text = gate.read_text(encoding="utf-8", errors="replace")
+            if not pass_marker_found(text, ("gate_status", "status")):
+                add_issue(
+                    issues,
+                    "chapter_quality_gate_not_pass",
+                    "Chapter quality gate must be PASS before the chapter can remain in chapters/final or the workflow can continue.",
+                    rel(book_root, gate),
+                )
+
+
 def main() -> None:
     args = parse_args()
     book_root = resolve_book_root(args.book_root)
@@ -280,6 +453,8 @@ def main() -> None:
     check_local_references(book_root, issues)
     check_private_use_overlay_files(book_root, state_data, issues)
     check_package_scripts(book_root, state_data, issues)
+    check_glossary_schema_and_forbidden_renderings(book_root, issues)
+    check_chapter_quality_artifacts(book_root, issues)
 
     report = {
         "book_root": display_root(book_root, repo_root),

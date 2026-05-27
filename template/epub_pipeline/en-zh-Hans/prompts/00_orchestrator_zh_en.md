@@ -31,10 +31,11 @@
 10. `references/english_to_chinese_literary_refinement.md`
 11. `references/stratified_random_spotcheck.md`
 12. `references/release_versioning.md`
-13. `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`
-14. `epub_production_lessons.md`
-15. `state/human_feedback_control.md`
-16. `TEMPLATE_VERSION.md`
+13. `references/quality_gate_framework.md`
+14. `template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`
+15. `epub_production_lessons.md`
+16. `state/human_feedback_control.md`
+17. `TEMPLATE_VERSION.md`
 
 ## 执行顺序 / Execution Order
 
@@ -66,7 +67,8 @@
 
 - 禁止直接在模板原目录内制作具体书籍。
 - 禁止预翻译未通过就批量翻译。
-- 禁止章节译后控制未通过就进入审校。
+- 禁止每章译后全量检查并修复节点未通过就进入下一章翻译、后续审校或 `chapters/final/`。
+- 禁止把章节译后控制做成抽样检查，或只检查用户点名项目。
 - 禁止章节门禁未通过就写入 `chapters/final/`。
 - 禁止全部章节完成后跳过预制作规格和样章检查。
 - 禁止样章未 PASS 就制作全书。
@@ -75,6 +77,7 @@
 - 禁止主执行 AI 不经双 Agent 独立评审就宣布完成。
 - 禁止评审发现问题后只解释不返工。
 - 禁止把“通顺但无味”的第一版当终稿。
+- 禁止把准确但拗口、学术味重、普通读者难懂的译文当作合格译文。
 - 禁止为了生动添加原文没有的比喻物、声音或情节。
 - 禁止为了简洁把中文压成动作清单。
 - 禁止把英文旧纸书目录式长标题链机械转换成中文破折号长链。

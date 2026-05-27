@@ -37,7 +37,10 @@
 5. 生成 `qa/samples/sample_test_report.md`，且结论为 PASS。
 6. 如使用《情人》等仍在版权期优秀译本，只做私有短样本对照，结论写入 `qa/benchmark/`，不保存长段版权文本。
 7. 分章翻译。
-8. 每章生成 `qa/imagery/{chapter}.imagery.md` 和 `qa/gates/{chapter}.gate.md`，PASS 后才写入 `chapters/final/`。
+8. 每章翻译后立即只针对该章执行“每章译后，全量检查并修复节点”，生成 `qa/chapter_controls/{chapter}.control.md`。该节点必须覆盖该章对 metadata/nav/目录的影响、正文、注释、图表/公式/表格/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目，也不得扩大成全书章节检查。
+9. 每章生成 `qa/imagery/{chapter}.imagery.md` 和 `qa/gates/{chapter}.gate.md`。`qa/chapter_controls/{chapter}.control.md` 和 `qa/gates/{chapter}.gate.md` 均 PASS 后，才可写入 `chapters/final/`。
+
+每章译后全量检查若未通过，必须修复并追加同节点复查，直到最近一次无未关闭阻塞问题，并且“无问题或评分不小于 75 分”；若书籍/profile 有更严格规则，按更严格规则。分数不能抵消 P0/P1/P2、读者难以理解、事实/术语/当前章文字接口错误或模板硬门禁失败。未通过章节不得进入下一章翻译或后续审校。图表、表格、公式和图片的复杂资产问题应路由到资产/技术门禁，阻止终稿/构建/release，但不让当前章译后文字门禁无限循环。
 
 禁止把“通顺”误认为“好译文”。本项目的好译文必须同时满足：
 

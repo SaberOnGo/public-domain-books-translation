@@ -1,0 +1,23 @@
+{
+  "name": "book-epub-project-lzh-zh-hans",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "preflight:template": "python scripts/check_template_workflow_gate.py --write-report",
+    "cover:check": "python scripts/check_cover_output_assets.py --write-report",
+    "reader:check": "python scripts/check_reader_facing_policy.py --write-report",
+    "lint:publication": "node scripts/publication_lint.js --target=zh-Hans --write-report",
+    "lint:assets": "node scripts/asset_manifest_check.js --write-report",
+    "review:random-samples": "python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --target-confidence 0.80 --defect-rate 0.10 --profile auto",
+    "review:random-validate": "python scripts/validate_random_spotcheck.py --target-confidence 0.80",
+    "review:random-validate:pass": "python scripts/validate_random_spotcheck.py --target-confidence 0.80 --require-pass",
+    "release:draft": "npm run preflight:template && npm run cover:check && npm run reader:check && python scripts/create_release.py --status DRAFT",
+    "release:create": "npm run preflight:template && npm run cover:check && npm run reader:check && python scripts/create_release.py --status PASS --require-pass",
+    "fix:publication": "node scripts/publication_lint.js --target=zh-Hans --fix --write-report",
+    "build:epub": "npm run preflight:template && npm run lint:publication && npm run lint:assets && npm run cover:check && node scripts/build_epub.js && npm run reader:check",
+    "check:epub": "node scripts/run_epubcheck.js"
+  },
+  "description": "Book-local npm scripts for Literary Chinese to modern Simplified Chinese EPUB production. Shared Node dependencies are installed once under books/node_modules.",
+  "license": "UNLICENSED"
+}

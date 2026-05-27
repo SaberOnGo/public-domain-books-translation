@@ -54,9 +54,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--defect-rate", type=float, default=0.10, help="Minimum problem rate q to defend against.")
     parser.add_argument(
         "--profile",
-        choices=("auto", "standard", "science"),
+        choices=("auto", "standard", "science", "academic"),
         default="auto",
-        help="Sampling intensity profile. auto detects science/table-heavy overlays.",
+        help="Sampling intensity profile. auto detects science/table-heavy or academic-professional overlays.",
     )
     parser.add_argument("--seed", default=None, help="Optional seed. If omitted, a random seed is generated and recorded.")
     return parser.parse_args()
@@ -162,6 +162,14 @@ def detect_profile(book_root: Path, requested: str) -> str:
         "metadata/reference_witness_policy.md",
         "qa/technical/diagram_table_inventory.md",
     )
+    academic_markers = (
+        "references/academic_professional_readability_policy.md",
+        "metadata/academic_professional_style_profile.md",
+        "qa/readability/_TEMPLATE.chapter_academic_readability_audit.md",
+        "qa/readability/academic_professional_polish_round_001.md",
+    )
+    if any((book_root / marker).exists() for marker in academic_markers):
+        return "academic"
     return "science" if any((book_root / marker).exists() for marker in science_markers) else "standard"
 
 
@@ -170,6 +178,14 @@ def stratum_policy(profile: str, agents: int, samples_per_agent: int) -> dict[st
     if profile == "science":
         return {
             "paragraph": {"min_per_round": paragraph_min, "full_scan_if_lte": 0},
+            "table": {"min_per_round": 20, "full_scan_if_lte": 80},
+            "figure": {"min_per_round": 20, "full_scan_if_lte": 80},
+            "formula": {"min_per_round": 20, "full_scan_if_lte": 100},
+            "caption_note": {"min_per_round": 20, "full_scan_if_lte": 120},
+        }
+    if profile == "academic":
+        return {
+            "paragraph": {"min_per_round": max(paragraph_min, 160), "full_scan_if_lte": 0},
             "table": {"min_per_round": 20, "full_scan_if_lte": 80},
             "figure": {"min_per_round": 20, "full_scan_if_lte": 80},
             "formula": {"min_per_round": 20, "full_scan_if_lte": 100},

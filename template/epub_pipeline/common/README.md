@@ -125,6 +125,36 @@ The report is written to `qa/refinement/refinement_check.json`. It separates rea
 
 报告会写入 `qa/refinement/refinement_check.json`。它会区分面向读者的出版文本和原始来源证据，因此既能保留下载原文的原貌，也能保证进入 EPUB 的文本干净。
 
+## Per-Chapter Full Check Gate / 每章译后全量检查门禁
+
+After each chapter is translated into `chapters/translated/{NNN_slug}.md`, the workflow must immediately run a full check and fix node for that chapter only before translating the next chapter or promoting the chapter. The result belongs in `qa/chapter_controls/{NNN_slug}.control.md`.
+
+每章译入 `chapters/translated/{NNN_slug}.md` 后，必须立即只针对该章执行“每章译后，全量检查并修复节点”，并在进入下一章翻译或送入终稿前完成。结果写入 `qa/chapter_controls/{NNN_slug}.control.md`。
+
+This gate must check the whole chapter and its reader-facing production context, including but not limited to metadata impact, nav/title/TOC implications, body text, notes, figures, formulas, tables, images, styles, terminology, reader-visible wording, readability, plain-language clarity, and polish. It is not enough to check only items named by the user.
+
+该门禁必须检查当前章整章及其读者可见文字上下文，包括但不限于本章对 metadata/nav/标题/目录的影响、正文、注释、图表/公式/表格/图片的文字接口、样式、术语、读者可见文字、可读性、通俗化和润色。不得只检查用户点名项目，也不得把它扩大成全书门禁。
+
+Terminology must not clutter the body with source terms by default. Use the target-language term in the body, and move source terms, definitions, and translation rationale to chapter notes, endnotes, or the glossary with a clear note marker. Body parenthetical source terms are allowed only when omitting the source term would confuse readers, the source term itself is being discussed, or competing translations must be disclosed immediately; record the reason.
+
+术语呈现不得默认用原词挤占正文。正文使用目标语译名或准确意译；原词、定义和译名理由放入本章译注、章末注或术语表，并用清楚注号指向。只有不保留原词会让读者误解、原词本身正在被讨论，或译名分歧必须当场交代时，才允许正文括注原词；必须记录理由。
+
+`glossary/terms.csv` must carry term-display fields such as `display_policy`, `exception_reason`, and `forbidden_body_renderings`. High-risk historical, institutional, status, technical, and culture-loaded terms must list forbidden body renderings before chapter translation proceeds. `preflight:template` may reject final chapters whose body still contains a forbidden rendering listed in the glossary.
+
+`glossary/terms.csv` 必须包含 `display_policy`、`exception_reason`、`forbidden_body_renderings` 等术语呈现字段。历史术语、制度名、身份称谓、专业术语和文化负载词等高风险术语，必须在分章翻译前列出正文禁用写法。若终稿正文仍出现术语表列出的禁用写法，`preflight:template` 可以拒绝继续。
+
+If the gate fails, fix the chapter and append another check round in the same control file until the latest round has no unresolved blocking issue and is either issue-free or scores at least 75, subject to any stricter project/profile rule. A score cannot override P0/P1/P2, reader confusion, factual/terminology/text-interface errors, or hard-gate failures. A failed chapter may not enter the next chapter translation, `chapters/final/`, or proceed as if the chapter were complete.
+
+若门禁失败，必须修复该章，并在同一 control 文件中追加复查轮次，直到最近一轮无未关闭阻塞问题，并且“无问题或评分不小于 75 分”；若项目/profile 有更严格规则，按更严格规则。分数不能抵消 P0/P1/P2、读者难以理解、事实/术语/文字接口错误或模板硬门禁失败。失败章节不得进入下一章翻译、`chapters/final/`，流程也不得把该章当作完成。
+
+Figures, tables, formulas, and images are handled here as a text-interface and routing check, not as an unbounded asset-production loop. Fix captions, labels, references, alt text, variables, units, and reader explanations in this node when they affect the current chapter's readability. Route redraw, OCR, cropping, numeric validation, formula layout, resource-path, or manifest issues to the asset/technical gate; routed issues block final/build/release, but do not force endless retries of the translation text gate once the current chapter text is understandable and scores at least 75.
+
+图表、表格、公式和图片在本节点只做“文字接口与风险分流”检查，不作为无限资产制作循环。影响当前章可读性的图题、表题、正文引用、alt text、变量、单位和读者说明必须在本节点修复。重绘、OCR、裁剪、数值校验、公式排版、资源路径或 manifest 问题应路由到资产/技术门禁；已路由的问题会阻止终稿/构建/release，但在当前章文字可理解且评分不小于 75 时，不应让译后文字门禁无限重试。
+
+`preflight:template` must reject final chapters whose matching control file is missing, not PASS, or does not set `allow_next_chapter: true`.
+
+`preflight:template` 必须拒绝缺少对应 control 文件、control 未 PASS，或没有设置 `allow_next_chapter: true` 的终稿章节。
+
 ## Stratified Random Spot Check / 分层随机抽检
 
 After the first full-book EPUB is built, the workflow must run the post-EPUB stratified random spot-check gate:

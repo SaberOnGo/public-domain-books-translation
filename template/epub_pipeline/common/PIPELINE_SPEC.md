@@ -215,8 +215,13 @@ node scripts/asset_manifest_check.js --write-report
 
 ## 7. 新增硬门禁 / New Hard Gates
 
-- 每章翻译后必须经过 `qa/chapter_controls/{NNN_slug}.control.md`。
-- 未完成每章译后控制，不得进入后续审校。
+- 每章翻译后必须立即经过 `qa/chapter_controls/{NNN_slug}.control.md` 所记录的“每章译后，全量检查并修复节点”。该节点只检查当前章，不检查全书其他章节。
+- 该节点必须全章检查该章是否符合模板要求，包括但不限于该章对 metadata/nav/目录的影响、正文、注释、图表/公式/表格/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释。不得只检查用户点名项目。
+- 该节点必须按 `glossary/terms.csv.forbidden_body_renderings` 逐项扫描正文。若出现正文禁用写法、无授权原词括注、裸露源语词或误导性泛译，必须修复并追加同节点复查。
+- 未完成每章译后全量检查，或最近一次检查仍有未关闭阻塞问题，或评分低于 75 分且并非完全无问题，或未满足更严格项目/profile 规则时，不得进入下一章翻译、后续审校或 `chapters/final/`。分数不能抵消 P0/P1/P2、读者难以理解、事实/术语/当前章文字接口错误或模板硬门禁失败。
+- 图表、表格、公式和图片在本节点只做当前章文字接口检查与资产分流。复杂重绘、OCR、裁剪、数值校验、公式排版、资源路径或 manifest 问题应写入资产/技术门禁记录；这类问题阻止终稿、构建和 release，但不让当前章译后文字门禁无限循环。
+- 每次未通过都必须记录问题点、修复摘要和追加复查轮次；不得覆盖旧失败记录。
+- `preflight:template` 在发现 `chapters/final/*.md` 时，必须校验每个终稿章节都有对应 PASS 且 `allow_next_chapter: true` 的 `qa/chapter_controls/{NNN_slug}.control.md`，以及 PASS 的 `qa/gates/{NNN_slug}.gate.md`。
 - 全部翻译完成后不得直接构建 EPUB，必须先完成预制作阶段 1。
 - 未通过样章制作检查，不得制作整本 EPUB。
 - 未通过出版文本 lint，不得构建最终 EPUB。
@@ -254,6 +259,7 @@ node scripts/asset_manifest_check.js --write-report
 - 若启用特殊书型 profile，`metadata/reference_witness_policy.md` 必须明确原文底本和第二语言参考译本的使用边界。
 - `qa/pretranslation/pretranslation_report.md` 结论为 `PASS`。
 - 所有章节存在 `qa/chapter_controls/*.control.md` 且结论为 `PASS`。
+- 所有章节的 `qa/chapter_controls/*.control.md` 均记录了每章译后全量检查范围、发现问题、修复摘要、复查轮次和最终允许继续结论；若曾失败，必须保留失败记录。
 - 若启用特殊书型 profile，相关章节必须存在 `qa/technical/*.technical_audit.md`，且涉及图表/表格的章节必须存在 `qa/technical/*.diagram_table_audit.md`，结论均为 `PASS`。
 - 所有章节存在 `qa/gates/*.gate.md` 且结论为 `PASS`。
 - `preproduction/stage1/production_spec.md` 存在。

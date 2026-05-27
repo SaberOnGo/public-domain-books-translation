@@ -37,9 +37,12 @@ Use this skill after `books/scripts/create_book_project.py` has copied `template
 10. `references/english_to_chinese_literary_refinement.md`
    读取英文到简体中文文学精修策略。
 
-11. `references/stratified_random_spotcheck.md`
+11. `references/quality_gate_framework.md`
+    读取通用质量门禁，尤其是每章译后全量检查硬门禁。
+
+12. `references/stratified_random_spotcheck.md`
     读取 EPUB 后分层随机抽检门禁。
-12. `references/release_versioning.md`
+13. `references/release_versioning.md`
     读取 EPUB 版本化发布、release note 和 `output/release/` 门禁。
 
 ## Translation Standard / 翻译标准
@@ -63,6 +66,9 @@ Use this skill after `books/scripts/create_book_project.py` has copied `template
 - Names in chapter titles, subtitles, and navigation titles must use Chinese translated names only. Title occurrences do not count as first body occurrences; keep the English original name at the first natural body occurrence, in a note, or in the glossary.
 - 章节标题、副标题和目录题名中的人名只使用中文译名。标题中的出现不计入“正文首次出现”；英文原名应放在正文第一次自然出现处、译注或术语表中。
 
+- Historical terms, institutional names, status titles, technical terms, and culture-loaded terms must not default to `Chinese term (source term)` in the body. Use a readable Chinese term first; move source terms, definitions, and translation rationale to chapter notes, endnotes, or glossary entries with note markers such as `[1]`. Body parenthetical source terms are rare exceptions and must record why a note was not enough.
+- 历史术语、制度名、身份称谓、专业术语和文化负载词不得默认写成正文里的 `中文译名（source term）`。正文优先使用可读中文译名；原词、定义和译名理由放入本章译注、章末注或术语表，并用 `[1]` 等注号指向。正文括注原词只能作为少量例外，且必须记录为什么不能只用译注。
+
 ## Required Gates / 必要门禁
 
 - Rights check must pass before translation.
@@ -73,6 +79,9 @@ Use this skill after `books/scripts/create_book_project.py` has copied `template
 
 - Pretranslation report must say `PASS` before batch translation.
 - 预翻译报告必须 `PASS` 后才能批量翻译。
+
+- After each translated chapter is written, immediately run the full post-translation check and fix node in `qa/chapter_controls/{NNN_slug}.control.md`. It must cover metadata, nav, table of contents, body text, notes, figures, formulas, tables, images, styles, reader-facing content, plain-language clarity, readability, polishing, terminology, and annotations. Do not limit the check to items named by the user. If it fails, fix the chapter and append another check round until the latest round is PASS and `allow_next_chapter: true`; a failed chapter may not proceed to the next chapter, review, or final output.
+- 每章译文写入后，必须立即执行 `qa/chapter_controls/{NNN_slug}.control.md` 中的“每章译后，全量检查并修复节点”。检查范围必须覆盖 metadata、nav、目录、正文、注释、图表、公式、表格、图片、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目。未通过时必须修复并追加复查轮次，直到最近一轮 `PASS` 且 `allow_next_chapter: true`；失败章节不得进入下一章翻译、审校或终稿。
 
 - Every translated chapter must pass chapter control, fidelity review, readability review, terminology review, imagery audit when relevant, and final chapter gate.
 - 每章译文必须通过译后控制、忠实度审校、可读性审校、术语审校、必要时的意象词审计，以及最终章节门禁。

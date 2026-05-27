@@ -38,6 +38,9 @@ This file is for AI agents using the `en-zh-Hans` template.
 - No translated chapter may enter `chapters/final/` without chapter controls, review, and gate pass records.
 - 任何章节没有译后控制、审校和门禁 PASS 记录，不得进入 `chapters/final/`。
 
+- After each translated chapter is written, immediately run the full post-translation check and fix node for that chapter only in `qa/chapter_controls/{NNN_slug}.control.md`. It must cover the current chapter's body text, notes, terminology, reader-facing wording, readability, polish, and text interfaces for figures/tables/formulas/images. Do not limit the check to items named by the user. If it fails, fix the chapter and append another check round until the latest round has no unresolved blockers and scores at least 75; a failed chapter may not proceed to the next chapter, review, or final output. Complex asset-production issues should be routed to asset/technical gates and block final/build/release, not create an endless text-gate loop.
+- 每章译文写入后，必须立即只针对该章执行 `qa/chapter_controls/{NNN_slug}.control.md` 中的“每章译后，全量检查并修复节点”。检查范围必须覆盖当前章正文、注释、术语、读者可见文字、通俗化、可读性、润色，以及图表/表格/公式/图片的文字接口，不得只检查用户点名项目。未通过时必须修复并追加复查轮次，直到最近一轮无未关闭阻塞问题且评分不小于 75；失败章节不得进入下一章翻译、审校或终稿。复杂资产制作问题应路由到资产/技术门禁并阻止终稿/构建/release，不让文字门禁无限循环。
+
 - After the first full-book EPUB and after each post-EPUB refinement pass, at least two independent agents must run the stratified random spot-check gate. The sampled population is reader-facing audit units, including paragraphs, tables, figures, formulas/proof blocks, captions, and notes. Both agents, fix closure, and `npm run review:random-validate:pass` must pass before refinement can be considered complete.
 - 第一版全书 EPUB 生成后，以及每轮 EPUB 后精校完成后，必须由至少两个独立 Agent 执行分层随机抽检门禁。抽样总体是读者可见审计单元，包括正文段落、表格、图片、公式/证明块、图注和注释。两个 Agent、修复闭环和 `npm run review:random-validate:pass` 都通过后，才可认为精校完成。
 - After random spot-check closure, create a versioned artifact: public-domain or licensed projects use `output/release/`, while `private_use` projects use local-only `output/private_artifacts/`; `output/book.epub` alone is not a final artifact.
@@ -60,6 +63,9 @@ This file is for AI agents using the `en-zh-Hans` template.
 
 - Common nouns, object names, clothing names, material names, and action terms must be translated into Chinese without original source terms in parentheses. The first-body-mention English rule applies to transliterated names, not to ordinary nouns that can be translated accurately.
 - 普通名词、器物名、衣物名、材料名和动作名必须译成中文，正文不得附加原文词括注。正文首次出现保留英文原名的规则只适用于音译人名，不适用于能准确翻译的普通名词。
+
+- Historical terms, institutional names, status titles, technical terms, and culture-loaded terms must not default to `Chinese term (source term)` in body text. Prefer a readable Chinese term in the body and put the source term, definition, and translation rationale in a chapter note, endnote, or glossary entry with a note marker such as `[1]`. Body parenthetical source terms are rare exceptions and require a recorded reason.
+- 历史术语、制度名、身份称谓、专业术语和文化负载词不得默认写成正文里的 `中文译名（source term）`。正文优先使用可读的中文译名，原词、定义和译名理由放入本章译注、章末注或术语表，并用 `[1]` 等注号指向。正文括注原词只能作为少量例外，且必须记录理由。
 
 - Delete printed-book separators such as `* * * * *`, `*****`, `----`, or `---` from body text. Do not replace them with another visible separator.
 - 删除旧纸书正文分隔符，例如 `* * * * *`、`*****`、`----` 或 `---`。不得替换成另一种可见分隔符。

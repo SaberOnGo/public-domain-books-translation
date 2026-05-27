@@ -37,7 +37,7 @@
 13. `output/publication_lint.json` 无硬错误；不存在分号滥用、异常连续空格、旧纸书页码目录、乱码、普通名词原文括注或旧纸书可见分隔符，且 `targetTitleLatinResidue=0`、`sourceTermBeforeTranslation=0`、`bodyOriginalTermGloss=0`、`bodySceneSeparator=0`。
 14. 如本书存在系统性精修问题，`goal/` 下已有本书目标或完成记录，且可复用经验已回填到 common、zh-Hans 或 en-zh-Hans 模板。
 15. 标题中的人名不计入“正文首次出现”：章节标题、副标题和目录题名只用中文译名；英文原名只可放在正文第一次自然出现该人名的位置。
-16. 普通名词必须直接译成中文正文，不附加原文词括注；`* * * * *`、`*****`、`----`、`---` 等纸书分隔符已删除，而不是换成另一种符号。
+16. 普通名词必须直接译成中文正文，不附加原文词括注；历史术语、制度名、身份称谓和专业术语不得无必要地写成 `中文译名（source term）`，必要原词已放入译注、章末注或术语表，并由正文注号指向；`* * * * *`、`*****`、`----`、`---` 等纸书分隔符已删除，而不是换成另一种符号。
 17. 若模板包含 `scripts/refinement_check.js`，运行后 `qa/refinement/refinement_check.json` 已保存；出版范围内 BOM、乱码、异常连续空格和不当标点为 0，或已有明确例外说明。
 
 ## 输出 / Output
