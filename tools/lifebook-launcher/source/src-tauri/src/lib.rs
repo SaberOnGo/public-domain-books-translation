@@ -49,7 +49,6 @@ const LIFEBOOK_ARCHIVE_DOWNLOAD_BASE: &str =
     "https://codeload.github.com/SaberOnGo/public-domain-books-translation/zip/refs/heads";
 const LIFEBOOK_ARCHIVE_REF: &str = "main";
 const LIFEBOOK_COMMIT_PAGE_SIZE: usize = 100;
-const LIFEBOOK_PUBLIC_COMMITS_MAX_PAGES: usize = 100;
 const LIFEBOOK_COMMIT_HISTORY_CACHE_TTL_SECONDS: u64 = 10 * 60;
 const GITHUB_RELEASE_CACHE_TTL_SECONDS: u64 = 10 * 60;
 const GITHUB_RATE_LIMIT_COOLDOWN_BUFFER_SECONDS: u64 = 30;
@@ -74,7 +73,6 @@ const GIT_LOW_SPEED_TIME_SECONDS: &str = "60";
 #[cfg(test)]
 const GIT_FETCH_TIMEOUT_SECONDS: u64 = 90;
 const PROXY_TEST_TIMEOUT_SECONDS: u64 = 8;
-const PROXY_AUTO_DETECT_TIMEOUT_MS: u64 = 1200;
 const PROXY_PORT_PROBE_TIMEOUT_MS: u64 = 260;
 const GITHUB_CONNECTIVITY_TEST_URL: &str =
     "https://github.com/SaberOnGo/public-domain-books-translation.git/info/refs?service=git-upload-pack";
@@ -1087,7 +1085,6 @@ async fn auto_detect_proxy_settings(force: Option<bool>) -> Result<ProxyAutoDete
 
     let mut last_error = String::new();
     for candidate in proxy_detection_candidates_with_current(&current) {
-        let candidate_started_at = Instant::now();
         if !proxy_candidate_port_open_quick(&candidate) {
             last_error = proxy_candidate_label(&candidate, "本机端口未监听");
             append_launcher_log(
@@ -1096,42 +1093,20 @@ async fn auto_detect_proxy_settings(force: Option<bool>) -> Result<ProxyAutoDete
             );
             continue;
         }
-        let Ok(Some(proxy_url)) = proxy_url_from_settings(&candidate) else {
-            continue;
-        };
-        let test = test_github_connectivity_via_proxy_with_timeout(
-            &proxy_url,
-            false,
-            Duration::from_millis(PROXY_AUTO_DETECT_TIMEOUT_MS),
-        )
-        .await;
-        match test {
-            Ok(test) => {
-                let saved = write_proxy_config(candidate)?;
-                append_launcher_log(
-                    "INFO",
-                    format!(
-                        "auto detected proxy scheme={} host={} port={:?}",
-                        saved.scheme, saved.host, saved.port
-                    ),
-                );
-                return Ok(ProxyAutoDetectResult {
-                    detected: true,
-                    proxy: Some(saved),
-                    test: Some(test),
-                    message: "已自动识别并启用可连接 GitHub 的本机代理。".into(),
-                });
-            }
-            Err(error) => {
-                let elapsed_ms = candidate_started_at.elapsed().as_millis();
-                last_error =
-                    proxy_candidate_label(&candidate, &format!("{error}（{elapsed_ms} ms）"));
-                append_launcher_log(
-                    "DEBUG",
-                    format!("proxy auto detect candidate failed: {last_error}"),
-                );
-            }
-        }
+        let saved = write_proxy_config(candidate)?;
+        append_launcher_log(
+            "INFO",
+            format!(
+                "auto detected proxy settings scheme={} host={} port={:?}",
+                saved.scheme, saved.host, saved.port
+            ),
+        );
+        return Ok(ProxyAutoDetectResult {
+            detected: true,
+            proxy: Some(saved),
+            test: None,
+            message: "识别成功，请点击“测试连接”。".into(),
+        });
     }
 
     Ok(ProxyAutoDetectResult {
@@ -1139,9 +1114,9 @@ async fn auto_detect_proxy_settings(force: Option<bool>) -> Result<ProxyAutoDete
         proxy: None,
         test: None,
         message: if last_error.is_empty() {
-            "未识别到可连接 GitHub 的本机代理。".into()
+            "未识别到本机代理配置。".into()
         } else {
-            format!("未识别到可连接 GitHub 的本机代理。最后一次测试失败：{last_error}")
+            format!("未识别到本机代理配置。最后一次识别结果：{last_error}")
         },
     })
 }
@@ -2714,7 +2689,69 @@ fn windows_expand_archive_command_script() -> &'static str {
 
 #[cfg(target_os = "windows")]
 fn extract_zip_archive(archive_file: &Path, destination: &Path) -> Result<(), String> {
-    let mut command = Command::new("powershell");
+    extract_zip_archive_with_windows_tools(
+        archive_file,
+        destination,
+        &windows_powershell_candidates(),
+        Path::new("tar"),
+    )
+}
+
+#[cfg(target_os = "windows")]
+fn windows_powershell_candidates() -> Vec<PathBuf> {
+    let mut candidates = Vec::new();
+    for name in ["SystemRoot", "WINDIR"] {
+        if let Some(root) = env::var_os(name) {
+            candidates.push(
+                PathBuf::from(root)
+                    .join("System32")
+                    .join("WindowsPowerShell")
+                    .join("v1.0")
+                    .join("powershell.exe"),
+            );
+        }
+    }
+    candidates.push(PathBuf::from("powershell"));
+    candidates.push(PathBuf::from("pwsh"));
+    let mut unique = Vec::new();
+    for candidate in candidates {
+        if !unique.iter().any(|item: &PathBuf| item == &candidate) {
+            unique.push(candidate);
+        }
+    }
+    unique
+}
+
+#[cfg(target_os = "windows")]
+fn extract_zip_archive_with_windows_tools(
+    archive_file: &Path,
+    destination: &Path,
+    powershell_candidates: &[PathBuf],
+    tar_program: &Path,
+) -> Result<(), String> {
+    let mut powershell_errors = Vec::new();
+    for powershell in powershell_candidates {
+        match extract_zip_archive_with_powershell(powershell, archive_file, destination) {
+            Ok(()) => return Ok(()),
+            Err(error) => powershell_errors.push(error),
+        }
+    }
+    match extract_zip_archive_with_tar_program(tar_program, archive_file, destination) {
+        Ok(()) => Ok(()),
+        Err(tar_error) => Err(format!(
+            "解压 ZIP archive 失败：PowerShell: {}; tar: {tar_error}",
+            powershell_errors.join(" | ")
+        )),
+    }
+}
+
+#[cfg(target_os = "windows")]
+fn extract_zip_archive_with_powershell(
+    powershell: &Path,
+    archive_file: &Path,
+    destination: &Path,
+) -> Result<(), String> {
+    let mut command = Command::new(powershell);
     command
         .arg("-NoProfile")
         .arg("-ExecutionPolicy")
@@ -2726,22 +2763,21 @@ fn extract_zip_archive(archive_file: &Path, destination: &Path) -> Result<(), St
     command.creation_flags(0x08000000);
     let output = command
         .output()
-        .map_err(|err| format!("无法启动 PowerShell 解压 ZIP archive：{err}"))?;
+        .map_err(|err| format!("{}: 无法启动：{err}", display_path(powershell)))?;
     if output.status.success() {
         return Ok(());
     }
     let powershell_error = String::from_utf8_lossy(&output.stderr).trim().to_string();
-    match extract_zip_archive_with_tar(archive_file, destination) {
-        Ok(()) => Ok(()),
-        Err(tar_error) => Err(format!(
-            "解压 ZIP archive 失败：PowerShell: {powershell_error}; tar: {tar_error}"
-        )),
-    }
+    Err(format!("{}: {powershell_error}", display_path(powershell)))
 }
 
 #[cfg(target_os = "windows")]
-fn extract_zip_archive_with_tar(archive_file: &Path, destination: &Path) -> Result<(), String> {
-    let mut command = Command::new("tar");
+fn extract_zip_archive_with_tar_program(
+    tar_program: &Path,
+    archive_file: &Path,
+    destination: &Path,
+) -> Result<(), String> {
+    let mut command = Command::new(tar_program);
     command
         .arg("-xf")
         .arg(archive_file)
@@ -4952,14 +4988,19 @@ fn proxy_settings_from_url(value: &str) -> Option<NetworkProxySettings> {
             })
             .next();
     }
-    let raw = trimmed
+    let (scheme_hint, raw) = trimmed
         .split_once('=')
-        .map(|(_, value)| value.trim())
-        .unwrap_or(trimmed);
+        .map(|(key, value)| (Some(key.trim().to_ascii_lowercase()), value.trim()))
+        .unwrap_or((None, trimmed));
     let candidate = if raw.contains("://") {
         raw.to_string()
     } else {
-        format!("http://{raw}")
+        let scheme = match scheme_hint.as_deref() {
+            Some("socks") | Some("socks5") => "socks5",
+            Some("socks5h") => "socks5h",
+            _ => "http",
+        };
+        format!("{scheme}://{raw}")
     };
     let url = reqwest::Url::parse(&candidate).ok()?;
     let scheme = normalized_proxy_scheme(url.scheme()).ok()?;
@@ -4977,10 +5018,11 @@ fn proxy_settings_from_url(value: &str) -> Option<NetworkProxySettings> {
 }
 
 fn proxy_detection_candidates_with_current(
-    current: &NetworkProxySettings,
+    _current: &NetworkProxySettings,
 ) -> Vec<NetworkProxySettings> {
     let mut candidates = Vec::new();
-    candidates.extend(proxy_candidate_variants(current));
+    // Auto-detect must read the computer's proxy configuration, not the current
+    // UI draft. The user can type arbitrary values; only "测试连接" should use them.
     for name in [
         "HTTPS_PROXY",
         "HTTP_PROXY",
@@ -4996,15 +5038,24 @@ fn proxy_detection_candidates_with_current(
         }
     }
     candidates.extend(system_proxy_candidates());
+    candidates.extend(static_proxy_detection_candidates());
+    dedupe_proxy_candidates(candidates)
+}
+
+fn static_proxy_detection_candidates() -> Vec<NetworkProxySettings> {
+    let mut candidates = Vec::new();
     for value in [
         "http://127.0.0.1:7890",
         "http://127.0.0.1:7897",
-        "http://127.0.0.1:10808",
-        "http://127.0.0.1:10809",
         "socks5h://127.0.0.1:10808",
+        "socks5://127.0.0.1:10808",
+        "http://127.0.0.1:10809",
+        "http://127.0.0.1:10808",
         "socks5h://127.0.0.1:7891",
         "http://127.0.0.1:20171",
         "http://localhost:7890",
+        "socks5h://localhost:10808",
+        "socks5://localhost:10808",
         "http://localhost:10809",
     ] {
         if let Some(proxy) = proxy_settings_from_url(value) {
@@ -5012,30 +5063,6 @@ fn proxy_detection_candidates_with_current(
         }
     }
     dedupe_proxy_candidates(candidates)
-}
-
-fn proxy_candidate_variants(current: &NetworkProxySettings) -> Vec<NetworkProxySettings> {
-    if !current.enabled || current.host.trim().is_empty() || current.port.unwrap_or(0) == 0 {
-        return Vec::new();
-    }
-    let Ok(primary_scheme) = normalized_proxy_scheme(&current.scheme) else {
-        return Vec::new();
-    };
-    let mut schemes = vec![primary_scheme.clone()];
-    for scheme in ["http", "socks5h", "socks5"] {
-        if !schemes.iter().any(|value| value == scheme) {
-            schemes.push(scheme.to_string());
-        }
-    }
-    schemes
-        .into_iter()
-        .map(|scheme| NetworkProxySettings {
-            enabled: true,
-            scheme,
-            host: current.host.trim().to_string(),
-            port: current.port,
-        })
-        .collect()
 }
 
 fn proxy_candidate_port_open_quick(candidate: &NetworkProxySettings) -> bool {
@@ -5932,32 +5959,33 @@ fn github_header_value(headers: &HeaderMap, name: &str) -> Option<String> {
         .map(ToOwned::to_owned)
 }
 
-fn lifebook_commit_history_from_fallbacks<F>(
+fn lifebook_commit_history_from_cache_or_local<F>(
     locale: Option<&str>,
+    reason: &str,
     local: F,
 ) -> Result<Vec<CommitInfo>, String>
 where
     F: FnOnce() -> Result<Vec<CommitInfo>, String>,
 {
-    github_lifebook_atom_commit_history(locale)
-        .inspect(|commits| write_commit_history_cache(locale, "atom", commits))
-        .or_else(|atom_error| {
-            append_launcher_log(
-                "WARN",
-                format!("unable to load LifeBook commit history from GitHub Atom feed: {atom_error}"),
-            );
-            github_lifebook_public_page_commit_history(locale)
-                .inspect(|commits| write_commit_history_cache(locale, "public-html", commits))
-        })
-        .or_else(|public_error| {
-            append_launcher_log(
-                "WARN",
-                format!(
-                    "unable to load LifeBook commit history from GitHub public commits pages: {public_error}"
-                ),
-            );
-            local()
-        })
+    if let Some(commits) = cached_commit_history_any(locale) {
+        append_launcher_log(
+            "WARN",
+            format!("using cached LifeBook commit history because {reason}"),
+        );
+        return Ok(commits);
+    }
+    local()
+}
+
+#[cfg(test)]
+fn lifebook_commit_history_after_api_failure_for_test<F>(
+    cached: Option<Vec<CommitInfo>>,
+    local: F,
+) -> Result<Vec<CommitInfo>, String>
+where
+    F: FnOnce() -> Result<Vec<CommitInfo>, String>,
+{
+    cached.map(Ok).unwrap_or_else(local)
 }
 
 fn lifebook_commit_history_or_local<F>(
@@ -5975,34 +6003,24 @@ where
         return Ok(commits);
     }
     if github_api_cooldown_active(GithubApiCooldownKind::CommitHistory) {
-        if let Some(commits) = cached_commit_history_any(locale) {
-            append_launcher_log(
-                "WARN",
-                "using cached LifeBook commit history because GitHub API is in cooldown",
-            );
-            return Ok(commits);
-        }
-        return lifebook_commit_history_from_fallbacks(locale, local);
+        return lifebook_commit_history_from_cache_or_local(
+            locale,
+            "GitHub API is in cooldown",
+            local,
+        );
     }
     match github_lifebook_commit_history(locale) {
         Ok(commits) if !commits.is_empty() => {
             write_commit_history_cache(locale, "api", &commits);
             Ok(commits)
         }
-        Ok(_) => lifebook_commit_history_from_fallbacks(locale, local),
+        Ok(_) => local(),
         Err(error) => {
             append_launcher_log(
                 "WARN",
                 format!("unable to load full LifeBook commit history from GitHub API: {error}"),
             );
-            if let Some(commits) = cached_commit_history_any(locale) {
-                append_launcher_log(
-                    "WARN",
-                    "using cached LifeBook commit history after GitHub API failure",
-                );
-                return Ok(commits);
-            }
-            lifebook_commit_history_from_fallbacks(locale, local)
+            lifebook_commit_history_from_cache_or_local(locale, "GitHub API failed", local)
         }
     }
 }
@@ -6174,66 +6192,6 @@ fn github_lifebook_commit_history(locale: Option<&str>) -> Result<Vec<CommitInfo
     }
     clear_github_api_cooldown(GithubApiCooldownKind::CommitHistory);
     Ok(commits)
-}
-
-fn github_lifebook_public_page_commit_history(
-    locale: Option<&str>,
-) -> Result<Vec<CommitInfo>, String> {
-    let client = http_blocking_client()?;
-    let mut commits = Vec::new();
-    let mut next_url = format!("{LIFEBOOK_REPO_COMMITS_PAGE_BASE}/{LIFEBOOK_ARCHIVE_REF}");
-    for _ in 0..LIFEBOOK_PUBLIC_COMMITS_MAX_PAGES {
-        let response = client
-            .get(&next_url)
-            .header("User-Agent", "LifeBook-Launcher")
-            .send()
-            .map_err(|err| format!("unable to request LifeBook public commits page: {err}"))?;
-        if !response.status().is_success() {
-            return Err(format!(
-                "LifeBook public commits page request failed: HTTP status {} for url ({next_url})",
-                response.status()
-            ));
-        }
-        let html = response
-            .text()
-            .map_err(|err| format!("unable to read LifeBook public commits page: {err}"))?;
-        let mut page_commits = github_public_page_commits_from_html(&html, locale);
-        commits.append(&mut page_commits);
-        let Some(url) = github_public_commits_next_page_url(&html) else {
-            break;
-        };
-        next_url = url;
-    }
-    if commits.is_empty() {
-        Err("GitHub public commits page did not contain commit rows".into())
-    } else {
-        dedupe_commits_by_hash(commits)
-    }
-}
-
-fn github_lifebook_atom_commit_history(locale: Option<&str>) -> Result<Vec<CommitInfo>, String> {
-    let client = http_blocking_client()?;
-    let url = format!("{LIFEBOOK_REPO_COMMITS_PAGE_BASE}/{LIFEBOOK_ARCHIVE_REF}.atom");
-    let response = client
-        .get(&url)
-        .header("User-Agent", "LifeBook-Launcher")
-        .send()
-        .map_err(|err| format!("unable to request LifeBook commit Atom feed: {err}"))?;
-    if !response.status().is_success() {
-        return Err(format!(
-            "LifeBook commit Atom feed request failed: HTTP status {} for url ({url})",
-            response.status()
-        ));
-    }
-    let feed = response
-        .text()
-        .map_err(|err| format!("unable to read LifeBook commit Atom feed: {err}"))?;
-    let commits = github_atom_commits_from_feed(&feed, locale);
-    if commits.is_empty() {
-        Err("GitHub commit Atom feed did not contain commit entries".into())
-    } else {
-        Ok(commits)
-    }
 }
 
 fn github_atom_commits_from_feed(feed: &str, locale: Option<&str>) -> Vec<CommitInfo> {
@@ -8403,6 +8361,29 @@ EN:
 
     #[cfg(target_os = "windows")]
     #[test]
+    fn windows_zip_extract_falls_back_to_tar_when_powershell_cannot_start() {
+        let root = temp_test_path("archive-powershell-start-fallback");
+        let _ = fs::remove_dir_all(&root);
+        fs::create_dir_all(&root).unwrap();
+        let archive_file = root.join("missing.zip");
+        let destination = root.join("dest");
+
+        let error = extract_zip_archive_with_windows_tools(
+            &archive_file,
+            &destination,
+            &[PathBuf::from("__lifebook_missing_powershell__.exe")],
+            Path::new("__lifebook_missing_tar__.exe"),
+        )
+        .expect_err("missing PowerShell must continue to tar and then report both failures");
+
+        assert!(error.contains("PowerShell"));
+        assert!(error.contains("tar"));
+
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[cfg(target_os = "windows")]
+    #[test]
     fn opencode_launch_uses_lifebook_directory_as_cwd_and_argument() {
         let candidate = Path::new(r"C:\Users\minicat\AppData\Local\Programs\OpenCode\OpenCode.exe");
         let working_dir = Path::new(r"D:\LifeBook");
@@ -8544,6 +8525,32 @@ EN:
         assert!(should_use_public_release_fallback(error));
         assert!(!should_retry_with_auto_http(error));
         assert!(should_retry_with_auto_http("connection reset by peer"));
+    }
+
+    #[test]
+    fn commit_history_api_failure_uses_cached_api_history_first() {
+        let cached = vec![commit_info_from_full_message(
+            "e9554c8".into(),
+            "2026-05-25T00:46:30Z".into(),
+            "Refine Chinese translation annotation policy\n\nZH:\n- 中文摘要",
+            Some("zh-CN"),
+        )];
+
+        let commits = lifebook_commit_history_after_api_failure_for_test(Some(cached), || {
+            panic!("local fallback must not be used while cached API history exists")
+        })
+        .unwrap();
+
+        assert_eq!(commits[0].hash, "e9554c8");
+        assert_eq!(commits[0].summary, "中文摘要");
+    }
+
+    #[test]
+    fn commit_history_api_failure_without_cache_returns_local_empty_result() {
+        let commits =
+            lifebook_commit_history_after_api_failure_for_test(None, || Ok(Vec::new())).unwrap();
+
+        assert!(commits.is_empty());
     }
 
     #[test]
@@ -8766,6 +8773,12 @@ EN:
         assert_eq!(socks.host, "localhost");
         assert_eq!(socks.port, Some(10808));
 
+        let wininet_socks = proxy_settings_from_url("socks=127.0.0.1:10808")
+            .expect("Windows SOCKS proxy entry should parse as SOCKS");
+        assert_eq!(wininet_socks.scheme, "socks5");
+        assert_eq!(wininet_socks.host, "127.0.0.1");
+        assert_eq!(wininet_socks.port, Some(10808));
+
         let no_scheme = proxy_settings_from_url("127.0.0.1:7897")
             .expect("host:port proxy should default to HTTP");
         assert_eq!(no_scheme.scheme, "http");
@@ -8785,22 +8798,42 @@ EN:
     }
 
     #[test]
-    fn proxy_detection_candidates_prioritize_current_proxy() {
+    fn proxy_detection_candidates_ignore_current_manual_proxy() {
         let current = NetworkProxySettings {
             enabled: true,
             scheme: "http".into(),
-            host: "127.0.0.1".into(),
-            port: Some(10808),
+            host: "2".into(),
+            port: Some(2),
         };
 
         let candidates = proxy_detection_candidates_with_current(&current);
 
-        assert_eq!(candidates.first().unwrap().scheme, "http");
-        assert_eq!(candidates.first().unwrap().host, "127.0.0.1");
-        assert_eq!(candidates.first().unwrap().port, Some(10808));
-        assert!(candidates
+        assert!(!candidates
             .iter()
-            .any(|candidate| candidate.scheme == "socks5h" && candidate.port == Some(10808)));
+            .any(|candidate| candidate.host == "2" && candidate.port == Some(2)));
+    }
+
+    #[test]
+    fn proxy_detection_candidates_prefer_socks_for_common_10808_port() {
+        let candidates = static_proxy_detection_candidates();
+        let socks_index = candidates
+            .iter()
+            .position(|candidate| {
+                candidate.scheme == "socks5h"
+                    && candidate.host == "127.0.0.1"
+                    && candidate.port == Some(10808)
+            })
+            .expect("common SOCKS proxy candidate should be present");
+        let http_index = candidates
+            .iter()
+            .position(|candidate| {
+                candidate.scheme == "http"
+                    && candidate.host == "127.0.0.1"
+                    && candidate.port == Some(10808)
+            })
+            .expect("common HTTP proxy candidate should be present");
+
+        assert!(socks_index < http_index);
     }
 
     #[test]

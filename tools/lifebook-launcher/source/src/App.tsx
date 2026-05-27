@@ -135,8 +135,8 @@ const zhCN = {
   proxyPendingTest: "待测试",
   proxySettingsSaved: "代理设置已保存",
   proxySettingsAutoSaved: "代理设置已自动保存",
-  proxyAutoDetected: "已自动识别并启用可连接 GitHub 的代理",
-  proxyAutoDetectNotFound: "未识别到可连接 GitHub 的本机代理，可手动填写后测试。",
+  proxyAutoDetected: "识别成功，请点击“测试连接”",
+  proxyAutoDetectNotFound: "未识别到本机代理配置，可手动填写后测试。",
   proxySettingsFailed: (error: string) => `代理设置保存失败：${error}`,
   proxyTestSucceeded: (ms: number, version: string) => `代理可连接 GitHub：${ms} ms，${version}`,
   proxyTestFailed: (error: string) => `代理测试失败：${error}`,
@@ -348,8 +348,8 @@ const zhTW: Copy = {
   proxyPendingTest: "待測試",
   proxySettingsSaved: "代理設定已保存",
   proxySettingsAutoSaved: "代理設定已自動保存",
-  proxyAutoDetected: "已自動識別並啟用可連接 GitHub 的代理",
-  proxyAutoDetectNotFound: "未識別到可連接 GitHub 的本機代理，可手動填寫後測試。",
+  proxyAutoDetected: "識別成功，請點擊「測試連線」",
+  proxyAutoDetectNotFound: "未識別到本機代理設定，可手動填寫後測試。",
   proxySettingsFailed: (error) => `代理設定保存失敗：${error}`,
   proxyTestSucceeded: (ms, version) => `代理可連接 GitHub：${ms} ms，${version}`,
   proxyTestFailed: (error) => `代理測試失敗：${error}`,
@@ -522,8 +522,8 @@ const ja: Copy = {
   proxyPendingTest: "テスト待ち",
   proxySettingsSaved: "プロキシ設定を保存しました",
   proxySettingsAutoSaved: "プロキシ設定を自動保存しました",
-  proxyAutoDetected: "GitHub に接続できるプロキシを自動検出して有効化しました",
-  proxyAutoDetectNotFound: "GitHub に接続できるローカルプロキシは見つかりませんでした。手動で入力してテストできます。",
+  proxyAutoDetected: "検出しました。「接続テスト」をクリックしてください",
+  proxyAutoDetectNotFound: "ローカルプロキシ設定は見つかりませんでした。手動で入力してテストできます。",
   proxySettingsFailed: (error) => `プロキシ設定の保存に失敗しました：${error}`,
   proxyTestSucceeded: (ms, version) => `GitHub に接続できました：${ms} ms、${version}`,
   proxyTestFailed: (error) => `プロキシテストに失敗しました：${error}`,
@@ -708,8 +708,8 @@ const en: Copy = {
   proxyPendingTest: "Needs test",
   proxySettingsSaved: "Proxy settings saved",
   proxySettingsAutoSaved: "Proxy settings saved automatically",
-  proxyAutoDetected: "Detected and enabled a proxy that can reach GitHub",
-  proxyAutoDetectNotFound: "No local proxy that can reach GitHub was detected. You can still enter one manually and test it.",
+  proxyAutoDetected: "Detected. Click Test to verify the connection",
+  proxyAutoDetectNotFound: "No local proxy settings were detected. You can still enter one manually and test it.",
   proxySettingsFailed: (error) => `Failed to save proxy settings: ${error}`,
   proxyTestSucceeded: (ms, version) => `Proxy can reach GitHub: ${ms} ms, ${version}`,
   proxyTestFailed: (error) => `Proxy test failed: ${error}`,
@@ -1973,16 +1973,20 @@ export default function App() {
     }
     try {
       const result = await autoDetectProxySettings(force);
-      if (result.proxy) {
+      if (result.detected) {
+        const detected = result.proxy ?? await getProxySettings();
+        setProxySettings(detectedProxySettings(detected));
+        setProxyTestResult(null);
+      } else if (result.proxy) {
         setProxySettings(result.proxy);
       }
       if (result.test) {
         setProxyTestResult(result.test);
       }
       await refreshState();
-      const message = result.detected ? copy.proxyAutoDetected : copy.proxyAutoDetectNotFound;
+      const message = result.detected ? copy.proxyAutoDetected : result.message || copy.proxyAutoDetectNotFound;
       if (!silent || Boolean(result.test)) {
-        addActivity(result.detected ? "success" : "warning", result.message || message);
+        addActivity(result.detected ? "success" : "warning", message);
         showFloatingToast(message, result.detected ? "success" : "warning");
       }
     } catch (error) {
@@ -3180,6 +3184,15 @@ function proxyFailureResult(message: string): ProxyTestResult {
     elapsedMs: null,
     httpVersion: null,
     targetUrl: "",
+  };
+}
+
+function detectedProxySettings(proxy: NetworkProxySettings): NetworkProxySettings {
+  return {
+    ...proxy,
+    enabled: true,
+    host: proxy.host || "127.0.0.1",
+    port: proxy.port ?? 7890,
   };
 }
 
