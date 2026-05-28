@@ -6,6 +6,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "new:book": "node scripts/run_python.js scripts/create_book_project.py",
+    "check:gitignore-policy": "node scripts/run_python.js scripts/check_gitignore_policy.py",
     "setup:tools": "node scripts/run_python.js scripts/setup_local_tools.py",
     "check:tools": "node scripts/run_python.js scripts/setup_local_tools.py --check"
   },

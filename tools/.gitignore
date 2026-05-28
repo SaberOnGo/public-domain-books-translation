@@ -1,4 +1,14 @@
 # Generated dependency and build output under tools/.
+*.exe
+*.msi
+*.msix
+*.zip
+*.7z
+*.dmg
+*.pkg
+*.deb
+*.rpm
+*.AppImage
 **/node_modules/
 **/dist/
 **/target/

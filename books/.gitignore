@@ -4,9 +4,12 @@
 # Keep one complete reference project below so downloaded copies still show the
 # expected book-project directory structure.
 
-private/
+private/**
+!private/
+!private/.gitignore
 
 */*/*
+!*/*/.gitignore
 !*/*/output/
 */*/output/*
 !*/*/output/release/

@@ -1,0 +1,4 @@
+# Private-use book projects stay local.
+# Do not publish source text, translations, QA records, EPUB output, or private artifacts.
+*
+!.gitignore

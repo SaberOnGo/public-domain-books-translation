@@ -6,6 +6,10 @@ human_feedback_status: "none" # none | requested_changes | approved
 control_status: "AUTO_PENDING" # AUTO_PENDING | REWORK_REQUIRED | PASS
 latest_round: 0
 overall_score: null # 0-100
+chinese_reading_score: null # 1-5
+read_aloud_sample_count: 20
+awkward_sentence_count: null
+breathless_long_sentence_count: null
 allow_next_chapter: false
 chapter_scope_only: true
 asset_route_status: "none" # none | text_fixed | routed_to_asset_gate | blocking_text_issue
@@ -27,9 +31,12 @@ return_to_stage: "07_translate_chapters"
 - [ ] metadata/nav 影响：由本章产生的章节标题、目录题名、链接文字和章节级说明没有污染 metadata/nav。
 - [ ] nav / 目录 / 标题：本章短目录题名、页面主标题、副标题自然准确，无英文标题链、英文括注或人名原文污染。
 - [ ] 正文完整性：无漏译、错译、顺序错乱、段落层级损坏。
-- [ ] 正文可读性：自然、通俗、可朗读；无机械直译、英文句法硬搬、学术腔堆叠、AI 味或省字式提纲化。
+- [ ] 中文独立可读性：先不看原文，只读译文，确认它像自然中文书；中文独立阅读评分不低于 4/5。
+- [ ] 朗读测试：随机朗读 20 句，明显拗口不超过 1 句，关键句没有不断气问题。
+- [ ] 正文可读性：自然、通俗、可朗读；无大段长句、不断气句、机械直译、英文句法硬搬、学术腔堆叠、AI 味或省字式提纲化。
 - [ ] 润色与节奏：长句已拆解或重组；连接关系符合中文；论文型内容也能让普通读者明白。
 - [ ] 术语与专名：术语、专名、历史制度、身份称谓、变量名、数字、时间、地名一致且准确。
+- [ ] 术语控制级别：已读取 `glossary/terms.csv.term_control`；`locked` 已硬锁，`preferred` 已按上下文自然处理，`avoid` 未进入正文，`note_only` 未压进正文。
 - [ ] 原词处理：普通名词、历史术语、制度名、身份称谓、专业术语和文化负载词正文默认用中文译名或准确意译；不存在无必要的 `中文译名（source term）`。
 - [ ] 原词注释：必要原词、定义和译名理由已放入本章译注、章末注或术语表；正文注号如 `[1]` / `（1）` 与注释对应。
 - [ ] 正文括注例外：若正文保留 `中文译名（source term）`，已记录不可替代原因，且不是批量使用。
@@ -48,7 +55,9 @@ After each translated chapter is produced, the AI must create and read this chap
 
 - 不存在未关闭的 P0/P1/P2。
 - 不存在模板硬门禁失败。
-- 不存在读者不可理解、明显拗口、学术味过重、机械直译或英文句法硬搬。
+- 中文独立阅读评分 >= 4/5。
+- 20 句朗读测试中明显拗口不超过 1 句，且关键句没有不断气问题。
+- 不存在读者不可理解、明显拗口、学术味过重、大段长句、不断气句、机械直译或英文句法硬搬。
 - 不存在严重误译、漏译、术语/专名/数字/事实错误。
 - 不存在无必要的正文 `中文译名（source term）`；必要原词已移入译注、章末注或术语表，正文注号清楚。
 - 不存在 `glossary/terms.csv.forbidden_body_renderings` 中列出的正文禁用写法。
@@ -68,6 +77,10 @@ After each translated chapter is produced, the AI must create and read this chap
 
 round_status: "AUTO_PENDING" # PASS | REWORK_REQUIRED
 score: null
+chinese_reading_score: null # 1-5
+read_aloud_sample_count: 20
+awkward_sentence_count: null
+breathless_long_sentence_count: null
 allow_next_chapter: false
 asset_route_status: "none"
 
@@ -83,9 +96,9 @@ asset_route_status: "none"
 
 术语呈现审计：
 
-| source_term | target_term | display_policy | forbidden_body_renderings_checked | findings | status |
-| --- | --- | --- | --- | --- | --- |
-|  |  |  |  |  |  |
+| source_term | target_term | term_control | display_policy | forbidden_body_renderings_checked | findings | status |
+| --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |
 
 图表/资产分流：
 

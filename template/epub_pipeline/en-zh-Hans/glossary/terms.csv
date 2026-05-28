@@ -1,7 +1,7 @@
-type,source_term,target_term,domain,display_policy,note_marker_style,note_text,exception_reason,forbidden_body_renderings,notes
-proper_noun,,,,body_chinese_only,,,,,
-technical_term,,,,body_chinese_only,,,,,
-industry_term,,,,body_chinese_only,,,,,
-symbol,,,,body_chinese_only,,,,,
-historical_term,,,,note_on_first_use,,,,,
+type,source_term,target_term,domain,term_control,display_policy,note_marker_style,note_text,exception_reason,forbidden_body_renderings,notes
+proper_noun,,,,locked,body_chinese_only,,,,,
+technical_term,,,,preferred,body_chinese_only,,,,,
+industry_term,,,,preferred,body_chinese_only,,,,,
+symbol,,,,locked,body_chinese_only,,,,,
+historical_term,,,,preferred,note_on_first_use,,,,,
 

@@ -122,16 +122,14 @@ def check_cover(book_root: Path, files: list[Path], issues: list[dict]) -> None:
             issues,
             "missing_private_cover_frontmatter",
             "cover.md|cover.xhtml",
-            "Private-use EPUB/frontmatter must contain a cover file with bottom line `个人学习版`.",
+            "Private-use EPUB/frontmatter must contain a cover file.",
         )
         return
     for path in cover_files:
         text = path.read_text(encoding="utf-8", errors="replace")
         relative = rel(book_root, path)
-        if "个人学习版" not in text:
-            add_issue(issues, "private_cover_missing_personal_study_label", relative, "Private-use cover must contain bottom line `个人学习版`.")
         if "仅供个人自用" in text or "不传播" in text or "不商业使用" in text:
-            add_issue(issues, "private_cover_contains_long_rights_notice", relative, "Private-use cover should use only `个人学习版`, not the long rights disclaimer.")
+            add_issue(issues, "private_cover_contains_long_rights_notice", relative, "Private-use cover must not contain the long rights disclaimer; keep the personal-use boundary in book-info/frontmatter.")
 
 
 def check_book_info(book_root: Path, files: list[Path], issues: list[dict]) -> None:

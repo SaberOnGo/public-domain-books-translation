@@ -53,6 +53,12 @@ Use this skill after `books/scripts/create_book_project.py` has copied `template
 - Write natural Simplified Chinese, not English syntax with Chinese words.
 - 写自然的简体中文，不要写成中文词语套英文句法。
 
+- In the translation call itself, use a slim prompt and output only translation text. Keep release, EPUB, lint, QA, and versioning rules in later workflow nodes.
+- 翻译调用本身必须使用瘦身 prompt，并且只输出译文。release、EPUB、lint、QA 和版本化规则留给后续流程节点。
+
+- Natural Chinese prose is the first hard constraint during translation. A faithful sentence that reads like English syntax or a breathless long sentence is not acceptable.
+- 翻译阶段第一硬约束是自然中文正文。忠实但像英文句法、或长到读不动的句子，不可接受。
+
 - Improve readability through Chinese expression, but do not add metaphors, sounds, facts, or emotions not supported by the source.
 - 可以通过中文表达提升可读性，但不得添加原文没有依据的比喻、声音、事实或情绪。
 
@@ -61,6 +67,8 @@ Use this skill after `books/scripts/create_book_project.py` has copied `template
 
 - Keep names, places, dates, numbers, and recurring terms consistent.
 - 人名、地名、年代、数字和反复出现的术语必须一致。
+- Distinguish term control levels: `locked` terms must stay fixed, `preferred` terms may use natural contextual variants, `avoid` terms are forbidden, and `note_only` terms belong in notes/glossary rather than body prose.
+- 区分术语控制级别：`locked` 必须固定，`preferred` 可按上下文自然变体，`avoid` 禁用，`note_only` 只放译注/术语表，不压进正文。
 - Do not mechanically convert English printed-TOC title chains using `--` into Chinese `——` chains. When needed, split them into a short navigation title, display title, and subtitle.
 - 不得把英文纸书目录式 `--` 标题链机械转换成中文 `——` 链。必要时必须拆成短目录题名、页面主标题和副标题。
 - Names in chapter titles, subtitles, and navigation titles must use Chinese translated names only. Title occurrences do not count as first body occurrences; keep the English original name at the first natural body occurrence, in a note, or in the glossary.
@@ -82,6 +90,9 @@ Use this skill after `books/scripts/create_book_project.py` has copied `template
 
 - After each translated chapter is written, immediately run the full post-translation check and fix node in `qa/chapter_controls/{NNN_slug}.control.md`. It must cover metadata, nav, table of contents, body text, notes, figures, formulas, tables, images, styles, reader-facing content, plain-language clarity, readability, polishing, terminology, and annotations. Do not limit the check to items named by the user. If it fails, fix the chapter and append another check round until the latest round is PASS and `allow_next_chapter: true`; a failed chapter may not proceed to the next chapter, review, or final output.
 - 每章译文写入后，必须立即执行 `qa/chapter_controls/{NNN_slug}.control.md` 中的“每章译后，全量检查并修复节点”。检查范围必须覆盖 metadata、nav、目录、正文、注释、图表、公式、表格、图片、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目。未通过时必须修复并追加复查轮次，直到最近一轮 `PASS` 且 `allow_next_chapter: true`；失败章节不得进入下一章翻译、审校或终稿。
+
+- Chapter control must record Chinese-only readability scoring and a 20-sentence read-aloud test before source calibration. Chinese score below 4/5, more than one awkward sentence, or breathless key sentences blocks progress.
+- 章节控制必须先记录只看中文的可读性评分和 20 句朗读测试，再做原文校准。中文评分低于 4/5、明显拗口超过 1 句或关键句不断气时，不得继续。
 
 - Every translated chapter must pass chapter control, fidelity review, readability review, terminology review, imagery audit when relevant, and final chapter gate.
 - 每章译文必须通过译后控制、忠实度审校、可读性审校、术语审校、必要时的意象词审计，以及最终章节门禁。

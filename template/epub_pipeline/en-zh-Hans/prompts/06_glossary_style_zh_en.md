@@ -26,12 +26,19 @@
 
 - `translation`：正文采用的中文译名或意译。
 - `source_term`：原词，仅用于术语表、译注或确有必要的正文例外。
+- `term_control`：`locked`、`preferred`、`avoid`、`note_only` 四选一。
+  - `locked`：人名、地名、核心专名、符号等必须硬锁。
+  - `preferred`：推荐译法，允许按上下文自然变体。
+  - `avoid`：禁用译法。
+  - `note_only`：只在译注、章末注或术语表解释，不压进正文。
 - `display_policy`：`body_chinese_only`、`note_on_first_use`、`body_parenthetical_exception` 三选一。
 - `forbidden_body_renderings`：正文禁用写法，用 `|` 分隔，例如音译、原词裸露、`中文译名（source term）` 形式或误导性泛译。
 - `note_text`：若需要注释，写入读者友好的短注，不写百科条目。
 - `exception_reason`：只有 `body_parenthetical_exception` 时填写，说明为什么必须在正文括注原词。
 
 正文默认 `body_chinese_only` 或 `note_on_first_use`。不得把历史术语和专业术语批量写成 `中文译名（source term）`；需要解释时，优先使用正文注号加本章译注/章末注/术语表。
+
+术语表不得把所有词都硬锁。除人名、地名、符号和核心专名外，默认使用 `preferred`，让翻译阶段可以优先写出自然中文。若某个 `preferred` 术语在句中会导致拗口、重复或关系不清，允许在不改变概念的前提下改用自然变体，并在术语审校中判断是否需要回收。
 
 盎格鲁-撒克逊制度身份词示例：`thegn` / `thane` 不得默认音译为“塞恩”，也不宜泛译为“支持者”。政治史、土地和军事义务语境中，应按本书上下文选择“王室领主”“领主近臣”“盎格鲁-撒克逊领主”等，并在术语说明中写明原文、又作形式和含义。`witenagemot` 正文用“贤人会议”，原词放术语说明。
 
@@ -45,6 +52,7 @@
 
 - 术语表不能只是空模板。
 - 象征词、历史称谓、技术词必须先入表。
+- 高风险术语必须填写 `term_control`，不得默认全部硬锁为 `locked`。
 - 历史术语、制度名、身份称谓、专业术语和文化负载词不得默认在正文使用 `中文译名（source term）`。凡使用正文括注原词，必须有 `exception_reason`。
 - 高风险历史术语必须填写 `display_policy`、`note_text` 和 `forbidden_body_renderings`；否则不得进入批量翻译。
 - 如果预翻译报告是 `FAIL`，不得执行本步骤。

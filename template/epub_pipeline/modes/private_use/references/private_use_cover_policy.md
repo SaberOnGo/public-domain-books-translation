@@ -13,11 +13,10 @@ Private-use covers must make the EPUB usable for the individual user while avoid
 
 - Target-language title.
 - Author.
-- Bottom line: `个人学习版`.
 
-The bottom line replaces public-project source lines such as `依据 Project Gutenberg #xxxxx 公版原文制作`.
+Do not add a public-project source line such as `依据 Project Gutenberg #xxxxx 公版原文制作`.
 
-封面底部固定使用 `个人学习版`，替代公版项目的 `依据 Project Gutenberg #xxxxx 公版原文制作` 等来源行。
+封面必须有目标语书名和作者。不要添加 `依据 Project Gutenberg #xxxxx 公版原文制作` 等公版项目来源行。
 
 ## Forbidden Text / 禁止文字
 
@@ -38,3 +37,7 @@ The bottom line replaces public-project source lines such as `依据 Project Gut
 The shared cover quality requirements still apply: readable title, usable thumbnail, clear author, reasonable file size, EPUB `cover.xhtml`, and OPF `cover-image`.
 
 通用封面质量要求仍然适用：书名清晰、缩略图可识别、作者清楚、体积合理、EPUB 内有 `cover.xhtml`，OPF 标记 `cover-image`。
+
+Private-use boundaries belong in book-info/frontmatter and metadata. Do not force `个人学习版` onto the cover if it weakens the cover design, looks like a UI button, competes with the title, or makes the book look less like a normal reader-facing book. If a project keeps a short private-use label on the cover, it must be visually quiet and must not be the only place where the private-use boundary is stated.
+
+私人自用边界应写在书籍信息页/前置页和 metadata 中。若 `个人学习版` 会削弱封面设计、看起来像 UI 按钮、干扰书名，或让封面不像正常读者书封，不要强行放到封面上。若某项目保留短标识，也必须低调清楚，且不能把它作为唯一的私人自用边界说明。

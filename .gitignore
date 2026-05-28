@@ -52,7 +52,9 @@ doc/private/
 # User-provided non-public-domain book projects are private local output.
 # Scripts and templates may be tracked, but private source text, translations,
 # QA records, and EPUB artifacts under this tree must never be published.
-books/private/
+books/private/**
+!books/private/
+!books/private/.gitignore
 
 # Book-specific screenshot/debug captures must stay under the matching book project.
 /almagest-*.png

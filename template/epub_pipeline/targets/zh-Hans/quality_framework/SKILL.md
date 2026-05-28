@@ -30,6 +30,8 @@ Use this skill before translating full chapters. Do not begin batch translation 
 - Never preserve a metaphor word-for-word when it becomes obscure or ugly in Chinese; preserve the effect instead.
 - Never use copyrighted reference translations as source material unless the user provides lawful excerpts for private evaluation. Do not store long copyrighted excerpts in the project.
 - If a sentence sounds like a translation, rewrite it unless the stiffness is intentional in the original.
+- During the translation call itself, use a slim prompt and output only the translation. Do not ask the model to write QA, release notes, lint records, or workflow explanations in the same call.
+- Natural Chinese is the first hard constraint in translation. Faithful but breathless long sentences, English clause skeletons, or compliance-looking prose that does not read like Chinese fail the gate.
 - If a passage is historically sensitive, keep the historical fact and tone, but add translator notes instead of silently modernizing.
 - Do not translate a chapter without a book-level style profile and a passing sample-test report.
 - In body text, prefer accurate image-bearing words over flat explanatory words when the source is symbolic, scenic, physical, or memorable.
@@ -44,6 +46,8 @@ A chapter can move to `chapters/final/` only if:
 - No unresolved proper noun or technical term inconsistency.
 - Readability score is at least 4/5.
 - Literary/narrative effect score is at least 4/5.
+- Chinese-only readability score is at least 4/5 before source calibration.
+- A 20-sentence read-aloud sample has at most one clearly awkward sentence, and no key sentence is breathless.
 - The reviewer cannot point to a sentence that feels mechanically translated.
 - A gate report exists under `qa/gates/` and says `PASS`.
 - `qa/samples/sample_test_report.md` exists and says `PASS`.

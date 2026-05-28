@@ -31,8 +31,8 @@ This file is for AI agents working from a downloaded copy of this repository.
 - Cover and book-info rules must be read as two separate policies, not merged from memory. `cover_design_policy.md` requires the cover to use the concise producer line `LifeBook 书坊 译制`; personal contributor names belong in `book-info.xhtml` and metadata according to `book_info_frontmatter_policy.md`.
 - 封面规则与书籍信息页规则必须作为两份独立 policy 读取，不得凭记忆合并。`cover_design_policy.md` 要求封面使用简洁署名 `LifeBook 书坊 译制`；个人贡献者名应按 `book_info_frontmatter_policy.md` 放入 `book-info.xhtml` 和 metadata。
 
-- The preceding cover and book-info rules are for public-domain or licensed publication projects. For `publication_mode=private_use`, agents must additionally read and follow `template/epub_pipeline/modes/private_use/`. Private-use covers use the bottom line `个人学习版`; private-use frontmatter must not contain public-domain notices and must use the producer line `参考LifeBook书坊 个人自制`.
-- 上述封面和书籍信息页规则用于公版或授权发布项目。`publication_mode=private_use` 时，Agent 必须额外读取并遵守 `template/epub_pipeline/modes/private_use/`。私人自用封面底部使用 `个人学习版`；私人自用首页/前置页不得包含公版说明，制作标识使用 `参考LifeBook书坊 个人自制`。
+- The preceding cover and book-info rules are for public-domain or licensed publication projects. For `publication_mode=private_use`, agents must additionally read and follow `template/epub_pipeline/modes/private_use/`. Private-use covers must not contain public-domain source claims or long rights disclaimers; private-use frontmatter must state the private-use boundary and use the producer line `参考LifeBook书坊 个人自制`.
+- 上述封面和书籍信息页规则用于公版或授权发布项目。`publication_mode=private_use` 时，Agent 必须额外读取并遵守 `template/epub_pipeline/modes/private_use/`。私人自用封面不得包含公版来源声明或长版权免责声明；私人自用首页/前置页必须说明私人自用边界，并使用制作标识 `参考LifeBook书坊 个人自制`。
 
 - When a generated EPUB or staging directory already exists, clean or rebuild the staging output before running asset or publication lint, so old XHTML, links, or assets cannot pollute the new gate result.
 - 如果 EPUB 或中间构建目录已经存在，运行资产检查或出版检查前必须清理或重新生成 staging 输出，避免旧 XHTML、旧链接或旧资产污染新的门禁结果。

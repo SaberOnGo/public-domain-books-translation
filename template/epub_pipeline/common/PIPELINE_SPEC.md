@@ -91,7 +91,7 @@
 - `references/epub_assets_figures_tables.md`：通用 EPUB 图片、图表、表格、资源目录、XHTML 转换和 OPF manifest 规则。
 - `references/stratified_random_spotcheck.md`：第一版 EPUB 后强制执行的分层随机抽检、修复闭环和退出置信度规则。
 - `references/release_versioning.md`：EPUB 按软件版本发布的版本号、release note、`output/release/` 目录和退出门禁规则。
-- `references/private_use_cover_policy.md`：仅由 `modes/private_use` 覆盖层提供。私人自用封面底部必须使用 `个人学习版`，不得放长版权免责声明或公版来源行。
+- `references/private_use_cover_policy.md`：仅由 `modes/private_use` 覆盖层提供。私人自用封面不得放长版权免责声明或公版来源行；私人自用边界必须写在书籍信息页/前置页和 metadata 中。
 - `references/private_use_frontmatter_policy.md`：仅由 `modes/private_use` 覆盖层提供。私人自用首页/前置页不得包含公版说明，制作标识必须使用 `参考LifeBook书坊 个人自制`。
 - `references/private_use_artifact_policy.md`：仅由 `modes/private_use` 覆盖层提供。私人自用版本化产物写入 `output/private_artifacts/`，不是公开 release。
 - `automation_contract.md`：自动化执行合约。

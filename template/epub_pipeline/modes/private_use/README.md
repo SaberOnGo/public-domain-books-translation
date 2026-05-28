@@ -22,7 +22,7 @@ books/scripts/create_book_project.py --mode private-use --local-source-file ... 
 
 ## Reader-Facing Rules / 读者可见规则
 
-- Private-use cover bottom line: `个人学习版`.
+- Private-use cover: no public-domain source claims and no long rights disclaimers.
 - Private-use frontmatter producer line: `参考LifeBook书坊 个人自制`.
 - Private-use frontmatter must not contain public-domain notices, public licenses, public release wording, or public source claims unless the source is actually public-domain.
 - Rights/risk wording must state: `仅供个人自用，不传播，不商业使用`，风险由个人承担；LifeBook书坊仅发布 LifeBook 翻译发布系统，不承担任何因其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。

@@ -28,7 +28,10 @@ Required cover text:
 
 1. Target-language title.
 2. Author.
-3. Bottom line: `个人学习版`.
+
+Private-use boundaries must be stated in book-info/frontmatter and metadata. Do not force `个人学习版` onto the cover if it weakens the cover design, looks like a UI button, or competes with the title.
+
+私人自用边界必须写在书籍信息页/前置页和 metadata 中。若 `个人学习版` 会削弱封面设计、看起来像 UI 按钮或干扰书名，不要强行放到封面上。
 
 Forbidden cover text:
 
