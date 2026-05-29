@@ -378,6 +378,7 @@ export function checkLauncherUpdates() {
       installedVersion: "v1.3.2",
       latestVersion: "v1.3.2",
       hasUpdate: false,
+      releaseNotes: null,
       assetName: "LifeBook Launcher_1.3.2_x64-setup.exe",
       assetSize: 2717961,
       assetUrl: "https://github.com/SaberOnGo/public-domain-books-translation/releases/latest",
@@ -482,59 +483,44 @@ export function openBooksFolder() {
 export function listenOpenCodeDownloadProgress(
   callback: (payload: DownloadProgress) => void,
 ) {
-  if (!isTauriRuntime()) {
-    void callback;
-    return Promise.resolve(() => undefined);
-  }
-  return listen<DownloadProgress>("opencode-download-progress", (event) => {
+  return listenDownloadProgress("opencode-download-progress", callback);
+}
+
+function listenDownloadProgress(
+  eventName: string,
+  callback: (payload: DownloadProgress) => void,
+) {
+  if (!isTauriRuntime()) return Promise.resolve(() => undefined);
+  return listen<DownloadProgress>(eventName, (event) => {
     callback(event.payload);
+  }).catch((error) => {
+    const message = `frontend event listen failed event=${eventName} error=${String(error)}`;
+    console.warn(`Unable to listen for ${eventName}:`, error);
+    void recordFrontendActivity("warning", message).catch(() => undefined);
+    return () => undefined;
   });
 }
 
 export function listenLauncherDownloadProgress(
   callback: (payload: DownloadProgress) => void,
 ) {
-  if (!isTauriRuntime()) {
-    void callback;
-    return Promise.resolve(() => undefined);
-  }
-  return listen<DownloadProgress>("launcher-download-progress", (event) => {
-    callback(event.payload);
-  });
+  return listenDownloadProgress("launcher-download-progress", callback);
 }
 
 export function listenLifeBookProgress(
   callback: (payload: DownloadProgress) => void,
 ) {
-  if (!isTauriRuntime()) {
-    void callback;
-    return Promise.resolve(() => undefined);
-  }
-  return listen<DownloadProgress>("lifebook-project-progress", (event) => {
-    callback(event.payload);
-  });
+  return listenDownloadProgress("lifebook-project-progress", callback);
 }
 
 export function listenNodeModulesProgress(
   callback: (payload: DownloadProgress) => void,
 ) {
-  if (!isTauriRuntime()) {
-    void callback;
-    return Promise.resolve(() => undefined);
-  }
-  return listen<DownloadProgress>("node-modules-install-progress", (event) => {
-    callback(event.payload);
-  });
+  return listenDownloadProgress("node-modules-install-progress", callback);
 }
 
 export function listenRuntimeProgress(
   callback: (payload: DownloadProgress) => void,
 ) {
-  if (!isTauriRuntime()) {
-    void callback;
-    return Promise.resolve(() => undefined);
-  }
-  return listen<DownloadProgress>("runtime-install-progress", (event) => {
-    callback(event.payload);
-  });
+  return listenDownloadProgress("runtime-install-progress", callback);
 }

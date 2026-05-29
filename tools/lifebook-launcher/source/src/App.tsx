@@ -81,12 +81,14 @@ import {
   ProjectDocument,
   ProxyTestResult,
   RuntimeStatus,
+  RuntimeToolStatus,
 } from "./types";
 import launcherIconUrl from "../assets/lifebook-launcher-icon.png";
 import launcherVersionManifest from "../launcher-version.json";
 
 const SETTINGS_KEY = "lifebook-launcher-settings";
 const LAUNCHER_VERSION = `v${launcherVersionManifest.version}`;
+const LAUNCHER_UPDATE_PROMPT_TIMEOUT_MS = 60_000;
 
 type Locale = "zh-CN" | "zh-TW" | "ja" | "en";
 type TabId = "overview" | "updates" | "tutorial" | "settings" | "logs";
@@ -110,6 +112,31 @@ const defaultSettings: LauncherSettings = {
   checkOpenCodeOnLaunch: false,
   saveLogsToLocal: true,
 };
+
+function runtimeToolStatusLog(tool: RuntimeToolStatus) {
+  return `ready=${tool.ready} privateReady=${tool.privateReady} source=${tool.source ?? "-"} path=${tool.path ?? "-"} version=${tool.version || "-"}`;
+}
+
+function runtimeStatusLogKey(status: RuntimeStatus) {
+  return [
+    status.ready,
+    status.privateReady,
+    status.running,
+    status.runtimeRoot,
+    status.python.ready,
+    status.python.privateReady,
+    status.python.source ?? "",
+    status.python.path ?? "",
+    status.java.ready,
+    status.java.privateReady,
+    status.java.source ?? "",
+    status.java.path ?? "",
+  ].join("|");
+}
+
+function runtimeStatusLogMessage(status: RuntimeStatus) {
+  return `runtime status ready=${status.ready} privateReady=${status.privateReady} running=${status.running} root=${status.runtimeRoot} python=[${runtimeToolStatusLog(status.python)}] java=[${runtimeToolStatusLog(status.java)}]`;
+}
 
 const zhCN = {
   knowledge: "知识 · 开放 · 共享",
@@ -296,6 +323,10 @@ const zhCN = {
   clientLaunchFailed: (error: string) => `OpenCode 启动失败：${error}`,
   launcherUpdateStarted: "LifeBook Launcher 更新已下载，正在自动安装并重启。",
   confirmLauncherUpdate: (version: string) => `将自动下载并安装 LifeBook Launcher ${version}。安装时当前窗口会关闭，完成后会自动重新打开。是否继续？`,
+  launcherUpdatePromptTitle: (version: string) => `发现 Launcher ${version}`,
+  launcherUpdatePromptFallback: "本次版本修复说明暂时不可用，可先安装以获取最新修复。",
+  launcherUpdatePromptUpdate: "更新",
+  launcherUpdatePromptSkip: "跳过",
   openCodeMissing: "未检测到 OpenCode Desktop，请先安装客户端。",
   minimizeWindow: "最小化窗口",
   maximizeWindow: "最大化窗口",
@@ -471,6 +502,10 @@ const zhTW: Copy = {
   codeCopyFailed: "複製失敗",
   launcherUpdateStarted: "LifeBook Launcher 更新已下載，正在自動安裝並重新啟動。",
   confirmLauncherUpdate: (version) => `將自動下載並安裝 LifeBook Launcher ${version}。安裝時目前視窗會關閉，完成後會自動重新打開。是否繼續？`,
+  launcherUpdatePromptTitle: (version) => `發現 Launcher ${version}`,
+  launcherUpdatePromptFallback: "本次版本修復說明暫時不可用，可先安裝以取得最新修復。",
+  launcherUpdatePromptUpdate: "更新",
+  launcherUpdatePromptSkip: "跳過",
   openCodeMissing: "未偵測到 OpenCode Desktop，請先安裝用戶端。",
   minimizeWindow: "最小化視窗",
   maximizeWindow: "最大化視窗",
@@ -655,6 +690,10 @@ const ja: Copy = {
   codeCopyFailed: "コピー失敗",
   launcherUpdateStarted: "LifeBook Launcher 更新をダウンロードしました。自動インストールして再起動します。",
   confirmLauncherUpdate: (version) => `LifeBook Launcher ${version} を自動ダウンロードしてインストールします。インストール中は現在のウィンドウを閉じ、完了後に自動で開きます。続行しますか？`,
+  launcherUpdatePromptTitle: (version) => `Launcher ${version} is available`,
+  launcherUpdatePromptFallback: "Release notes are temporarily unavailable. Install this version to get the latest fixes.",
+  launcherUpdatePromptUpdate: "Update",
+  launcherUpdatePromptSkip: "Skip",
   openCodeMissing: "OpenCode Desktop が見つかりません。先にクライアントをインストールしてください。",
   minimizeWindow: "最小化",
   maximizeWindow: "最大化",
@@ -864,6 +903,10 @@ const en: Copy = {
   codeCopyFailed: "Copy failed",
   launcherUpdateStarted: "LifeBook Launcher update downloaded. Installing and restarting automatically.",
   confirmLauncherUpdate: (version) => `Download and install LifeBook Launcher ${version} automatically? The current window will close during install and reopen after it finishes.`,
+  launcherUpdatePromptTitle: (version) => `Launcher ${version} is available`,
+  launcherUpdatePromptFallback: "Release notes are temporarily unavailable. Install this version to get the latest fixes.",
+  launcherUpdatePromptUpdate: "Update",
+  launcherUpdatePromptSkip: "Skip",
   openCodeMissing: "OpenCode Desktop was not detected. Install the client first.",
   minimizeWindow: "Minimize window",
   maximizeWindow: "Maximize window",
@@ -901,6 +944,54 @@ function detectLocale(): Locale {
   if (normalized.some((language) => language.startsWith("zh"))) return "zh-CN";
   if (normalized.some((language) => language.startsWith("ja"))) return "ja";
   return "en";
+}
+
+function releaseNotesLanguage(locale: Locale) {
+  return locale.startsWith("zh") ? "ZH" : "EN";
+}
+
+function localizedReleaseNotes(body: string | null | undefined, locale: Locale, fallback: string) {
+  const normalized = (body ?? "").replace(/\r\n/g, "\n").trim();
+  if (!normalized) return fallback;
+  const sections = parseLabeledSections(normalized);
+  const preferred = sections.get(releaseNotesLanguage(locale));
+  const english = sections.get("EN");
+  const fallbackSection = sections.values().next().value;
+  return trimReleaseNotes(preferred || english || fallbackSection || normalized || fallback);
+}
+
+function parseLabeledSections(body: string) {
+  const sections = new Map<string, string>();
+  let current: string | null = null;
+  const buffer: string[] = [];
+  const flush = () => {
+    if (!current) return;
+    const text = buffer.join("\n").trim();
+    if (text) sections.set(current, text);
+  };
+  for (const line of body.split("\n")) {
+    const match = line.trim().match(/^(ZH|EN|JA)\s*:\s*(.*)$/i);
+    if (match) {
+      flush();
+      current = match[1].toUpperCase();
+      buffer.length = 0;
+      if (match[2]) buffer.push(match[2]);
+      continue;
+    }
+    if (current) buffer.push(line);
+  }
+  flush();
+  return sections;
+}
+
+function trimReleaseNotes(value: string) {
+  const lines = value
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .slice(0, 5);
+  const text = lines.join("\n");
+  return text.length > 520 ? `${text.slice(0, 517).trimEnd()}...` : text;
 }
 
 function loadSettings(): LauncherSettings {
@@ -949,6 +1040,9 @@ function formatDownloadProgress(copy: Copy, progress?: DownloadProgress | null) 
   if (progress.totalBytes === 100 && progress.downloadedBytes <= 100) {
     return `${copy.working} ${formatPercent(progress.percent)}`;
   }
+  if (!progress.totalBytes && !progress.downloadedBytes) {
+    return `${copy.downloading} ${formatPercent(progress.percent)}`;
+  }
   const total = progress.totalBytes ? ` / ${formatBytes(progress.totalBytes)}` : "";
   return `${copy.downloading} ${formatPercent(progress.percent)} (${formatBytes(progress.downloadedBytes)}${total})`;
 }
@@ -989,6 +1083,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>("overview");
   const [state, setState] = useState<LauncherState | null>(null);
   const [launcherUpdate, setLauncherUpdate] = useState<LauncherUpdateInfo | null>(null);
+  const [launcherUpdatePrompt, setLauncherUpdatePrompt] = useState<LauncherUpdateInfo | null>(null);
   const [lifeBookUpdate, setLifeBookUpdate] = useState<LifeBookUpdateInfo | null>(null);
   const [openCodeUpdate, setOpenCodeUpdate] = useState<OpenCodeUpdateInfo | null>(null);
   const [openCodeLocalStatus, setOpenCodeLocalStatus] = useState<OpenCodeLocalStatus | null>(null);
@@ -1043,6 +1138,7 @@ export default function App() {
   const openCodeLaunchResetTimer = useRef<number | null>(null);
   const runtimeBootstrapReleaseTimer = useRef<number | null>(null);
   const runtimeBootstrapStartedRef = useRef(false);
+  const runtimeStatusLogKeyRef = useRef<string | null>(null);
   const refreshInProgressRef = useRef(false);
   const lifeBookSyncingRef = useRef(false);
   const lifeBookDownloadDismissedRef = useRef(false);
@@ -1054,6 +1150,7 @@ export default function App() {
   const openCodeUpdateInProgressRef = useRef(false);
   const openCodeDownloadDismissedRef = useRef(false);
   const floatingToastTimer = useRef<number | null>(null);
+  const launcherUpdatePromptTimer = useRef<number | null>(null);
 
   const addActivity = useCallback((level: ActivityItem["level"], message: string) => {
     void recordFrontendActivity(level, message).catch(() => undefined);
@@ -1061,6 +1158,30 @@ export default function App() {
       { id: `${Date.now()}-${Math.random()}`, time: nowLabel(), level, message },
       ...items,
     ].slice(0, 80));
+  }, []);
+
+  const logRuntimeStatusIfChanged = useCallback((status: RuntimeStatus) => {
+    const key = runtimeStatusLogKey(status);
+    if (runtimeStatusLogKeyRef.current === key) return;
+    runtimeStatusLogKeyRef.current = key;
+    void recordFrontendActivity("info", runtimeStatusLogMessage(status)).catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
+    const onError = (event: ErrorEvent) => {
+      const message = event.error?.stack || event.message || "Unknown frontend error";
+      void recordFrontendActivity("error", `frontend error: ${message}`).catch(() => undefined);
+    };
+    const onUnhandledRejection = (event: PromiseRejectionEvent) => {
+      const reason = event.reason instanceof Error ? event.reason.stack || event.reason.message : String(event.reason);
+      void recordFrontendActivity("error", `frontend unhandled rejection: ${reason}`).catch(() => undefined);
+    };
+    window.addEventListener("error", onError);
+    window.addEventListener("unhandledrejection", onUnhandledRejection);
+    return () => {
+      window.removeEventListener("error", onError);
+      window.removeEventListener("unhandledrejection", onUnhandledRejection);
+    };
   }, []);
 
   const showFloatingToast = useCallback((message: string, tone: ToastTone = "info") => {
@@ -1072,6 +1193,26 @@ export default function App() {
       setFloatingToast(null);
       floatingToastTimer.current = null;
     }, 2200);
+  }, []);
+
+  const hideLauncherUpdatePrompt = useCallback(() => {
+    if (launcherUpdatePromptTimer.current) {
+      window.clearTimeout(launcherUpdatePromptTimer.current);
+      launcherUpdatePromptTimer.current = null;
+    }
+    setLauncherUpdatePrompt(null);
+  }, []);
+
+  const showLauncherUpdatePrompt = useCallback((info: LauncherUpdateInfo) => {
+    if (!info.hasUpdate) return;
+    if (launcherUpdatePromptTimer.current) {
+      window.clearTimeout(launcherUpdatePromptTimer.current);
+    }
+    setLauncherUpdatePrompt(info);
+    launcherUpdatePromptTimer.current = window.setTimeout(() => {
+      setLauncherUpdatePrompt(null);
+      launcherUpdatePromptTimer.current = null;
+    }, LAUNCHER_UPDATE_PROMPT_TIMEOUT_MS);
   }, []);
 
   const refreshDiagnosticLogSettings = useCallback(async () => {
@@ -1101,12 +1242,13 @@ export default function App() {
     try {
       const status = await getRuntimeStatus();
       setRuntimeStatus(status);
+      logRuntimeStatusIfChanged(status);
       return status;
     } catch (error) {
       addActivity("warning", copy.runtimeStatusLoadFailed(String(error)));
       return null;
     }
-  }, [addActivity, copy]);
+  }, [addActivity, copy, logRuntimeStatusIfChanged]);
 
   const startRuntimeBootstrap = useCallback(async (blocking: boolean) => {
     if (runtimeBootstrapReleaseTimer.current) {
@@ -1124,8 +1266,10 @@ export default function App() {
       state: "downloading",
     });
     try {
+      void recordFrontendActivity("info", `runtime bootstrap start blocking=${blocking}`).catch(() => undefined);
       const status = await getRuntimeStatus();
       setRuntimeStatus(status);
+      logRuntimeStatusIfChanged(status);
       if (status.ready) {
         setRuntimeBootstrapState("ready");
         setRuntimeBootstrapMessage(copy.runtimeBootstrapReady);
@@ -1184,7 +1328,7 @@ export default function App() {
         }, 1400);
       }
     }
-  }, [addActivity, copy, refreshRuntimeStatus]);
+  }, [addActivity, copy, logRuntimeStatusIfChanged, refreshRuntimeStatus]);
 
   const refreshNodeModulesStatus = useCallback(async () => {
     try {
@@ -1193,6 +1337,7 @@ export default function App() {
       if (status.ready) {
         setNodeModulesDownloadState("idle");
         setNodeModulesDownloadMessage(null);
+        setNodeModulesProgress(null);
       } else if (status.running) {
         setNodeModulesDownloadState("downloading");
       } else {
@@ -1490,6 +1635,7 @@ export default function App() {
       launcherUpdateInProgressRef.current = false;
       return;
     }
+    hideLauncherUpdatePrompt();
     setBusy("launcher-update");
     const initialBytes = info?.installerDownloaded ? info.assetSize : info?.partialDownloadedBytes ?? 0;
     const initialPercent = info?.assetSize ? Math.round((initialBytes / info.assetSize) * 100) : 0;
@@ -1507,7 +1653,7 @@ export default function App() {
       launcherUpdateInProgressRef.current = false;
       setBusy(null);
     }
-  }, [addActivity, copy, launcherUpdate]);
+  }, [addActivity, copy, hideLauncherUpdatePrompt, launcherUpdate]);
 
   const checkLauncher = useCallback(async (promptWhenUpdate = false, background = false) => {
     if (launcherCheckInProgressRef.current) return;
@@ -1518,8 +1664,8 @@ export default function App() {
       const info = await checkLauncherUpdates();
       setLauncherUpdate(info);
       addActivity(info.hasUpdate ? "warning" : "success", info.hasUpdate ? copy.launcherFound(info.latestVersion) : copy.launcherLatest);
-      if (promptWhenUpdate && info.hasUpdate) {
-        await doUpdateLauncher(info, false);
+      if (info.hasUpdate) {
+        showLauncherUpdatePrompt(info);
       }
     } catch (error) {
       addActivity("error", copy.launcherCheckFailed(String(error)));
@@ -1527,7 +1673,7 @@ export default function App() {
       launcherCheckInProgressRef.current = false;
       if (!background) setBusy((value) => (value === "launcher-check" ? null : value));
     }
-  }, [addActivity, copy, doUpdateLauncher]);
+  }, [addActivity, copy, showLauncherUpdatePrompt]);
 
   const doUpdateOpenCode = useCallback(async (knownUpdate?: OpenCodeUpdateInfo | null, skipConfirm = false) => {
     if (openCodeUpdateInProgressRef.current) return;
@@ -1616,6 +1762,49 @@ export default function App() {
       unlistenRuntime.then((fn) => fn()).catch(() => undefined);
     };
   }, [addActivity, copy, refreshRuntimeStatus, startRuntimeBootstrap]);
+
+  useEffect(() => {
+    if (!runtimeBootstrapBlocking || runtimeBootstrapState !== "preparing") return undefined;
+    const timer = window.setInterval(async () => {
+      const status = await refreshRuntimeStatus();
+      if (!status) return;
+      if (status.ready) {
+        setRuntimeBootstrapState("ready");
+        setRuntimeBootstrapMessage(copy.runtimeBootstrapReady);
+        setRuntimeProgress({
+          percent: 100,
+          downloadedBytes: 100,
+          totalBytes: 100,
+          message: copy.runtimeBootstrapReady,
+          state: "success",
+        });
+        if (runtimeBootstrapReleaseTimer.current) window.clearTimeout(runtimeBootstrapReleaseTimer.current);
+        runtimeBootstrapReleaseTimer.current = window.setTimeout(() => {
+          setRuntimeBootstrapBlocking(false);
+          setRuntimeProgress(null);
+          runtimeBootstrapReleaseTimer.current = null;
+        }, 450);
+      } else if (!status.running) {
+        const message = copy.runtimeBootstrapFailed;
+        setRuntimeBootstrapState("failed");
+        setRuntimeBootstrapMessage(message);
+        setRuntimeProgress({
+          percent: 100,
+          downloadedBytes: 0,
+          totalBytes: 0,
+          message,
+          state: "failed",
+        });
+        addActivity("warning", message);
+        if (runtimeBootstrapReleaseTimer.current) window.clearTimeout(runtimeBootstrapReleaseTimer.current);
+        runtimeBootstrapReleaseTimer.current = window.setTimeout(() => {
+          setRuntimeBootstrapBlocking(false);
+          runtimeBootstrapReleaseTimer.current = null;
+        }, 1400);
+      }
+    }, 1500);
+    return () => window.clearInterval(timer);
+  }, [addActivity, copy, refreshRuntimeStatus, runtimeBootstrapBlocking, runtimeBootstrapState]);
 
   const checkOpenCode = useCallback(async (background = false, installWhenNeeded = false) => {
     if (openCodeCheckInProgressRef.current) return;
@@ -2049,6 +2238,7 @@ export default function App() {
     if (runtimeBootstrapBlocking) return undefined;
     if (!startupInitializedRef.current) {
       startupInitializedRef.current = true;
+      void recordFrontendActivity("info", "frontend startup initialization begin").catch(() => undefined);
       refreshState();
       void refreshProxySettings();
       void doAutoDetectProxySettings(false, true);
@@ -2195,6 +2385,10 @@ export default function App() {
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
+      void recordFrontendActivity(
+        "info",
+        `frontend startup automation begin checkLauncher=${settings.checkLauncherOnLaunch} checkOpenCode=${settings.checkOpenCodeOnLaunch}`,
+      ).catch(() => undefined);
       void prepareLifeBookInBackground();
       if (settings.checkLauncherOnLaunch) void checkLauncher(false, true);
       if (settings.checkOpenCodeOnLaunch) void checkOpenCode(true);
@@ -2230,6 +2424,9 @@ export default function App() {
       }
       if (floatingToastTimer.current) {
         window.clearTimeout(floatingToastTimer.current);
+      }
+      if (launcherUpdatePromptTimer.current) {
+        window.clearTimeout(launcherUpdatePromptTimer.current);
       }
     };
   }, []);
@@ -2297,6 +2494,9 @@ export default function App() {
   const nodeModulesProgressLabel = formatDownloadProgress(copy, nodeModulesProgress);
   const nodeModulesHudMessage = nodeModulesDownloadMessage || nodeModulesProgressLabel || copy.nodeModulesInstalling;
   const runtimeProgressLabel = formatDownloadProgress(copy, runtimeProgress);
+  const launcherUpdatePromptNotes = launcherUpdatePrompt
+    ? localizedReleaseNotes(launcherUpdatePrompt.releaseNotes, locale, copy.launcherUpdatePromptFallback)
+    : "";
 
   const visibleActivities = useMemo(() => activities.slice(0, 5), [activities]);
 
@@ -2321,6 +2521,16 @@ export default function App() {
           <span>LifeBook Launcher</span>
           <span className="titlebar-version">{LAUNCHER_VERSION}</span>
         </div>
+        {launcherUpdatePrompt && (
+          <LauncherUpdatePrompt
+            copy={copy}
+            info={launcherUpdatePrompt}
+            notes={launcherUpdatePromptNotes}
+            busy={busy === "launcher-update"}
+            onUpdate={() => void doUpdateLauncher(launcherUpdatePrompt, true)}
+            onSkip={hideLauncherUpdatePrompt}
+          />
+        )}
         <div className="titlebar-drag-region" data-tauri-drag-region onDoubleClick={() => void runWindowAction("maximize")} />
         <div className="window-controls">
           <button aria-label={copy.minimizeWindow} title={copy.minimizeWindow} onClick={() => void runWindowAction("minimize")}>-</button>
@@ -2544,6 +2754,40 @@ export default function App() {
       </main>
       <ConfirmDialog dialog={confirmDialog} onCancel={() => resolveConfirmDialog(false)} onConfirm={() => resolveConfirmDialog(true)} />
     </div>
+  );
+}
+
+function LauncherUpdatePrompt({
+  copy,
+  info,
+  notes,
+  busy,
+  onUpdate,
+  onSkip,
+}: {
+  copy: Copy;
+  info: LauncherUpdateInfo;
+  notes: string;
+  busy: boolean;
+  onUpdate: () => void;
+  onSkip: () => void;
+}) {
+  return (
+    <section className="launcher-update-prompt" aria-live="polite">
+      <div className="launcher-update-prompt-title">
+        <strong>{copy.launcherUpdatePromptTitle(info.latestVersion)}</strong>
+        <span>{info.assetName}</span>
+      </div>
+      <p>{notes}</p>
+      <div className="launcher-update-prompt-actions">
+        <button type="button" onClick={onSkip} disabled={busy}>
+          {copy.launcherUpdatePromptSkip}
+        </button>
+        <button type="button" className="primary" onClick={onUpdate} disabled={busy}>
+          {busy ? copy.working : copy.launcherUpdatePromptUpdate}
+        </button>
+      </div>
+    </section>
   );
 }
 

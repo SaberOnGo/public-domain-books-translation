@@ -59,6 +59,7 @@ export type LauncherUpdateInfo = {
   installedVersion: string;
   latestVersion: string;
   hasUpdate: boolean;
+  releaseNotes?: string | null;
   assetName: string;
   assetSize: number;
   assetUrl: string;

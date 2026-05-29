@@ -146,6 +146,7 @@ button:disabled {
 }
 
 .frame-titlebar {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -182,6 +183,96 @@ button:disabled {
   font-size: 11px;
   font-weight: 750;
   line-height: 1;
+}
+
+.launcher-update-prompt {
+  position: absolute;
+  z-index: 70;
+  top: 34px;
+  left: 156px;
+  display: grid;
+  width: min(420px, calc(100vw - 210px));
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #bfd4ff;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 46px rgba(15, 23, 42, 0.22);
+  backdrop-filter: blur(14px);
+}
+
+.launcher-update-prompt::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 44px;
+  width: 12px;
+  height: 12px;
+  border-top: 1px solid #bfd4ff;
+  border-left: 1px solid #bfd4ff;
+  background: rgba(255, 255, 255, 0.98);
+  transform: rotate(45deg);
+}
+
+.launcher-update-prompt-title {
+  display: grid;
+  gap: 3px;
+}
+
+.launcher-update-prompt-title strong {
+  color: #142033;
+  font-size: 14px;
+  font-weight: 820;
+}
+
+.launcher-update-prompt-title span {
+  overflow: hidden;
+  color: #5a6474;
+  font-size: 12px;
+  font-weight: 680;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.launcher-update-prompt p {
+  margin: 0;
+  white-space: pre-line;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 620;
+  line-height: 1.45;
+}
+
+.launcher-update-prompt-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.launcher-update-prompt-actions button {
+  height: 30px;
+  padding: 0 13px;
+  border: 1px solid #d5dce7;
+  border-radius: 7px;
+  color: #263241;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.launcher-update-prompt-actions button.primary {
+  border-color: #0b63ce;
+  color: #fff;
+  background: #0b63ce;
+}
+
+.launcher-update-prompt-actions button:hover:not(:disabled) {
+  filter: brightness(0.98);
+}
+
+.launcher-update-prompt-actions button:disabled {
+  cursor: wait;
+  opacity: 0.6;
 }
 
 .titlebar-drag-region {

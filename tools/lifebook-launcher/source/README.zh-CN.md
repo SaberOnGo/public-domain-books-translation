@@ -38,6 +38,22 @@ src-tauri\target\release\bundle\nsis\LifeBook Launcher_1.3.2_x64-setup.exe
 src-tauri\target\release\bundle\msi\LifeBook Launcher_1.3.2_x64_en-US.msi
 ```
 
+## Windows 兼容性
+
+当前 Launcher 基于 Tauri 2 和 Microsoft Edge WebView2。公开发行版支持 Windows 10 / Windows 11 x64；Windows 7 不再作为可支持安装目标。
+
+Win7 用户看到 `MicrosoftEdgeUpdate.exe - 无法找到入口`、`GetPackagesByPackageFamily`、`KERNEL32.dll` 或 WebView2 安装中断时，根因是 Microsoft Edge/WebView2 对 Win7/8/8.1 的支持已经停留在 109 系列，当前 WebView2 Evergreen 安装器与运行时更新链路不再兼容 Win7。Launcher 安装包使用 `embedBootstrapper`，只是把 Evergreen bootstrapper 打进安装包，避免在安装时先下载 bootstrapper 导致 Win10/Win11 弱网机器直接失败；它仍然会运行 Microsoft 的 Evergreen 安装链路，不能把 Win7 变成当前 WebView2 的受支持系统。
+
+如果未来确实要做 Win7 专门版本，不能只靠 `embedBootstrapper`。需要改成 `fixedRuntime`，随安装包携带 Win7 可用的 WebView2 109 固定版运行时，并接受安装包明显变大、WebView2 安全更新停留在旧版本、Tauri/WebView2 新能力可能不可用的限制。当前公开发行版不走这个分支，仍以 Windows 10 / Windows 11 为支持目标。
+
+如果用户在 Windows 10/11 上启动后停在“正在检查运行环境”或窗口退出，请让用户导出或提供：
+
+```text
+%LOCALAPPDATA%\LifeBook\launcher\logs\lifebook-launcher.log
+```
+
+日志会记录启动期 panic、前端未捕获错误、Python/Java 探测超时，以及私有运行时下载/解压失败原因。
+
 开发环境需要 Node.js 与 Rust。仓库已在本目录固定 Rust `1.88.0`，避免因本机默认 Rust 版本过旧导致 Tauri 依赖无法编译。
 
 ## 安全规则

@@ -9,11 +9,12 @@ use sha2::{Digest, Sha256};
 #[cfg(target_os = "windows")]
 use std::os::windows::process::CommandExt;
 use std::{
+    any::Any,
     env, fs,
-    io::{Read, Write},
+    io::{self, Read, Write},
     net::{IpAddr, TcpStream, ToSocketAddrs},
     path::{Path, PathBuf},
-    process::{Command, Stdio},
+    process::{Command, ExitStatus, Output, Stdio},
     sync::atomic::{AtomicBool, Ordering},
     thread,
     time::{Duration, Instant},
@@ -37,6 +38,8 @@ const LIFEBOOK_LAUNCHER_REPO_API: &str =
     "https://api.github.com/repos/SaberOnGo/public-domain-books-translation/releases/latest";
 const LIFEBOOK_LAUNCHER_REPO_LATEST_RELEASE_URL: &str =
     "https://github.com/SaberOnGo/public-domain-books-translation/releases/latest";
+const LIFEBOOK_LAUNCHER_REPO_RELEASES_ATOM_URL: &str =
+    "https://github.com/SaberOnGo/public-domain-books-translation/releases.atom";
 const LIFEBOOK_LAUNCHER_REPO_RELEASE_DOWNLOAD_BASE: &str =
     "https://github.com/SaberOnGo/public-domain-books-translation/releases/download";
 #[cfg(test)]
@@ -64,8 +67,9 @@ const RUNTIME_PROGRESS_EVENT: &str = "runtime-install-progress";
 const TRAY_SHOW_ID: &str = "tray_show";
 const TRAY_HIDE_ID: &str = "tray_hide";
 const TRAY_QUIT_ID: &str = "tray_quit";
-const LAUNCHER_LOG_MAX_BYTES: u64 = 4 * 1024 * 1024;
-const LAUNCHER_LOG_BACKUP_COUNT: usize = 5;
+const LAUNCHER_LOG_MAX_BYTES: u64 = 5 * 1024 * 1024;
+const LAUNCHER_LOG_BACKUP_COUNT: usize = 0;
+const LAUNCHER_LOG_LEGACY_EXPORT_BACKUP_SCAN_COUNT: usize = 5;
 #[cfg(test)]
 const GIT_LOW_SPEED_LIMIT_BYTES: &str = "1024";
 #[cfg(test)]
@@ -103,6 +107,7 @@ const JAVA_RUNTIME_URLS: &[&str] = &[
 ];
 const RUNTIME_HTTP_CONNECT_TIMEOUT_SECONDS: u64 = 12;
 const RUNTIME_HTTP_REQUEST_TIMEOUT_SECONDS: u64 = 180;
+const RUNTIME_PROBE_TIMEOUT_SECONDS: u64 = 6;
 static LIFEBOOK_UPDATE_RUNNING: AtomicBool = AtomicBool::new(false);
 static LIFEBOOK_UPDATE_CANCEL_REQUESTED: AtomicBool = AtomicBool::new(false);
 static OPENCODE_DOWNLOAD_CANCEL_REQUESTED: AtomicBool = AtomicBool::new(false);
@@ -222,6 +227,22 @@ fn launcher_logging_enabled() -> bool {
         .as_ref()
         .map(diagnostic_logging_enabled_from_config)
         .unwrap_or(true)
+}
+
+fn install_panic_log_hook() {
+    std::panic::set_hook(Box::new(|info| {
+        append_launcher_log("ERROR", format!("panic: {info}"));
+    }));
+}
+
+fn panic_payload_to_string(payload: &(dyn Any + Send)) -> String {
+    if let Some(message) = payload.downcast_ref::<&str>() {
+        (*message).to_string()
+    } else if let Some(message) = payload.downcast_ref::<String>() {
+        message.clone()
+    } else {
+        "unknown panic payload".into()
+    }
 }
 
 fn diagnostic_logging_enabled_from_config(config: &LauncherConfig) -> bool {
@@ -476,6 +497,7 @@ struct LauncherUpdateInfo {
     installed_version: String,
     latest_version: String,
     has_update: bool,
+    release_notes: Option<String>,
     asset_name: String,
     asset_size: u64,
     asset_url: String,
@@ -690,6 +712,7 @@ struct RuntimePackage {
 #[derive(Debug, Deserialize)]
 struct GithubRelease {
     tag_name: String,
+    body: Option<String>,
     assets: Vec<GithubAsset>,
 }
 
@@ -1140,8 +1163,19 @@ fn get_runtime_status() -> Result<RuntimeStatus, String> {
 #[tauri::command]
 fn start_runtime_prepare(app: tauri::AppHandle) -> Result<ActionResult, String> {
     let status = collect_runtime_status()?;
+    append_launcher_log(
+        "INFO",
+        format!(
+            "runtime prepare requested {}",
+            runtime_status_log_summary(&status)
+        ),
+    );
     if !runtime_prepare_requires_download(&status) {
         set_process_runtime_envs_from_status(&status);
+        append_launcher_log(
+            "INFO",
+            "runtime prepare skipped because all runtimes are ready",
+        );
         return Ok(ActionResult {
             ok: true,
             message: "检测到可用 Python / Java 运行环境，直接进入 Launcher。".into(),
@@ -1150,6 +1184,10 @@ fn start_runtime_prepare(app: tauri::AppHandle) -> Result<ActionResult, String> 
         });
     }
     if RUNTIME_PREPARE_RUNNING.load(Ordering::Acquire) {
+        append_launcher_log(
+            "INFO",
+            "runtime prepare request ignored because another prepare task is running",
+        );
         return Ok(ActionResult {
             ok: true,
             message: "Python / Java 运行环境正在准备中...".into(),
@@ -1159,13 +1197,24 @@ fn start_runtime_prepare(app: tauri::AppHandle) -> Result<ActionResult, String> 
     }
     let guard = RuntimePrepareGuard::try_acquire()?;
     let app_for_task = app.clone();
+    append_launcher_log("INFO", "runtime prepare worker starting");
     thread::spawn(move || {
         let _guard = guard;
         let emitter = RuntimeProgressEmitter::new(app_for_task.clone());
-        let result = prepare_private_runtimes(&app_for_task, Some(&emitter));
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            prepare_private_runtimes(&app_for_task, Some(&emitter))
+        }))
+        .map_err(|payload| {
+            format!(
+                "运行环境准备线程异常：{}",
+                panic_payload_to_string(payload.as_ref())
+            )
+        })
+        .and_then(|result| result);
         match result {
             Ok(()) => {
                 set_process_runtime_envs();
+                append_launcher_log("INFO", "runtime prepare completed successfully");
                 emitter.emit(
                     100.0,
                     100,
@@ -1220,13 +1269,22 @@ fn start_node_modules_install(app: tauri::AppHandle) -> Result<ActionResult, Str
         let _guard = guard;
         let result = ensure_books_node_modules(&repo_root, Some(&emitter));
         match result {
-            Ok(()) => emitter.emit(
-                100.0,
-                100,
-                100,
-                "EPUB 构建依赖已准备完成。".into(),
-                Some("success"),
-            ),
+            Ok(()) => {
+                append_launcher_log(
+                    "INFO",
+                    format!(
+                        "books/node_modules install completed repo_root={}",
+                        display_path(&repo_root)
+                    ),
+                );
+                emitter.emit(
+                    100.0,
+                    100,
+                    100,
+                    "EPUB 构建依赖已准备完成。".into(),
+                    Some("success"),
+                );
+            }
             Err(error) if NODE_MODULES_INSTALL_CANCEL_REQUESTED.load(Ordering::Acquire) => {
                 let remove_partial = NODE_MODULES_INSTALL_REMOVE_PARTIAL.load(Ordering::Acquire);
                 if remove_partial {
@@ -1366,6 +1424,7 @@ async fn check_launcher_updates() -> Result<LauncherUpdateInfo, String> {
         installed_version: installed_version.clone(),
         latest_version: release.tag_name.clone(),
         has_update: is_remote_version_newer(&release.tag_name, &installed_version),
+        release_notes: release.body.clone(),
         asset_name: asset.name.clone(),
         asset_size: asset.size,
         asset_url: asset.browser_download_url.clone(),
@@ -1827,7 +1886,6 @@ fn terminate_process_tree(child: &mut std::process::Child, reason: &str) {
     }
 }
 
-#[cfg(test)]
 fn git_output(repo_root: &Path, args: &[&str]) -> Result<String, String> {
     append_launcher_log(
         "DEBUG",
@@ -3416,6 +3474,29 @@ fn runtime_prepare_requires_download(status: &RuntimeStatus) -> bool {
     !status.ready
 }
 
+fn runtime_status_log_summary(status: &RuntimeStatus) -> String {
+    format!(
+        "ready={} private_ready={} running={} root={} python=[{}] java=[{}]",
+        status.ready,
+        status.private_ready,
+        status.running,
+        status.runtime_root,
+        runtime_tool_log_summary(&status.python),
+        runtime_tool_log_summary(&status.java)
+    )
+}
+
+fn runtime_tool_log_summary(status: &RuntimeToolStatus) -> String {
+    format!(
+        "ready={} private_ready={} source={} path={} version={}",
+        status.ready,
+        status.private_ready,
+        status.source.as_deref().unwrap_or("-"),
+        status.path.as_deref().unwrap_or("-"),
+        status.version
+    )
+}
+
 fn runtime_root() -> Result<PathBuf, String> {
     let base = dirs::data_local_dir()
         .or_else(dirs::config_local_dir)
@@ -3522,6 +3603,45 @@ fn java_home_executable_from_value(java_home: &Path) -> Option<PathBuf> {
     candidate.is_file().then_some(candidate)
 }
 
+fn command_output_with_timeout(command: &mut Command, timeout: Duration) -> io::Result<Output> {
+    command.stdout(Stdio::piped());
+    let mut child = command.spawn()?;
+    let started_at = Instant::now();
+    loop {
+        if child.try_wait()?.is_some() {
+            return child.wait_with_output();
+        }
+        if started_at.elapsed() >= timeout {
+            let _ = child.kill();
+            let _ = child.wait();
+            return Err(io::Error::new(
+                io::ErrorKind::TimedOut,
+                format!("command timed out after {}s", timeout.as_secs()),
+            ));
+        }
+        thread::sleep(Duration::from_millis(50));
+    }
+}
+
+fn command_status_with_timeout(command: &mut Command, timeout: Duration) -> io::Result<ExitStatus> {
+    let mut child = command.spawn()?;
+    let started_at = Instant::now();
+    loop {
+        if let Some(status) = child.try_wait()? {
+            return Ok(status);
+        }
+        if started_at.elapsed() >= timeout {
+            let _ = child.kill();
+            let _ = child.wait();
+            return Err(io::Error::new(
+                io::ErrorKind::TimedOut,
+                format!("command timed out after {}s", timeout.as_secs()),
+            ));
+        }
+        thread::sleep(Duration::from_millis(50));
+    }
+}
+
 fn command_first_stdout_path(program: &str, args: &[&str]) -> Option<PathBuf> {
     let mut command = Command::new(program);
     command
@@ -3530,7 +3650,18 @@ fn command_first_stdout_path(program: &str, args: &[&str]) -> Option<PathBuf> {
         .stderr(Stdio::null());
     #[cfg(target_os = "windows")]
     command.creation_flags(0x08000000);
-    let output = command.output().ok()?;
+    let output = command_output_with_timeout(
+        &mut command,
+        Duration::from_secs(RUNTIME_PROBE_TIMEOUT_SECONDS),
+    )
+    .map_err(|err| {
+        append_launcher_log(
+            "WARN",
+            format!("runtime probe command failed program={program} error={err}"),
+        );
+        err
+    })
+    .ok()?;
     if !output.status.success() {
         return None;
     }
@@ -3555,7 +3686,11 @@ fn java_path_from_path_lookup() -> Vec<PathBuf> {
         .stderr(Stdio::null());
     #[cfg(target_os = "windows")]
     command.creation_flags(0x08000000);
-    let Ok(output) = command.output() else {
+    let Ok(output) = command_output_with_timeout(
+        &mut command,
+        Duration::from_secs(RUNTIME_PROBE_TIMEOUT_SECONDS),
+    ) else {
+        append_launcher_log("WARN", "Java PATH lookup command failed or timed out");
         return Vec::new();
     };
     if !output.status.success() {
@@ -3617,10 +3752,23 @@ fn runtime_executable_is_usable(kind: RuntimeKind, path: &Path) -> bool {
         .stderr(Stdio::null());
     #[cfg(target_os = "windows")]
     command.creation_flags(0x08000000);
-    command
-        .status()
-        .map(|status| status.success())
-        .unwrap_or(false)
+    match command_status_with_timeout(
+        &mut command,
+        Duration::from_secs(RUNTIME_PROBE_TIMEOUT_SECONDS),
+    ) {
+        Ok(status) => status.success(),
+        Err(error) => {
+            append_launcher_log(
+                "WARN",
+                format!(
+                    "runtime executable probe failed kind={} path={} error={error}",
+                    kind.label(),
+                    display_path(path)
+                ),
+            );
+            false
+        }
+    }
 }
 
 fn find_runtime_executable(root: &Path, executable_name: &str) -> Option<PathBuf> {
@@ -3686,9 +3834,21 @@ fn prepare_private_runtimes(
 ) -> Result<(), String> {
     let root = runtime_root()?;
     fs::create_dir_all(&root).map_err(|err| err.to_string())?;
+    append_launcher_log(
+        "INFO",
+        format!("runtime prepare private root={}", display_path(&root)),
+    );
     let packages = runtime_packages();
     for (index, package) in packages.iter().enumerate() {
-        if runtime_resolved_executable(*package).is_some() {
+        if let Some(executable) = runtime_resolved_executable(*package) {
+            append_launcher_log(
+                "INFO",
+                format!(
+                    "runtime package skipped kind={} executable={}",
+                    package.kind.label(),
+                    display_path(&executable)
+                ),
+            );
             if let Some(emitter) = progress {
                 let percent = if index == 0 { 45.0 } else { 90.0 };
                 emitter.emit(
@@ -3704,8 +3864,13 @@ fn prepare_private_runtimes(
         prepare_runtime_package(&root, *package, progress, index)?;
     }
     if collect_runtime_status()?.ready {
+        append_launcher_log("INFO", "runtime prepare private runtimes verified ready");
         Ok(())
     } else {
+        append_launcher_log(
+            "WARN",
+            "runtime prepare finished but runtime status is not ready",
+        );
         Err("Python / Java 运行环境未全部准备完成。".into())
     }
 }
@@ -3723,6 +3888,15 @@ fn prepare_runtime_package(
     fs::create_dir_all(&downloads_dir).map_err(|err| err.to_string())?;
     let archive = downloads_dir.join(package.archive_name);
     let mut last_error = String::new();
+    append_launcher_log(
+        "INFO",
+        format!(
+            "runtime package prepare kind={} version={} archive={}",
+            package.kind.label(),
+            package.version,
+            display_path(&archive)
+        ),
+    );
 
     if archive.is_file() && runtime_archive_sha256_matches(&archive, package.sha256) {
         append_launcher_log(
@@ -3756,6 +3930,14 @@ fn prepare_runtime_package(
             .and_then(|_| verify_runtime_archive(&archive, package))
             {
                 Ok(()) => {
+                    append_launcher_log(
+                        "INFO",
+                        format!(
+                            "runtime download verified kind={} url={}",
+                            package.kind.label(),
+                            url
+                        ),
+                    );
                     last_error.clear();
                     break;
                 }
@@ -3792,6 +3974,14 @@ fn prepare_runtime_package(
         );
     }
     install_runtime_archive(root, package, &archive)?;
+    append_launcher_log(
+        "INFO",
+        format!(
+            "runtime package installed kind={} install_dir={}",
+            package.kind.label(),
+            display_path(&root.join(package.install_dir_name))
+        ),
+    );
     if let Some(emitter) = progress {
         emitter.emit(
             extract_end,
@@ -4055,6 +4245,10 @@ fn ensure_epubchecker_vendor(
             Some("downloading"),
         );
     }
+    append_launcher_log(
+        "INFO",
+        format!("epubcheck vendor prepared jar={}", display_path(&jar)),
+    );
     Ok(())
 }
 
@@ -4716,7 +4910,9 @@ fn lifebook_archive_update_info(
 ) -> Result<LifeBookUpdateInfo, String> {
     let state = read_archive_project_state(repo_root)
         .ok_or_else(|| archive_only_legacy_lifebook_message(repo_root))?;
-    let commits = lifebook_commit_history_or_local(locale, || Ok(Vec::new()))?;
+    let commits = lifebook_commit_history_or_local(locale, || {
+        local_lifebook_commit_history_best_effort(repo_root, locale)
+    })?;
     let current_commit = state
         .commit
         .or_else(|| commits.first().map(|commit| commit.hash.clone()))
@@ -4736,7 +4932,9 @@ fn lifebook_archive_required_update_info(
     repo_root: &Path,
     locale: Option<&str>,
 ) -> Result<LifeBookUpdateInfo, String> {
-    let commits = lifebook_commit_history_or_local(locale, || Ok(Vec::new()))?;
+    let commits = lifebook_commit_history_or_local(locale, || {
+        local_lifebook_commit_history_best_effort(repo_root, locale)
+    })?;
     Ok(LifeBookUpdateInfo {
         repo_root: display_path(repo_root),
         current_commit: "legacy-git-disabled".into(),
@@ -4758,6 +4956,38 @@ fn lifebook_update_info_best_effort(
         Err(fetch_error) if fetch => lifebook_update_info(repo_root, false, locale)
             .map_err(|local_error| format!("{fetch_error}; {local_error}")),
         Err(error) => Err(error),
+    }
+}
+
+fn local_lifebook_commit_history_best_effort(
+    repo_root: &Path,
+    locale: Option<&str>,
+) -> Result<Vec<CommitInfo>, String> {
+    match git_log(repo_root, "HEAD", Some(20), locale) {
+        Ok(commits) => {
+            if !commits.is_empty() {
+                append_launcher_log(
+                    "INFO",
+                    format!(
+                        "using local git log as LifeBook commit history fallback repo_root={} count={}",
+                        display_path(repo_root),
+                        commits.len()
+                    ),
+                );
+                write_commit_history_cache(locale, "local-git", &commits);
+            }
+            Ok(commits)
+        }
+        Err(error) => {
+            append_launcher_log(
+                "WARN",
+                format!(
+                    "unable to load local LifeBook commit history repo_root={} error={error}",
+                    display_path(repo_root)
+                ),
+            );
+            Ok(Vec::new())
+        }
     }
 }
 
@@ -5299,7 +5529,9 @@ fn diagnostic_log_files(log_dir: &Path) -> Vec<PathBuf> {
     if current.is_file() {
         files.push(current.clone());
     }
-    for index in 1..=LAUNCHER_LOG_BACKUP_COUNT {
+    let rotated_scan_count =
+        LAUNCHER_LOG_BACKUP_COUNT.max(LAUNCHER_LOG_LEGACY_EXPORT_BACKUP_SCAN_COUNT);
+    for index in 1..=rotated_scan_count {
         let rotated = rotated_log_path(&current, index);
         if rotated.is_file() {
             files.push(rotated);
@@ -5676,7 +5908,6 @@ fn git_all_commits(repo_root: &Path, locale: Option<&str>) -> Result<Vec<CommitI
     git_log(repo_root, "HEAD", None, locale)
 }
 
-#[cfg(test)]
 fn git_log(
     repo_root: &Path,
     rev: &str,
@@ -6221,6 +6452,54 @@ fn github_atom_commits_from_feed(feed: &str, locale: Option<&str>) -> Vec<Commit
         ));
     }
     commits
+}
+
+fn launcher_release_notes_from_atom_feed(feed: &str, tag: &str) -> Option<String> {
+    let tag_url_marker = format!("/releases/tag/{tag}");
+    let mut rest = feed;
+    while let Some((_, after_start)) = rest.split_once("<entry>") {
+        let Some((entry, after_entry)) = after_start.split_once("</entry>") else {
+            break;
+        };
+        rest = after_entry;
+        if !entry.contains(&tag_url_marker) && !entry.contains(tag) {
+            continue;
+        }
+        let content = text_between(entry, "<content type=\"html\">", "</content>")?;
+        let html = decode_xml_entities(&content);
+        let notes = release_notes_html_to_text(&html);
+        if !notes.trim().is_empty() {
+            return Some(notes);
+        }
+    }
+    None
+}
+
+fn release_notes_html_to_text(html: &str) -> String {
+    let mut text = html
+        .replace("<p>", "")
+        .replace("</p>", "\n")
+        .replace("<ul>", "")
+        .replace("</ul>", "\n")
+        .replace("<ol>", "")
+        .replace("</ol>", "\n")
+        .replace("<li>", "- ")
+        .replace("</li>", "\n")
+        .replace("<br>", "\n")
+        .replace("<br/>", "\n")
+        .replace("<br />", "\n");
+    while let Some(start) = text.find('<') {
+        let Some(relative_end) = text[start..].find('>') else {
+            break;
+        };
+        text.replace_range(start..=start + relative_end, "");
+    }
+    decode_xml_entities(&text)
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 fn github_atom_latest_commit_from_feed(feed: &str) -> Option<RemoteCommitRef> {
@@ -6819,13 +7098,46 @@ async fn fetch_lifebook_launcher_release() -> Result<GithubRelease, String> {
                 format!("{api_error}；已尝试通过 GitHub 公开 release 页面获取 Launcher 版本，也失败：{fallback_error}")
             })?;
             let asset = lifebook_launcher_asset_from_tag(&tag)?;
+            let body = fetch_lifebook_launcher_release_notes_from_atom(&tag)
+                .await
+                .map_err(|error| {
+                    append_launcher_log(
+                        "WARN",
+                        format!(
+                            "unable to load Launcher release notes from Atom feed tag={tag}: {error}"
+                        ),
+                    );
+                    error
+                })
+                .ok();
             Ok(GithubRelease {
                 tag_name: tag,
+                body,
                 assets: vec![asset],
             })
         }
         Err(error) => Err(error),
     }
+}
+
+async fn fetch_lifebook_launcher_release_notes_from_atom(tag: &str) -> Result<String, String> {
+    let response = http_client()?
+        .get(LIFEBOOK_LAUNCHER_REPO_RELEASES_ATOM_URL)
+        .send()
+        .await
+        .map_err(|err| format!("无法访问 Launcher releases Atom feed：{err}"))?;
+    let status = response.status();
+    if !status.is_success() {
+        return Err(format!(
+            "Launcher releases Atom feed 请求失败：HTTP status {status}"
+        ));
+    }
+    let feed = response
+        .text()
+        .await
+        .map_err(|err| format!("无法读取 Launcher releases Atom feed：{err}"))?;
+    launcher_release_notes_from_atom_feed(&feed, tag)
+        .ok_or_else(|| format!("Launcher releases Atom feed 中未找到 {tag} 的说明"))
 }
 
 async fn fetch_github_release(
@@ -7599,6 +7911,14 @@ async fn download_file(
     cancel_flag: Option<&'static AtomicBool>,
 ) -> Result<(), String> {
     if total_bytes > 0 && file_size(destination) >= total_bytes {
+        append_launcher_log(
+            "INFO",
+            format!(
+                "{label} download skipped because destination already exists path={} size_bytes={}",
+                display_path(destination),
+                file_size(destination)
+            ),
+        );
         emit_download_progress(app, progress_event, total_bytes, total_bytes);
         return Ok(());
     }
@@ -7618,9 +7938,17 @@ async fn download_file(
         .map_err(|err| format!("下载 {label} 失败：{err}。请检查网络、VPN 或代理设置。"))?
         .error_for_status()
         .map_err(|err| format!("下载 {label} 失败：{err}。请检查网络、VPN 或代理设置。"))?;
+    let response_content_length = response.content_length().unwrap_or_default();
 
     let can_resume = existing_bytes > 0 && response.status() == StatusCode::PARTIAL_CONTENT;
     if existing_bytes > 0 && !can_resume {
+        append_launcher_log(
+            "INFO",
+            format!(
+                "{label} download restarting because server did not resume path={} previous_partial_bytes={existing_bytes}",
+                display_path(&part_destination)
+            ),
+        );
         existing_bytes = 0;
     }
 
@@ -7639,8 +7967,20 @@ async fn download_file(
     let progress_total = if total_bytes > 0 {
         total_bytes
     } else {
-        response.content_length().unwrap_or_default() + existing_bytes
+        response_content_length + existing_bytes
     };
+    append_launcher_log(
+        "INFO",
+        format!(
+            "{label} download started url={url} destination={} partial={} resume={} existing_bytes={} content_length={} progress_total={}",
+            display_path(destination),
+            display_path(&part_destination),
+            can_resume,
+            existing_bytes,
+            response_content_length,
+            progress_total
+        ),
+    );
     let mut downloaded = existing_bytes;
     let mut stream = response.bytes_stream();
     emit_download_progress(app, progress_event, downloaded, progress_total);
@@ -7648,6 +7988,15 @@ async fn download_file(
     while let Some(chunk) = stream.next().await {
         if download_cancelled(cancel_flag) {
             file.flush().await.map_err(|err| err.to_string())?;
+            append_launcher_log(
+                "WARN",
+                format!(
+                    "{label} download cancelled downloaded_bytes={} total_bytes={} partial={}",
+                    downloaded,
+                    progress_total,
+                    display_path(&part_destination)
+                ),
+            );
             return Err(format!("{label} 下载已停止，已保留临时文件，下次可继续。"));
         }
         let chunk = chunk
@@ -7660,6 +8009,15 @@ async fn download_file(
     }
     file.flush().await.map_err(|err| err.to_string())?;
     if progress_total > 0 && downloaded < progress_total {
+        append_launcher_log(
+            "WARN",
+            format!(
+                "{label} download incomplete downloaded_bytes={} total_bytes={} partial={}",
+                downloaded,
+                progress_total,
+                display_path(&part_destination)
+            ),
+        );
         return Err(format!(
             "{label} 下载未完成，已保留临时文件以便下次继续：{} / {} bytes",
             downloaded, progress_total
@@ -7669,6 +8027,15 @@ async fn download_file(
         fs::remove_file(destination).map_err(|err| err.to_string())?;
     }
     fs::rename(&part_destination, destination).map_err(|err| err.to_string())?;
+    append_launcher_log(
+        "INFO",
+        format!(
+            "{label} download completed destination={} downloaded_bytes={} total_bytes={}",
+            display_path(destination),
+            downloaded,
+            progress_total
+        ),
+    );
     Ok(())
 }
 
@@ -7772,6 +8139,7 @@ fn configure_tray(app: &mut tauri::App) -> tauri::Result<()> {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    install_panic_log_hook();
     tauri::Builder::default()
         .plugin(tauri_plugin_autostart::init(
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
@@ -8103,6 +8471,30 @@ EN:
         assert_eq!(commits[0].hash, "e9554c8");
         assert_eq!(commits[0].date, "2026-05-25T00:46:30Z");
         assert_eq!(commits[0].summary, "中文摘要");
+    }
+
+    #[test]
+    fn launcher_release_notes_parse_from_atom_feed() {
+        let feed = r#"
+<feed>
+  <entry>
+    <link rel="alternate" type="text/html" href="https://github.com/SaberOnGo/public-domain-books-translation/releases/tag/lifebook-launcher-v1.3.10"/>
+    <title>LifeBook Launcher v1.3.10</title>
+    <content type="html">&lt;p&gt;ZH:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;修复启动环境检测卡住。&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;EN:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Fix startup runtime checks getting stuck.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+</feed>
+"#;
+
+        let notes = launcher_release_notes_from_atom_feed(feed, "lifebook-launcher-v1.3.10")
+            .expect("release notes should be parsed");
+
+        assert!(notes.contains("ZH:"));
+        assert!(notes.contains("- 修复启动环境检测卡住。"));
+        assert!(notes.contains("EN:"));
+        assert!(notes.contains("- Fix startup runtime checks getting stuck."));
     }
 
     #[test]
@@ -8546,11 +8938,19 @@ EN:
     }
 
     #[test]
-    fn commit_history_api_failure_without_cache_returns_local_empty_result() {
-        let commits =
-            lifebook_commit_history_after_api_failure_for_test(None, || Ok(Vec::new())).unwrap();
+    fn commit_history_api_failure_without_cache_uses_local_fallback() {
+        let local = vec![commit_info_from_full_message(
+            "3736b96".into(),
+            "2026-05-29T20:23:04Z".into(),
+            "Fix launcher startup state\n\nZH:\n- 修复启动状态",
+            Some("zh-CN"),
+        )];
 
-        assert!(commits.is_empty());
+        let commits =
+            lifebook_commit_history_after_api_failure_for_test(None, || Ok(local)).unwrap();
+
+        assert_eq!(commits[0].hash, "3736b96");
+        assert_eq!(commits[0].summary, "修复启动状态");
     }
 
     #[test]
@@ -9070,6 +9470,12 @@ EN:
         assert!(!log_path.exists(), "disabled logging must not create files");
 
         fs::remove_dir_all(&dir).expect("test log directory should be cleaned");
+    }
+
+    #[test]
+    fn default_diagnostic_log_policy_caps_single_file_at_five_mb() {
+        assert_eq!(LAUNCHER_LOG_MAX_BYTES, 5 * 1024 * 1024);
+        assert_eq!(LAUNCHER_LOG_BACKUP_COUNT, 0);
     }
 
     #[test]
