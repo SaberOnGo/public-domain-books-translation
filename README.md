@@ -33,6 +33,7 @@ Automatically choose the correct translation prompt:
 - If the matching source-language template does not exist yet, execute doc/public/user_prompt/book_translation_new_template.md.
 
 Do not ask me to fill technical fields unless rights or source evidence cannot be confirmed. Automatically find a reliable public-domain source, create the book project, complete translation, review, EPUB build, stratified random spot-check, and release.
+If LifeBook Digest is not explicitly requested, decide automatically: generate it after EPUB output for long novels, specialist books, and philosophy books; skip short stories, natural-science books, and other categories.
 ```
 
 For non-public-domain books, use private-use mode only. The user must provide a local ebook file and explicitly declare personal study only, no redistribution, and no commercial use. The AI should create the project under `books/private/{target}/{number}_{book_slug}/`; the script also overlays `template/epub_pipeline/modes/private_use/` so private cover, frontmatter, and artifact rules cannot be confused with public publication rules. `books/private/` is ignored by Git, and its source text, translations, QA records, EPUB files, and private artifacts must not be published to GitHub.
@@ -58,9 +59,23 @@ The launcher does not store API keys and does not include OpenCode binaries in t
 - `.\books\zh-Hans`: the most important output area for Simplified Chinese books. After translation succeeds, open the matching book folder and check `output\release\`; only release artifacts count as publishable results.
 - `.\books\private`: local private-use book projects. This is for user-provided local sources used for personal non-public-domain translation. It is ignored by Git and must not be published to GitHub.
 
+## LifeBook Digest
+
+<table align="center">
+  <tr>
+    <td align="center"><h3><a href="./readme/digest/README.en.md">LifeBook Digest Guide</a></h3></td>
+    <td align="center"><h3><a href="./license/DIGEST_LICENSE.en.md">Digest License</a></h3></td>
+  </tr>
+</table>
+
+The LifeBook translation publishing system now includes LifeBook Digest. It helps make long books thinner: after EPUB output, LifeBook Digest can ask an AI agent to extract core content from long-form books. The result is not only a text digest; it also includes chapter topology and knowledge-structure signals so readers can see the book's shape more quickly and approach it from a different reading angle.
+
+LifeBook Digest is currently implemented as an independent LifeBook post-processing module. See the [LifeBook Digest guide](./readme/digest/README.en.md) and [Digest license notes](./license/DIGEST_LICENSE.en.md) for acknowledgements and third-party inspiration notes. License and reuse constraints are governed by the [Digest license notes](./license/DIGEST_LICENSE.en.md).
+
 ## Repository Layout
 
 - `AGENTS.md`: mandatory rules for all AI agents.
+- `digest/`: reusable LifeBook Digest post-processing module; each book controls enablement and EPUB merge behavior through `digest.config.json`.
 - `template/epub_pipeline/`: authoritative workflow templates and policies.
 - `template/epub_pipeline/common/`: shared EPUB workflow, scripts, source evidence, rights checks, quality gates, random spot checks, and release rules.
 - `template/epub_pipeline/{source-target}/`: language-pair rules, prompts, glossary guidance, and review rubrics.

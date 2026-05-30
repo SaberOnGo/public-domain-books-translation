@@ -33,6 +33,7 @@ AI クライアントに渡す最小 prompt：
 - 対応する原言語テンプレートがまだない場合は、doc/public/user_prompt/book_translation_new_template.md を実行してください。
 
 権利または出典証拠を確認できない場合を除き、技術項目を私に入力させないでください。信頼できるパブリックドメイン原文を自動で探し、書籍プロジェクトを作成し、翻訳、レビュー、EPUB ビルド、層化ランダム抜き取り検査、release まで完了してください。
+LifeBook Digest の利用が明示されていない場合は自動判断します。長編小説、専門書、哲学書は EPUB 出力後に Digest を生成し、短編小説、自然科学系、その他の種類では生成しません。
 ```
 
 パブリックドメインではない本は、ローカルの private-use モードだけで扱います。ユーザーは自分のローカル電子書籍ファイルを提供し、個人学習用のみ、再配布なし、商用利用なしと明示する必要があります。AI は `books/private/{target}/{number}_{book_slug}/` に private project を作成します。スクリプトは `template/epub_pipeline/modes/private_use/` を重ね、private-use の cover、frontmatter、artifact ルールを公開用ルールから分離します。`books/private/` は Git で無視され、原文、訳文、QA、EPUB、private artifact を GitHub に公開してはいけません。
@@ -58,9 +59,23 @@ Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリ�
 - `.\books\zh-Hans`：もっとも重要な完成本の場所です。簡体字中国語への翻訳が完了したら、該当する書籍フォルダの `output\release\` を確認します。公開可能なのは release 成果物です。
 - `.\books\private`：ローカル private-use 書籍プロジェクト用フォルダです。ユーザー提供のローカル書源を使う非パブリックドメインの個人学習用翻訳はここに置きます。このフォルダは Git で無視され、GitHub に公開してはいけません。
 
+## LifeBook Digest
+
+<table align="center">
+  <tr>
+    <td align="center"><h3><a href="./digest/README.ja.md">LifeBook Digest ガイド</a></h3></td>
+    <td align="center"><h3><a href="../license/DIGEST_LICENSE.ja.md">Digest ライセンス</a></h3></td>
+  </tr>
+</table>
+
+LifeBook 翻訳公開システムに LifeBook Digest モジュールが追加されました。これは本を薄く読むための後処理です。EPUB 出力後、LifeBook Digest は長い本を AI agent に渡して核となる内容を抽出できます。結果は単なる文章要約ではなく、章トポロジーと知識の流れも含み、本全体の構造を一目で把握しやすくします。
+
+LifeBook Digest は現在、独立した LifeBook 後処理モジュールとして実装されています。謝辞と第三者プロジェクトからの着想については [LifeBook Digest ガイド](./digest/README.ja.md) と [Digest ライセンス](../license/DIGEST_LICENSE.ja.md) を参照してください。ライセンスと今後の再利用条件は [Digest ライセンス](../license/DIGEST_LICENSE.ja.md) に従います。
+
 ## リポジトリ構成
 
 - `AGENTS.md`：すべての AI agent が最初に読む必須ルール。
+- `digest/`：LifeBook Digest の共通後処理モジュール。各書籍は `digest.config.json` で有効化と EPUB 統合を制御します。
 - `template/epub_pipeline/`：正式なワークフローテンプレートとルール。
 - `template/epub_pipeline/common/`：共通 EPUB ワークフロー、スクリプト、出典証拠、権利確認、品質ゲート、ランダム検査、リリース規則。
 - `template/epub_pipeline/{source-target}/`：言語方向ごとの prompt、用語、文体、レビュー規則。

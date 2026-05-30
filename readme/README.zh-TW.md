@@ -33,6 +33,7 @@ LifeBook 書坊是一套多語言公版書翻譯與 EPUB 製作流程。它不�
 - 如無對應源語言模板，執行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版權或來源無法確認，不要讓我填寫技術欄位。請自動查找可靠公版來源，自動建立專案，完成翻譯、審校、EPUB 建置、分層隨機抽檢和 release。
+未聲明是否啟用 LifeBook Digest 時，請自動判斷；長篇小說、專業書籍、哲學書在 EPUB 輸出後生成 Digest，短篇小說、自然科學類和其他類型不生成。
 ```
 
 如果是非公版書，只能使用本地私人模式。使用者必須提供自己的本地電子書檔案，並明確聲明僅供個人學習自用、不傳播、不商業使用；AI 應建立 `books/private/{target}/{number}_{book_slug}/` 下的私人工程。腳本會疊加 `template/epub_pipeline/modes/private_use/`，把私人封面、首頁/前置頁和產物規則與公版發布規則隔離。`books/private/` 被 Git 忽略，裡面的原文、譯文、QA、EPUB 和私人產物不能發布到 GitHub。
@@ -58,9 +59,23 @@ Launcher 不會保存 API Key，也不會把 OpenCode 本體放進本倉庫。Op
 - `.\books\zh-Hans`：最重要的成書目錄。翻譯成簡體中文成功後，到對應書籍目錄裡找 `output\release\`；只有 release 目錄裡的成品才算可發布結果。
 - `.\books\private`：本地私人自用書籍工程目錄。這裡用於使用者提供本地書源的非公版個人學習翻譯，已被 Git 忽略，不能發布到 GitHub。
 
+## LifeBook Digest
+
+<table align="center">
+  <tr>
+    <td align="center"><h3><a href="./digest/README.zh-TW.md">LifeBook Digest 說明</a></h3></td>
+    <td align="center"><h3><a href="../license/DIGEST_LICENSE.zh-TW.md">Digest 授權</a></h3></td>
+  </tr>
+</table>
+
+LifeBook 翻譯發布系統增加了 LifeBook Digest 模組。它把書讀薄：在 EPUB 輸出後，LifeBook Digest 可以把長篇書籍交給 AI agent 自動提煉核心內容。處理結果不只是文字摘要，也會生成章節拓撲與知識脈絡圖，讓整本書結構更容易一眼看清，為讀者提供新的閱讀視角。
+
+LifeBook Digest 目前實作為獨立的 LifeBook 後處理模組。致謝與第三方啟發說明見 [LifeBook Digest 說明](./digest/README.zh-TW.md) 和 [Digest 授權](../license/DIGEST_LICENSE.zh-TW.md)；授權與後續復用約束以 [Digest 授權](../license/DIGEST_LICENSE.zh-TW.md) 為準。
+
 ## 倉庫結構
 
 - `AGENTS.md`：所有 AI agent 必須先讀的規則。
+- `digest/`：LifeBook Digest 通用後處理模組；由具體書籍的 `digest.config.json` 控制是否啟用、是否合併進 EPUB。
 - `template/epub_pipeline/`：權威流程模板與規則。
 - `template/epub_pipeline/common/`：通用 EPUB 流程、腳本、來源證據、版權核查、品質門禁、隨機抽檢和發布規則。
 - `template/epub_pipeline/{source-target}/`：具體語言方向的 prompt、術語、文風和審校規則。
