@@ -51,6 +51,7 @@ const LIFEBOOK_REPO_COMMITS_PAGE_BASE: &str =
 const LIFEBOOK_ARCHIVE_DOWNLOAD_BASE: &str =
     "https://codeload.github.com/SaberOnGo/public-domain-books-translation/zip/refs/heads";
 const LIFEBOOK_ARCHIVE_REF: &str = "main";
+const UNKNOWN_ARCHIVE_PROGRESS_REMAINING_BYTES: u64 = 32 * 1024 * 1024;
 const LIFEBOOK_COMMIT_PAGE_SIZE: usize = 100;
 const LIFEBOOK_COMMIT_HISTORY_CACHE_TTL_SECONDS: u64 = 10 * 60;
 const GITHUB_RELEASE_CACHE_TTL_SECONDS: u64 = 10 * 60;
@@ -258,7 +259,16 @@ where
     T: Send + 'static,
     F: FnOnce() -> Result<T, String> + Send + 'static,
 {
-    tauri::async_runtime::spawn_blocking(work)
+    tauri::async_runtime::spawn_blocking(move || {
+        std::panic::catch_unwind(std::panic::AssertUnwindSafe(work))
+            .map_err(|payload| {
+                format!(
+                    "后台任务执行异常：{}",
+                    panic_payload_to_string(payload.as_ref())
+                )
+            })
+            .and_then(|result| result)
+    })
         .await
         .map_err(|err| format!("后台任务执行失败：{err}"))?
 }
@@ -1267,7 +1277,16 @@ fn start_node_modules_install(app: tauri::AppHandle) -> Result<ActionResult, Str
     );
     thread::spawn(move || {
         let _guard = guard;
-        let result = ensure_books_node_modules(&repo_root, Some(&emitter));
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            ensure_books_node_modules(&repo_root, Some(&emitter))
+        }))
+        .map_err(|payload| {
+            format!(
+                "EPUB 构建依赖安装线程异常：{}",
+                panic_payload_to_string(payload.as_ref())
+            )
+        })
+        .and_then(|result| result);
         match result {
             Ok(()) => {
                 append_launcher_log(
@@ -2555,16 +2574,15 @@ fn download_lifebook_archive_repo(
     if archive_file.exists() {
         let _ = fs::remove_file(&archive_file);
     }
-    let remote_commit = lifebook_latest_remote_commit_best_effort();
+    append_launcher_log(
+        "INFO",
+        "LifeBook archive initial install starts ZIP download without remote commit preflight",
+    );
     download_lifebook_archive_file(LIFEBOOK_ARCHIVE_REF, &archive_file, progress)?;
     if let Some(emitter) = progress {
         emitter.emit_key(58, "archive_extract");
     }
-    let mut state =
-        extract_lifebook_archive_file(&archive_file, &archive_dir, LIFEBOOK_ARCHIVE_REF)?;
-    if let Some(remote) = remote_commit {
-        state.commit = Some(remote.sha);
-    }
+    let state = extract_lifebook_archive_file(&archive_file, &archive_dir, LIFEBOOK_ARCHIVE_REF)?;
     let _ = fs::remove_file(&archive_file);
     if !is_lifebook_repo(&archive_dir) {
         let _ = fs::remove_dir_all(&archive_dir);
@@ -2592,6 +2610,17 @@ fn download_lifebook_archive_file(
             format!("下载 LifeBook archive 失败：{err}。请检查网络、VPN 或代理设置。")
         })?;
     let total = response.content_length().unwrap_or_default();
+    append_launcher_log(
+        "INFO",
+        format!(
+            "LifeBook archive response content_length={}",
+            if total > 0 {
+                total.to_string()
+            } else {
+                "unknown".into()
+            }
+        ),
+    );
     let mut downloaded = 0_u64;
     let started_at = Instant::now();
     if let Some(parent) = destination.parent() {
@@ -2613,15 +2642,7 @@ fn download_lifebook_archive_file(
             .map_err(|err| format!("写入 LifeBook archive 失败：{err}"))?;
         downloaded += size as u64;
         if let Some(emitter) = progress {
-            let percent = if total > 0 {
-                scale_percent(
-                    ((downloaded as f64 / total as f64) * 100.0).clamp(0.0, 100.0),
-                    12,
-                    58,
-                )
-            } else {
-                12.0
-            };
+            let percent = archive_download_progress_percent(downloaded, total);
             let detail = archive_download_detail(downloaded, total, started_at.elapsed());
             emitter.emit(
                 percent,
@@ -2637,7 +2658,23 @@ fn download_lifebook_archive_file(
     if downloaded == 0 {
         return Err("LifeBook archive 下载结果为空。".into());
     }
+    append_launcher_log(
+        "INFO",
+        format!("LifeBook archive download completed bytes={downloaded} content_length={total}"),
+    );
     Ok(())
+}
+
+fn archive_download_progress_percent(downloaded: u64, total: u64) -> f64 {
+    let raw = if total > 0 {
+        (downloaded as f64 / total as f64) * 100.0
+    } else if downloaded > 0 {
+        let remaining_hint = UNKNOWN_ARCHIVE_PROGRESS_REMAINING_BYTES as f64;
+        downloaded as f64 / (downloaded as f64 + remaining_hint) * 100.0
+    } else {
+        0.0
+    };
+    scale_percent(raw, 12, 58)
 }
 
 fn archive_download_detail(downloaded: u64, total: u64, elapsed: Duration) -> String {
@@ -8829,6 +8866,25 @@ EN:
         assert_eq!(detail, "37.50% (768.0 KB / 2048.0 KB, 256.0 KB/s)");
         assert!(!detail.contains("MB"));
         assert!(!detail.contains("MiB"));
+    }
+
+    #[test]
+    fn archive_download_progress_moves_without_content_length() {
+        let start = archive_download_progress_percent(0, 0);
+        let small = archive_download_progress_percent(4 * 1024 * 1024, 0);
+        let larger = archive_download_progress_percent(24 * 1024 * 1024, 0);
+        let huge = archive_download_progress_percent(256 * 1024 * 1024, 0);
+
+        assert_eq!(start, 12.0);
+        assert!(small > start, "progress should move after bytes are downloaded");
+        assert!(larger > small, "progress should keep increasing while bytes arrive");
+        assert!(huge < 58.0, "unknown-size download should leave room for extraction progress");
+    }
+
+    #[test]
+    fn archive_download_progress_uses_content_length_when_available() {
+        assert_eq!(archive_download_progress_percent(1024, 2048), 35.0);
+        assert_eq!(archive_download_progress_percent(2048, 2048), 58.0);
     }
 
     #[test]

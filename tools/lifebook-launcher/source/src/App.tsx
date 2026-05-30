@@ -272,8 +272,8 @@ const zhCN = {
   nodeModulesInstallStopped: "node_modules 安装已停止，可重试。",
   nodeModulesInstallFailed: (error: string) => `node_modules 安装失败：${error}。后续可让 AI 补充安装。`,
   nodeModulesStatusFailed: (error: string) => `读取 node_modules 状态失败：${error}`,
-  runtimeBootstrapTitle: "正在检查运行环境",
-  runtimeBootstrapDescription: "优先使用本机已有 Python / Java；缺少时才下载到 LifeBook 私有目录，不写系统 PATH，不需要管理员权限。",
+  runtimeBootstrapTitle: "正在检查可选运行环境",
+  runtimeBootstrapDescription: "Python / Java 只用于编译 EPUB 等辅助功能；即使暂未安装，Launcher 也会继续打开并先准备 LifeBook 项目。",
   runtimeBootstrapChecking: "正在检查 Python / Java 运行环境...",
   runtimeBootstrapPreparing: "正在准备缺失的 Python / Java 运行环境...",
   runtimeBootstrapReady: "Python / Java 运行环境已准备完成",
@@ -876,8 +876,8 @@ const en: Copy = {
   nodeModulesInstallStopped: "node_modules install stopped. You can retry.",
   nodeModulesInstallFailed: (error) => `node_modules install failed: ${error}. AI can help complete the install later.`,
   nodeModulesStatusFailed: (error) => `Failed to read node_modules status: ${error}`,
-  runtimeBootstrapTitle: "Checking runtime environment",
-  runtimeBootstrapDescription: "LifeBook uses existing Python / Java first. Missing runtimes are downloaded into LifeBook's private folder without changing system PATH or requiring administrator permission.",
+  runtimeBootstrapTitle: "Checking optional runtimes",
+  runtimeBootstrapDescription: "Python / Java are only needed for helper tasks such as EPUB builds. Launcher will continue to open and prepare the LifeBook project even when they are not installed yet.",
   runtimeBootstrapChecking: "Checking Python / Java runtimes...",
   runtimeBootstrapPreparing: "Preparing missing Python / Java runtimes...",
   runtimeBootstrapReady: "Python / Java runtimes are ready",
@@ -1103,9 +1103,9 @@ export default function App() {
   const [proxyBusy, setProxyBusy] = useState<"test" | "detect" | null>(null);
   const [runtimeStatus, setRuntimeStatus] = useState<RuntimeStatus | null>(null);
   const [runtimeProgress, setRuntimeProgress] = useState<DownloadProgress | null>(null);
-  const [runtimeBootstrapState, setRuntimeBootstrapState] = useState<RuntimeBootstrapState>(hasTauriRuntime() ? "checking" : "ready");
+  const [runtimeBootstrapState, setRuntimeBootstrapState] = useState<RuntimeBootstrapState>("ready");
   const [runtimeBootstrapMessage, setRuntimeBootstrapMessage] = useState<string | null>(null);
-  const [runtimeBootstrapBlocking, setRuntimeBootstrapBlocking] = useState(hasTauriRuntime());
+  const [runtimeBootstrapBlocking, setRuntimeBootstrapBlocking] = useState(false);
   const [nodeModulesStatus, setNodeModulesStatus] = useState<NodeModulesStatus | null>(null);
   const [nodeModulesProgress, setNodeModulesProgress] = useState<DownloadProgress | null>(null);
   const [nodeModulesDownloadState, setNodeModulesDownloadState] = useState<DownloadHudState>("idle");
@@ -1442,7 +1442,7 @@ export default function App() {
 
   const retryRuntimePrepare = useCallback(() => {
     runtimeBootstrapStartedRef.current = true;
-    void startRuntimeBootstrap(true);
+    void startRuntimeBootstrap(false);
   }, [startRuntimeBootstrap]);
 
   const continueAfterRuntimeBootstrap = useCallback(() => {
@@ -1756,7 +1756,7 @@ export default function App() {
     });
     if (!runtimeBootstrapStartedRef.current) {
       runtimeBootstrapStartedRef.current = true;
-      void startRuntimeBootstrap(true);
+      void startRuntimeBootstrap(false);
     }
     return () => {
       unlistenRuntime.then((fn) => fn()).catch(() => undefined);
@@ -1764,7 +1764,7 @@ export default function App() {
   }, [addActivity, copy, refreshRuntimeStatus, startRuntimeBootstrap]);
 
   useEffect(() => {
-    if (!runtimeBootstrapBlocking || runtimeBootstrapState !== "preparing") return undefined;
+    if (runtimeBootstrapState !== "preparing") return undefined;
     const timer = window.setInterval(async () => {
       const status = await refreshRuntimeStatus();
       if (!status) return;
@@ -1804,7 +1804,7 @@ export default function App() {
       }
     }, 1500);
     return () => window.clearInterval(timer);
-  }, [addActivity, copy, refreshRuntimeStatus, runtimeBootstrapBlocking, runtimeBootstrapState]);
+  }, [addActivity, copy, refreshRuntimeStatus, runtimeBootstrapState]);
 
   const checkOpenCode = useCallback(async (background = false, installWhenNeeded = false) => {
     if (openCodeCheckInProgressRef.current) return;
