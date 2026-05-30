@@ -34,6 +34,7 @@ Automatically choose the correct translation prompt:
 
 Do not ask me to fill technical fields unless rights or source evidence cannot be confirmed. Automatically find a reliable public-domain source, create the book project, complete translation, review, EPUB build, stratified random spot-check, and release.
 If LifeBook Digest is not explicitly requested, decide automatically: generate it after EPUB output for long novels, specialist books, and philosophy books; skip short stories, natural-science books, and other categories.
+When Digest should be generated, create `digest.config.json` in the book project root with `enabled=true` and `merge_into_epub=true`, then run from the repository root: `python -m digest.lifebook_digest --book-root books/{target}/{number}_{book_id_slug}`. The output remains a standard EPUB.
 ```
 
 For non-public-domain books, use private-use mode only. The user must provide a local ebook file and explicitly declare personal study only, no redistribution, and no commercial use. The AI should create the project under `books/private/{target}/{number}_{book_slug}/`; the script also overlays `template/epub_pipeline/modes/private_use/` so private cover, frontmatter, and artifact rules cannot be confused with public publication rules. `books/private/` is ignored by Git, and its source text, translations, QA records, EPUB files, and private artifacts must not be published to GitHub.

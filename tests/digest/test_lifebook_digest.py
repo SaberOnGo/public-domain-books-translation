@@ -161,24 +161,28 @@ class LifeBookDigestDocumentationTest(unittest.TestCase):
                 "path": REPO_ROOT / "README.zh-CN.md",
                 "link": "./readme/digest/README.zh-CN.md",
                 "prompt": "未声明是否启用 LifeBook Digest 时，请自动判断；长篇小说、专业书籍、哲学书在 EPUB 输出后生成 Digest，短篇小说、自然科学类和其他类型不生成。",
+                "command": "python -m digest.lifebook_digest --book-root",
                 "layout": "`digest/`",
             },
             {
                 "path": REPO_ROOT / "README.md",
                 "link": "./readme/digest/README.en.md",
                 "prompt": "If LifeBook Digest is not explicitly requested, decide automatically: generate it after EPUB output for long novels, specialist books, and philosophy books; skip short stories, natural-science books, and other categories.",
+                "command": "python -m digest.lifebook_digest --book-root",
                 "layout": "`digest/`",
             },
             {
                 "path": REPO_ROOT / "readme" / "README.zh-TW.md",
                 "link": "./digest/README.zh-TW.md",
                 "prompt": "未聲明是否啟用 LifeBook Digest 時，請自動判斷；長篇小說、專業書籍、哲學書在 EPUB 輸出後生成 Digest，短篇小說、自然科學類和其他類型不生成。",
+                "command": "python -m digest.lifebook_digest --book-root",
                 "layout": "`digest/`",
             },
             {
                 "path": REPO_ROOT / "readme" / "README.ja.md",
                 "link": "./digest/README.ja.md",
                 "prompt": "LifeBook Digest の利用が明示されていない場合は自動判断します。長編小説、専門書、哲学書は EPUB 出力後に Digest を生成し、短編小説、自然科学系、その他の種類では生成しません。",
+                "command": "python -m digest.lifebook_digest --book-root",
                 "layout": "`digest/`",
             },
         ]
@@ -188,12 +192,21 @@ class LifeBookDigestDocumentationTest(unittest.TestCase):
             self.assertIn("LifeBook Digest", text, str(item["path"]))
             self.assertIn(item["link"], text, str(item["path"]))
             self.assertIn(item["prompt"], text, str(item["path"]))
+            self.assertIn(item["command"], text, str(item["path"]))
+            self.assertIn("digest.config.json", text, str(item["path"]))
             self.assertIn(item["layout"], text, str(item["path"]))
             digest_index = text.index("## LifeBook Digest")
             layout_index = text.index("Repository Layout") if "Repository Layout" in text else text.index("仓库结构") if "仓库结构" in text else text.index("倉庫結構") if "倉庫結構" in text else text.index("リポジトリ構成")
             folders_index = text.index("Important Folders For Users") if "Important Folders For Users" in text else text.index("用户需要知道的重要目录") if "用户需要知道的重要目录" in text else text.index("使用者需要知道的重要目錄") if "使用者需要知道的重要目錄" in text else text.index("ユーザーが知っておくべき重要フォルダ")
             self.assertLess(folders_index, digest_index, str(item["path"]))
             self.assertLess(digest_index, layout_index, str(item["path"]))
+
+    def test_how_to_use_prompt_guide_mentions_digest_decision_and_command(self):
+        text = (REPO_ROOT / "doc" / "public" / "how-to-use-prompts.zh-CN.md").read_text("utf-8")
+        self.assertIn("未声明是否启用 LifeBook Digest 时，请自动判断", text)
+        self.assertIn("python -m digest.lifebook_digest --book-root", text)
+        self.assertIn("digest.config.json", text)
+        self.assertIn("输出仍然是标准 EPUB", text)
 
     def test_multilingual_readme_and_license_files_exist_and_link_languages(self):
         expected_files = [

@@ -34,6 +34,7 @@ LifeBook 书坊是一个多语言公版书翻译与 EPUB 制作流程。它不�
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
 未声明是否启用 LifeBook Digest 时，请自动判断；长篇小说、专业书籍、哲学书在 EPUB 输出后生成 Digest，短篇小说、自然科学类和其他类型不生成。
+如需生成 Digest，请在书籍工程根目录写入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/{target}/{number}_{book_id_slug}`。输出仍然是标准 EPUB。
 ```
 
 如果是非公版书，只能使用本地私人模式。用户必须提供自己的本地电子书文件，并明确声明仅供个人学习自用、不传播、不商业使用；AI 应创建 `books/private/{target}/{number}_{book_slug}/` 下的私人工程。脚本还会叠加 `template/epub_pipeline/modes/private_use/`，把私人封面、首页/前置页和产物规则与公版发布规则隔离。`books/private/` 被 Git 忽略，里面的原文、译文、QA、EPUB 和私人产物不能发布到 GitHub。

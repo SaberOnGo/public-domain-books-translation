@@ -30,6 +30,8 @@
 - 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
+未声明是否启用 LifeBook Digest 时，请自动判断；长篇小说、专业书籍、哲学书在 EPUB 输出后生成 Digest，短篇小说、自然科学类和其他类型不生成。
+如需生成 Digest，请在书籍工程根目录写入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/{target}/{number}_{book_id_slug}`。输出仍然是标准 EPUB。
 ```
 
 ## 个人自用书翻译 prompt
@@ -46,6 +48,8 @@
 
 这是我个人自用的,不传播,不用于商业,使用我给出的本地的书源。
 请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
+未声明是否启用 LifeBook Digest 时，请自动判断；长篇小说、专业书籍、哲学书在 EPUB 输出后生成 Digest，短篇小说、自然科学类和其他类型不生成。
+如需生成 Digest，请在书籍工程根目录写入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/private/{target}/{number}_{book_id_slug}`。输出仍然是本地标准 EPUB，不发布到 GitHub。
 ```
 
 个人自用项目必须创建在 `books/private/{target}/{number}_{slug}/`，最终版本化产物在 `output/private_artifacts/`，不是公开 release，不得发布到 GitHub。
@@ -76,6 +80,7 @@
 - `.\doc\public\user_prompt`：公共 prompt 放在这里。想了解提示词细节，或想手动修改 prompt 时，看这个目录。
 - `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
 - `.\books\private`：个人自用书籍工程目录。非公版私人翻译的原文、译文、QA、EPUB 和 `output\private_artifacts\` 私人产物只应保存在这里；该目录被 Git 忽略，不发布到 GitHub。
+- `.\digest`：LifeBook Digest 通用后处理模块。每本书通过自己的 `digest.config.json` 决定是否启用、是否把 Digest 章节合并进标准 EPUB。
 
 ## 四个翻译 prompt 是什么
 

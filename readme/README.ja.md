@@ -34,6 +34,7 @@ AI クライアントに渡す最小 prompt：
 
 権利または出典証拠を確認できない場合を除き、技術項目を私に入力させないでください。信頼できるパブリックドメイン原文を自動で探し、書籍プロジェクトを作成し、翻訳、レビュー、EPUB ビルド、層化ランダム抜き取り検査、release まで完了してください。
 LifeBook Digest の利用が明示されていない場合は自動判断します。長編小説、専門書、哲学書は EPUB 出力後に Digest を生成し、短編小説、自然科学系、その他の種類では生成しません。
+Digest を生成する場合は、書籍プロジェクトのルートに `digest.config.json`（`enabled=true`、`merge_into_epub=true`）を書き、リポジトリルートから `python -m digest.lifebook_digest --book-root books/{target}/{number}_{book_id_slug}` を実行してください。出力は標準 EPUB のままです。
 ```
 
 パブリックドメインではない本は、ローカルの private-use モードだけで扱います。ユーザーは自分のローカル電子書籍ファイルを提供し、個人学習用のみ、再配布なし、商用利用なしと明示する必要があります。AI は `books/private/{target}/{number}_{book_slug}/` に private project を作成します。スクリプトは `template/epub_pipeline/modes/private_use/` を重ね、private-use の cover、frontmatter、artifact ルールを公開用ルールから分離します。`books/private/` は Git で無視され、原文、訳文、QA、EPUB、private artifact を GitHub に公開してはいけません。
