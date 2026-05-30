@@ -1,8 +1,9 @@
 {
-  "enabled": true,
+  "enabled": "auto",
   "merge_into_epub": true,
   "source_epub": "output/book.epub",
   "output_epub": "output/book_digest.epub",
   "title": "全书导读",
+  "language": "zh-CN",
   "max_section_chars": 240
 }

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LifeBook Digest book configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enabled": {
+      "description": "true enables Digest, false skips it, auto lets LifeBook decide from book type.",
+      "oneOf": [
+        { "type": "boolean" },
+        { "type": "string", "enum": ["auto"] }
+      ],
+      "default": "auto"
+    },
+    "merge_into_epub": {
+      "type": "boolean",
+      "default": false
+    },
+    "source_epub": {
+      "type": "string",
+      "default": "output/book.epub"
+    },
+    "output_epub": {
+      "type": "string",
+      "default": "output/book_digest.epub"
+    },
+    "title": {
+      "type": "string",
+      "default": "全书导读"
+    },
+    "language": {
+      "type": "string"
+    },
+    "max_section_chars": {
+      "type": "integer",
+      "minimum": 80,
+      "maximum": 2000,
+      "default": 240
+    }
+  }
+}

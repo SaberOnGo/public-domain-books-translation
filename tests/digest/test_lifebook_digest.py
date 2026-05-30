@@ -22,6 +22,39 @@ NS = {
 
 
 class LifeBookDigestTest(unittest.TestCase):
+    def test_missing_config_auto_generates_sidecar_for_long_books(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            create_minimal_epub(
+                root,
+                title="长篇小说示例",
+                chapters=[
+                    ("第一章", "故事从漫长旅程开始，主角面对家族、城市和时代变化。"),
+                    ("第二章", "冲突扩大，人物关系和核心问题逐步交织。"),
+                    ("第三章", "旧秩序瓦解，新选择迫使主角重新理解世界。"),
+                    ("第四章", "结局回应开端，也留下关于命运和责任的思考。"),
+                ],
+            )
+
+            result = run_digest(root)
+
+            self.assertEqual(result["status"], "PASS")
+            self.assertEqual(result["auto_decision"], "generated")
+            self.assertFalse(result["merged"])
+            self.assertTrue((root / "output" / "digest" / "digest.xhtml").exists())
+            self.assertFalse((root / "output" / "book_digest.epub").exists())
+
+    def test_missing_config_auto_skips_short_stories_and_natural_science(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            create_minimal_epub(root, title="自然科学短篇读本")
+
+            result = run_digest(root)
+
+            self.assertEqual(result["status"], "SKIPPED")
+            self.assertEqual(result["reason"], "auto_policy_excluded")
+            self.assertFalse((root / "output" / "digest").exists())
+
     def test_disabled_config_leaves_epub_untouched(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -56,6 +89,13 @@ class LifeBookDigestTest(unittest.TestCase):
             state = json.loads((root / "output" / "digest" / "digest_state.json").read_text("utf-8"))
             self.assertEqual(state["topology"]["nodes"][0]["title"], "第一章")
             self.assertEqual(state["topology"]["edges"], [])
+            self.assertIn("knowledge_graph", state)
+            self.assertIn("agent_packet_manifest", state)
+            self.assertTrue((root / "output" / "digest" / "knowledge_map.svg").exists())
+            self.assertTrue((root / "output" / "digest" / "agent_packets" / "000_digest_generation.md").exists())
+            self.assertTrue((root / "qa" / "digest" / "digest_review_checklist.md").exists())
+            self.assertIn("章节拓扑", digest_text)
+            self.assertIn("知识脉络图", digest_text)
             self.assertEqual(report["status"], "PASS")
             self.assertFalse((root / "output" / "book_digest.epub").exists())
 
@@ -155,6 +195,17 @@ class LifeBookDigestTest(unittest.TestCase):
 
 
 class LifeBookDigestDocumentationTest(unittest.TestCase):
+    def test_digest_directory_contains_module_assets_not_only_scripts(self):
+        expected_files = [
+            REPO_ROOT / "digest" / "prompts" / "01_digest_generation.zh-CN.md",
+            REPO_ROOT / "digest" / "prompts" / "02_digest_review.zh-CN.md",
+            REPO_ROOT / "digest" / "references" / "lifebook_digest_workflow.md",
+            REPO_ROOT / "digest" / "schemas" / "digest.config.schema.json",
+            REPO_ROOT / "digest" / "qa" / "digest_review_checklist.zh-CN.md",
+        ]
+        for path in expected_files:
+            self.assertTrue(path.exists(), f"Missing Digest module asset: {path}")
+
     def test_main_readmes_expose_digest_with_same_language_links(self):
         readmes = [
             {
@@ -280,10 +331,23 @@ def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def create_minimal_epub(root):
+def create_minimal_epub(root, title="测试书", chapters=None):
     output = root / "output"
     output.mkdir(parents=True)
     epub = output / "book.epub"
+    chapters = chapters or [("第一章", "这是第一章的内容。它说明了故事的起点和主要问题。")]
+    manifest_items = "\n".join(
+        f'    <item id="chapter-{index}" href="text/chapter-{index}.xhtml" media-type="application/xhtml+xml" />'
+        for index, _chapter in enumerate(chapters, start=1)
+    )
+    spine_items = "\n".join(
+        f'    <itemref idref="chapter-{index}" />'
+        for index, _chapter in enumerate(chapters, start=1)
+    )
+    nav_items = "\n".join(
+        f'  <li><a href="text/chapter-{index}.xhtml">{chapter_title}</a></li>'
+        for index, (chapter_title, _chapter_text) in enumerate(chapters, start=1)
+    )
     files = {
         "mimetype": "application/epub+zip",
         "META-INF/container.xml": """<?xml version="1.0" encoding="utf-8"?>
@@ -297,31 +361,34 @@ def create_minimal_epub(root):
 <package version="3.0" unique-identifier="bookid" xmlns="http://www.idpf.org/2007/opf">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <dc:identifier id="bookid">urn:test</dc:identifier>
-    <dc:title>测试书</dc:title>
+    <dc:title>""" + title + """</dc:title>
     <dc:language>zh-CN</dc:language>
   </metadata>
   <manifest>
     <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
-    <item id="chapter-1" href="text/chapter-1.xhtml" media-type="application/xhtml+xml" />
+""" + manifest_items + """
   </manifest>
   <spine>
-    <itemref idref="chapter-1" />
+""" + spine_items + """
   </spine>
 </package>
 """,
         "EPUB/nav.xhtml": """<?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="zh-CN" lang="zh-CN">
 <head><title>目录</title></head>
-<body><nav epub:type="toc" id="toc"><h1>目录</h1><ol><li><a href="text/chapter-1.xhtml">第一章</a></li></ol></nav></body>
-</html>
-""",
-        "EPUB/text/chapter-1.xhtml": """<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
-<head><title>第一章</title></head>
-<body><h1>第一章</h1><p>这是第一章的内容。它说明了故事的起点和主要问题。</p></body>
+<body><nav epub:type="toc" id="toc"><h1>目录</h1><ol>
+""" + nav_items + """
+</ol></nav></body>
 </html>
 """,
     }
+    for index, (chapter_title, chapter_text) in enumerate(chapters, start=1):
+        files[f"EPUB/text/chapter-{index}.xhtml"] = """<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head><title>""" + chapter_title + """</title></head>
+<body><h1>""" + chapter_title + """</h1><p>""" + chapter_text + """</p></body>
+</html>
+"""
     with zipfile.ZipFile(epub, "w") as archive:
         archive.writestr("mimetype", files.pop("mimetype"), compress_type=zipfile.ZIP_STORED)
         for name, content in files.items():

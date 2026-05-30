@@ -11,6 +11,15 @@
 
 LifeBook Digest 是 LifeBook 翻译发布系统的可选 EPUB 后处理模块。它放在仓库根目录 `digest/`，不直接接管原有翻译、构建、抽检或发布主流程。
 
+下载仓库后，`digest/` 不只是运行脚本，还包含模块设计、agent prompt、配置 schema、QA 清单和后处理代码：
+
+- `lifebook_digest/`：读取 EPUB、生成 Digest、可选合并 EPUB 的 Python 模块。
+- `prompts/`：给 AI agent 使用的 Digest 生成与审校 prompt。
+- `references/`：LifeBook Digest 的 post-EPUB 工作流、边界和发布规则。
+- `schemas/`：每本书 `digest.config.json` 的配置 schema。
+- `qa/`：Digest 专项审校清单模板。
+- `examples/`：书籍工程可复制的配置示例。
+
 ## 快速开始 / Quick Start
 
 <table align="center">
@@ -26,7 +35,7 @@ LifeBook Digest 是 LifeBook 翻译发布系统的可选 EPUB 后处理模块。
 
 ```json
 {
-  "enabled": true,
+  "enabled": "auto",
   "merge_into_epub": true,
   "source_epub": "output/book.epub",
   "output_epub": "output/book_digest.epub",
@@ -45,13 +54,16 @@ python -m digest.lifebook_digest --book-root books/{target}/{number}_{book_id_sl
 ## 设计边界
 
 - 输入是某本书已经生成的标准 EPUB，默认 `output/book.epub`。
-- 每本书通过自己的 `digest.config.json` 决定是否启用、是否合并进 EPUB。
+- 每本书通过自己的 `digest.config.json` 决定是否启用、是否合并进 EPUB；没有配置时进入自动判断，只对长篇小说、专业书籍和哲学书生成旁路 Digest。
 - 启用但不合并时，只生成旁路文件：
   - `output/digest/digest.xhtml`
   - `output/digest/digest_state.json`
+  - `output/digest/knowledge_map.svg`
+  - `output/digest/agent_packets/`
   - `qa/digest/digest_report.json`
-- Digest XHTML 包含章节摘录和内联阅读地图，不依赖额外专用阅读器格式。
-- `digest_state.json` 保存轻量拓扑：章节节点和阅读顺序边，便于后续扩展审校、可视化或更强摘要算法。
+  - `qa/digest/digest_review_checklist.md`
+- Digest XHTML 包含章节摘要、章节拓扑和知识脉络图，不依赖额外专用阅读器格式。
+- `digest_state.json` 保存轻量拓扑、知识图节点/关系和 agent packet manifest，便于后续审校、可视化或更强摘要算法。
 - 启用并合并时，输出仍是标准 EPUB，默认写到 `output/book_digest.epub`。
 - 合并只新增一个读者可见章节，并更新该 EPUB 内部的 OPF manifest、spine 和 nav。
 - 原有正文、封面、书籍信息页、前置页和翻译 QA 记录不被重写。
@@ -62,7 +74,7 @@ python -m digest.lifebook_digest --book-root books/{target}/{number}_{book_id_sl
 
 ```json
 {
-  "enabled": true,
+  "enabled": "auto",
   "merge_into_epub": true,
   "source_epub": "output/book.epub",
   "output_epub": "output/book_digest.epub",
@@ -74,7 +86,7 @@ python -m digest.lifebook_digest --book-root books/{target}/{number}_{book_id_sl
 
 字段说明：
 
-- `enabled`: `false` 时模块直接跳过，不改动 EPUB。
+- `enabled`: `auto` 或省略时由模块按书籍类型自动判断；`true` 强制启用；`false` 直接跳过。
 - `merge_into_epub`: `false` 时只生成旁路 Digest 文件；`true` 时生成新的 EPUB。
 - `source_epub`: 输入 EPUB，相对于书籍工程根目录。
 - `output_epub`: 合并后的输出 EPUB，相对于书籍工程根目录。
