@@ -139,6 +139,9 @@ The post-generation review must include:
 - Stratified random spot checks after the first full-book EPUB and after every refinement pass: at least two agents, deterministic random samples across reader-facing audit units, preserved seed, round manifest, samples, figure/table/formula evidence, agent reviews, fix log, and closure check.
 - 第一版全书 EPUB 生成后，以及每轮精校后必须做分层随机抽检：至少两个 Agent，使用确定性随机样本覆盖读者可见审计单元，并保留 seed、轮次 manifest、样本、图片/表格/公式证据、Agent 评审、修复记录和闭环检查。
 
+- If a random sample reveals a defect, treat it as a possible book-wide pattern: classify the defect family, audit the whole reader-facing book for similar issues, fix all confirmed matches, document exceptions, and preserve that systemic closure under the same round's fix log and closure check.
+- 如果随机样本暴露问题，必须把它当作可能的全书模式处理：归纳问题族，审计整本读者可见书稿是否存在同类问题，修复所有确认命中，记录合理例外，并把这个系统性闭环保存在同一轮的修复记录和闭环检查中。
+
 - A short QA record under `books/{target}/{number}_{book_id_slug}/qa/` when the review affects publication quality or confirms a delivery build.
 - 如果复查影响出版质量，或用于确认交付版本，必须在 `books/{target}/{number}_{book_id_slug}/qa/` 下留下简短 QA 记录。
 
@@ -163,5 +166,5 @@ A book must not be marked `DONE` if:
 - validation only proves EPUB structure, while translation quality has not passed editorial review.
 - 只证明了 EPUB 结构合格，但译文质量尚未通过编辑级审查。
 
-- post-EPUB stratified random spot checks are missing, omit existing table/figure/formula/caption/note strata, reuse an earlier seed after rework, lack fix closure, or fail `npm run review:random-validate:pass`.
-- EPUB 后分层随机抽检缺失、遗漏实际存在的表格/图片/公式/图注/注释层、返工后复用旧 seed、缺少修复闭环，或未通过 `npm run review:random-validate:pass`。
+- post-EPUB stratified random spot checks are missing, omit existing table/figure/formula/caption/note strata, reuse an earlier seed after rework, lack single-issue or book-wide similar-issue fix closure, or fail `npm run review:random-validate:pass`.
+- EPUB 后分层随机抽检缺失、遗漏实际存在的表格/图片/公式/图注/注释层、返工后复用旧 seed、缺少单点问题或全书同类问题修复闭环，或未通过 `npm run review:random-validate:pass`。

@@ -104,13 +104,12 @@ caption/note:
 风险升级规则：
 
 ```text
-if any stratum finds P0/P1/P2:
-  keep the next-round random sample budget unchanged
-  mark that stratum as higher risk
-
-if the same stratum finds P0/P1/P2 in two consecutive rounds:
-  require a dedicated targeted audit and closure review
-  do not force a full scan by default
+if any stratum or sampled unit exposes an issue needing correction or likely to recur systemically:
+  classify it as a defect family in the current round
+  audit the whole reader-facing book for similar cases in the current round
+  fix confirmed matches and document justified exceptions
+  close the family in fix_log.md and closure_check.md before any new-seed resample
+  optionally mark the stratum as higher risk for later sampling or human review, but never use that flag as a substitute for the current-round book-wide audit
 ```
 
 The deterministic sampler reads recent `round_XXX/reviews/*_review.md` files, detects P0/P1/P2 rows that include sampled unit ids such as `::paragraph::`, `::table::`, `::figure::`, `::formula::`, or `::caption_note::`, and records the resulting risk flags in the next manifest. The main AI executor is not allowed to delete these script-produced flags.
@@ -194,10 +193,14 @@ At least two independent agents must review the samples. The main executor canno
 
 1. 在 `reviews/random_spotcheck/round_XXX/reviews/` 保留 Agent 原始评审。
 2. 在 `reviews/revision_route.md` 写明回退阶段。
-3. 修复对应章节、表格、图片、公式、metadata 或构建脚本。
-4. 在 `round_XXX/fixes/fix_log.md` 记录每个问题的修复位置。
-5. 在 `round_XXX/verification/closure_check.md` 定点复查旧问题。
-6. 使用新 seed 生成下一轮 `round_YYY/` 抽检，不得复用旧样本自证通过。
+3. 将每个发现归纳为问题族，例如专名误译、术语硬译、脚注裸露、英文句法、图表标签错误、公式符号错误、metadata 不一致等。
+4. 对每个问题族执行全书同类问题审计，范围至少覆盖 `chapters/final/`、读者可见 frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；不得只修改被抽中的单个样本。
+5. 修复对应章节、表格、图片、公式、metadata 或构建脚本中的所有同类问题；若某个疑似命中被判定为合理例外，必须记录理由。
+6. 在 `round_XXX/fixes/fix_log.md` 记录每个问题族的检索式或审计方法、审计范围、命中数、修复位置、例外和复查结果。
+7. 在 `round_XXX/verification/closure_check.md` 定点复查旧问题，并确认同类问题全书审计已关闭。
+8. 使用新 seed 生成下一轮 `round_YYY/` 抽检，不得复用旧样本自证通过。
+
+If a sampled unit exposes a defect, the fix must be upgraded to a book-wide similar-issue audit. The executor must classify the defect family, search or otherwise inspect the whole reader-facing book for the same family, fix all confirmed matches, document justified exceptions, and close that systemic audit before the next new-seed round.
 
 假设单次修复 OK 概率为 75%，它只能作为迭代效率假设，不能作为发布条件。发布条件是：已发现的 P0/P1/P2 必须定点复查关闭，且修复后新 seed 抽检通过。
 
@@ -213,6 +216,7 @@ If a single fix has a 75% chance of success, that is only an iteration-efficienc
 - 至少 2 个 Agent 的样本、评审文件存在。
 - `reviews/random_spotcheck/round_XXX/fixes/fix_log.md` 为 `PASS`。
 - `reviews/random_spotcheck/round_XXX/verification/closure_check.md` 为 `PASS`。
+- 每个已发现问题族都已完成全书同类问题审计，`fix_log.md` 记录审计范围、检索式或复查方法、同类命中、修复和例外。
 - `npm run review:random-validate:pass` 通过。
 - 若发生返工，后续至少还有一轮新 seed 抽检通过。
 

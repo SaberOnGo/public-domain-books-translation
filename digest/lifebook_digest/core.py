@@ -621,11 +621,12 @@ def ensure_manifest_item(package: ET.Element, item_id: str, href: str) -> None:
         if item.attrib.get("id") == item_id:
             item.set("href", href)
             item.set("media-type", "application/xhtml+xml")
+            item.set("properties", "svg")
             return
     ET.SubElement(
         manifest,
         f"{{{OPF_NS}}}item",
-        {"id": item_id, "href": href, "media-type": "application/xhtml+xml"},
+        {"id": item_id, "href": href, "media-type": "application/xhtml+xml", "properties": "svg"},
     )
 
 

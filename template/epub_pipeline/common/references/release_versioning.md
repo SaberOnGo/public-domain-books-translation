@@ -95,9 +95,9 @@ python scripts/create_release.py --status DRAFT
 python scripts/create_release.py --status PASS --require-pass
 ```
 
-`PASS` release 必须满足随机抽检闭环、`validation_report.json.require_pass = true`、`release_confidence >= 0.80`、EPUBCheck fatal/error 为 0、publication lint 无未解决问题，以及其他最终门禁。`DRAFT` release 可以用于人工核查或候选版本，但不得作为 `DONE` 的依据。
+`PASS` release 必须满足随机抽检闭环、所有已发现问题族的全书同类问题审计与关闭记录、`validation_report.json.require_pass = true`、`release_confidence >= 0.80`、EPUBCheck fatal/error 为 0、publication lint 无未解决问题，以及其他最终门禁。`DRAFT` release 可以用于人工核查或候选版本，但不得作为 `DONE` 的依据。
 
-`PASS` release cannot be created from a structural-only random spot-check validation. The latest `validation_report.json` must come from `npm run review:random-validate:pass` or the equivalent `python scripts/validate_random_spotcheck.py --require-pass`.
+`PASS` release cannot be created from a structural-only random spot-check validation. The latest `validation_report.json` must come from `npm run review:random-validate:pass` or the equivalent `python scripts/validate_random_spotcheck.py --require-pass`, and the round fix log and closure check must prove that each discovered defect family was audited book-wide, fixed where confirmed, and closed.
 
 ## Done Gate / 完成门禁
 
@@ -108,13 +108,13 @@ python scripts/create_release.py --status PASS --require-pass
 - 至少存在一个 `output/release/{目标语言书名}_vX.X.X.epub`。
 - `output/release/release_notes.md` 存在，且最新版本条目位于最上方。
 - `release_state.json.latest_status = PASS`。
-- release note 记录抽检、修复、风险和校验证据。
+- release note 记录抽检、问题族全书同类审计、修复、风险和校验证据。
 
 私人自用项目：
 
 - 至少存在一个 `output/private_artifacts/{目标语言书名}_private_vX.X.X.epub`。
 - `output/private_artifacts/private_artifact_notes.md` 存在，且最新版本条目位于最上方。
 - `private_artifact_state.json.latest_status = PASS`。
-- private artifact note 记录抽检、修复、风险和校验证据，并明确该产物仅供个人自用、不传播、不商业使用、不得发布到 GitHub。
+- private artifact note 记录抽检、问题族全书同类审计、修复、风险和校验证据，并明确该产物仅供个人自用、不传播、不商业使用、不得发布到 GitHub。
 
 这让 EPUB 可以像软件一样持续迭代：每次读者反馈或自动化检查产生修改，就发布一个新的 patch version。

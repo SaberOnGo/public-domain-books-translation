@@ -58,8 +58,8 @@ python scripts/select_random_review_passages.py --source-dir chapters/final --ag
 
 - 至少 2 个独立 Agent。
 - 默认发布抽检为 `T=4`、`agents=2`。正文/文本层每个 Agent 每轮 60 个样本；表格、图片 `N<=80` 全检，否则每轮总抽 20 个；公式/证明块 `N<=100` 全检，否则每轮总抽 20 个；图注/表注/注释 `N<=120` 全检，否则每轮总抽 20 个。
-- 若任一层发现 P0/P1/P2，下一轮随机抽样预算保持不变；若同一层连续两轮发现 P0/P1/P2，则该层必须进入定向专项审计和闭环复查，但默认不强制全检。
-- 脚本会读取最近 `round_XXX/reviews/*_review.md` 中带样本单元编号的 P0/P1/P2 行，并自动记录该层风险和专项审计要求；主执行 AI 不得手动删除脚本生成的风险字段。
+- 若任一层、任一样本发现任何需要修复或可能系统性复现的问题，本轮立即把发现归纳为问题族，并执行全书同类问题审计和闭环；不得只修被抽中的样本，也不得等到第二轮才全书检查。同层可被标记为高风险，用于后续抽样和人工复核，但不能替代本轮全书同类问题审计。
+- 脚本会读取最近 `round_XXX/reviews/*_review.md` 中带样本单元编号的 P0/P1/P2 行，并自动记录该层风险字段；主执行 AI 不得手动删除脚本生成的风险字段。风险字段只用于后续抽样和复核，不能替代本轮问题族全书同类审计。
 - 抽样总体 `N` 是读者可见审计单元总数，不是页数，也不只是正文段落数。
 - 抽样层至少包括 `paragraph`、`table`、`figure`、`formula`、`caption_note`。
 - 样本必须来自读者可见终稿文本和对应资源；不得由主执行 AI 人工挑选“看起来没问题”的内容。
@@ -84,7 +84,7 @@ python scripts/select_random_review_passages.py --source-dir chapters/final --ag
 - 每个 Agent 的平均分必须 >= 75。
 - 任一单段 < 70，则该 Agent 抽检失败。
 - 任一样本出现读者读不懂、事实或叙述关系误解、英文句法硬搬、无依据润饰、术语/专名/译注/表格/图片/公式错误，必须判为失败，即使平均分达标。
-- 任一 Agent 抽检失败时，必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复；修复后必须在旧轮次 `fixes/fix_log.md` 和 `verification/closure_check.md` 关闭旧问题，并用新 seed 重新生成样本。
+- 任一 Agent 抽检失败时，必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复；修复后必须在旧轮次 `fixes/fix_log.md` 和 `verification/closure_check.md` 中记录问题族、全书同类问题审计范围、命中、修复、合理例外和关闭结论，并用新 seed 重新生成样本。
 
 ## Agent A 重点 / Agent A Focus
 
@@ -115,3 +115,9 @@ python scripts/select_random_review_passages.py --source-dir chapters/final --ag
 - 分层随机抽检已通过：Agent A/B 抽检平均分均 >= 75，无单项 < 70，无未关闭 P0/P1/P2，且 `npm run review:random-validate:pass` 通过。
 - 任一 P0/P1 问题必须返工。
 - 任一 Agent 明确指出严重问题时，主执行 AI 必须进入回退路由，不得忽略。
+
+## 随机抽检同类问题全书审计 / Book-Wide Similar-Issue Audit
+
+随机抽检一旦发现任何需要修复或可能系统性复现的问题，包括但不限于 P0/P1/P2、单项 <70、读者不可理解、事实/术语/图表/公式/注释错误，或本模板硬门禁失败，主执行 AI 不得只修被抽中的样本，也不得等到第二轮才全书检查。必须先把发现归纳为问题族，再对整本读者可见书稿执行全书同类问题审计，覆盖 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；修复所有确认命中，记录合理例外，并在该轮 `fix_log.md` 与 `closure_check.md` 中关闭该问题族后，才能使用新 seed 复抽。
+
+If a random sample exposes any issue that needs correction or may recur systemically, treat it as a possible systemic defect family immediately in the current round. Audit the whole reader-facing book for similar cases, fix all confirmed matches, document justified exceptions, and close the family in the same round before a new-seed resample.

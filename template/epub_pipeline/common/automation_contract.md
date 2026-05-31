@@ -15,7 +15,7 @@ AI 必须自动决定：
 - 如何在失败时回溯到正确阶段。
 - 如何构建并校验 EPUB。
 - 如何把 Markdown 章节转换为 XHTML，并把图像、SVG、CSS、表格等 EPUB 资源复制、登记到 OPF manifest。
-- 如何在第一版 EPUB 后执行分层随机抽检模块，生成正文、表格、图片、公式、图注/注释等读者可见审计单元样本，派生至少 2 个独立 Agent 评审，并根据抽检、修复闭环和新 seed 复抽结果自动返工或继续。
+- 如何在第一版 EPUB 后执行分层随机抽检模块，生成正文、表格、图片、公式、图注/注释等读者可见审计单元样本，派生至少 2 个独立 Agent 评审，并根据抽检、问题族全书同类审计、修复闭环和新 seed 复抽结果自动返工或继续。
 - 如何在随机抽检闭环通过后创建带版本号的 EPUB 产物：公版或授权项目把 `output/book.epub` 固化为 `output/release/{目标语言书名}_vX.X.X.epub`，并把最新中英文说明追加到累计 `release_notes.md` 顶部；私人自用项目使用 `modes/private_use` 的脚本把本地私人产物写入 `output/private_artifacts/`。
 
 ## AI 不应询问用户
@@ -83,14 +83,14 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 - 第一版 `output/book.epub` 完成后，AI 必须立即执行 `prompts/16a_stratified_random_spotcheck.md` 和 `references/stratified_random_spotcheck.md`，不得直接宣布完成。
 - 每一轮精校完成后，AI 必须运行 `npm run review:random-samples`，或等效运行 `python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --target-confidence 0.80 --defect-rate 0.10 --profile auto`。
 - 默认发布前抽样预算为正文层每个 Agent 每轮 60；表格和图片 `N<=80` 全检，否则每轮总抽 20；公式/证明块 `N<=100` 全检，否则每轮总抽 20；图注/表注/注释 `N<=120` 全检，否则每轮总抽 20。
-- 若任一层发现 P0/P1/P2，下一轮随机抽样量保持不变；若同层连续两轮发现 P0/P1/P2，必须进入定向专项审计和闭环复查，默认不强制全检。
-- 脚本必须通过最近轮次 `round_XXX/reviews/*_review.md` 中的 P0/P1/P2 样本行自动记录高风险层和专项审计要求，不能只依赖主执行 AI 自觉标记。
+- 若任一层、任一样本发现任何需要修复或可能系统性复现的问题，本轮立即把发现归纳为问题族，并执行全书同类问题审计和闭环；不得只修被抽中的样本，也不得等到第二轮才全书检查。同层可被标记为高风险，用于后续抽样和人工复核，但不能替代本轮全书同类问题审计。
+- 脚本必须通过最近轮次 `round_XXX/reviews/*_review.md` 中的 P0/P1/P2 样本行自动记录高风险层，不能只依赖主执行 AI 自觉标记。风险标记只用于后续抽样和复核；本轮一旦发现问题，仍必须立即执行问题族全书同类审计。
 - 抽样总体 `N` 是读者可见审计单元总数；抽样层至少包括 `paragraph`、`table`、`figure`、`formula`、`caption_note`。表格、图片、公式不得被普通段落抽样替代。
 - 每次抽检必须生成 `reviews/random_spotcheck/round_XXX/` 子目录，包含 seed、manifest、分层样本、图片/表格/公式证据、Agent 评审、修复记录和闭环验证文件，供人工核查。
 - 随机抽检必须至少使用 2 个独立 Agent；每个 Agent 必须逐样本给出 0-100 分、问题类型、优先级、是否返工和理由。
 - 两个 Agent 均必须按模板、本书 profile、目标语言规则和读者视角认真分析：读不读得懂、是否忠实、数学/天文学链条是否成立、表格/图片/公式/术语/数值/注释是否符合书籍设计。
 - 退出精校的最低条件是：两个 Agent 均 PASS，无单项 < 70，无未关闭 P0/P1/P2，无读不懂样本，无数学或天文学阻断，无术语/数值/图表/公式错误，并且 `npm run review:random-validate:pass` 通过。
-- 任一 Agent 抽检不通过时，AI 必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复；修复后必须在旧轮次中定点关闭旧问题，并使用新 seed 重新生成下一轮样本，不得复用旧样本。
+- 任一 Agent 抽检不通过时，AI 必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复；每个发现必须先归纳为“问题族”，再对整本读者可见书稿执行全书同类问题审计，覆盖 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML，不得只修改被抽中的样本；修复所有确认命中、记录合理例外后，必须在旧轮次 `fixes/fix_log.md` 与 `verification/closure_check.md` 中定点关闭单个问题和该问题族，并使用新 seed 重新生成下一轮样本，不得复用旧样本。
 
 ## EPUB 版本化发布自动化规则
 

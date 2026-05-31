@@ -146,8 +146,8 @@
 - `reviews/random_spotcheck/round_XXX/samples/agent_a/`、`reviews/random_spotcheck/round_XXX/samples/agent_b/`：两个独立 Agent 的分层样本；表格、图片、公式不得被普通段落样本替代。
 - `reviews/random_spotcheck/round_XXX/evidence/`：抽检样本对应的图片、表格、公式等人工可核查证据。
 - `reviews/random_spotcheck/round_XXX/reviews/agent_a_review.md`、`reviews/random_spotcheck/round_XXX/reviews/agent_b_review.md`：两个独立 Agent 对分层样本的逐项评分和结论。
-- `reviews/random_spotcheck/round_XXX/fixes/fix_log.md`：抽检发现问题的返工记录。
-- `reviews/random_spotcheck/round_XXX/verification/closure_check.md`：已发现 P0/P1/P2 的定点闭环复查。
+- `reviews/random_spotcheck/round_XXX/fixes/fix_log.md`：抽检发现问题的返工记录；必须记录每个问题族的全书同类问题审计范围、检索式或复查方法、命中、修复和例外。
+- `reviews/random_spotcheck/round_XXX/verification/closure_check.md`：已发现 P0/P1/P2 的定点闭环复查；必须确认单点旧问题和全书同类问题审计均已关闭。
 - `reviews/random_spotcheck/random_sample_manifest.json`、`reviews/random_spotcheck/agent_a_samples.md`、`reviews/random_spotcheck/agent_b_samples.md`：最近一轮兼容入口；人工核查应优先查看对应 `round_XXX/` 子目录。
 - `reviews/agent_a/random_spotcheck_review.md`、`reviews/agent_b/random_spotcheck_review.md`：两个独立 Agent 对最近通过轮次的兼容评审结论。
 - `reviews/scorecards/random_spotcheck_score.md`：随机抽检汇总评分表。
@@ -233,11 +233,11 @@ node scripts/asset_manifest_check.js --write-report
 - 若发现来源不支持的读者可见标题、BOM、乱码、AI 输出残留、异常英文残留或 EPUB metadata 问题，不得进入最终交付。
 - 第一版全书 EPUB 生成后，必须执行分层随机抽检模块。抽样总体 `N` 是读者可见审计单元总数，不是页数，也不是正文段落数；审计单元至少包括 `paragraph`、`table`、`figure`、`formula`、`caption_note`。
 - 每一轮精校完成后，必须运行 `npm run review:random-samples`，或等效运行 `python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --target-confidence 0.80 --defect-rate 0.10 --profile auto`。脚本必须生成 `reviews/random_spotcheck/round_XXX/` 子目录、seed、manifest、分层样本和人工可核查证据。
-- 默认发布前抽样预算为：正文层每个 Agent 每轮 60；表格和图片 `N<=80` 全检，否则每轮总抽 20；公式/证明块 `N<=100` 全检，否则每轮总抽 20；图注/表注/注释 `N<=120` 全检，否则每轮总抽 20。该预算用于控制 token 成本；若任一层发现 P0/P1/P2，下一轮随机抽样量保持不变，但该层必须被标记为高风险；若同层连续两轮发现 P0/P1/P2，必须进入定向专项审计和闭环复查，默认不强制全检。
+- 默认发布前抽样预算为：正文层每个 Agent 每轮 60；表格和图片 `N<=80` 全检，否则每轮总抽 20；公式/证明块 `N<=100` 全检，否则每轮总抽 20；图注/表注/注释 `N<=120` 全检，否则每轮总抽 20。该预算用于控制 token 成本；若任一层、任一样本发现任何需要修复或可能系统性复现的问题，本轮立即把发现归纳为问题族，并执行全书同类问题审计和闭环；不得只修被抽中的样本，也不得等到第二轮才全书检查。同层可被标记为高风险，用于后续抽样和人工复核，但不能替代本轮全书同类问题审计。
 - 抽样脚本必须读取最近轮次 `round_XXX/reviews/*_review.md` 中带样本单元编号的 P0/P1/P2 行，并在下一轮 manifest 中记录 `blocking_issue_strata_in_recent_rounds`、`blocking_issue_seen_in_previous_round` 和 `dedicated_audit_required_after_consecutive_blockers`。
 - 随机抽检中，两个 Agent 必须互不参考，均按模板、本书 profile 和目标语言规则检查正文、表格、图片、公式、图注/表注/注释、EPUB 阅读风险。每个样本必须逐项给出 0-100 分、问题类型、优先级、是否返工和理由。
 - 任一单项 < 70，或任一 P0/P1/P2，或任一读不懂、证明链断裂、概念误导、术语/数值/图表/公式错误，即使平均分达标也必须判为失败。
-- 任一随机抽检 Agent 未通过时，必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复；修复后必须在旧轮次 `fixes/fix_log.md` 和 `verification/closure_check.md` 中定点关闭旧问题，并使用新 seed 重新生成新轮次样本，不得复用上一轮样本自证通过。
+- 任一随机抽检 Agent 未通过时，必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复。每个发现必须先归纳为问题族，并对整本读者可见书稿执行同类问题审计，范围至少包括 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；不得只修改被抽中的样本。修复后必须在旧轮次 `fixes/fix_log.md` 和 `verification/closure_check.md` 中记录问题族、检索式或审计方法、命中数、修复位置、合理例外和关闭结论，并使用新 seed 重新生成新轮次样本，不得复用上一轮样本自证通过。
 - 最终退出前必须运行 `npm run review:random-validate:pass`。该命令失败时，不得进入 `FINAL_OUTPUT_PASS`、`RETROSPECTIVE_DONE` 或 `DONE`。
 - `npm run review:random-validate:pass` 必须计算并写入 `release_confidence = min_h confidence_h`。若 `release_confidence < 0.80`，即使 Agent 文字评审写了 PASS，也不得退出任务。
 - `npm run review:random-validate:pass` 还必须校验每个 Agent 的 `average_score >= 75`、`lowest_score >= 70`、`blocking_issue_count = 0`，以及闭环文件中的 `open_p0_p1_p2_count = 0`。
@@ -267,7 +267,7 @@ node scripts/asset_manifest_check.js --write-report
 - `output/publication_lint.json` 存在，且无硬错误。
 - `output/asset_manifest_check.json` 存在，且无硬错误；若全书无图像、表格、样式外部资源，报告中也必须明确记录 0 asset refs。
 - `qa/refinement/` 存在；若使用 `scripts/refinement_check.js`，出版范围内 BOM、乱码、中文连续空格和不当标点应为 0，或在 QA 中记录明确例外。
-- `reviews/random_spotcheck/round_XXX/random_sample_manifest.json`、`strata_summary.json`、`validation_report.json`、`samples/`、`evidence/`、`reviews/`、`fixes/fix_log.md`、`verification/closure_check.md` 均存在；`validation_report.json.release_confidence >= 0.80`；至少两个独立 Agent 分层随机抽检通过，且无单项 < 70、无未关闭 P0/P1/P2 必修项。
+- `reviews/random_spotcheck/round_XXX/random_sample_manifest.json`、`strata_summary.json`、`validation_report.json`、`samples/`、`evidence/`、`reviews/`、`fixes/fix_log.md`、`verification/closure_check.md` 均存在；`validation_report.json.release_confidence >= 0.80`；至少两个独立 Agent 分层随机抽检通过，且无单项 < 70、无未关闭 P0/P1/P2 必修项；若任何轮发现过问题，`fix_log.md` 与 `closure_check.md` 必须证明每个问题族已完成全书同类问题审计并关闭。
 - `reviews/random_spotcheck/random_sample_manifest.json`、`reviews/agent_a/random_spotcheck_review.md`、`reviews/agent_b/random_spotcheck_review.md` 和 `reviews/scorecards/random_spotcheck_score.md` 均指向或记录最近通过轮次。
 - `npm run review:random-validate:pass` 通过。
 - `output/book.epub` 存在。

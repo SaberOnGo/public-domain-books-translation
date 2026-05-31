@@ -67,6 +67,8 @@ Markdown chapters are authoring sources only. During EPUB production, final chap
 
 After the first full-book EPUB is generated, every book project must run the stratified random spot-check module in `common/references/stratified_random_spotcheck.md` and `common/prompts/16a_stratified_random_spotcheck.md`. The module samples reader-visible audit units, including paragraphs, tables, figures, formulas/proof blocks, captions, and notes, and writes human-checkable rounds under `books/{target}/{number}_{book_id_slug}/reviews/random_spotcheck/round_XXX/`.
 
+If any random sample exposes a defect, the executor must treat it as a possible defect family: audit the whole reader-facing book for similar cases, fix all confirmed matches, document justified exceptions, and close the family in that round's `fix_log.md` and `closure_check.md` before running a new-seed resample. 抽检发现问题时，不得只修被抽中的样本；必须先归纳问题族，再做全书同类问题审计和闭环。
+
 After the random spot-check gate is closed, public-domain and licensed book projects must run the versioned release module in `common/references/release_versioning.md` and `common/prompts/18a_release_versioning.md`. The release artifact must be saved under `books/{target}/{number}_{book_id_slug}/output/release/`; `output/book.epub` alone is not a publishable final artifact. Private-use projects instead run the private artifact module from `modes/private_use/` and write local-only artifacts under `output/private_artifacts/`.
 
 ## Naming

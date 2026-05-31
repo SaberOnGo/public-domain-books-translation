@@ -183,11 +183,15 @@ Default release sampling is intentionally stronger than a smoke test while still
 
 默认发布前抽检强度高于快速 smoke test，但仍控制 AI token 成本：`T=4`，`agents=2`，正文层每个 Agent 每轮 60 个。表格和图片 `N<=80` 全检；公式/证明块 `N<=100` 全检；图注/表注/注释 `N<=120` 全检。超过阈值的非文本层默认每轮总抽 20 个。
 
-If any stratum finds P0/P1/P2, keep the next-round random sample budget unchanged to control AI token cost, but mark that stratum as higher risk. If the same stratum finds P0/P1/P2 in two consecutive rounds, require a dedicated targeted audit and closure review; do not force a full scan by default.
+If any stratum or sampled unit exposes any issue that needs correction or may recur systemically, the current round must immediately classify it as a defect family and complete a book-wide similar-issue audit and closure. Do not fix only the sampled unit, and do not wait for a second failed round before checking the whole book. The stratum may be marked as higher risk for later sampling and human review, but that risk flag cannot replace the current-round book-wide audit.
 
 The sampling script enforces this deterministically by reading recent `round_XXX/reviews/*_review.md` files for P0/P1/P2 rows that include sampled unit ids such as `::table::` or `::figure::`.
 
-若任一层发现 P0/P1/P2，下一轮随机抽样量保持不变，以控制 AI token 成本，但该层会被标记为高风险。若同层连续两轮发现 P0/P1/P2，必须进入定向专项审计和闭环复查；默认不强制全检。
+若任一层、任一样本发现任何需要修复或可能系统性复现的问题，本轮必须立即归纳为问题族，并完成全书同类问题审计和闭环；不得只修被抽中的样本，也不得等到第二轮才全书检查。同层可被标记为高风险，用于后续抽样和人工复核，但风险标记不能替代本轮全书同类问题审计。
+
+Any defect found by random sampling is treated as a possible defect family, not as an isolated sample-only fix. The executor must classify the family, audit the whole reader-facing book for similar cases across `chapters/final/`, frontmatter, metadata, nav, tables, figures, formulas, captions, notes, and the generated EPUB XHTML, fix all confirmed matches, document justified exceptions, and close the family in the same round's fix log and closure check before using a new seed.
+
+随机抽检一旦发现问题，不得只修被抽中的样本。主执行 AI 必须先归纳问题族，再对整本读者可见书稿执行全书同类问题审计，覆盖 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；修复所有确认命中、记录合理例外，并在同一轮 `fix_log.md` 与 `closure_check.md` 中关闭该问题族后，才能使用新 seed 复抽。
 
 Before final output, the stronger pass validator must succeed:
 

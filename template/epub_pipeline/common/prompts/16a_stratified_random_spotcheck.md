@@ -52,9 +52,9 @@ formula/proof = N<=100 全检，否则每轮总抽 20
 caption/note = N<=120 全检，否则每轮总抽 20
 ```
 
-这是发布前高质量但控制 token 预算的默认值。若任一层发现 P0/P1/P2，下一轮随机抽样量保持不变；若同层连续两轮发现 P0/P1/P2，必须进入定向专项审计和闭环复查，默认不强制全检。
+这是发布前高质量但控制 token 预算的默认值。若任一层、任一样本发现任何需要修复或可能系统性复现的问题，本轮立即把发现归纳为问题族，并执行全书同类问题审计和闭环；不得只修被抽中的样本，也不得等到第二轮才全书检查。同层可被标记为高风险，用于后续抽样和人工复核，但不能替代本轮全书同类问题审计。
 
-脚本会读取最近 `round_XXX/reviews/*_review.md` 中带样本单元编号的 P0/P1/P2 行，并自动把该层写入 manifest 的风险和专项审计字段；主执行 AI 不得手动删除这些结果。
+脚本会读取最近 `round_XXX/reviews/*_review.md` 中带样本单元编号的 P0/P1/P2 行，并自动把该层写入 manifest 的风险字段；主执行 AI 不得手动删除这些结果。风险字段只用于后续抽样和复核，不能替代本轮问题族全书同类审计。
 
 随后运行：
 
@@ -98,10 +98,14 @@ npm run review:random-validate
 如果本轮 FAIL，主执行 AI 必须：
 
 1. 更新 `reviews/revision_route.md`。
-2. 修复对应章节、资源、表格、图片、公式、metadata 或构建脚本。
-3. 在 `reviews/random_spotcheck/round_XXX/fixes/fix_log.md` 记录修复。
-4. 在 `reviews/random_spotcheck/round_XXX/verification/closure_check.md` 定点复查旧问题。
-5. 使用新 seed 再运行一轮抽样，生成 `round_YYY/`。
+2. 把每个发现归纳为问题族，例如专名误译、术语硬译、英文句法、脚注裸露、图表标签错误、公式符号错误、注释/metadata 不一致。
+3. 对每个问题族执行全书同类问题审计，至少覆盖 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；不得只修改被抽中的样本。
+4. 修复对应章节、资源、表格、图片、公式、metadata 或构建脚本中的全部确认命中；合理例外必须记录原因。
+5. 在 `reviews/random_spotcheck/round_XXX/fixes/fix_log.md` 记录问题族、检索式或审计方法、范围、命中数、修复位置和例外。
+6. 在 `reviews/random_spotcheck/round_XXX/verification/closure_check.md` 定点复查旧问题，并确认全书同类问题审计已关闭。
+7. 使用新 seed 再运行一轮抽样，生成 `round_YYY/`。
+
+If a sample reveals a defect, treat it as evidence of a possible systemic issue. Classify the defect family, audit the whole reader-facing book for similar cases, fix all confirmed matches, document exceptions, and only then proceed to a new-seed round.
 
 修复后 OK 概率可按 75% 作为迭代估计，但不能作为退出依据。退出依据是旧问题定点关闭、新 seed 抽检通过、校验脚本通过。
 
@@ -112,6 +116,7 @@ npm run review:random-validate
 - 至少 2 个独立 Agent 评审为 `PASS`。
 - `fix_log.md` 为 `PASS`。
 - `closure_check.md` 为 `PASS`。
+- `fix_log.md` 和 `closure_check.md` 明确记录每个问题族的全书同类问题审计已经关闭。
 - `validation_report.json` 为 `PASS`，且 `release_confidence >= 0.80`。
 - `reviews/scorecards/random_spotcheck_score.md` 记录本轮 PASS。
 - `npm run review:random-validate:pass` 通过。
