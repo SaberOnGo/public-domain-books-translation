@@ -62,6 +62,7 @@ def write_minimal_template(repo_root: Path) -> None:
             {
                 "scripts": {
                     "preflight:template": "python scripts/check_template_workflow_gate.py",
+                    "check:chapter-controls": "python scripts/check_template_workflow_gate.py --chapter-controls-only",
                     "cover:check": "python scripts/check_cover_output_assets.py",
                     "reader:check": "python scripts/check_reader_facing_policy.py",
                     "lint:publication": "node scripts/publication_lint.js",

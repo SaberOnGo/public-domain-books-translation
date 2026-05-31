@@ -1,0 +1,4 @@
+type,source_term,target_term,status,display_policy,note_text,exception_reason,forbidden_body_renderings
+person,Sandokan,桑多坎,preferred,target_only,马来海盗首领，按通行音译暂定。,,"Sandokan；山多坎"
+place,Mompracem,孟普拉森,preferred,target_only,Sandokan 的岛屿据点，译名后续按全书统一。,,"Mompracem；蒙普拉森"
+historical_term,rajah,拉者,preferred,note_on_first_use,南亚/东南亚语境中的王侯称号；首次出现可短注。,,"王；国王"
