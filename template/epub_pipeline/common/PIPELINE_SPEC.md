@@ -218,10 +218,10 @@ node scripts/asset_manifest_check.js --write-report
 - 每章翻译后必须立即经过 `qa/chapter_controls/{NNN_slug}.control.md` 所记录的“每章译后，全量检查并修复节点”。该节点只检查当前章，不检查全书其他章节。
 - 该节点必须全章检查该章是否符合模板要求，包括但不限于该章对 metadata/nav/目录的影响、正文、注释、图表/公式/表格/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释。不得只检查用户点名项目。
 - 该节点必须按 `glossary/terms.csv.forbidden_body_renderings` 逐项扫描正文。若出现正文禁用写法、无授权原词括注、裸露源语词或误导性泛译，必须修复并追加同节点复查。
-- 未完成每章译后全量检查，或最近一次检查仍有未关闭阻塞问题，或评分低于 75 分且并非完全无问题，或未满足更严格项目/profile 规则时，不得进入下一章翻译、后续审校或 `chapters/final/`。分数不能抵消 P0/P1/P2、读者难以理解、事实/术语/当前章文字接口错误或模板硬门禁失败。
+- 未完成每章译后全量检查，或最近一轮不是 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 的零问题 PASS，或未满足更严格项目/profile 规则时，不得进入下一章翻译、后续审校或 `chapters/final/`。任何评分、主观印象或“已经修过”都不能抵消 P0/P1/P2、读者难以理解、事实/术语/当前章文字接口错误、中文润色不足、为了通俗而损害专业质量，或模板硬门禁失败。
 - 图表、表格、公式和图片在本节点只做当前章文字接口检查与资产分流。复杂重绘、OCR、裁剪、数值校验、公式排版、资源路径或 manifest 问题应写入资产/技术门禁记录；这类问题阻止终稿、构建和 release，但不让当前章译后文字门禁无限循环。
 - 每次未通过都必须记录问题点、修复摘要和追加复查轮次；不得覆盖旧失败记录。
-- `preflight:template` 在发现 `chapters/final/*.md` 时，必须校验每个终稿章节都有对应 PASS 且 `allow_next_chapter: true` 的 `qa/chapter_controls/{NNN_slug}.control.md`，以及 PASS 的 `qa/gates/{NNN_slug}.gate.md`。
+- `preflight:template` 在发现 `chapters/translated/*.md` 时，必须校验每个已译章节都有对应 `qa/chapter_controls/{NNN_slug}.control.md`，且最近一轮是以上零问题 PASS；在发现 `chapters/final/*.md` 时，还必须校验每个终稿章节都有 PASS 的 `qa/gates/{NNN_slug}.gate.md`。
 - 全部翻译完成后不得直接构建 EPUB，必须先完成预制作阶段 1。
 - 未通过样章制作检查，不得制作整本 EPUB。
 - 未通过出版文本 lint，不得构建最终 EPUB。

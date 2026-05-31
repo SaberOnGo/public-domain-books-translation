@@ -57,6 +57,7 @@
 8. 图表、公式、表格、图片文字接口：若当前章包含这些内容，本节点检查正文引用、编号、标题、图注/表注、alt text、单位、变量说明和读图/读表提示是否为清楚中文。复杂重绘、裁剪、OCR、数值复核、公式排版和资源 manifest 问题进入 `qa/technical/{NNN_slug}.diagram_table_audit.md`、`qa/assets/{NNN_slug}.asset_followup.md` 或后续资产门禁，不在本节点无限循环。
 9. 样式与 EPUB 读者可见内容：无乱码、异常空格、旧纸书页码目录、可见分隔符、内部工作说明、AI 痕迹、模板说明泄漏。
 10. 句长与段落呼吸：中文句长、节奏和连接关系适合普通读者；连续长句、过密分号、英文从句硬接必须修复。论文型原文也要在准确基础上译得清楚、易懂、有阅读兴趣。
+11. 通俗化与专业度：译文应尽量读得顺、有趣、不费劲，但不得为了通俗化而损害专业术语、概念层级、论证水准和原书专业风格。
 
 ## 人类反馈 / Human Feedback
 
@@ -89,7 +90,7 @@
 - 只检查用户点名项目，未覆盖全章。
 - 总分低于 75，或低于项目/profile 更严格阈值。
 
-修复后必须在同一 control 文件追加新一轮记录，不得覆盖旧失败记录。只有最近一轮无未关闭阻塞问题，并且“无问题或总分不小于 75”（若项目/profile 更严格则按更严格规则），才可设置 `control_status: "PASS"` 和 `allow_next_chapter: true`。
+修复后必须在同一 control 文件追加新一轮记录，不得覆盖旧失败记录。发现并修复问题的这一轮只能记录为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS。只有随后追加的新一轮整章复查同时记录 `scope: "FULL_CHAPTER"`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: "PASS"`、`allow_next_chapter: true`，才可设置 `control_status: "PASS"` 并继续下一章。
 
 ## 图表与资产分流 / Figure and Asset Routing
 
@@ -113,9 +114,9 @@
 ## PASS 条件 / PASS Criteria
 
 - 当前章有 control 文件。
-- 当前章 control 文件 `control_status=PASS`。
-- 最近一轮 `allow_next_chapter=true`。
-- 最近一轮记录完整全量检查范围、问题、修复、复查和总分。
+- 当前章 control 文件 `control_status=PASS`，且该 PASS 由最近一轮全章零问题字段支持，而不是只填写状态值。
+- 最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true`。
+- 若上一轮发现并修复过任何问题，已经追加新的整章复查轮次，而不是把修复轮直接标为 PASS。
 - 最近一轮记录中文独立阅读评分，且评分 >= 4/5。
 - 最近一轮记录 20 句随机朗读测试，明显拗口不超过 1 句，且关键句没有不断气问题。
 - 不存在把英文原名或英文括注塞进章节标题、副标题或目录题名的情况。

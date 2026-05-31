@@ -15,7 +15,7 @@
 
 逐章判断是否可以进入终稿。
 
-开始判断前，必须先读取 `qa/chapter_controls/{NNN_slug}.control.md`。若该文件不存在、最近一轮不是 `PASS`、`allow_next_chapter` 不是 `true`，或未记录全章检查范围、问题、修复和复查，本章直接 `FAIL`，不得写入 `chapters/final/`。
+开始判断前，必须先读取 `qa/chapter_controls/{NNN_slug}.control.md`。若该文件不存在，或最近一轮不是零问题整章 PASS，本章直接 `FAIL`，不得写入 `chapters/final/`。最近一轮必须记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true`；发现并修复问题的轮次不能直接 PASS。
 
 本门禁先审中文独立可读性，再审忠实、术语和工程项。准确但不像中文书、需要读者按英文句法倒推才能理解的译文，不得 PASS。
 

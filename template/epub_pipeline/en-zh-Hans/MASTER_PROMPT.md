@@ -42,7 +42,7 @@ LOCAL_SOURCE_FILE = {LOCAL_SOURCE_FILE}
 - 分章译文不得直接进入 chapters/final。
 - 每章翻译后必须立即创建并执行 `qa/chapter_controls/{NNN_slug}.control.md`，作为“每章译后，全量检查并修复节点”。该节点只检查当前章，必须检查该章正文、注释、图表/表格/公式/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目，也不得扩大成全书章节检查。
 - 每章 control 必须先做只看中文的独立可读性复查：中文独立阅读评分低于 4/5、20 句朗读中明显拗口超过 1 句，或关键句不断气时，即使事实大体准确也必须返工。
-- 若该章 control 最近一轮不是 `PASS`、`allow_next_chapter` 不是 `true`、仍有未关闭阻塞问题，或既非无问题也未达到 75 分，必须修复并追加同节点复查；更严格项目/profile 规则仍优先。未通过时不得进入下一章翻译、后续审校或 `chapters/final/`。复杂图表/资产问题应路由到资产/技术门禁并阻止终稿/构建/release，不让本节点无限循环。
+- 若该章 control 最近一轮不是全章零问题 PASS，必须修复并追加同节点复查；更严格项目/profile 规则仍优先。发现并修复问题的轮次只能记为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS。只有最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，才可进入下一章翻译、后续审校或 `chapters/final/`。复杂图表/资产问题应路由到资产/技术门禁并阻止终稿/构建/release，不让本节点无限循环。
 - 每章必须完成 fidelity/readability/imagery/terminology/gate 报告。
 - 只有 gate PASS 的章节才可写入 chapters/final。
 - 全部章节完成后必须进入预制作阶段 1，制定封面、metadata、字体、排版、标题、作者信息、版本说明等规格。

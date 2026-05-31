@@ -1,0 +1,2 @@
+type,source_term,target_term,category,definition,note_text,display_policy,exception_reason,forbidden_body_renderings,first_occurrence
+technical_term,Mars,火星,astronomy,"太阳系行星；在科幻作品中同时是叙事空间。","正文使用中文译名。",target_only,,,

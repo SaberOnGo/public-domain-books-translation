@@ -4,6 +4,12 @@ chapter_file: "{NNN_slug}.md"
 human_required: false
 human_feedback_status: "none" # none | requested_changes | approved
 control_status: "AUTO_PENDING" # AUTO_PENDING | REWORK_REQUIRED | PASS
+latest_round_status: "AUTO_PENDING" # AUTO_PENDING | FIXED_RECHECK_REQUIRED | PASS
+scope: "FULL_CHAPTER"
+issues_found:
+fixes_applied:
+unresolved_blocking_issues:
+allow_next_chapter: false
 return_to_stage: "07_translate_chapters"
 
 ## 中文说明
@@ -23,6 +29,8 @@ return_to_stage: "07_translate_chapters"
 5. 是否有专名、术语、地名、时间、数字错误。
 6. 是否保持段落层级和章节标题。
 7. 是否符合本书 `metadata/style_profile.md`。
+8. 是否完成整章中文成稿润色，读起来顺、不费劲，并在原文允许时有阅读兴趣。
+9. 是否为了通俗化损害了数学/天文学术语、证明链、概念层级或原书专业水准。
 
 ## Source Language / 原文语言
 
@@ -34,10 +42,12 @@ After each translated chapter is produced, the AI must create and read this chap
 - 不存在明显机械直译。
 - 不存在无依据加戏。
 - 不存在省字式提纲化表达。
-- 章节可读性评分不低于 85/100。
-- 忠实度评分不低于 90/100。
+- 最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true`。
+- 发现并修复问题的轮次没有直接 PASS，而是记录为 `FIXED_RECHECK_REQUIRED` 并追加新的整章复查。
 
 ## 输出 / Output
 
-- `control_status=PASS`：进入忠实度、可读性、术语、门禁审校。
+- `control_status=PASS`：仅当最近一轮同时记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，才允许进入下一章，并继续忠实度、可读性、术语和门禁审校。
 - `control_status=REWORK_REQUIRED`：仅该章回到 `07_translate_chapters` 重译。
+
+> 强制规则：存在本文件不等于通过门禁。发现任何问题并修复的轮次只能记为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS。只有最后一轮全章复查 `issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`，且 `latest_round_status: "PASS"`、`allow_next_chapter: true` 时，才可继续下一章。

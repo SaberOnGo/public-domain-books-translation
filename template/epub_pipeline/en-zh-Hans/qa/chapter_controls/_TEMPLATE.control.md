@@ -63,12 +63,13 @@ After each translated chapter is produced, the AI must create and read this chap
 - 不存在 `glossary/terms.csv.forbidden_body_renderings` 中列出的正文禁用写法。
 - 当前章图表、公式、表格、图片的文字接口不存在 reader-facing 错误；复杂资产问题已路由到资产/技术门禁。
 - 最近一轮全量检查覆盖了本模板列出的所有范围。
-- 最近一轮无未关闭阻塞问题，并且“无问题或总分不小于 75”；若项目/profile 要求更严格阈值，按更严格规则。
+- 最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true`。
+- 发现并修复问题的轮次没有直接 PASS，而是记录为 `FIXED_RECHECK_REQUIRED` 并追加新的整章复查。
 - `allow_next_chapter: true` 只能在 `control_status: "PASS"` 时填写。
 
 ## 输出 / Output
 
-- `control_status=PASS`：进入忠实度、可读性、术语、门禁审校；允许进入下一章翻译。
+- `control_status=PASS`：仅当最近一轮同时记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，才允许进入下一章翻译，并继续忠实度、可读性、术语和门禁审校。
 - `control_status=REWORK_REQUIRED`：仅该章回到 `07_translate_chapters` 重译。
 
 ## 轮次记录 / Round Records
@@ -76,6 +77,11 @@ After each translated chapter is produced, the AI must create and read this chap
 ### Round 1
 
 round_status: "AUTO_PENDING" # PASS | REWORK_REQUIRED
+latest_round_status:
+scope: "FULL_CHAPTER"
+issues_found:
+fixes_applied:
+unresolved_blocking_issues:
 score: null
 chinese_reading_score: null # 1-5
 read_aloud_sample_count: 20
@@ -117,3 +123,5 @@ asset_route_status: "none"
 复查结论：
 
 -
+
+> 强制规则：存在本文件不等于通过门禁。发现任何问题并修复的轮次只能记为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS。只有最后一轮全章复查 `issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`，且 `latest_round_status: "PASS"`、`allow_next_chapter: true` 时，才可继续下一章。通俗化与专业质量不是对立关系；译文要尽量顺读、有趣、不费劲，同时保持专业术语和原书水准。

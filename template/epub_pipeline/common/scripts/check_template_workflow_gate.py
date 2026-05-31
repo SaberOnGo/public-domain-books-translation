@@ -20,6 +20,7 @@ REQUIRED_SPEC_TOKENS = [
 
 REQUIRED_PACKAGE_SCRIPTS = [
     "preflight:template",
+    "check:chapter-controls",
     "cover:check",
     "reader:check",
     "lint:publication",
@@ -80,6 +81,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Check that a book project is using the standard template workflow gate.")
     parser.add_argument("--book-root", default=None, help="Book project root. Defaults to the parent of scripts/.")
     parser.add_argument("--write-report", action="store_true", help="Write output/template_workflow_gate.json.")
+    parser.add_argument("--chapter-controls-only", action="store_true", help="Only validate translated/final chapter control closure.")
     return parser.parse_args()
 
 
@@ -299,10 +301,127 @@ def pass_marker_found(text: str, marker_names: tuple[str, ...]) -> bool:
 
 def true_marker_found(text: str, marker_names: tuple[str, ...]) -> bool:
     for marker in marker_names:
-        pattern = rf"(?im)^\s*{re.escape(marker)}\s*[:=]\s*[\"']?true[\"']?\s*(?:#.*)?$"
+        pattern = rf"(?im)^\s*{re.escape(marker)}\s*[:=]\s*[`\"']?true[`\"']?\s*(?:#.*)?$"
         if re.search(pattern, text):
             return True
     return False
+
+
+def latest_scalar_value(text: str, marker: str) -> str | None:
+    pattern = rf"(?im)^\s*-?\s*{re.escape(marker)}\s*[:=]\s*[`\"']?([^`\"'\r\n#]+)[`\"']?\s*(?:#.*)?$"
+    matches = re.findall(pattern, text)
+    if not matches:
+        return None
+    return matches[-1].strip()
+
+
+def latest_int_value(text: str, marker: str) -> int | None:
+    value = latest_scalar_value(text, marker)
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except ValueError:
+        return None
+
+
+def split_round_blocks(text: str) -> list[str]:
+    starts = [match.start() for match in re.finditer(r"(?im)^\s{0,3}#{1,6}\s*round\b|^\s*-\s*round\s*[:=]", text)]
+    if not starts:
+        return []
+    blocks = []
+    for index, start in enumerate(starts):
+        end = starts[index + 1] if index + 1 < len(starts) else len(text)
+        blocks.append(text[start:end])
+    return blocks
+
+
+def check_chapter_control_closure(
+    book_root: Path,
+    control: Path,
+    issues: list[dict],
+    *,
+    translated_chapter: Path | None = None,
+) -> None:
+    if not control.exists():
+        detail = "Every translated/final chapter must have qa/chapter_controls/{chapter}.control.md."
+        if translated_chapter is not None:
+            detail = (
+                "Every chapters/translated chapter must immediately close the per-chapter post-translation "
+                "full-check gate before the next chapter may be translated."
+            )
+        add_issue(issues, "missing_chapter_post_translation_control", detail, rel(book_root, control))
+        return
+
+    text = control.read_text(encoding="utf-8", errors="replace")
+    latest_status = latest_scalar_value(text, "latest_round_status") or latest_scalar_value(text, "control_status") or latest_scalar_value(text, "status")
+    latest_allow = latest_scalar_value(text, "allow_next_chapter")
+    latest_scope = latest_scalar_value(text, "scope") or latest_scalar_value(text, "checked_scope")
+    latest_issues = latest_int_value(text, "issues_found")
+    latest_fixes = latest_int_value(text, "fixes_applied")
+    latest_unresolved = latest_int_value(text, "unresolved_blocking_issues")
+
+    if latest_status != "PASS":
+        add_issue(
+            issues,
+            "chapter_post_translation_control_not_pass",
+            "Latest chapter post-translation full-check round must set latest_round_status: PASS.",
+            rel(book_root, control),
+        )
+    if latest_allow != "true":
+        add_issue(
+            issues,
+            "chapter_post_translation_control_not_closed",
+            "Latest chapter post-translation full-check round must set allow_next_chapter: true.",
+            rel(book_root, control),
+        )
+    if latest_scope != "FULL_CHAPTER":
+        add_issue(
+            issues,
+            "chapter_post_translation_control_not_full_chapter",
+            "Latest chapter post-translation check must record scope: FULL_CHAPTER.",
+            rel(book_root, control),
+        )
+    if latest_issues != 0:
+        add_issue(
+            issues,
+            "chapter_post_translation_control_latest_round_has_issues",
+            "Latest full-chapter check must record issues_found: 0.",
+            rel(book_root, control),
+        )
+    if latest_fixes != 0:
+        add_issue(
+            issues,
+            "chapter_post_translation_control_latest_round_has_fixes",
+            "A round that applied fixes cannot be the PASS round; append a new full-chapter recheck with fixes_applied: 0.",
+            rel(book_root, control),
+        )
+    if latest_unresolved != 0:
+        add_issue(
+            issues,
+            "chapter_post_translation_control_has_unresolved_blockers",
+            "Latest full-chapter check must record unresolved_blocking_issues: 0.",
+            rel(book_root, control),
+        )
+    if not re.search(r"中文|可读|润色|流畅|通俗|polish|readability", text, re.IGNORECASE):
+        add_issue(
+            issues,
+            "chapter_post_translation_control_missing_readability_polish_scope",
+            "Control file must explicitly record target-language readability/polish/naturalness review, not only semantic fidelity.",
+            rel(book_root, control),
+        )
+
+    for block in split_round_blocks(text):
+        round_issues = latest_int_value(block, "issues_found") or 0
+        round_fixes = latest_int_value(block, "fixes_applied") or 0
+        round_status = latest_scalar_value(block, "latest_round_status") or latest_scalar_value(block, "status")
+        if (round_issues > 0 or round_fixes > 0) and round_status == "PASS":
+            add_issue(
+                issues,
+                "chapter_post_translation_control_fix_round_marked_pass",
+                "A round that found issues or applied fixes must be FIXED_RECHECK_REQUIRED, not PASS; append a fresh full-chapter recheck.",
+                rel(book_root, control),
+            )
 
 
 def reader_body_without_notes(text: str) -> str:
@@ -388,6 +507,14 @@ def check_glossary_schema_and_forbidden_renderings(book_root: Path, issues: list
 
 
 def check_chapter_quality_artifacts(book_root: Path, issues: list[dict]) -> None:
+    translated_dir = book_root / "chapters" / "translated"
+    controls_dir = book_root / "qa" / "chapter_controls"
+    if translated_dir.exists():
+        translated_chapters = sorted(path for path in translated_dir.glob("*.md") if not path.name.startswith("_"))
+        for chapter in translated_chapters:
+            control = controls_dir / f"{chapter.stem}.control.md"
+            check_chapter_control_closure(book_root, control, issues, translated_chapter=chapter)
+
     final_dir = book_root / "chapters" / "final"
     if not final_dir.exists():
         return
@@ -398,29 +525,7 @@ def check_chapter_quality_artifacts(book_root: Path, issues: list[dict]) -> None
     gates_dir = book_root / "qa" / "gates"
     for chapter in final_chapters:
         control = controls_dir / f"{chapter.stem}.control.md"
-        if not control.exists():
-            add_issue(
-                issues,
-                "missing_chapter_post_translation_control",
-                "Every chapters/final chapter must have qa/chapter_controls/{chapter}.control.md before it can enter final.",
-                rel(book_root, control),
-            )
-        else:
-            text = control.read_text(encoding="utf-8", errors="replace")
-            if not pass_marker_found(text, ("control_status", "status")):
-                add_issue(
-                    issues,
-                    "chapter_post_translation_control_not_pass",
-                    "Chapter post-translation full check must be PASS before the chapter can remain in chapters/final or the workflow can continue.",
-                    rel(book_root, control),
-                )
-            if not true_marker_found(text, ("allow_next_chapter",)):
-                add_issue(
-                    issues,
-                    "chapter_post_translation_control_not_closed",
-                    "Chapter post-translation full check must set allow_next_chapter: true before the chapter can remain in chapters/final or the workflow can continue.",
-                    rel(book_root, control),
-                )
+        check_chapter_control_closure(book_root, control, issues)
         gate = gates_dir / f"{chapter.stem}.gate.md"
         if not gate.exists():
             add_issue(
@@ -447,13 +552,14 @@ def main() -> None:
     issues: list[dict] = []
     state_data = read_state_data(book_root, issues)
 
-    check_numbered_project_path(book_root, repo_root, state_data, issues)
-    check_state(book_root, repo_root, state_data, issues)
-    check_production_spec(book_root, state_data, issues)
-    check_local_references(book_root, issues)
-    check_private_use_overlay_files(book_root, state_data, issues)
-    check_package_scripts(book_root, state_data, issues)
-    check_glossary_schema_and_forbidden_renderings(book_root, issues)
+    if not args.chapter_controls_only:
+        check_numbered_project_path(book_root, repo_root, state_data, issues)
+        check_state(book_root, repo_root, state_data, issues)
+        check_production_spec(book_root, state_data, issues)
+        check_local_references(book_root, issues)
+        check_private_use_overlay_files(book_root, state_data, issues)
+        check_package_scripts(book_root, state_data, issues)
+        check_glossary_schema_and_forbidden_renderings(book_root, issues)
     check_chapter_quality_artifacts(book_root, issues)
 
     report = {

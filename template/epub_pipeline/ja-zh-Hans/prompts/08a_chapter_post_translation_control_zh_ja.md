@@ -21,14 +21,16 @@
 
 该文件必须记录：
 
-- 本章译后自检结果。
+- 本章译后全量检查结果，必须覆盖当前整章，不得只检查抽样段落、上一轮问题点或用户点名项目。
+- 日译中忠实度、漏译、误译、无依据增译。
+- 中文可读性、成稿级润色、自然流畅度、叙述节奏和通俗顺读；译文应尽量读得顺、有趣、不费劲，但不得为了通俗化而损害专业术语、概念层级、叙事风格或原书专业水准。
 - 标题人名检查结果：章节标题/副标题/目录题名只使用中文译名或本书确定的中文呈现方式；标题中的人名不计入“正文首次出现”；日文原名、读音或括注只出现在正文第一次自然出现处、译注、术语表或书籍信息页。
 - 日语底本文字形态检查结果：本章若涉及振假名、旧字、注记、OCR 疑难或异读，已和 `qa/textual/japanese_textual_notes.md` 对齐。
 - 官能、暴力、病态心理或强制关系边界检查结果。
 - 是否有人类反馈。
 - 是否需要回到本章重译。
-- 关键修改项。
-- 最终 PASS/FAIL。
+- 每一轮发现的问题、修复项、复查结论、总分和是否允许进入下一章。
+- 最终 `latest_round_status` 与 `allow_next_chapter`。
 
 ## 人类反馈 / Human Feedback
 
@@ -45,9 +47,26 @@
 - 通过则 `PASS`。
 - 不通过则自动返工，不得假装通过。
 
-## 并行 / Parallelism
+## 轮次闭环 / Round Closure
 
-章节可并行翻译、并行控制。每章 control 文件互不覆盖。
+每一轮都必须是当前章全量检查。发现任何问题后必须先修复，但该轮只能记录为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS；随后必须追加一轮新的整章全量检查。若新一轮仍发现问题，继续修复并追加下一轮。
+
+最后一轮必须同时记录：
+
+```text
+scope: "FULL_CHAPTER"
+issues_found: 0
+fixes_applied: 0
+unresolved_blocking_issues: 0
+latest_round_status: "PASS"
+allow_next_chapter: true
+```
+
+存在 control 文件、readability 文件或 gate 文件，不等于通过门禁。
+
+## 串行优先 / Sequential Closure
+
+默认逐章闭环。上一章未达到上述最后一轮零问题 PASS 时，不得进入下一章翻译。只有项目明确批准并行批处理时，才可并行处理不同章节；即便并行，每章也必须独立零问题 PASS 后才可进入后续流程。
 
 ## 输出 / Output
 
@@ -56,7 +75,8 @@
 
 ## PASS 条件 / PASS Criteria
 
-- 所有章节均有 control 文件。
-- 所有 control 文件 `control_status=PASS`。
+- 当前章有 control 文件。
+- 最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true`。
+- 若上一轮发现并修复过任何问题，已经追加新的整章复查轮次，而不是把修复轮直接标为 PASS。
 - 不存在把日文原名、读音、罗马字或解释性括注塞进章节标题、副标题或目录题名的情况。
 - 任何用户明确指出的问题已回写并修正。

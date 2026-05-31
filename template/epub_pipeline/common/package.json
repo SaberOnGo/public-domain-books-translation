@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "preflight:template": "node scripts/run_python.js scripts/check_template_workflow_gate.py --write-report",
+    "check:chapter-controls": "node scripts/run_python.js scripts/check_template_workflow_gate.py --chapter-controls-only --write-report",
     "cover:check": "node scripts/run_python.js scripts/check_cover_output_assets.py --write-report",
     "lint:publication": "node scripts/publication_lint.js --write-report",
     "lint:assets": "node scripts/asset_manifest_check.js --write-report",

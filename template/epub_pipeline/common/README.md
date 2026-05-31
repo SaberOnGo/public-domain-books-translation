@@ -143,17 +143,21 @@ Terminology must not clutter the body with source terms by default. Use the targ
 
 `glossary/terms.csv` 必须包含 `display_policy`、`exception_reason`、`forbidden_body_renderings` 等术语呈现字段。历史术语、制度名、身份称谓、专业术语和文化负载词等高风险术语，必须在分章翻译前列出正文禁用写法。若终稿正文仍出现术语表列出的禁用写法，`preflight:template` 可以拒绝继续。
 
-If the gate fails, fix the chapter and append another check round in the same control file until the latest round has no unresolved blocking issue and is either issue-free or scores at least 75, subject to any stricter project/profile rule. A score cannot override P0/P1/P2, reader confusion, factual/terminology/text-interface errors, or hard-gate failures. A failed chapter may not enter the next chapter translation, `chapters/final/`, or proceed as if the chapter were complete.
+If any round finds any issue that requires a fix, including fidelity, terminology, reader confusion, text-interface errors, target-language awkwardness, weak polish, or over-simplification that damages specialist quality, fix the chapter but mark that round as `FIXED_RECHECK_REQUIRED`. It cannot be the PASS round. Append a new full-chapter recheck in the same control file. The workflow may continue only when the latest round records `scope: FULL_CHAPTER`, `issues_found: 0`, `fixes_applied: 0`, `unresolved_blocking_issues: 0`, `latest_round_status: PASS`, and `allow_next_chapter: true`. A failed or just-fixed chapter may not enter the next chapter translation, `chapters/final/`, or proceed as if the chapter were complete.
 
-若门禁失败，必须修复该章，并在同一 control 文件中追加复查轮次，直到最近一轮无未关闭阻塞问题，并且“无问题或评分不小于 75 分”；若项目/profile 有更严格规则，按更严格规则。分数不能抵消 P0/P1/P2、读者难以理解、事实/术语/文字接口错误或模板硬门禁失败。失败章节不得进入下一章翻译、`chapters/final/`，流程也不得把该章当作完成。
+若任一轮发现需要修复的问题，包括忠实度、术语、读者理解、文字接口、目标语翻译腔、润色不足，或为了通俗而损害专业质量，都必须先修复该章；但该轮只能记为 `FIXED_RECHECK_REQUIRED`，不能作为 PASS 轮。必须在同一 control 文件追加新一轮整章复查。只有最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，流程才可继续。失败或刚修复的章节不得进入下一章翻译、`chapters/final/`，流程也不得把该章当作完成。
 
-Figures, tables, formulas, and images are handled here as a text-interface and routing check, not as an unbounded asset-production loop. Fix captions, labels, references, alt text, variables, units, and reader explanations in this node when they affect the current chapter's readability. Route redraw, OCR, cropping, numeric validation, formula layout, resource-path, or manifest issues to the asset/technical gate; routed issues block final/build/release, but do not force endless retries of the translation text gate once the current chapter text is understandable and scores at least 75.
+Plain-language readability and professional quality are not opposites. A specialist book should be as clear, smooth, and engaging as the source permits, while preserving its specialist terms, concepts, evidence chain, and intellectual level.
 
-图表、表格、公式和图片在本节点只做“文字接口与风险分流”检查，不作为无限资产制作循环。影响当前章可读性的图题、表题、正文引用、alt text、变量、单位和读者说明必须在本节点修复。重绘、OCR、裁剪、数值校验、公式排版、资源路径或 manifest 问题应路由到资产/技术门禁；已路由的问题会阻止终稿/构建/release，但在当前章文字可理解且评分不小于 75 时，不应让译后文字门禁无限重试。
+通俗、顺读、有趣与专业质量不是对立关系。专业书应在原文允许范围内尽量清楚、顺畅、不费劲，同时保持术语、概念层级、证据链和知识水准；不得为了通俗而把专业内容改扁或改错。
 
-`preflight:template` must reject final chapters whose matching control file is missing, not PASS, or does not set `allow_next_chapter: true`.
+Figures, tables, formulas, and images are handled here as a text-interface and routing check, not as an unbounded asset-production loop. Fix captions, labels, references, alt text, variables, units, and reader explanations in this node when they affect the current chapter's readability. Route redraw, OCR, cropping, numeric validation, formula layout, resource-path, or manifest issues to the asset/technical gate; routed asset issues block final/build/release, but they do not turn the chapter text gate into an endless asset-production loop once the current chapter text has a latest full-chapter zero-issue PASS.
 
-`preflight:template` 必须拒绝缺少对应 control 文件、control 未 PASS，或没有设置 `allow_next_chapter: true` 的终稿章节。
+图表、表格、公式和图片在本节点只做“文字接口与风险分流”检查，不作为无限资产制作循环。影响当前章可读性的图题、表题、正文引用、alt text、变量、单位和读者说明必须在本节点修复。重绘、OCR、裁剪、数值校验、公式排版、资源路径或 manifest 问题应路由到资产/技术门禁；已路由的资产问题会阻止终稿/构建/release，但在当前章文字最近一轮已经达到全章零问题 PASS 后，不应把译后文字门禁变成无限资产制作循环。
+
+`preflight:template` must reject translated chapters whose matching control file is missing or whose latest full-chapter round is not a zero-issue PASS. For final chapters, it must also reject missing or non-PASS chapter gates.
+
+`preflight:template` 必须拒绝缺少对应 control 文件，或最近整章轮次不是零问题 PASS 的已译章节。对终稿章节，还必须拒绝缺少章节门禁或章节门禁未 PASS 的情况。
 
 ## Stratified Random Spot Check / 分层随机抽检
 

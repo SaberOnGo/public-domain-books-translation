@@ -12,8 +12,8 @@ updated_at: 2026-05-28
 - 引入术语控制级别 `term_control`：`locked` 硬锁、`preferred` 可自然变体、`avoid` 禁用、`note_only` 只进注释或术语表，避免术语表把普通中文句子锁死。
 - 明确 GPT 强模型可用于 A/B/C/D 多候选融合：章节开头、结尾、关键场景、关键对话、术语重段和已发现机械段落必须内部融合后只写入终稿候选。
 - 将每章节译后控制升级为“每章译后，全量检查并修复节点”硬门禁；必须覆盖 metadata、nav、目录、正文、注释、图表、公式、表格、图片、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目。
-- 未通过该节点的章节必须修复并追加同节点复查；最近一轮未 `PASS` 或未设置 `allow_next_chapter: true` 时，不得进入下一章翻译、后续审校、`chapters/final/` 或 EPUB 构建。
-- `preflight:template` 现在会拒绝缺少 PASS 译后控制、缺少 `allow_next_chapter: true` 或缺少 PASS 章节门禁的终稿章节。
+- 未通过该节点的章节必须修复并追加同节点复查；发现并修复问题的轮次只能记为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS。最近一轮未记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，不得进入下一章翻译、后续审校、`chapters/final/` 或 EPUB 构建。
+- `preflight:template` 现在会拒绝缺少零问题 PASS 译后控制的已译章节；对终稿章节，还会拒绝缺少 PASS 章节门禁的情况。
 - 新增术语原词呈现硬规则：历史术语、制度名、身份称谓、专业术语和文化负载词正文默认用中文译名或意译；原词、定义和译名理由优先放本章译注、章末注或术语表。正文 `中文译名（source term）` 只能作为少量例外并记录理由。
 - 强化术语表机器可读字段：`display_policy`、`note_text`、`exception_reason`、`forbidden_body_renderings`。每章译后控制必须按禁用写法扫描正文；`preflight:template` 会对终稿章节做兜底检查。
 - 新增每章节译后控制流程。

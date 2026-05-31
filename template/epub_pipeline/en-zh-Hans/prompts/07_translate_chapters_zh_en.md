@@ -83,7 +83,7 @@ A 为忠实版，B 为中文阅读版，C 为文学润色版，D 为融合终稿
 
 这是“每章译后，全量检查并修复节点”，不是可选自检。该节点必须检查 metadata、nav、目录、正文、注释、图表、公式、表格、图片、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目。
 
-如果该章 control 最近一轮不是 `PASS`，或 `allow_next_chapter` 不是 `true`，AI 必须修复并追加同节点复查，不得进入下一章翻译、后续审校或 `chapters/final/`。如果用户对该章不满意，AI 必须只回到该章重译，不得让该章继续进入后续审校。
+如果该章 control 最近一轮不是全章零问题 PASS，AI 必须修复并追加同节点复查，不得进入下一章翻译、后续审校或 `chapters/final/`。发现并修复问题的轮次只能记为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS；只有最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，流程才可继续。如果用户对该章不满意，AI 必须只回到该章重译，不得让该章继续进入后续审校。
 
 ## 状态 / State
 

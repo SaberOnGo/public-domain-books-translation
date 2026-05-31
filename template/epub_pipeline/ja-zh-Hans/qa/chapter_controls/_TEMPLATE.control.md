@@ -4,6 +4,12 @@ chapter_file: "{NNN_slug}.md"
 human_required: false
 human_feedback_status: "none" # none | requested_changes | approved
 control_status: "AUTO_PENDING" # AUTO_PENDING | REWORK_REQUIRED | PASS
+latest_round_status: "AUTO_PENDING" # AUTO_PENDING | FIXED_RECHECK_REQUIRED | PASS
+scope: "FULL_CHAPTER"
+issues_found:
+fixes_applied:
+unresolved_blocking_issues:
+allow_next_chapter: false
 return_to_stage: "07_translate_chapters"
 
 ## 中文说明
@@ -25,6 +31,8 @@ return_to_stage: "07_translate_chapters"
 7. 是否符合本书 `metadata/style_profile.md`。
 8. 是否按 `metadata/japanese_source_profile.md` 和 `qa/textual/japanese_textual_notes.md` 处理旧字、振假名、底本注、OCR 疑难和异读。
 9. 是否把官能、暴力、病态心理或强制关系保持在原作文学边界内。
+10. 是否完成整章中文成稿润色，读起来顺、不费劲，并在原作允许时有阅读兴趣。
+11. 是否为了通俗化损害了术语、概念层级、叙事风格或原书专业水准。
 
 ## English
 
@@ -36,11 +44,13 @@ After each translated chapter is produced, the AI must create and read this chap
 - 不存在明显机械直译。
 - 不存在无依据加戏。
 - 不存在省字式提纲化表达。
-- 章节可读性评分不低于 85/100。
-- 忠实度评分不低于 90/100。
+- 最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true`。
+- 发现并修复问题的轮次没有直接 PASS，而是记录为 `FIXED_RECHECK_REQUIRED` 并追加新的整章复查。
 - 日语底本文字形态、敬语/称谓和官能/心理边界没有未处理风险。
 
 ## 输出 / Output
 
-- `control_status=PASS`：进入忠实度、可读性、术语、门禁审校。
+- `control_status=PASS`：仅当最近一轮同时记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，才允许进入下一章，并继续忠实度、可读性、术语和门禁审校。
 - `control_status=REWORK_REQUIRED`：仅该章回到 `07_translate_chapters` 重译。
+
+> 强制规则：存在本文件不等于通过门禁。发现任何问题并修复的轮次只能记为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS。只有最后一轮全章复查 `issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`，且 `latest_round_status: "PASS"`、`allow_next_chapter: true` 时，才可继续下一章。

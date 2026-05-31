@@ -98,7 +98,7 @@ Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `
 - 预翻译未 `PASS`，不得批量分章翻译。
 - 分章翻译 prompt 必须瘦身，只输出译文；不得在同一次翻译调用里塞入 release、EPUB、lint、QA 文件结构或版本化产物规则，也不得把 QA 报告混入译文正文。
 - 每章译后必须立即只针对该章执行“每章译后，全量检查并修复节点”，生成 `qa/chapter_controls/{NNN_slug}.control.md`。该节点必须覆盖当前章正文、注释、图表/公式/表格/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目，也不得扩大成全书章节检查。
-- 每章译后 control 最近一轮未 `PASS`、`allow_next_chapter` 不是 `true`、仍有未关闭阻塞问题，或既非无问题也未达到 75 分时，不得进入下一章翻译、章节审校或 `chapters/final/`；更严格项目/profile 规则仍优先。修复后必须在同一 control 文件追加复查轮次，直到最近一轮通过。复杂图表/资产问题路由到资产/技术门禁并阻止终稿/构建/release，不让本节点无限循环。
+- 每章译后 control 最近一轮不是全章零问题 PASS 时，不得进入下一章翻译、章节审校或 `chapters/final/`；更严格项目/profile 规则仍优先。发现并修复问题的轮次只能记为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS；必须在同一 control 文件追加新的整章复查。只有最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，流程才可继续。复杂图表/资产问题路由到资产/技术门禁并阻止终稿/构建/release，不让本节点无限循环。
 - 中文独立阅读评分低于 4/5、20 句朗读中明显拗口超过 1 句、或关键句不断气时，即使事实准确也不得进入下一章或终稿。
 - 章节没有意象词审计，不得进入 `chapters/final/`。
 - 章节没有质量门禁 `PASS`，不得进入 `chapters/final/`。

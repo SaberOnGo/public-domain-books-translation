@@ -155,7 +155,7 @@
 - `blocking_issues`：P0/P1/P2、事实/术语/当前章文字接口错误、读者不可理解、模板硬门禁失败。
 - `fixes_applied`：修复摘要和文件位置。
 - `remaining_risk`：剩余风险或明确无剩余阻塞。
-- `allow_next_chapter`：`true` 只可在最近一轮无未关闭阻塞问题，并且“无问题或评分不小于 75 分”时写入；若项目/profile 有更严格规则，按更严格规则。分数不能抵消 P0/P1/P2、读者难以理解、事实/术语/文字接口错误或模板硬门禁失败。
+- `allow_next_chapter`：`true` 只可在最近一轮同时记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS` 时写入；若项目/profile 有更严格规则，按更严格规则。任何评分、主观印象或“已经修过”都不能抵消 P0/P1/P2、读者难以理解、事实/术语/文字接口错误、模板硬门禁失败、中文润色不足，或为了通俗而损害专业质量。
 
 图表、表格、公式和图片在本节点只做当前章文字接口检查与资产分流。图题、表题、正文引用、alt text、变量、单位和读者说明影响本章理解时，必须在本节点修复；重绘、OCR、裁剪、数值复核、公式排版、资源路径或 manifest 问题应写入 `qa/assets/{chapter}.asset_followup.md` 或 `qa/technical/{chapter}.diagram_table_audit.md`。已路由问题阻止 `chapters/final/`、构建和 release，但不让当前章译后文字门禁无限循环。
 
