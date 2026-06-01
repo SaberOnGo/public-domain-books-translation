@@ -23,7 +23,7 @@ Example:
 
 ```powershell
 cd books
-npm run new:book -- "政治生存的逻辑_布埃诺德梅斯基塔" --source-target en-zh-Hans
+npm run new:book -- "天文学大成_托勒密" --source-target grc-zh-Hans
 ```
 
 If the book belongs to a special profile, overlay the matching `profiles/{profile-target}/` template after the language-pair template. Private-use projects then overlay `modes/private_use/` last. For example, a Greek-to-Simplified-Chinese edition of a classical astronomy text should use:

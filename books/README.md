@@ -1,8 +1,8 @@
 # Shared Book Tooling / 书籍共享工具
 
-The concrete book projects live under target-language directories, such as `zh-Hans/12_政治生存的逻辑_布埃诺德梅斯基塔/`.
+The concrete book projects live under target-language directories, such as `zh-Hans/12_天文学大成_托勒密/`.
 
-具体书籍工程按目标语言分目录存放，例如 `zh-Hans/12_政治生存的逻辑_布埃诺德梅斯基塔/`。
+具体书籍工程按目标语言分目录存放，例如 `zh-Hans/12_天文学大成_托勒密/`。
 
 ## New Book Directories / 新书目录
 
@@ -10,19 +10,19 @@ Create new projects through the shared script so the numeric prefix is assigned 
 
 ```powershell
 cd books
-npm run new:book -- "政治生存的逻辑_布埃诺德梅斯基塔" --source-target en-zh-Hans
+npm run new:book -- "天文学大成_托勒密" --source-target grc-zh-Hans
 ```
 
 新书必须通过共享脚本创建，这样数字前缀才会按目标语言目录自动递增：
 
 ```powershell
 cd books
-npm run new:book -- "政治生存的逻辑_布埃诺德梅斯基塔" --source-target en-zh-Hans
+npm run new:book -- "天文学大成_托勒密" --source-target grc-zh-Hans
 ```
 
-The result is `books/{target}/{number}_{target_language_title}_{target_language_author}/`, for example `books/zh-Hans/12_政治生存的逻辑_布埃诺德梅斯基塔/`. Use the target-language title and author after the numeric prefix. Do not manually choose the number unless you are repairing a documented migration.
+The result is `books/{target}/{number}_{target_language_title}_{target_language_author}/`, for example `books/zh-Hans/12_天文学大成_托勒密/`. Use the target-language title and author after the numeric prefix. Do not manually choose the number unless you are repairing a documented migration.
 
-结果目录是 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，例如 `books/zh-Hans/12_政治生存的逻辑_布埃诺德梅斯基塔/`。数字前缀后使用目标语言可读书名和作者名。除非是在修复有记录的迁移问题，否则不要手工指定数字。
+结果目录是 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，例如 `books/zh-Hans/12_天文学大成_托勒密/`。数字前缀后使用目标语言可读书名和作者名。除非是在修复有记录的迁移问题，否则不要手工指定数字。
 
 Current Simplified Chinese book projects:
 

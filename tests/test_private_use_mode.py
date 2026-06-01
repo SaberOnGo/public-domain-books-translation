@@ -255,7 +255,7 @@ class PrivateUseModeTests(unittest.TestCase):
                 [
                     sys.executable,
                     str(repo / "books" / "scripts" / "create_book_project.py"),
-                    "政治生存的逻辑：最好与最坏？_布埃诺德梅斯基塔",
+                    "天文学大成：第一卷？_托勒密",
                     "--source-target",
                     "en-zh-Hans",
                 ],
@@ -266,8 +266,8 @@ class PrivateUseModeTests(unittest.TestCase):
             )
 
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn("books/zh-Hans/1_政治生存的逻辑_最好与最坏_布埃诺德梅斯基塔", result.stdout)
-            self.assertTrue((repo / "books" / "zh-Hans" / "1_政治生存的逻辑_最好与最坏_布埃诺德梅斯基塔").is_dir())
+            self.assertIn("books/zh-Hans/1_天文学大成_第一卷_托勒密", result.stdout)
+            self.assertTrue((repo / "books" / "zh-Hans" / "1_天文学大成_第一卷_托勒密").is_dir())
 
     def test_template_workflow_gate_accepts_private_path_only_for_private_use_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

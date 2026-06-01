@@ -46,7 +46,7 @@ def parse_args() -> argparse.Namespace:
         "book_slug",
         help=(
             "Directory slug without the numeric prefix. Use target-language "
-            "book title plus author, for example 政治生存的逻辑_布埃诺德梅斯基塔."
+            "book title plus author, for example 天文学大成_托勒密."
         ),
     )
     parser.add_argument(
