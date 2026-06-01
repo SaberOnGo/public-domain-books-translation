@@ -3,9 +3,9 @@
 private_use_spec_status: "DRAFT" # DRAFT | PASS | FAIL
 publication_mode: "private_use"
 
-This addendum is required only for `books/private/{target}/{number}_{slug}/` projects. It supplements the shared production spec and overrides public-domain/public-release wording where necessary.
+This addendum is required only for `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` projects. It supplements the shared production spec and overrides public-domain/public-release wording where necessary.
 
-本补充规格只用于 `books/private/{target}/{number}_{slug}/` 工程。它补充通用制作规格，并在必要处覆盖公版/公开发布措辞。
+本补充规格只用于 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 工程。它补充通用制作规格，并在必要处覆盖公版/公开发布措辞。
 
 ## Private Source / 私人书源
 

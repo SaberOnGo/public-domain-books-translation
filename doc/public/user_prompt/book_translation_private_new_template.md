@@ -2,7 +2,7 @@
 
 适用场景：用户提供本地电子书/文本文件，明确声明“仅个人学习自用、不传播、不商业使用”，但仓库里还没有对应语言方向模板，例如想做 `fr-zh-Hans`，而 `template/epub_pipeline/fr-zh-Hans/` 不存在。
 
-这个 prompt 允许创建可复用的语言方向模板并提交到 GitHub，但具体非公版书籍工程必须创建在 `books/private/{target}/{number}_{slug}/` 下。`books/private/` 被 Git 忽略，里面的原文、译文、QA、EPUB 和 book-specific metadata 不得发布到 GitHub。
+这个 prompt 允许创建可复用的语言方向模板并提交到 GitHub，但具体非公版书籍工程必须创建在 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下。`books/private/` 被 Git 忽略，里面的原文、译文、QA、EPUB 和 book-specific metadata 不得发布到 GitHub。
 
 用户入口必须包含：
 
@@ -39,7 +39,7 @@
    - `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md`
    - 匹配的 `template/epub_pipeline/targets/{target}/`
    - 至少一个现有语言方向模板，例如 `en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans`，只用于学习目录结构，不得照搬源语言规则
-3. 根据本地文件、书名、作者和目标语言，自动判断源语言、目标语言标签、source-target 名称和项目 slug。
+3. 根据本地文件、书名、作者和目标语言，自动判断源语言、目标语言标签、source-target 名称和目录名。目录名必须使用目标语言书名和目标语言作者名。
 4. 确认 `template/epub_pipeline/{source-target}` 不存在。若已存在，改用 `doc/public/user_prompt/book_translation_private_existing_template.md`。
 5. 如果 `template/epub_pipeline/targets/{target}/` 不存在，先停止并报告需要创建目标语言质量框架；不能把 `zh-Hans` 规则当默认规则。
 
@@ -58,10 +58,10 @@
 
 ```powershell
 cd books
-npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{用户本地文件路径}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
+npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {source-target} --mode private-use --local-source-file "{用户本地文件路径}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
 ```
 
-13. 工程必须位于 `books/private/{target}/{next_number}_{slug}/`。如果脚本没有创建到 `books/private/`，必须停止并修正。
+13. 工程必须位于 `books/private/{target}/{next_number}_{目标语言书名}_{目标语言作者名}/`。如果脚本没有创建到 `books/private/`，必须停止并修正。
 14. create_book_project.py 必须先复制 common，再 overlay 新语言方向模板。所有后续具体书籍文件只能写入这个私人工程目录。
 15. create_book_project.py 还必须最后 overlay `template/epub_pipeline/modes/private_use/`。如果工程内缺少 `references/private_use_cover_policy.md`、`references/private_use_frontmatter_policy.md`、`references/private_use_artifact_policy.md` 或私人门禁脚本，必须停止修正。
 
@@ -98,7 +98,7 @@ npm run new:book -- {book_id_slug} --source-target {source-target} --mode privat
 
 27. 最终报告必须包含：
     - 新建语言方向模板路径
-    - 私人工程路径 `books/private/{target}/{number}_{slug}/`
+    - 私人工程路径 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`
     - 本地书源文件名和 SHA256，不要暴露不必要的本机绝对路径
     - `metadata/private_use_declaration.md` 路径
     - 私人 EPUB 产物路径

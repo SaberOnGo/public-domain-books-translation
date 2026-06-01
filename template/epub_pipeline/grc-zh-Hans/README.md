@@ -42,15 +42,15 @@ This template handles Ancient Greek source-language issues for Simplified Chines
 
 严禁直接在模板原目录中制作具体书籍。执行任何书籍项目前，AI 必须先把 `template/epub_pipeline/common` 与 `template/epub_pipeline/grc-zh-Hans` 合并复制到独立书籍工程目录，例如：
 
-`books/zh-Hans/{number}_{book_id_slug}/`
+`books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`
 
 如果启用 profile，则在语言方向模板之后再覆盖复制 profile：
 
-`common -> grc-zh-Hans -> profiles/{profile-target} -> books/zh-Hans/{number}_{book_id_slug}/`
+`common -> grc-zh-Hans -> profiles/{profile-target} -> books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`
 
 之后所有抓取、研究、翻译、QA、EPUB 输出都只能写入新书籍工程目录。
 
-如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须是定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地书源并声明个人自用、不传播、不商业使用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{book_id_slug}/`，并最后叠加 `template/epub_pipeline/modes/private_use/` 覆盖层。
+如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须是定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地书源并声明个人自用、不传播、不商业使用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，并最后叠加 `template/epub_pipeline/modes/private_use/` 覆盖层。
 
 Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `npm install`，再进入具体书籍目录运行 `npm run lint:publication`、`npm run build:epub`、`npm run check:epub`。本模板的 `package.json` 只提供本书脚本，依赖统一来自共享的 `books/node_modules/`，脚本必须向上查找共享依赖，不能假定书籍目录直接位于 `books/` 下。
 

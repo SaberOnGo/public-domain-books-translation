@@ -18,10 +18,10 @@
 - 目标语言：{用户填写}
 - 自动选择 prompt 规则：没有源语言模板时执行本文件；已有源语言模板时改用 `doc/public/user_prompt/book_translation_existing_template.md`
 
-除此之外，源语言、可靠公版/授权来源 URL 或私人本地书源模式、source-target 语言方向、目标语言标签、项目 slug、是否需要 profile、建书目录编号，都必须由你自动判断、自动记录。不要要求用户补充这些技术字段，除非版权状态、来源权利、目标语言规则无法确认，或用户请求非公版私人自用但没有提供本地书源文件。
+除此之外，源语言、可靠公版/授权来源 URL 或私人本地书源模式、source-target 语言方向、目标语言标签、目录名、是否需要 profile、建书目录编号，都必须由你自动判断、自动记录。不要要求用户补充这些技术字段，除非版权状态、来源权利、目标语言规则无法确认，或用户请求非公版私人自用但没有提供本地书源文件。
 
 任务目标：
-在源语言方向模板尚不存在的情况下，先创建最小可复用的 `{source-target}` 语言方向模板，再用该模板创建并完成一本 EPUB 书籍项目。公开项目最终必须生成 `books/{target}/{number}_{slug}/output/release/` 下 latest_status=PASS 的可发布 EPUB；私人自用项目必须位于被 Git 忽略的 `books/private/{target}/{number}_{slug}/`，其版本化 EPUB 只是个人自用产物，不得发布到 GitHub。
+在源语言方向模板尚不存在的情况下，先创建最小可复用的 `{source-target}` 语言方向模板，再用该模板创建并完成一本 EPUB 书籍项目。公开项目最终必须生成 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/output/release/` 下 latest_status=PASS 的可发布 EPUB；私人自用项目必须位于被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，其版本化 EPUB 只是个人自用产物，不得发布到 GitHub。
 
 第一阶段：读取规则与确认缺口
 
@@ -72,7 +72,7 @@
 第三阶段：验证模板可建书
 
 13. 运行 dry-run 验证 `books/scripts/create_book_project.py` 可以使用新模板创建项目。
-14. dry-run 通过后，公开项目正式创建 `books/{target}/{next_number}_{slug}/`；私人自用项目使用 `--mode private-use --local-source-file ... --private-use-declaration ...` 创建 `books/private/{target}/{next_number}_{slug}/`。slug 由你根据书名和作者自动生成。
+14. dry-run 通过后，公开项目正式创建 `books/{target}/{next_number}_{目标语言书名}_{目标语言作者名}/`；私人自用项目使用 `--mode private-use --local-source-file ... --private-use-declaration ...` 创建 `books/private/{target}/{next_number}_{目标语言书名}_{目标语言作者名}/`。目录名由你根据目标语言书名和作者名自动生成：目标语言是中文就使用中文，目标语言是日语就使用日语，目标语言是英语就使用英语。
 15. create_book_project.py 必须先复制 common，再 overlay 新语言方向模板。私人自用项目还必须最后 overlay `template/epub_pipeline/modes/private_use/`。所有后续具体书籍文件只能写入新书目录。
 
 第四阶段：自动查找来源与版权核查

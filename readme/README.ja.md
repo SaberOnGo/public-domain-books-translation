@@ -34,10 +34,10 @@ AI クライアントに渡す最小 prompt：
 
 権利または出典証拠を確認できない場合を除き、技術項目を私に入力させないでください。信頼できるパブリックドメイン原文を自動で探し、書籍プロジェクトを作成し、翻訳、レビュー、EPUB ビルド、層化ランダム抜き取り検査、release まで完了してください。
 LifeBook Digest の利用が明示されていない場合は自動判断します。長編小説、専門書、哲学書は EPUB 出力後に Digest を生成し、短編小説、自然科学系、その他の種類では生成しません。
-Digest を生成する場合は、書籍プロジェクトのルートに `digest.config.json`（`enabled=true`、`merge_into_epub=true`）を書き、リポジトリルートから `python -m digest.lifebook_digest --book-root books/{target}/{number}_{book_id_slug}` を実行してください。出力は標準 EPUB のままです。
+Digest を生成する場合は、書籍プロジェクトのルートに `digest.config.json`（`enabled=true`、`merge_into_epub=true`）を書き、リポジトリルートから `python -m digest.lifebook_digest --book-root books/{target}/{number}_{目标语言书名}_{目标语言作者名}` を実行してください。出力は標準 EPUB のままです。
 ```
 
-パブリックドメインではない本は、ローカルの private-use モードだけで扱います。ユーザーは自分のローカル電子書籍ファイルを提供し、個人学習用のみ、再配布なし、商用利用なしと明示する必要があります。AI は `books/private/{target}/{number}_{book_slug}/` に private project を作成します。スクリプトは `template/epub_pipeline/modes/private_use/` を重ね、private-use の cover、frontmatter、artifact ルールを公開用ルールから分離します。`books/private/` は Git で無視され、原文、訳文、QA、EPUB、private artifact を GitHub に公開してはいけません。
+パブリックドメインではない本は、ローカルの private-use モードだけで扱います。ユーザーは自分のローカル電子書籍ファイルを提供し、個人学習用のみ、再配布なし、商用利用なしと明示する必要があります。AI は `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` に private project を作成します。スクリプトは `template/epub_pipeline/modes/private_use/` を重ね、private-use の cover、frontmatter、artifact ルールを公開用ルールから分離します。`books/private/` は Git で無視され、原文、訳文、QA、EPUB、private artifact を GitHub に公開してはいけません。
 
 ## AI クライアント
 
@@ -50,7 +50,7 @@ Digest を生成する場合は、書籍プロジェクトのルートに `diges
 - このリポジトリ内のソースフォルダは `tools/lifebook-launcher/source/` で、開発者とパッケージ担当者向けです。
 - LifeBook プロジェクト更新の自動管理、OpenCode Desktop の確認/更新、LifeBook Launcher 自体の更新、自動起動設定を扱います。
 
-Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリに含めません。OpenCode クライアントの使い方は [OpenCode クライアント説明](../docs/ai-clients/opencode.zh-CN.md) を参照してください。
+Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリに含めません。OpenCode クライアントの使い方は [OpenCode クライアント説明](../doc/project/ai-clients/opencode.zh-CN.md) を参照してください。
 
 ## ユーザーが知っておくべき重要フォルダ
 
@@ -83,9 +83,10 @@ LifeBook Digest は現在、独立した LifeBook 後処理モジュールとし
 - `template/epub_pipeline/targets/{target}/`：対象言語の品質ルール。
 - `template/epub_pipeline/profiles/{profile-target}/`：特殊な本の種類に対する追加ルール。
 - `template/epub_pipeline/modes/private_use/`：非パブリックドメインの個人利用プロジェクトだけにコピーされる mode overlay です。private-use cover、frontmatter、artifact、gate scripts を含みます。
-- `books/{target}/{number}_{book_slug}/`：実際の書籍プロジェクト。本固有の内容はここに置きます。
+- `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/`：実際の書籍プロジェクト。本固有の内容はここに置きます。
 - `books/`：共有 Node.js ツール依存関係。一度だけインストールします。
 - `doc/public/`：公開ガイド、prompt 説明、候補書籍資料。
+- `doc/project/`：プロジェクトのエンジニアリング文書、AI クライアント説明、Launcher 設計、実装計画。
 - `research/{source-target}/`：言語方向ごとの調査成果物。
 - `.opencode/` と `opencode.jsonc`：OpenCode 用の薄いアダプター。ワークフロー規則ではありません。
 - `tools/lifebook-launcher/`：LifeBook Launcher デスクトップ入口です。開発ソースは `source/` にあります。
@@ -96,13 +97,13 @@ LifeBook Digest は現在、独立した LifeBook 後処理モジュールとし
 
 ```powershell
 cd books
-npm run new:book -- {book_id_slug} --source-target {source-target}
+npm run new:book -- {目标语言书名}_{目标语言作者名} --source-target {source-target}
 ```
 
 新しい書籍ディレクトリ：
 
 ```text
-books/{target}/{number}_{book_id_slug}/
+books/{target}/{number}_{目标语言书名}_{目标语言作者名}/
 ```
 
 スクリプトは `template/epub_pipeline/common` を先にコピーし、対応する言語方向テンプレートを重ねます。必要な場合は、その後 `profiles/{profile-target}/` を重ねます。private-use project では最後に `template/epub_pipeline/modes/private_use/` を重ねます。
@@ -111,7 +112,7 @@ private-use project は明示的に `private-use` モードで作成します。
 
 ```powershell
 cd books
-npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "個人学習用のみ。再配布なし。商用利用なし。"
+npm run new:book -- {目标语言书名}_{目标语言作者名} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "個人学習用のみ。再配布なし。商用利用なし。"
 ```
 
 private mode は翻訳、レビュー、EPUB 検証、層化ランダム抜き取り検査の品質基準を下げません。ただし権利境界、読者に見える文言、artifact の意味を変えます。private cover の下部は `个人学习版`、private frontmatter は `参考LifeBook书坊 个人自制` を使い、パブリックドメイン説明を削除し、個人利用のみ、再配布なし、商用利用なし、リスクは個人が負うことを明記します。private artifact は `output/private_artifacts/` に書き込み、公開 release ではありません。

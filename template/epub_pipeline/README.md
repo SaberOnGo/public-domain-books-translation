@@ -15,13 +15,15 @@ This directory separates shared EPUB production infrastructure from language-pai
 
 For a new book project, read the matching target-language framework when it exists, then create the project with `books/scripts/create_book_project.py`. The script copies `common/` first, overlays the matching language-pair template, and assigns the next numeric directory under the target language:
 
-`books/{target}/{number}_{book_id_slug}/`
+`books/{target}/{number}_{target_language_title}_{target_language_author}/`
+
+The directory name after the numeric prefix must be readable in the target language. For `zh-Hans`, use Simplified Chinese title and author; for `ja`, use Japanese title and author; for `en`, use English title and author.
 
 Example:
 
 ```powershell
 cd books
-npm run new:book -- pg20923_a_negro_explorer_at_the_north_pole --source-target en-zh-Hans
+npm run new:book -- "政治生存的逻辑_布埃诺德梅斯基塔" --source-target en-zh-Hans
 ```
 
 If the book belongs to a special profile, overlay the matching `profiles/{profile-target}/` template after the language-pair template. Private-use projects then overlay `modes/private_use/` last. For example, a Greek-to-Simplified-Chinese edition of a classical astronomy text should use:
@@ -46,12 +48,12 @@ Private-use projects must be created with:
 
 ```powershell
 cd books
-npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "Personal study only; no redistribution; no commercial use."
+npm run new:book -- "{target_language_title}_{target_language_author}" --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "Personal study only; no redistribution; no commercial use."
 ```
 
-The script writes private projects under `books/private/{target}/{number}_{book_id_slug}/` and overlays `template/epub_pipeline/modes/private_use/` after the common, language-pair, and profile layers. That tree is ignored by Git. Scripts, templates, and configuration may be published to GitHub, but private source text, translations, QA files, EPUB output, private artifacts, and book-specific metadata under `books/private/` must not be published.
+The script writes private projects under `books/private/{target}/{number}_{target_language_title}_{target_language_author}/` and overlays `template/epub_pipeline/modes/private_use/` after the common, language-pair, and profile layers. That tree is ignored by Git. Scripts, templates, and configuration may be published to GitHub, but private source text, translations, QA files, EPUB output, private artifacts, and book-specific metadata under `books/private/` must not be published.
 
-脚本会把私人项目写入 `books/private/{target}/{number}_{book_id_slug}/`，并在 common、语言方向和 profile 层之后叠加 `template/epub_pipeline/modes/private_use/`。该目录被 Git 忽略。脚本、模板和配置可以发布到 GitHub，但 `books/private/` 下的私人原文、译文、QA、EPUB 输出、私人产物和具体书籍 metadata 不得发布。
+脚本会把私人项目写入 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，并在 common、语言方向和 profile 层之后叠加 `template/epub_pipeline/modes/private_use/`。该目录被 Git 忽略。脚本、模板和配置可以发布到 GitHub，但 `books/private/` 下的私人原文、译文、QA、EPUB 输出、私人产物和具体书籍 metadata 不得发布。
 
 Private-use cover and frontmatter rules are mode-specific. The cover must not show public-domain source claims or long rights disclaimers; the book-info/frontmatter producer line is `参考LifeBook书坊 个人自制`; public-domain notices and public license wording must be removed. Versioned private artifacts are created with:
 
@@ -65,11 +67,11 @@ Shared Node.js build dependencies belong at `books/`, not inside every book proj
 
 Markdown chapters are authoring sources only. During EPUB production, final chapters must be converted to XHTML, images/SVG/CSS/table resources must be copied into the EPUB package, and every used resource must be declared in OPF manifest. See `common/references/epub_assets_figures_tables.md`.
 
-After the first full-book EPUB is generated, every book project must run the stratified random spot-check module in `common/references/stratified_random_spotcheck.md` and `common/prompts/16a_stratified_random_spotcheck.md`. The module samples reader-visible audit units, including paragraphs, tables, figures, formulas/proof blocks, captions, and notes, and writes human-checkable rounds under `books/{target}/{number}_{book_id_slug}/reviews/random_spotcheck/round_XXX/`.
+After the first full-book EPUB is generated, every book project must run the stratified random spot-check module in `common/references/stratified_random_spotcheck.md` and `common/prompts/16a_stratified_random_spotcheck.md`. The module samples reader-visible audit units, including paragraphs, tables, figures, formulas/proof blocks, captions, and notes, and writes human-checkable rounds under `books/{target}/{number}_{target_language_title}_{target_language_author}/reviews/random_spotcheck/round_XXX/`.
 
 If any random sample exposes a defect, the executor must treat it as a possible defect family: audit the whole reader-facing book for similar cases, fix all confirmed matches, document justified exceptions, and close the family in that round's `fix_log.md` and `closure_check.md` before running a new-seed resample. 抽检发现问题时，不得只修被抽中的样本；必须先归纳问题族，再做全书同类问题审计和闭环。
 
-After the random spot-check gate is closed, public-domain and licensed book projects must run the versioned release module in `common/references/release_versioning.md` and `common/prompts/18a_release_versioning.md`. The release artifact must be saved under `books/{target}/{number}_{book_id_slug}/output/release/`; `output/book.epub` alone is not a publishable final artifact. Private-use projects instead run the private artifact module from `modes/private_use/` and write local-only artifacts under `output/private_artifacts/`.
+After the random spot-check gate is closed, public-domain and licensed book projects must run the versioned release module in `common/references/release_versioning.md` and `common/prompts/18a_release_versioning.md`. The release artifact must be saved under `books/{target}/{number}_{target_language_title}_{target_language_author}/output/release/`; `output/book.epub` alone is not a publishable final artifact. Private-use projects instead run the private artifact module from `modes/private_use/` and write local-only artifacts under `output/private_artifacts/`.
 
 ## Naming
 

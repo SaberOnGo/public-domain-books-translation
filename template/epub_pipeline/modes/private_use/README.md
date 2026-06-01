@@ -12,12 +12,12 @@ books/scripts/create_book_project.py --mode private-use --local-source-file ... 
 
 - This mode is for a user-provided local source file only.
 - The produced EPUB is a private personal-study artifact, not a public release.
-- Concrete source text, translations, QA, EPUB output, and book metadata must stay under ignored `books/private/{target}/{number}_{slug}/`.
+- Concrete source text, translations, QA, EPUB output, and book metadata must stay under ignored `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`.
 - Public projects under `books/{target}/` must not contain this overlay.
 
 - 本模式只用于用户提供的本地书源。
 - 生成的 EPUB 是个人学习自用产物，不是公开 release。
-- 具体原文、译文、QA、EPUB 输出和书籍 metadata 必须留在被 Git 忽略的 `books/private/{target}/{number}_{slug}/` 下。
+- 具体原文、译文、QA、EPUB 输出和书籍 metadata 必须留在被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下。
 - 公开项目 `books/{target}/` 不得包含本覆盖层文件。
 
 ## Reader-Facing Rules / 读者可见规则

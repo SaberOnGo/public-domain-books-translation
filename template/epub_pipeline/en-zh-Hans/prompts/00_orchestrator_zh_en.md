@@ -13,7 +13,7 @@
 
 如果用户没有提供 `PROJECT_ROOT`，你必须根据书号、作者、书名或来源 URL 自动生成基础 slug，并让脚本在目标语言目录内自动分配数字前缀，例如：
 
-`books/zh-Hans/{number}_{book_id_slug}/`
+`books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`
 
 严禁在 `TEMPLATE_ROOT` 原目录内抓取、研究、翻译或构建 EPUB。
 

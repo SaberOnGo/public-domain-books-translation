@@ -5,9 +5,9 @@ description: Use when creating or reviewing Ancient Greek to Simplified Chinese 
 
 # Ancient Greek to Simplified Chinese EPUB Pipeline / 古希腊文到简体中文 EPUB 流水线
 
-Use this skill after `books/scripts/create_book_project.py` has copied `template/epub_pipeline/common` and overlaid `template/epub_pipeline/grc-zh-Hans` into `books/zh-Hans/{number}_{book_id_slug}/`.
+Use this skill after `books/scripts/create_book_project.py` has copied `template/epub_pipeline/common` and overlaid `template/epub_pipeline/grc-zh-Hans` into `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`.
 
-使用本 skill 前，应先通过 `books/scripts/create_book_project.py` 把 `template/epub_pipeline/common` 复制到 `books/zh-Hans/{number}_{book_id_slug}/`，再覆盖复制 `template/epub_pipeline/grc-zh-Hans`。
+使用本 skill 前，应先通过 `books/scripts/create_book_project.py` 把 `template/epub_pipeline/common` 复制到 `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`，再覆盖复制 `template/epub_pipeline/grc-zh-Hans`。
 
 If the work is classical science, mathematics, astronomy, or diagram/table-heavy, overlay `template/epub_pipeline/profiles/classical-science-zh-Hans` after this template.
 

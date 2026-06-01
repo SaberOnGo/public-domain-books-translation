@@ -25,7 +25,7 @@ It is not a source-target language-pair template. It is an optional third-layer 
 template/epub_pipeline/common
 template/epub_pipeline/lzh-zh-Hans
 template/epub_pipeline/profiles/classical-history-zh-Hans
-books/zh-Hans/{number}_{book_id_slug}/
+books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/
 ```
 
 ## 核心原则 / Core Principles

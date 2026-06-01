@@ -2,7 +2,7 @@
 
 适用场景：用户提供本地电子书/文本文件，明确声明“仅个人学习自用、不传播、不商业使用”，且仓库里已经有对应语言方向模板，例如 `ja-zh-Hans`、`en-zh-Hans` 或 `grc-zh-Hans`。
 
-这个 prompt 不用于公版或可发布项目。它只创建 `books/private/{target}/{number}_{slug}/` 下的本地私人工程。`books/private/` 被 Git 忽略，里面的原文、译文、QA、EPUB 和 book-specific metadata 不得发布到 GitHub。
+这个 prompt 不用于公版或可发布项目。它只创建 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下的本地私人工程。`books/private/` 被 Git 忽略，里面的原文、译文、QA、EPUB 和 book-specific metadata 不得发布到 GitHub。
 
 用户入口必须包含：
 
@@ -45,16 +45,16 @@
    - 匹配的 `template/epub_pipeline/targets/{target}/`
    - 匹配的 `template/epub_pipeline/{source-target}/`
 3. 不得依赖记忆、历史执行经验或假设；必须以当前仓库文件为准。
-4. 根据本地文件、书名、作者和目标语言，自动判断源语言、目标语言标签、source-target 模板和项目 slug。
+4. 根据本地文件、书名、作者和目标语言，自动判断源语言、目标语言标签、source-target 模板和目录名。目录名必须使用目标语言书名和目标语言作者名。
 5. 必须确认 `template/epub_pipeline/{source-target}` 已存在；若不存在，改用 `doc/public/user_prompt/book_translation_private_new_template.md`。
 6. 必须使用以下模式创建工程，不得创建到公开 `books/{target}/`：
 
 ```powershell
 cd books
-npm run new:book -- {book_id_slug} --source-target {source-target} --mode private-use --local-source-file "{用户本地文件路径}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
+npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {source-target} --mode private-use --local-source-file "{用户本地文件路径}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
 ```
 
-7. 工程必须位于 `books/private/{target}/{next_number}_{slug}/`。如果脚本没有创建到 `books/private/`，必须停止并修正。
+7. 工程必须位于 `books/private/{target}/{next_number}_{目标语言书名}_{目标语言作者名}/`。如果脚本没有创建到 `books/private/`，必须停止并修正。
 8. 必须记录：
    - `metadata/private_use_declaration.md`
    - `metadata/source_evidence.md`，source type 使用 `user_provided_local_file`
@@ -72,7 +72,7 @@ npm run private:artifact:create
 
 14. 私人 EPUB 产物必须位于 `output/private_artifacts/`，不是公开 release，不得提交或发布到 GitHub。
 15. 最终报告必须包含：
-    - 私人工程路径 `books/private/{target}/{number}_{slug}/`
+    - 私人工程路径 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`
     - 本地书源文件名和 SHA256，不要暴露不必要的本机绝对路径
     - `metadata/private_use_declaration.md` 路径
     - 私人 EPUB 产物路径

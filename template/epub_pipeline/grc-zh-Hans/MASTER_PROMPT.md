@@ -4,7 +4,7 @@
 
 - `{TEMPLATE_ROOT}`：语言方向模板目录，即 `template/epub_pipeline/grc-zh-Hans`。
 - `{COMMON_TEMPLATE_ROOT}`：共享模板目录，即 `template/epub_pipeline/common`。
-- `{PROJECT_ROOT}`：复制模板后的具体书籍工程目录，默认格式为 `books/zh-Hans/{number}_{book_id_slug}`。
+- `{PROJECT_ROOT}`：复制模板后的具体书籍工程目录，默认格式为 `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}`。
 - `{SOURCE_URL}`：古希腊文公版或授权来源 URL。私人自用模式可为空。
 - `{LOCAL_SOURCE_FILE}`：可选，仅用于用户提供本地书源的 `private_use` 模式。
 - `{PROFILE_ROOT}`：可选，特殊书型 profile；如果不启用，写 `NONE`。
@@ -21,7 +21,7 @@ LOCAL_SOURCE_FILE = {LOCAL_SOURCE_FILE}
 PROFILE_ROOT = {PROFILE_ROOT}
 REFERENCE_TRANSLATION_URLS = {REFERENCE_TRANSLATION_URLS}
 
-第一步：如果 PROJECT_ROOT 不存在，必须优先运行 `books/scripts/create_book_project.py` 自动创建 `books/zh-Hans/{number}_{book_id_slug}`，由脚本先把 COMMON_TEMPLATE_ROOT 复制到 PROJECT_ROOT，再把 TEMPLATE_ROOT 覆盖复制到 PROJECT_ROOT。若 PROFILE_ROOT 不是 NONE，再把 PROFILE_ROOT 覆盖复制到 PROJECT_ROOT。
+第一步：如果 PROJECT_ROOT 不存在，必须优先运行 `books/scripts/create_book_project.py` 自动创建 `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}`，由脚本先把 COMMON_TEMPLATE_ROOT 复制到 PROJECT_ROOT，再把 TEMPLATE_ROOT 覆盖复制到 PROJECT_ROOT。若 PROFILE_ROOT 不是 NONE，再把 PROFILE_ROOT 覆盖复制到 PROJECT_ROOT。
 
 严禁直接在 COMMON_TEMPLATE_ROOT、TEMPLATE_ROOT 或 PROFILE_ROOT 内制作具体书籍。它们是只读模板，只能作为复制来源。所有抓取、研究、翻译、QA、EPUB 输出都必须写入 PROJECT_ROOT。
 

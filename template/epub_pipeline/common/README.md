@@ -35,7 +35,7 @@ cd books
 npm install
 ```
 
-Do not install a duplicate `node_modules/` inside every `books/{target}/{number}_{book_id_slug}/` directory. Book-local `package.json` files keep only scripts; scripts such as `scripts/run_epubcheck.js` must resolve tools by walking up to the shared `books/node_modules/`.
+Do not install a duplicate `node_modules/` inside every `books/{target}/{number}_{target_language_title}_{target_language_author}/` directory. Book-local `package.json` files keep only scripts; scripts such as `scripts/run_epubcheck.js` must resolve tools by walking up to the shared `books/node_modules/`.
 
 Node.js 依赖属于书籍区共享工具，应在 `books/` 下统一安装一次：
 
@@ -44,11 +44,11 @@ cd books
 npm install
 ```
 
-不要在每个 `books/{target}/{number}_{book_id_slug}/` 目录里重复安装 `node_modules/`。具体书籍的 `package.json` 只保留脚本；`scripts/run_epubcheck.js` 等脚本必须向上查找共享的 `books/node_modules/`。
+不要在每个 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 目录里重复安装 `node_modules/`。具体书籍的 `package.json` 只保留脚本；`scripts/run_epubcheck.js` 等脚本必须向上查找共享的 `books/node_modules/`。
 
-Private-use projects live under ignored `books/private/{target}/{number}_{book_id_slug}/`. They use the same shared tooling and the private-use mode overlay, but their source text, translations, QA records, EPUB artifacts, private artifacts, and book-specific metadata must remain local and must not be published to GitHub.
+Private-use projects live under ignored `books/private/{target}/{number}_{target_language_title}_{target_language_author}/`. They use the same shared tooling and the private-use mode overlay, but their source text, translations, QA records, EPUB artifacts, private artifacts, and book-specific metadata must remain local and must not be published to GitHub.
 
-私人自用工程位于被忽略的 `books/private/{target}/{number}_{book_id_slug}/`。它们使用同一套共享工具和 private-use 模式覆盖层，但其中的原文、译文、QA 记录、EPUB 产物、私人产物和具体书籍 metadata 必须留在本地，不得发布到 GitHub。
+私人自用工程位于被忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。它们使用同一套共享工具和 private-use 模式覆盖层，但其中的原文、译文、QA 记录、EPUB 产物、私人产物和具体书籍 metadata 必须留在本地，不得发布到 GitHub。
 
 ## Publication Lint / 出版文本检查
 

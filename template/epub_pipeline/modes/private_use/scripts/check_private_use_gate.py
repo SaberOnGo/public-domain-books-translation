@@ -73,10 +73,10 @@ def check_private_path(book_root: Path, repo_root: Path | None, issues: list[dic
     try:
         relative = book_root.relative_to(repo_root / "books")
     except ValueError:
-        add_issue(issues, "private_project_outside_books", "Private-use project must be under books/private/{target}/{number}_{slug}.", str(book_root))
+        add_issue(issues, "private_project_outside_books", "Private-use project must be under books/private/{target}/{number}_{target_language_title}_{target_language_author}.", str(book_root))
         return
     if len(relative.parts) != 3 or relative.parts[0] != "private":
-        add_issue(issues, "private_project_outside_private_tree", "Private-use project must be under books/private/{target}/{number}_{slug}.", relative.as_posix())
+        add_issue(issues, "private_project_outside_private_tree", "Private-use project must be under books/private/{target}/{number}_{target_language_title}_{target_language_author}.", relative.as_posix())
 
 
 def check_state(book_root: Path, issues: list[dict]) -> dict:

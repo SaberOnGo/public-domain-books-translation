@@ -136,7 +136,7 @@ def check_numbered_project_path(book_root: Path, repo_root: Path | None, state_d
     try:
         relative = book_root.relative_to(books_root)
     except ValueError:
-        add_issue(issues, "book_root_outside_books", "Book project root must be under books/{target}/{number}_{slug}.", str(book_root))
+        add_issue(issues, "book_root_outside_books", "Book project root must be under books/{target}/{number}_{target_language_title}_{target_language_author}.", str(book_root))
         return
     parts = relative.parts
     publication_mode = state_data.get("publication_mode", "public_domain")
@@ -155,13 +155,13 @@ def check_numbered_project_path(book_root: Path, repo_root: Path | None, state_d
             add_issue(
                 issues,
                 "private_mode_outside_private_tree",
-                "publication_mode=private_use projects must be under books/private/{target}/{number}_{slug}.",
+                "publication_mode=private_use projects must be under books/private/{target}/{number}_{target_language_title}_{target_language_author}.",
                 relative.as_posix(),
             )
             return
         target, project_dir = parts
     else:
-        add_issue(issues, "book_root_not_numbered_target_project", "Book project root must be exactly books/{target}/{number}_{slug} or books/private/{target}/{number}_{slug}.", relative.as_posix())
+        add_issue(issues, "book_root_not_numbered_target_project", "Book project root must be exactly books/{target}/{number}_{target_language_title}_{target_language_author} or books/private/{target}/{number}_{target_language_title}_{target_language_author}.", relative.as_posix())
         return
     if not target or target in {"scripts", "node_modules", "tools"}:
         add_issue(issues, "invalid_target_directory", "Target directory must be a language tag such as zh-Hans, en, ja, or es.", target)

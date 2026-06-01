@@ -1,6 +1,6 @@
 # 小白用户使用说明：只填三项内容
 
-这套 prompt 的目标是：用户不需要懂 EPUB、source-target、slug、模板、抽检、release。用户只要给 AI 三项内容：
+这套 prompt 的目标是：用户不需要懂 EPUB、source-target、目录名、模板、抽检、release。用户只要给 AI 三项内容：
 
 1. 我要翻译的书是什么。
 2. 我要翻译成什么语言。
@@ -57,7 +57,7 @@
 
 - 源语言标签。
 - source-target，例如 `ja-zh-Hans`。
-- Project slug。
+- 目录名。AI 必须按目标语言生成 `目标语言书名_目标语言作者名`，例如简体中文目标书用 `政治生存的逻辑_布埃诺德梅斯基塔`，日语目标书用日语书名和作者名。
 - SOURCE_URL。
 - profile。
 - 书籍目录编号。
@@ -97,7 +97,7 @@
 - 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
 ```
 
-私人自用项目必须创建在 `books/private/{target}/{number}_{slug}/`，不是公开 `books/{target}/`。`books/private/` 被 Git 忽略，不得发布到 GitHub。
+私人自用项目必须创建在 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，不是公开 `books/{target}/`。`books/private/` 被 Git 忽略，不得发布到 GitHub。
 
 ## 最省事的推荐入口
 
@@ -130,14 +130,14 @@
 请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
 ```
 
-私人自用项目必须输出到 `books/private/{target}/{number}_{slug}/`，最终版本化产物位于 `output/private_artifacts/`，不是公开 release，不得发布到 GitHub。
+私人自用项目必须输出到 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，最终版本化产物位于 `output/private_artifacts/`，不是公开 release，不得发布到 GitHub。
 
 ## EPUB 后精修审校 prompt（可选）
 
 第一版 EPUB 已经生成后，如果用户想提高译本质量，可以再给 AI 这一段。`N` 是“连续无问题轮数”：`1` 最省 token，`3` 更严格，质量要求更高；不确定时填 `2`。
 
 ```text
-本书项目：{书籍项目路径，例如 books/{target}/{number}_{slug}}
+本书项目：{书籍项目路径，例如 books/{target}/{number}_{目标语言书名}_{目标语言作者名}}
 连续无问题退出轮数 N：{1/2/3；默认 2}
 
 请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md，以及封面、book-info/frontmatter、图表资产、质量门禁、分层随机抽检、release 相关规则。

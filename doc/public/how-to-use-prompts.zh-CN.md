@@ -31,7 +31,7 @@
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
 未声明是否启用 LifeBook Digest 时，请自动判断；长篇小说、专业书籍、哲学书在 EPUB 输出后生成 Digest，短篇小说、自然科学类和其他类型不生成。
-如需生成 Digest，请在书籍工程根目录写入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/{target}/{number}_{book_id_slug}`。输出仍然是标准 EPUB。
+如需生成 Digest，请在书籍工程根目录写入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/{target}/{number}_{目标语言书名}_{目标语言作者名}`。输出仍然是标准 EPUB。
 ```
 
 ## 个人自用书翻译 prompt
@@ -49,17 +49,17 @@
 这是我个人自用的,不传播,不用于商业,使用我给出的本地的书源。
 请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
 未声明是否启用 LifeBook Digest 时，请自动判断；长篇小说、专业书籍、哲学书在 EPUB 输出后生成 Digest，短篇小说、自然科学类和其他类型不生成。
-如需生成 Digest，请在书籍工程根目录写入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/private/{target}/{number}_{book_id_slug}`。输出仍然是本地标准 EPUB，不发布到 GitHub。
+如需生成 Digest，请在书籍工程根目录写入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}`。输出仍然是本地标准 EPUB，不发布到 GitHub。
 ```
 
-个人自用项目必须创建在 `books/private/{target}/{number}_{slug}/`，最终版本化产物在 `output/private_artifacts/`，不是公开 release，不得发布到 GitHub。
+个人自用项目必须创建在 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，最终版本化产物在 `output/private_artifacts/`，不是公开 release，不得发布到 GitHub。
 
 ## 精修审校 prompt（可选）
 
 第一版 EPUB 已经生成后，如果你想继续提高译本质量，可以再使用下面这段。`N` 是“连续无问题轮数”：`1` 最省 token，`3` 更严格，质量要求更高；不确定时填 `2`。
 
 ```text
-本书项目：{书籍项目路径，例如 books/{target}/{number}_{slug}}
+本书项目：{书籍项目路径，例如 books/{target}/{number}_{目标语言书名}_{目标语言作者名}}
 连续无问题退出轮数 N：{1/2/3；默认 2}
 
 请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md，以及封面、book-info/frontmatter、图表资产、质量门禁、分层随机抽检、release 相关规则。

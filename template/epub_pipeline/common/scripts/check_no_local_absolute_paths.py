@@ -81,6 +81,7 @@ BOOK_ARTIFACT_DIRS = {
     "state",
 }
 REPO_ARTIFACT_ROOTS = {
+    "doc/project",
     "doc/public",
     "template/epub_pipeline",
 }
@@ -103,7 +104,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Check for local absolute paths in reusable artifacts.")
     parser.add_argument("--root", type=Path, default=None, help="Root to scan. Defaults to the parent of scripts/.")
     parser.add_argument("--scope", choices=["book", "repo"], default="book", help="Use book-project or repository scan rules.")
-    parser.add_argument("--write-report", action="store_true", help="Write output/local_absolute_path_check.json when possible.")
+    parser.add_argument("--write-report", action="store_true", help="Write output/local_absolute_path_check.json in book scope.")
     return parser.parse_args()
 
 
@@ -226,6 +227,9 @@ def write_report(root: Path, issues: list[Issue], scope: str) -> None:
 
 def main() -> int:
     args = parse_args()
+    if args.scope == "repo" and args.write_report:
+        print("--write-report is only supported for book scope; repo scope must not create shared output directories.")
+        return 2
     root = (args.root or default_root()).resolve()
     patterns = repo_leak_patterns(root, args.scope)
     issues: list[Issue] = []

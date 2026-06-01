@@ -55,11 +55,11 @@ This template handles Literary Chinese source-language issues for modern Simplif
 
 严禁直接在模板原目录中制作具体书籍。执行任何书籍项目前，AI 必须先把 `template/epub_pipeline/common` 与 `template/epub_pipeline/lzh-zh-Hans` 合并复制到独立书籍工程目录，例如：
 
-`books/zh-Hans/{number}_{book_id_slug}/`
+`books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`
 
 如果启用 profile，则在语言方向模板之后再覆盖复制 profile：
 
-`common -> lzh-zh-Hans -> profiles/{profile-target} -> books/zh-Hans/{number}_{book_id_slug}/`
+`common -> lzh-zh-Hans -> profiles/{profile-target} -> books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`
 
 ## 文言文专项规则 / Literary Chinese Rules
 

@@ -19,7 +19,7 @@ Use this profile for ancient historical prose where people, states, chronology, 
 ## 必须叠加的目录 / Required Overlay
 
 ```text
-common -> {source-target} -> profiles/classical-history-zh-Hans -> books/zh-Hans/{number}_{book_id_slug}/
+common -> {source-target} -> profiles/classical-history-zh-Hans -> books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/
 ```
 
 ## 执行步骤 / Workflow

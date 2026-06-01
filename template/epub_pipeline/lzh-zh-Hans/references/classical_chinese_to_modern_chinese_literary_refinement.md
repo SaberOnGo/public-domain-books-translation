@@ -26,6 +26,6 @@
 
 如果某本书发现系统性问题，目标文档必须放在该书工程内：
 
-`books/zh-Hans/{number}_{book_id_slug}/goal/`
+`books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/goal/`
 
 但模板建设目标本身不应误写成仓库根目录的 `goal/` 文件夹。可复用经验应回填到 `common`、`targets/zh-Hans`、`lzh-zh-Hans` 或相关 profile。

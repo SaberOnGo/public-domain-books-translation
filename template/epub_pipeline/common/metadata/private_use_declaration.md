@@ -2,9 +2,9 @@
 
 private_use_status: `DRAFT` # DRAFT | PRIVATE_USE_PASS | FAIL
 
-This file is required only for `publication_mode=private_use` projects under `books/private/{target}/{number}_{book_id_slug}/`.
+This file is required only for `publication_mode=private_use` projects under `books/private/{target}/{number}_{target_language_title}_{target_language_author}/`.
 
-本文件只用于 `books/private/{target}/{number}_{book_id_slug}/` 下的 `publication_mode=private_use` 工程。
+本文件只用于 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下的 `publication_mode=private_use` 工程。
 
 ## User Declaration / 用户声明
 

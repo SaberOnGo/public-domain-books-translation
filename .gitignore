@@ -24,6 +24,9 @@ books/*/*/output/cover_source*.png
 books/*/*/output/cover_source_prompt.txt
 books/*/*/output/cover_fixed_centered*.png
 
+# Repository-level checks must not create a confusing shared book output dir.
+books/output/
+
 # Large source/QA evidence stays local; keep rights/source notes, checksums,
 # small necessary crops, and final EPUB-facing assets in Git.
 books/zh-Hans/6_ptolemy_almagest_grc_zh_hans/source/facsimile/*.pdf

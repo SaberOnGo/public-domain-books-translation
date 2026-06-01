@@ -17,8 +17,8 @@ This file is for AI agents using the `ja-zh-Hans` template.
 
 ## Mandatory Rules / 强制规则
 
-- Create each new book project with `books/scripts/create_book_project.py`; it copies `template/epub_pipeline/common` first, then overlays `template/epub_pipeline/ja-zh-Hans` into `books/zh-Hans/{number}_{book_id_slug}/`.
-- 必须用 `books/scripts/create_book_project.py` 创建每本新书；脚本会先复制 `template/epub_pipeline/common`，再覆盖复制 `template/epub_pipeline/ja-zh-Hans` 到 `books/zh-Hans/{number}_{book_id_slug}/` 书籍工程。
+- Create each new book project with `books/scripts/create_book_project.py`; it copies `template/epub_pipeline/common` first, then overlays `template/epub_pipeline/ja-zh-Hans` into `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`.
+- 必须用 `books/scripts/create_book_project.py` 创建每本新书；脚本会先复制 `template/epub_pipeline/common`，再覆盖复制 `template/epub_pipeline/ja-zh-Hans` 到 `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/` 书籍工程。
 
 - Do not write book-specific files into this template directory.
 - 不得把具体书籍文件写入本模板目录。

@@ -48,14 +48,14 @@ This is for my personal use only. It will not be redistributed and will not be u
 Automatically create the project and strictly complete the full systematic translation workflow required by the templates, with no omissions.
 ```
 
-Personal-use projects must be created under `books/private/{target}/{number}_{slug}/`. The final versioned artifact is under `output/private_artifacts/`; it is not a public release and must not be published to GitHub.
+Personal-use projects must be created under `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`. The final versioned artifact is under `output/private_artifacts/`; it is not a public release and must not be published to GitHub.
 
 ## Refinement Review Prompt (Optional)
 
 After the first EPUB has been generated, use this prompt if you want a stricter refinement pass. `N` means the number of consecutive clean rounds required before exit: `1` saves tokens, `3` is stricter and usually produces a higher-quality edition; use `2` if unsure.
 
 ```text
-Book project: {book project path, for example books/{target}/{number}_{slug}}
+Book project: {book project path, for example books/{target}/{number}_{目标语言书名}_{目标语言作者名}}
 Consecutive clean exit rounds N: {1/2/3; default 2}
 
 First read AGENTS.md, this book's SKILL.md if present, template/epub_pipeline/README.md, template/epub_pipeline/common/README.md, and the relevant rules for cover, book-info/frontmatter, assets, quality gates, stratified random spot-check, and release.

@@ -5,7 +5,7 @@
 ## 强制规则
 
 - 必须先读取仓库根目录 `AGENTS.md`、`template/epub_pipeline/README.md`、`template/epub_pipeline/common/README.md`、`template/epub_pipeline/targets/zh-Hans/quality_framework/README.md`，再读取本目录规则。
-- 每一本新书必须通过 `books/scripts/create_book_project.py --source-target it-zh-Hans` 创建；脚本先复制 `common`，再覆盖本模板。具体书籍的原文、译文、QA、metadata、EPUB 输出只能写入 `books/zh-Hans/{number}_{book_id_slug}/`。
+- 每一本新书必须通过 `books/scripts/create_book_project.py --source-target it-zh-Hans` 创建；脚本先复制 `common`，再覆盖本模板。具体书籍的原文、译文、QA、metadata、EPUB 输出只能写入 `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`。
 - 面向人的重要文件必须以简体中文为主；英文或意大利语可以并列用于精确标注，但不能只写英文或意大利语。
 - 翻译前必须记录意大利语来源证据、作者生卒年、初版/所用版本、文本形态、来源站点权利声明，以及美国、中国和 life+70 地区初步版权风险。
 - 公开发布项目不得使用现代中文译本、现代校注本、商业电子书、影视改编文本、盗版站或权利不清楚的 OCR/EPUB 作为底本或隐藏参考。

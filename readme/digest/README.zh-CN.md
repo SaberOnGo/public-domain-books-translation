@@ -39,7 +39,7 @@ LifeBook Digest 是 LifeBook 翻译发布系统的可选 EPUB 后处理模块。
 从仓库根目录运行：
 
 ```powershell
-python -m digest.lifebook_digest --book-root books/{target}/{number}_{book_id_slug}
+python -m digest.lifebook_digest --book-root books/{target}/{number}_{目标语言书名}_{目标语言作者名}
 ```
 
 ## 设计边界

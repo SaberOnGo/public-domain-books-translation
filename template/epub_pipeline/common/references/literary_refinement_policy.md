@@ -53,9 +53,9 @@ Every book project must review:
 
 ### Phase 1: Book-Specific Goal / 阶段 1：本书目标
 
-Create a book-specific goal document under `books/{target}/{number}_{book_id_slug}/goal/`.
+Create a book-specific goal document under `books/{target}/{number}_{target_language_title}_{target_language_author}/goal/`.
 
-必须在 `books/{target}/{number}_{book_id_slug}/goal/` 下建立本书专属目标文档。
+必须在 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/goal/` 下建立本书专属目标文档。
 
 The document must record concrete issues found in that book, not only generic quality slogans. It should list high-risk chapters, title problems, terminology risks, paragraphs that need review, and build-script work required before final output.
 
@@ -142,8 +142,8 @@ The post-generation review must include:
 - If a random sample reveals a defect, treat it as a possible book-wide pattern: classify the defect family, audit the whole reader-facing book for similar issues, fix all confirmed matches, document exceptions, and preserve that systemic closure under the same round's fix log and closure check.
 - 如果随机样本暴露问题，必须把它当作可能的全书模式处理：归纳问题族，审计整本读者可见书稿是否存在同类问题，修复所有确认命中，记录合理例外，并把这个系统性闭环保存在同一轮的修复记录和闭环检查中。
 
-- A short QA record under `books/{target}/{number}_{book_id_slug}/qa/` when the review affects publication quality or confirms a delivery build.
-- 如果复查影响出版质量，或用于确认交付版本，必须在 `books/{target}/{number}_{book_id_slug}/qa/` 下留下简短 QA 记录。
+- A short QA record under `books/{target}/{number}_{target_language_title}_{target_language_author}/qa/` when the review affects publication quality or confirms a delivery build.
+- 如果复查影响出版质量，或用于确认交付版本，必须在 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/qa/` 下留下简短 QA 记录。
 
 ## Hard Gate / 硬门禁
 

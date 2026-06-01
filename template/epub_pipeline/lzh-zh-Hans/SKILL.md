@@ -5,9 +5,9 @@ description: Use when creating or reviewing Literary Chinese to modern Simplifie
 
 # 文言文到现代简体中文 EPUB 流水线 / Literary Chinese to Modern Simplified Chinese EPUB Pipeline
 
-Use this skill after `books/scripts/create_book_project.py` has copied `template/epub_pipeline/common` and overlaid `template/epub_pipeline/lzh-zh-Hans` into `books/zh-Hans/{number}_{book_id_slug}/`.
+Use this skill after `books/scripts/create_book_project.py` has copied `template/epub_pipeline/common` and overlaid `template/epub_pipeline/lzh-zh-Hans` into `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`.
 
-使用本 skill 前，应先通过 `books/scripts/create_book_project.py` 把 `template/epub_pipeline/common` 复制到 `books/zh-Hans/{number}_{book_id_slug}/`，再覆盖复制 `template/epub_pipeline/lzh-zh-Hans`。
+使用本 skill 前，应先通过 `books/scripts/create_book_project.py` 把 `template/epub_pipeline/common` 复制到 `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`，再覆盖复制 `template/epub_pipeline/lzh-zh-Hans`。
 
 For historical prose such as `战国策`, `左传`, `国语`, or historical chapters from `史记`, overlay `template/epub_pipeline/profiles/classical-history-zh-Hans` after this template.
 

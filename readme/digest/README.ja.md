@@ -39,7 +39,7 @@ LifeBook Digest は、LifeBook 翻訳公開システムの任意の EPUB 後処�
 リポジトリのルートから実行します。
 
 ```powershell
-python -m digest.lifebook_digest --book-root books/{target}/{number}_{book_id_slug}
+python -m digest.lifebook_digest --book-root books/{target}/{number}_{目标语言书名}_{目标语言作者名}
 ```
 
 ## 境界

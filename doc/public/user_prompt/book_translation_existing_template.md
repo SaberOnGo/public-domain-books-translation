@@ -18,10 +18,10 @@
 - 目标语言：{用户填写}
 - 自动选择 prompt 规则：已有源语言模板时执行本文件；没有源语言模板时改用 `doc/public/user_prompt/book_translation_new_template.md`
 
-除此之外，源语言、可靠公版/授权来源 URL 或私人本地书源模式、source-target 语言方向、目标语言标签、项目 slug、是否需要 profile、建书目录编号，都必须由你自动判断、自动记录。不要要求用户补充这些技术字段，除非版权状态、来源权利无法确认，或用户请求非公版私人自用但没有提供本地书源文件。
+除此之外，源语言、可靠公版/授权来源 URL 或私人本地书源模式、source-target 语言方向、目标语言标签、目录名、是否需要 profile、建书目录编号，都必须由你自动判断、自动记录。不要要求用户补充这些技术字段，除非版权状态、来源权利无法确认，或用户请求非公版私人自用但没有提供本地书源文件。
 
 任务目标：
-严格依据当前仓库规则创建并完成这本书的 EPUB 翻译项目。公开项目最终必须生成 `books/{target}/{number}_{slug}/output/release/` 下 latest_status=PASS 的可发布 EPUB。私人自用项目必须位于被 Git 忽略的 `books/private/{target}/{number}_{slug}/`，其版本化 EPUB 只是个人自用产物，不得发布到 GitHub。`output/book.epub` 不能单独作为完成依据。
+严格依据当前仓库规则创建并完成这本书的 EPUB 翻译项目。公开项目最终必须生成 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/output/release/` 下 latest_status=PASS 的可发布 EPUB。私人自用项目必须位于被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，其版本化 EPUB 只是个人自用产物，不得发布到 GitHub。`output/book.epub` 不能单独作为完成依据。
 
 执行规则：
 
@@ -42,10 +42,10 @@
 3. 不得依赖记忆、历史执行经验或假设；必须以当前仓库文件为准。
 4. 根据书名、作者、来源线索或本地文件，自动判断源语言和目标语言标签，自动选择 source-target 模板。
 5. 若 SOURCE_URL 未由用户提供且用户没有提供本地书源文件，必须自动查找可靠公版或授权来源，例如 Project Gutenberg、青空文库、Wikisource、Internet Archive、Gallica、国家图书馆/大学馆藏等；不得自动查找非公版全文。
-6. 若用户给的是本地文件并声明个人自用、不传播、不商业使用，使用 `books/scripts/create_book_project.py --mode private-use --local-source-file ... --private-use-declaration ...` 创建 `books/private/{target}/{next_number}_{slug}/`，并记录 `metadata/private_use_declaration.md`。本地文件存在不等于可发布；私人模式不得输出公开 release。
+6. 若用户给的是本地文件并声明个人自用、不传播、不商业使用，使用 `books/scripts/create_book_project.py --mode private-use --local-source-file ... --private-use-declaration ...` 创建 `books/private/{target}/{next_number}_{目标语言书名}_{目标语言作者名}/`，并记录 `metadata/private_use_declaration.md`。本地文件存在不等于可发布；私人模式不得输出公开 release。
 7. 不得使用现代受版权保护译本、盗版站、来源不明 EPUB 或用户无权提交的材料。
 8. 确认 `template/epub_pipeline/{source-target}` 已存在；若不存在，不要硬套其他模板，改用“没有源语言模板”的公共 prompt 流程。
-9. 公开项目必须使用 `books/scripts/create_book_project.py` 创建 `books/{target}/{next_number}_{slug}/`；私人自用项目必须使用同一脚本的 `--mode private-use` 创建 `books/private/{target}/{next_number}_{slug}/`。slug 由你根据书名和作者自动生成。
+9. 公开项目必须使用 `books/scripts/create_book_project.py` 创建 `books/{target}/{next_number}_{目标语言书名}_{目标语言作者名}/`；私人自用项目必须使用同一脚本的 `--mode private-use` 创建 `books/private/{target}/{next_number}_{目标语言书名}_{目标语言作者名}/`。目录名由你根据目标语言书名和作者名自动生成：目标语言是中文就使用中文，目标语言是日语就使用日语，目标语言是英语就使用英语。
 10. 若同书目录已存在，先检查其状态；不得覆盖。若已 PASS，报告现状；若未完成，继续补齐；若需要新版本，使用新 slug 或按 release 规则迭代。
 11. 所有原文、译文、QA、EPUB、release、book-specific metadata 只能写入该书目录，不得写回 `template/`。
 12. 翻译前必须完成并记录：

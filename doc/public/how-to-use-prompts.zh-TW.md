@@ -48,14 +48,14 @@
 請自動建立專案，嚴格完成整個模板規定的系統翻譯流程，不允許有任何遺漏。
 ```
 
-個人自用專案必須建立在 `books/private/{target}/{number}_{slug}/`，最終版本化產物在 `output/private_artifacts/`，不是公開 release，不得發布到 GitHub。
+個人自用專案必須建立在 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，最終版本化產物在 `output/private_artifacts/`，不是公開 release，不得發布到 GitHub。
 
 ## 精修審校 prompt（可選）
 
 第一版 EPUB 已經生成後，如果想繼續提高譯本品質，可以再使用下面這段。`N` 是「連續無問題輪數」：`1` 最省 token，`3` 更嚴格，品質要求更高；不確定時填 `2`。
 
 ```text
-本書專案：{書籍專案路徑，例如 books/{target}/{number}_{slug}}
+本書專案：{書籍專案路徑，例如 books/{target}/{number}_{目标语言书名}_{目标语言作者名}}
 連續無問題退出輪數 N：{1/2/3；預設 2}
 
 請先讀取 AGENTS.md、該書 SKILL.md（如有）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md，以及封面、book-info/frontmatter、圖表資產、品質門禁、分層隨機抽檢、release 相關規則。

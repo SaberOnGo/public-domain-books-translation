@@ -28,7 +28,7 @@ It is not a source-target language-pair template. It is an optional third-layer 
 template/epub_pipeline/common
 template/epub_pipeline/{source-target}
 template/epub_pipeline/profiles/academic-professional-zh-Hans
-books/zh-Hans/{number}_{book_id_slug}/
+books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/
 ```
 
 私人自用项目在此之后再覆盖：

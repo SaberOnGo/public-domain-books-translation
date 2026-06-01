@@ -5,7 +5,7 @@
   "description": "Shared Node.js tooling for book projects under books/.",
   "license": "UNLICENSED",
   "scripts": {
-    "check:local-paths": "node scripts/run_python.js ../template/epub_pipeline/common/scripts/check_no_local_absolute_paths.py --root .. --scope repo --write-report",
+    "check:local-paths": "node scripts/run_python.js ../template/epub_pipeline/common/scripts/check_no_local_absolute_paths.py --root .. --scope repo",
     "new:book": "node scripts/run_python.js scripts/create_book_project.py",
     "check:gitignore-policy": "node scripts/run_python.js scripts/check_gitignore_policy.py",
     "setup:tools": "node scripts/run_python.js scripts/setup_local_tools.py",

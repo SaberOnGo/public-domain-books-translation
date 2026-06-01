@@ -11,7 +11,7 @@ COMMON_TEMPLATE_ROOT = {COMMON_TEMPLATE_ROOT}
 SOURCE_URL = {SOURCE_URL}
 LOCAL_SOURCE_FILE = {LOCAL_SOURCE_FILE}
 
-第一步：如果 PROJECT_ROOT 不存在，必须优先运行 `books/scripts/create_book_project.py` 自动创建 `books/zh-Hans/{number}_{book_id_slug}`，由脚本先把 COMMON_TEMPLATE_ROOT 复制到 PROJECT_ROOT，再把 TEMPLATE_ROOT 覆盖复制到 PROJECT_ROOT。
+第一步：如果 PROJECT_ROOT 不存在，必须优先运行 `books/scripts/create_book_project.py` 自动创建 `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}`，由脚本先把 COMMON_TEMPLATE_ROOT 复制到 PROJECT_ROOT，再把 TEMPLATE_ROOT 覆盖复制到 PROJECT_ROOT。
 
 严禁直接在 COMMON_TEMPLATE_ROOT 或 TEMPLATE_ROOT 内制作具体书籍。它们是只读模板，只能作为复制来源。所有抓取、研究、翻译、QA、EPUB 输出都必须写入 PROJECT_ROOT。
 

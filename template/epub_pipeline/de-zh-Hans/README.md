@@ -28,11 +28,11 @@
 
 严禁直接在模板原目录中制作具体书籍。执行任何书籍项目前，必须先把 `template/epub_pipeline/common` 与 `template/epub_pipeline/de-zh-Hans` 合并复制到独立书籍工程目录：
 
-`books/zh-Hans/{number}_{book_id_slug}/`
+`books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`
 
 如果启用 profile，则在语言方向模板之后叠加：
 
-`common -> de-zh-Hans -> profiles/{profile-target} -> books/zh-Hans/{number}_{book_id_slug}/`
+`common -> de-zh-Hans -> profiles/{profile-target} -> books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`
 
 之后所有抓取、研究、翻译、QA、EPUB 输出都只能写入新书籍工程目录。
 

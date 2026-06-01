@@ -14,8 +14,8 @@
 
 - `TEMPLATE_ROOT` 是只读模板目录。
 - AI 不得把具体书籍的原文、译文、QA、EPUB 输出写入模板原目录。
-- 实际做书时，AI 必须通过 `books/scripts/create_book_project.py` 复制模板为独立书籍工程目录，例如 `books/{target}/{number}_{book_id_slug}/`。`{target}` 是输出电子书的目标语言标签，`{number}` 由脚本在该目标语言目录内自动递增分配。
-- 非公版私人自用书籍必须通过 `books/scripts/create_book_project.py --mode private-use --local-source-file ... --private-use-declaration ...` 创建到 `books/private/{target}/{number}_{book_id_slug}/`。`books/private/` 被 Git 忽略；其中的原文、译文、QA、EPUB 输出和具体书籍 metadata 不得发布到 GitHub。
+- 实际做书时，AI 必须通过 `books/scripts/create_book_project.py` 复制模板为独立书籍工程目录，例如 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。`{target}` 是输出电子书的目标语言标签，`{number}` 由脚本在该目标语言目录内自动递增分配。数字前缀后的目录名必须使用目标语言可读书名和作者名。
+- 非公版私人自用书籍必须通过 `books/scripts/create_book_project.py --mode private-use --local-source-file ... --private-use-declaration ...` 创建到 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。`books/private/` 被 Git 忽略；其中的原文、译文、QA、EPUB 输出和具体书籍 metadata 不得发布到 GitHub。
 - 若启用 `PROFILE_ROOT`，必须先复制 `common` 和语言方向模板，再把 `PROFILE_ROOT` 覆盖复制到同一个书籍工程目录。
 - 若 `publication_mode=private_use`，必须最后叠加 `MODE_ROOT=template/epub_pipeline/modes/private_use`。私人自用封面、首页/前置页、私人产物和门禁脚本不得混入公版或授权发布项目。
 - 复制完成后，后续 `PROJECT_ROOT` 指向独立书籍工程目录。
@@ -177,6 +177,7 @@
 
 ### Shared Tooling
 
+- `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/`：具体书籍工程目录，目录名必须使用目标语言书名和作者名，便于人工识别。
 - `books/package.json`：所有书籍共享的 Node.js 工具依赖声明。
 - `books/package-lock.json`：共享工具依赖锁文件。
 - `books/node_modules/`：共享工具安装目录，必须被 Git 忽略。
@@ -246,7 +247,7 @@ node scripts/asset_manifest_check.js --write-report
 - 分层随机抽检通过后，`publication_mode=private_use` 项目必须执行 `npm run private:artifact:create`。私人自用产物必须生成 `output/private_artifacts/{目标语言书名}_private_vX.X.X.epub`、`private_artifact_notes.md`、`private_artifact_state.json` 和 `private_artifact_index.md`。
 - `npm run release:create` 和 `npm run private:artifact:create` 必须拒绝未使用 `--require-pass` 生成的随机抽检校验报告；结构性抽样校验或 `DRAFT` 产物不得作为 `DONE` 的依据。
 - 每次 EPUB 内容、排版、metadata、图表、注释或抽检修复发生变化后，都必须创建新的 patch release 或 private artifact。不得覆盖旧版本 EPUB；release note 或 private artifact note 必须追加到累计文件顶部，不得每次散落新建 note 文件。
-- 如果已经发现系统性文学精修问题，必须在 `books/{target}/{number}_{book_id_slug}/goal/` 建立本书目标，并把可复用经验回填到 common、目标语言或语言方向模板。
+- 如果已经发现系统性文学精修问题，必须在 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/goal/` 建立本书目标，并把可复用经验回填到 common、目标语言或语言方向模板。
 - 整本 EPUB 制作后，必须派生 2 个独立 Agent 评审。
 - 评审失败时必须通过 `reviews/revision_route.md` 回到对应前置阶段。
 - 未完成复盘和经验沉淀，不得标记 `DONE`。
@@ -256,7 +257,7 @@ node scripts/asset_manifest_check.js --write-report
 必须同时满足：
 
 - `metadata/rights_checklist.md` 明确可继续：公开项目必须是 `PUBLICATION_PASS` 或 `LICENSED_PASS`；私人自用项目必须是 `PRIVATE_USE_PASS`。
-- 若 `publication_mode=private_use`，`metadata/private_use_declaration.md` 必须存在并记录用户本地书源文件名、SHA256、个人自用、不传播、不商业使用声明、风险由个人承担、LifeBook书坊仅发布 LifeBook 翻译发布系统且不承担他人翻译/保存/传播/使用非公版内容导致的版权风险及责任；工程路径必须位于 `books/private/{target}/{number}_{book_id_slug}/`。
+- 若 `publication_mode=private_use`，`metadata/private_use_declaration.md` 必须存在并记录用户本地书源文件名、SHA256、个人自用、不传播、不商业使用声明、风险由个人承担、LifeBook书坊仅发布 LifeBook 翻译发布系统且不承担他人翻译/保存/传播/使用非公版内容导致的版权风险及责任；工程路径必须位于 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。
 - 若启用特殊书型 profile，`metadata/reference_witness_policy.md` 必须明确原文底本和第二语言参考译本的使用边界。
 - `qa/pretranslation/pretranslation_report.md` 结论为 `PASS`。
 - 所有章节存在 `qa/chapter_controls/*.control.md` 且结论为 `PASS`。

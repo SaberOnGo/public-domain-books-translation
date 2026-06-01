@@ -36,7 +36,7 @@ AI 必须自动决定：
 - 任何具体书籍的数据不得写入模板目录。
 - 若当前工作目录就是模板目录，AI 必须先创建并切换到独立工程目录。
 - 推荐目录：`books/{target}/{number}_{pg_id_or_author_title_slug}/`，并且必须由 `books/scripts/create_book_project.py` 自动创建和分配编号。
-- 非公版私人自用工程必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{book_id_slug}/`；不得把私人原文、译文、QA、EPUB 输出或具体书籍 metadata 写入可发布的 `books/{target}/`。
+- 非公版私人自用工程必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`；不得把私人原文、译文、QA、EPUB 输出或具体书籍 metadata 写入可发布的 `books/{target}/`。
 - 只有复制后的 `PROJECT_ROOT` 可以写入原文、章节、QA、译文和 EPUB。
 
 ## 人类可选审阅

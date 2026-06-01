@@ -48,14 +48,14 @@
 プロジェクトを自動作成し、テンプレートが定める体系的な翻訳フロー全体を厳格に完了してください。いかなる漏れも許可しません。
 ```
 
-個人利用プロジェクトは `books/private/{target}/{number}_{slug}/` に作成してください。最終版の成果物は `output/private_artifacts/` に置かれます。これは公開 release ではなく、GitHub に公開してはいけません。
+個人利用プロジェクトは `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` に作成してください。最終版の成果物は `output/private_artifacts/` に置かれます。これは公開 release ではなく、GitHub に公開してはいけません。
 
 ## 精密レビュー prompt（任意）
 
 最初の EPUB が生成されたあと、訳文の品質をさらに高めたい場合は次の prompt を使います。`N` は「問題なしの連続 round 数」です。`1` は token を節約する最低強度、`3` はより厳格で高品質を狙う設定です。迷う場合は `2` にします。
 
 ```text
-書籍プロジェクト：{書籍プロジェクトのパス。例：books/{target}/{number}_{slug}}
+書籍プロジェクト：{書籍プロジェクトのパス。例：books/{target}/{number}_{目标语言书名}_{目标语言作者名}}
 終了に必要な問題なし連続 round 数 N：{1/2/3。既定は 2}
 
 まず AGENTS.md、この書籍の SKILL.md（あれば）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md、および cover、book-info/frontmatter、assets、quality gates、stratified random spot-check、release に関する規則を読んでください。

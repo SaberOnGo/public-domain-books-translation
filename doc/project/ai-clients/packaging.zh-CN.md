@@ -14,7 +14,7 @@ user project folder:
     template/
     books/
     skills/
-    docs/
+    doc/project/
     .opencode/
     opencode.jsonc
 ```

@@ -22,7 +22,7 @@ Typical examples include classical astronomy, mathematics, optics, mechanics, ge
 2. 匹配的语言方向模板，例如 `template/epub_pipeline/en-zh-Hans`、未来的 `grc-zh-Hans`、`la-zh-Hans`、`ar-zh-Hans`
 3. 本目录：`template/epub_pipeline/profiles/classical-science-zh-Hans`
 
-所有具体书籍输出只能写入 `books/zh-Hans/{number}_{book_id_slug}/`，不得写回本目录。
+所有具体书籍输出只能写入 `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`，不得写回本目录。
 
 ## 核心原则 / Core Principles
 

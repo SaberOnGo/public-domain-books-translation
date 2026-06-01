@@ -245,6 +245,30 @@ class PrivateUseModeTests(unittest.TestCase):
             package = json.loads((project_root / "package.json").read_text(encoding="utf-8"))
             self.assertNotIn("private:artifact:create", package["scripts"])
 
+    def test_create_book_project_accepts_target_language_unicode_title_author_slug(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            copy_script("books/scripts/create_book_project.py", repo)
+            write_minimal_template(repo)
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(repo / "books" / "scripts" / "create_book_project.py"),
+                    "政治生存的逻辑：最好与最坏？_布埃诺德梅斯基塔",
+                    "--source-target",
+                    "en-zh-Hans",
+                ],
+                cwd=repo,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("books/zh-Hans/1_政治生存的逻辑_最好与最坏_布埃诺德梅斯基塔", result.stdout)
+            self.assertTrue((repo / "books" / "zh-Hans" / "1_政治生存的逻辑_最好与最坏_布埃诺德梅斯基塔").is_dir())
+
     def test_template_workflow_gate_accepts_private_path_only_for_private_use_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)

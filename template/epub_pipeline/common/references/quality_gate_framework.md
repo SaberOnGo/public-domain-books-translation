@@ -37,5 +37,5 @@ This file defines quality-gate concepts that apply to every translation directio
 - 目标语言文体标准应放在 `template/epub_pipeline/targets/{target}/`。
 - Source-language interference rules belong under `template/epub_pipeline/{source-target}/`.
 - 源语言干扰规则应放在 `template/epub_pipeline/{source-target}/`。
-- Book-specific decisions belong inside `books/{target}/{number}_{book_id_slug}/`.
-- 具体书籍判断应写入 `books/{target}/{number}_{book_id_slug}/`。
+- Book-specific decisions belong inside `books/{target}/{number}_{target_language_title}_{target_language_author}/`.
+- 具体书籍判断应写入 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。
