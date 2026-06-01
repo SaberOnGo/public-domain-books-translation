@@ -7,3 +7,4 @@
 output/*
 !output/release/
 !output/release/**
+output/release/*_private_*.epub

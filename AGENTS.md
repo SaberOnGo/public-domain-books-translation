@@ -107,6 +107,7 @@ This file is for AI agents working from a downloaded copy of this repository.
 - `template/epub_pipeline/README.md`
 - Matching target-language quality files under `template/epub_pipeline/targets/{target}/`
 - `skills/public-domain-epub-pipeline/SKILL.md`
+- `skills/print-compatible-book-layout/SKILL.md` when designing or reviewing book/page layout, body typography, titles, subtitles, heading hierarchy, notes, tables, figures, EPUB navigation labels, or print-compatible layout
 - Matching language-pair template files under `template/epub_pipeline/{source-target}/`
 
 ## Output Discipline / 输出要求

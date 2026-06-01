@@ -1,0 +1,4 @@
+interface:
+  display_name: "Print-Compatible Book Layout"
+  short_description: "Design print-compatible book pages."
+  default_prompt: "Use this skill to design or review LifeBook EPUB page layout so it remains compatible with future PDF and physical-book publication."
