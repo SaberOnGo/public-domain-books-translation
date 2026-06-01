@@ -31,7 +31,7 @@ common -> {source-target} -> profiles/classical-science-zh-Hans -> books/zh-Hans
 1. 先读取 `prompts/00_profile_integration_zh_Hans.md`，确认本 profile 如何插入语言方向模板。
 2. 在本书专项研究后执行 `prompts/04a_reference_witness_policy_zh_Hans.md`。
 3. 在术语表阶段执行 `prompts/06a_technical_terminology_lock_zh_Hans.md`。
-4. 在批量翻译前执行 `prompts/06b_diagram_table_inventory_zh_Hans.md`。
+4. 在批量翻译前执行 `prompts/06b_diagram_table_inventory_zh_Hans.md`。公式密集书籍还必须读取 common 提供的 `references/formula_rendering_policy.md`，先建立全书公式清单，再决定 MathML、XHTML 文本、SVG 或源图像兜底策略。
 5. 每章译后控制后执行 `prompts/08b_chapter_technical_audit_zh_Hans.md`。
 6. 涉及图表/表格的章节执行 `prompts/08c_diagram_table_audit_zh_Hans.md`。
 7. 最终独立评审时使用 `reviews/scorecards/_TEMPLATE_science_scorecard.md`。

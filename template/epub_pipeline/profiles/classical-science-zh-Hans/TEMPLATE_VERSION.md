@@ -13,3 +13,4 @@ updated_at: 2026-05-17
 - 新增天文学、数学、地理学、光学/力学、医学分领域规则。
 - 补强数学/天文学专门强约束：模型注册、证明动作词锁定、弦表/角度校验、GPT-Image-2 图表草稿与结构化重绘工作流。
 - 补强 EPUB 图表资源落地规则：最终图表进入 `assets/`，技术表格优先 XHTML table，图表审计必须覆盖 OPF manifest、alt/figcaption 和 asset manifest 检查。
+- 接入 common 公式渲染策略：稳定显示公式优先 XHTML 内嵌 MathML，复杂/OCR 损坏公式用 SVG 或源图像兜底，行内公式不裁图，并要求全书公式清单。

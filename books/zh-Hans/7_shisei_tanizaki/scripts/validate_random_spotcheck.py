@@ -8,6 +8,7 @@ from pathlib import Path
 
 DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
 STRATA = ("paragraph", "table", "figure", "formula", "caption_note")
+LOCAL_ABSOLUTE_PATH = re.compile(r"(?:[A-Za-z]:[\\/]|\\\\|file://)", re.IGNORECASE)
 
 
 def parse_args() -> argparse.Namespace:
@@ -22,6 +23,14 @@ def parse_args() -> argparse.Namespace:
 
 def resolve_book_root(value: str | None) -> Path:
     return (Path(value) if value else DEFAULT_BOOK_ROOT).resolve()
+
+
+def relative_to_book(book_root: Path, path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(book_root).as_posix()
+    except ValueError as exc:
+        raise SystemExit(f"path must stay inside book root: {resolved}") from exc
 
 
 def latest_round(output_dir: Path) -> Path:
@@ -70,8 +79,11 @@ def main() -> None:
     if not manifest_path.exists():
         raise SystemExit(f"missing manifest: {manifest_path}")
 
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest_text = manifest_path.read_text(encoding="utf-8")
+    manifest = json.loads(manifest_text)
     errors: list[str] = []
+    if LOCAL_ABSOLUTE_PATH.search(manifest_text):
+        errors.append(f"manifest contains a local absolute path: {relative_to_book(book_root, manifest_path)}")
     if manifest.get("schema_version") != "2.0":
         errors.append("manifest schema_version must be 2.0")
     if manifest.get("agents", 0) < 2:
@@ -111,40 +123,40 @@ def main() -> None:
     for agent_name in sample_sets:
         all_samples = round_dir / "samples" / agent_name / "all_samples.md"
         if not all_samples.exists():
-            errors.append(f"missing agent sample file: {all_samples}")
+            errors.append(f"missing agent sample file: {relative_to_book(book_root, all_samples)}")
         review_path = round_dir / "reviews" / f"{agent_name}_review.md"
         if not review_path.exists():
-            errors.append(f"missing agent review file: {review_path}")
+            errors.append(f"missing agent review file: {relative_to_book(book_root, review_path)}")
         elif args.require_pass:
             if not file_contains_status(review_path, "PASS"):
-                errors.append(f"agent review is not PASS: {review_path}")
+                errors.append(f"agent review is not PASS: {relative_to_book(book_root, review_path)}")
             average_score = read_number_field(review_path, "average_score")
             lowest_score = read_number_field(review_path, "lowest_score")
             blocking_count = read_number_field(review_path, "blocking_issue_count")
             if average_score is None or average_score < 75:
-                errors.append(f"agent average_score below 75 or missing: {review_path}")
+                errors.append(f"agent average_score below 75 or missing: {relative_to_book(book_root, review_path)}")
             if lowest_score is None or lowest_score < 70:
-                errors.append(f"agent lowest_score below 70 or missing: {review_path}")
+                errors.append(f"agent lowest_score below 70 or missing: {relative_to_book(book_root, review_path)}")
             if blocking_count is None or blocking_count != 0:
-                errors.append(f"agent blocking_issue_count must be 0: {review_path}")
+                errors.append(f"agent blocking_issue_count must be 0: {relative_to_book(book_root, review_path)}")
 
     fix_log = round_dir / "fixes" / "fix_log.md"
     closure = round_dir / "verification" / "closure_check.md"
     if not fix_log.exists():
-        errors.append(f"missing fix log: {fix_log}")
+        errors.append(f"missing fix log: {relative_to_book(book_root, fix_log)}")
     elif args.require_pass and not file_contains_status(fix_log, "PASS"):
-        errors.append(f"fix log is not PASS: {fix_log}")
+        errors.append(f"fix log is not PASS: {relative_to_book(book_root, fix_log)}")
     if not closure.exists():
-        errors.append(f"missing closure check: {closure}")
+        errors.append(f"missing closure check: {relative_to_book(book_root, closure)}")
     elif args.require_pass:
         if not file_contains_status(closure, "PASS"):
-            errors.append(f"closure check is not PASS: {closure}")
+            errors.append(f"closure check is not PASS: {relative_to_book(book_root, closure)}")
         open_count = read_number_field(closure, "open_p0_p1_p2_count")
         if open_count is None or open_count != 0:
-            errors.append(f"open_p0_p1_p2_count must be 0: {closure}")
+            errors.append(f"open_p0_p1_p2_count must be 0: {relative_to_book(book_root, closure)}")
 
     report = {
-        "round_dir": str(round_dir),
+        "round_dir": relative_to_book(book_root, round_dir),
         "target_confidence": args.target_confidence,
         "release_confidence": release_confidence,
         "confidence_by_stratum": confidence_by_stratum,

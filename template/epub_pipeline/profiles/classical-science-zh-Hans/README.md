@@ -61,6 +61,7 @@ Typical examples include classical astronomy, mathematics, optics, mechanics, ge
 - `references/technical_publication_control.md`
 - `references/units_symbols_policy.md`
 - `references/figure_redraw_spec.md`
+- `references/formula_rendering_policy.md`（来自 common；公式密集书籍必须读取）
 - `references/domain_authority_sources.md`
 - `references/math_astronomy_proof_control.md`
 - `references/gpt_image_diagram_workflow.md`

@@ -46,6 +46,8 @@ Markdown source is acceptable as the authoring format, but EPUB content must be 
 | 照片、封面位图 | JPG/WebP | 控制体积 |
 | 大型表格 | XHTML table | 不要做成图片，除非附影印件 |
 
+数学、科学、学术专业、技术或公式密集书籍必须读取 `references/formula_rendering_policy.md`。稳定可识别的显示公式优先输出 XHTML 内嵌 MathML；复杂公式、方程组或 OCR 已损坏公式才使用 SVG 或源 PDF/扫描页高清 PNG 兜底；行内短公式不应裁成图片。相关 profile 负责声明何时必须启用该规则，但公式渲染规则正文只在 common 中维护。
+
 ## 表格规则 / Table Rules
 
 读者可见表格必须优先生成 XHTML `<table>`，而不是图片。

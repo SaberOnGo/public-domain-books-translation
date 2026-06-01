@@ -97,6 +97,7 @@ human_required: false
 构建前必须运行：
 
 ```powershell
+python scripts/check_no_local_absolute_paths.py --write-report
 node scripts/publication_lint.js --target={target-language} --write-report
 node scripts/asset_manifest_check.js --write-report
 python scripts/check_template_workflow_gate.py --write-report
@@ -106,6 +107,7 @@ python scripts/check_reader_facing_policy.py --write-report
 
 输出必须保存为 `output/publication_lint.json`。
 资源检查输出必须保存为 `output/asset_manifest_check.json`。
+本机绝对路径门禁输出必须保存为 `output/local_absolute_path_check.json`。
 模板流程门禁输出必须保存为 `output/template_workflow_gate.json`。
 封面 output 资产门禁输出必须保存为 `output/cover_output_assets_check.json`。
 读者可见内容门禁输出必须保存为 `output/reader_facing_policy_check.json`。
@@ -134,6 +136,7 @@ OPF 必须包含：
 - 标题和正文排版适合手机阅读。
 - `output/publication_lint.json` 无硬错误。
 - `output/asset_manifest_check.json` 无硬错误。
+- `output/local_absolute_path_check.json` 无硬错误。
 - `output/template_workflow_gate.json` 无硬错误。
 - `output/cover_output_assets_check.json` 无硬错误。
 - `output/reader_facing_policy_check.json` 无硬错误。

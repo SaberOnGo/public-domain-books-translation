@@ -2,7 +2,7 @@
   "schema_version": "2.0",
   "round_id": "round_004",
   "seed": "9353f08d329044339687f86f84f7977d",
-  "book_root": "D:\\project\\49_public-domain-books-translation\\books\\zh-Hans\\7_shisei_tanizaki",
+  "book_root": "books/zh-Hans/7_shisei_tanizaki",
   "source_dir": "chapters/final",
   "output_dir": "reviews/random_spotcheck",
   "profile": "standard",

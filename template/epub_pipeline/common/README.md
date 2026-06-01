@@ -55,6 +55,7 @@ Private-use projects live under ignored `books/private/{target}/{number}_{book_i
 Before building a final EPUB, run:
 
 ```powershell
+python scripts/check_no_local_absolute_paths.py --write-report
 python scripts/check_template_workflow_gate.py --write-report
 node scripts/publication_lint.js --target={target-language} --write-report
 node scripts/asset_manifest_check.js --write-report
@@ -65,6 +66,7 @@ python scripts/check_reader_facing_policy.py --write-report
 在构建最终 EPUB 前必须运行：
 
 ```powershell
+python scripts/check_no_local_absolute_paths.py --write-report
 python scripts/check_template_workflow_gate.py --write-report
 node scripts/publication_lint.js --target={target-language} --write-report
 node scripts/asset_manifest_check.js --write-report
@@ -85,6 +87,10 @@ python scripts/check_private_reader_facing_policy.py --write-report
 python scripts/check_private_use_gate.py --write-report
 python scripts/check_private_reader_facing_policy.py --write-report
 ```
+
+`npm run preflight:template` runs the local absolute-path gate first. The gate rejects contributor-specific Windows drive paths, personal home-directory paths, and file URLs in book production artifacts, public prompt examples, and reusable template documentation; use repository-relative paths, script-relative paths, or explicit user-provided arguments instead.
+
+`npm run preflight:template` 会先运行本机绝对路径门禁。该门禁会拒绝在书籍生产产物、公共 prompt 示例和可复用模板文档中出现 Windows 盘符路径、个人 home 目录路径和 file URL 等贡献者本机路径；应改用仓库相对路径、脚本相对路径，或由用户显式传入的参数。
 
 These checks are common because template drift, unnumbered book paths, encoding damage, legacy print tables of contents, repeated spacing, missing image resources, missing output cover assets, reader-facing production notes, unmanifested SVG/PNG/CSS files, and path portability problems can affect any language.
 

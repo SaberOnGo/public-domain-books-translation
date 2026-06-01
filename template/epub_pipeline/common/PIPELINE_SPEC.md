@@ -198,6 +198,7 @@ node scripts/asset_manifest_check.js --write-report
 - 不得把旧纸书的页码目录、插图页码目录当正文放入 EPUB。
 - 不得在普通正文中保留用于纸书对齐的连续空格。
 - 不得让脚本依赖本机绝对路径；所有路径必须相对 `PROJECT_ROOT`。
+- 不得把本机绝对路径、Windows 盘符路径、`file://` 或包含个人工作区名称的仓库绝对路径写入可提交的 metadata、QA、reviews、release、private artifact、JSON 报告或 Markdown 证据。随机抽检、发布状态和校验报告中的路径必须序列化为书籍工程相对路径或仓库相对路径。
 - 不得把旧纸书目录式长标题链直接塞入 EPUB 导航；长标题必须按 `references/chapter_title_policy.md` 拆分为短目录题名、页面主标题和可选副标题。
 - 不得把 AI 或译者概括出的章节说明当成读者可见标题。若源文某章只有编号、罗马数字或简单题名，EPUB 页面标题通常也只应使用对应编号或题名；解释性说明应放入 `title_note`、制作说明或 QA 记录。
 - 不得让 Markdown 图片引用、XHTML `img src`、CSS `url(...)` 指向不存在的文件、本机绝对路径、`file://` 或未经许可的远程热链接。

@@ -112,6 +112,14 @@ def resolve_inside_book(book_root: Path, value: str) -> Path:
     return (book_root / path).resolve()
 
 
+def relative_to_book(book_root: Path, path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(book_root).as_posix()
+    except ValueError as exc:
+        raise SystemExit(f"path must stay inside book root: {resolved}") from exc
+
+
 def next_round_id(output_dir: Path) -> str:
     existing: list[int] = []
     if output_dir.exists():
@@ -740,9 +748,9 @@ def main() -> None:
         "schema_version": "2.0",
         "round_id": round_id,
         "seed": seed,
-        "book_root": str(book_root),
-        "source_dir": str(source_dir.relative_to(book_root).as_posix()),
-        "output_dir": str(output_dir.relative_to(book_root).as_posix()) if output_dir.is_relative_to(book_root) else str(output_dir),
+        "book_root": ".",
+        "source_dir": relative_to_book(book_root, source_dir),
+        "output_dir": relative_to_book(book_root, output_dir),
         "profile": profile,
         "agents": args.agents,
         "samples_per_agent_per_round": args.samples_per_agent,

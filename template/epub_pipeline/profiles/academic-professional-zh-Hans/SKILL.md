@@ -26,9 +26,10 @@ For private-use projects, overlay `modes/private_use` last.
 
 1. `prompts/00_profile_integration_zh_Hans.md`
 2. `references/academic_professional_readability_policy.md`
-3. `metadata/academic_professional_style_profile.md`
-4. `qa/readability/_TEMPLATE.chapter_academic_readability_audit.md`
-5. The target-language framework under `template/epub_pipeline/targets/zh-Hans/`
+3. Common `references/formula_rendering_policy.md` when the book contains formulas, models, statistical expressions, equation groups, proofs, or technical notation
+4. `metadata/academic_professional_style_profile.md`
+5. `qa/readability/_TEMPLATE.chapter_academic_readability_audit.md`
+6. The target-language framework under `template/epub_pipeline/targets/zh-Hans/`
 
 ## Required Work
 
@@ -38,6 +39,7 @@ For private-use projects, overlay `modes/private_use` last.
 - For every chapter, run the chapter completion gate immediately after translation/refinement. It must check metadata, nav/TOC impact, body, notes, figures, formulas, tables, images, styles, reader-facing text, readability, terminology, comments/notes, and generated XHTML/EPUB risk.
 - Fix awkward Chinese where it is not needed for precision.
 - Preserve technical terms, variables, formulas, table values, citations, and necessary qualifications.
+- For formula-heavy books, build a book-wide formula inventory before final EPUB output; stable display formulas should use XHTML-embedded MathML, while complex/OCR-damaged formulas may use SVG or source-image fallback.
 - Do not default to inline `Chinese term (source term)` in body text. Prefer footnotes, endnotes, chapter-end terminology notes, or glossary entries when the original term is useful but not immediately needed in the sentence.
 - During random spot-check, use `--profile auto` or `--profile academic`; `auto` detects this profile when copied into a book project.
 

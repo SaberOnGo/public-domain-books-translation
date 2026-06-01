@@ -84,6 +84,9 @@ This file is for AI agents working from a downloaded copy of this repository.
 - Scripts and prompts must not hard-code local absolute paths such as Windows drive paths or one contributor's workspace. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
 - 脚本和 prompt 不得写死本机绝对路径，例如 Windows 盘符路径或某个贡献者的工作目录。路径应基于脚本位置、仓库根目录或用户显式传入的参数解析。
 
+- Before committing reusable templates, public docs, or publishable book production records, run `npm --prefix books run check:local-paths`. Book-local `preflight:template` must also run `check:local-paths` first, so local absolute-path leaks fail as a hard gate.
+- 提交可复用模板、公共文档或可发布书籍生产记录前，必须运行 `npm --prefix books run check:local-paths`。书籍工程内的 `preflight:template` 也必须先运行 `check:local-paths`，让本机绝对路径泄漏作为硬门禁失败。
+
 - If a script, prompt, launcher, or external AI client integration needs an environment variable for the LifeBook repository root, use `LIFEBOOK_HOME` as the only standard variable. Do not introduce parallel repository-root variables.
 - 如果脚本、prompt、启动器或外部 AI 客户端集成需要用环境变量表示 LifeBook 仓库根目录，只能使用统一变量 `LIFEBOOK_HOME`。不要再引入并行的仓库根目录变量。
 

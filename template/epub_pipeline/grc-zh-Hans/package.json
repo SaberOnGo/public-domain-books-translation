@@ -4,7 +4,8 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "preflight:template": "python scripts/check_template_workflow_gate.py --write-report",
+    "check:local-paths": "python scripts/check_no_local_absolute_paths.py --scope book --write-report",
+    "preflight:template": "npm run check:local-paths && python scripts/check_template_workflow_gate.py --write-report",
     "check:chapter-controls": "python scripts/check_template_workflow_gate.py --chapter-controls-only --write-report",
     "cover:check": "python scripts/check_cover_output_assets.py --write-report",
     "lint:publication": "node scripts/publication_lint.js --target=zh-Hans --write-report",

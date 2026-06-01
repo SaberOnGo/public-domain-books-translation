@@ -41,6 +41,7 @@ template/epub_pipeline/modes/private_use
 
 - `metadata/academic_professional_style_profile.md`
 - `references/academic_professional_readability_policy.md`
+- `references/formula_rendering_policy.md`（来自 common；含公式、模型、统计表达式或方程组时必须读取）
 - `qa/readability/{chapter}.academic_readability_audit.md`
 - `qa/readability/academic_professional_polish_round_001.md`
 - `reviews/scorecards/final_academic_professional_score.md`
@@ -51,5 +52,7 @@ template/epub_pipeline/modes/private_use
 语言方向模板处理“从哪种源语言到中文”的问题，例如英语长句、日语敬体、古希腊术语或文言断句。
 
 本 profile 处理“专业书如何读得懂”的问题，例如术语保真、论证路标、统计解释、表格导读、公式说明和学术长句拆分。
+
+含公式、模型、统计表达式或方程组的项目，还必须按 `references/formula_rendering_policy.md` 建立全书公式清单，并优先使用 MathML 处理稳定可识别的显示公式。
 
 如果二者冲突，先保证事实、术语、公式和图表正确，再用中文表达修复可读性。不得为了通顺而删掉专业内容，也不得为了专业感而保留不必要的拗口表达。
