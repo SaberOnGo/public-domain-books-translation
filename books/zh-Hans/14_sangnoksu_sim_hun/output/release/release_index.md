@@ -12,3 +12,4 @@
 | v0.0.8 | PASS | `常绿树_v0.0.8.epub` | `release_notes.md` | 2026-06-01T22:06:25Z |
 | v0.0.9 | PASS | `常绿树_v0.0.9.epub` | `release_notes.md` | 2026-06-01T23:24:16Z |
 | v0.0.10 | PASS | `常绿树_v0.0.10.epub` | `release_notes.md` | 2026-06-02T04:11:34Z |
+| v0.0.11 | PASS | `常绿树_v0.0.11.epub` | `release_notes.md` | 2026-06-02T15:27:18Z |

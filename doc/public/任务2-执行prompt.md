@@ -230,3 +230,28 @@ output/book.epub 不能单独作为完成依据。
 该门禁是对每章译后全量的检查修复，而且是强制的，请严格按照公共模板要求。发现问题要及时复盘进德语模板。
 --------------------
 请查看下本项目。特别是具体的书目录：“.\books”. 然后分析下，是采用分层随机抽验、“每章全量复检->发现问题就追加一轮”
+---------------------------
+本书项目："{private_project_root}"。
+请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md、template/epub_pipeline/common/prompts/08a_chapter_post_translation_control.md、template/epub_pipeline/common/references/quality_gate_framework.md、目标语言质量框架，以及 `skills/translation-quality-defect-families/SKILL.md`。
+请设置 /goal：对本书所有已翻译章节执行“每章译后全量复检并修复”。每章必须对照整章原文、整章译文和读者可见上下文，覆盖但不限于忠实度、漏译误译、中文顺读、文学性、可读性和吸引力、教学/解释节奏、术语稳定、案例/专名/地名/书名/船名/机构名、标题与小标题、注释、图表/公式/表格/图片文字接口、源语句法残留、过硬过直过板句、过度解释、无依据加戏、读者可见 AI/制作痕迹、异常空格/乱码、旧纸书目录残留。
+可并行处理不同章节，但每个章节必须独立闭环：每一轮都检查整章；只要发现任何问题，先修复该章，但该轮只能记为 `FIXED_RECHECK_REQUIRED`，不能 PASS；随后追加新一轮整章复查。只有最新一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，该章才算通过。
+若任一章发现可复现译文质量问题族，例如短句切断、比喻自撞、排比标点拖拽、代词指代不清、源语句法残留、术语漂移、标题超载、过度解释或加戏，必须按 `skills/translation-quality-defect-families/SKILL.md` 处理：记录如何发现、如何归纳、如何用低 token 方法查全书同类、如何修复、如何复查。先用 `rg`、术语表、禁用写法、标题表、章节控制记录和小上下文原文对照收集候选，只把候选片段交给 agent 复核；不要让 agent 盲读全书。
+完成后重新生成或更新 `qa/chapter_controls/*.control.md`、必要的 `qa/fidelity/`、`qa/readability/`、`qa/terminology/`、`qa/gates/` 记录，把通过章节写入或更新到 `chapters/final/`。然后重建 EPUB，运行可用的 chapter-control/preflight/publication lint/asset/EPUBCheck 命令。报告修复章节、问题族、验证命令结果和仍需进入 Prompt C 的事项。
+现在已发现的问题，在'序'中：
+1 分号问题,又是分号问题，其实只要是分号,你就要非常警惕并检查,大部分都是错误使用,
+除非确实用于非常有必要的排比句或者等级并列的句子(例如一些例子:1 xxx; 2: xxx。 但这种很少, 就像我现在描述多个问题一样,这时用分号就没问题);
+2 '故事装备我们' 这个就有点怪,有这样说'装备'的吗?
+3 '而是那种被称为对白的半诗。', '半诗'这个，我也不知道有问题还是用得好?你自己判断。
+4 '故事就会变平。' 这句也是,'变平'有点怪，一般是故事用'偏平'来形容?还是其他,我词语贫乏,有没更好的?
+5 在整本书的台词里边,最好附上原台词，后面接着译文，或者名著中的引用（最好也要写出原文）。
+   因为台词/引用本来就不多,最多就一段,而且这本书就是讲台词、影视、小说的。这个要归纳总结进skill,不仅仅是这本书，涉及其他有名的引用或者单句的引用,
+   最好要有原句/原段落(但不是说，所有的都这样,不然就不是翻译了，只要像这种对白的引用，名著的引用才能这样)。
+6 '对白能把故事从生活多层的地层中拉升出来' 这句也很怪,'生活多层的地层中'就有点别扭。
+请把这些作为问题族，全书检查并修复、修复后归纳、总结进skills中。
+----------------------------------------------------------------
+本书项目："{book_project_root}"
+请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md、template/epub_pipeline/common/prompts/08a_chapter_post_translation_control.md、template/epub_pipeline/common/references/quality_gate_framework.md、目标语言质量框架，以及 `skills/translation-quality-defect-families/SKILL.md`。
+请设置 /goal：对本书所有已翻译章节执行“每章译后全量复检并修复”。每章必须对照整章原文、整章译文和读者可见上下文，覆盖但不限于忠实度、漏译误译、中文顺读、文学性、可读性和吸引力、教学/解释节奏、术语稳定、案例/专名/地名/书名/船名/机构名、标题与小标题、注释、图表/公式/表格/图片文字接口、源语句法残留、过硬过直过板句、过度解释、无依据加戏、读者可见 AI/制作痕迹、异常空格/乱码、旧纸书目录残留。
+可并行处理不同章节，但每个章节必须独立闭环：每一轮都检查整章；只要发现任何问题，先修复该章，但该轮只能记为 `FIXED_RECHECK_REQUIRED`，不能 PASS；随后追加新一轮整章复查。只有最新一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，该章才算通过。
+若任一章发现可复现译文质量问题族，例如短句切断、比喻自撞、排比标点拖拽、代词指代不清、源语句法残留、术语漂移、标题超载、过度解释或加戏，必须按 `skills/translation-quality-defect-families/SKILL.md` 处理：记录如何发现、如何归纳、如何用低 token 方法查全书同类、如何修复、如何复查。先用 `rg`、术语表、禁用写法、标题表、章节控制记录和小上下文原文对照收集候选，只把候选片段交给 agent 复核；不要让 agent 盲读全书。
+完成后重新生成或更新 `qa/chapter_controls/*.control.md`、必要的 `qa/fidelity/`、`qa/readability/`、`qa/terminology/`、`qa/gates/` 记录，把通过章节写入或更新到 `chapters/final/`。然后重建 EPUB，运行可用的 chapter-control/preflight/publication lint/asset/EPUBCheck 命令。报告修复章节、问题族、验证命令结果和仍需进入 Prompt C 的事项。

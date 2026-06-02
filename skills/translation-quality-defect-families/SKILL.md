@@ -97,6 +97,19 @@ Use bilingual Chinese-English wording for new major sections. Chinese may lead w
   修复方式：按目标语习惯重组层级：句群、短分句、段内说明、副标题，必要时改为真实表格。
 - Recheck: Confirm the punctuation now reflects target-language reading logic, not source punctuation inertia.
   复查：确认标点服务目标语阅读逻辑，而不是原文标点惯性。
+- zh-Hans hard-gate note: In Simplified Chinese publication text, semicolons are rare. Audit them with `rg "；"` across `chapters/final/`, `frontmatter/`, and `metadata/`; most hits should be rewritten as sentence breaks, commas, or re-layered clauses unless there is a true high-level parallel structure.
+  简体中文硬门禁补记：出版级简体中文里，分号应极少出现。先用 `rg "；"` 扫描 `chapters/final/`、`frontmatter/` 和 `metadata/`；除非确有高层并列关系，否则大多数命中都应改写为断句、逗号或重组层级。
+
+### Standalone Quote Lost Source Interface / 独立引句丢失原文接口
+
+- Symptom: In books that analyze dialogue, rhetoric, or famous literary/cinematic lines, the translation keeps only the Chinese rendering of a standalone quote block, so readers cannot inspect the source wording that is itself under discussion.
+  症状：在讨论对白、修辞或经典台词的书里，独立引句块只保留中文译文，不给原文接口，导致读者无法直接核对正被分析的原句声调与措辞。
+- Find by: Scan for standalone quotation blocks, attribution lines, repeated em-dash quote attributions, or isolated dialogue examples first with `rg`, then verify against nearby source context. Focus on canonical lines, famous citations, and analyzed dialogue snippets, not ordinary prose paragraphs.
+  发现方式：先用 `rg` 扫描独立引句块、署名行、反复出现的破折号式引句归属或孤立台词示例，再对照邻近原文复核。重点看经典名句、著名引文和被分析的台词片段，不要把普通正文都拉进来。
+- Fix by: Pair the original source line or short passage with the translation in reader-visible order, usually original first and translation second. Keep the bilingual pairing limited to places where the exact wording matters to the argument; do not bloat ordinary narrative prose into parallel text.
+  修复方式：把原句或短原段与译文成对呈现，通常原文在前、译文在后。双语配对只用于“原句措辞本身就是论证对象”的位置，不要把普通叙述正文膨胀成对照文本。
+- Recheck: Confirm that every added source line serves a reader-facing analytical purpose, that the translation remains primary for continuous reading, and that the chapter has not drifted into indiscriminate bilingual duplication.
+  复查：确认新增原文都服务于读者可见的分析目的，译文仍然是连续阅读的主文本，章节没有滑向无差别双语堆叠。
 
 ### Unclear Pronoun Reference / 代词指代不清
 
