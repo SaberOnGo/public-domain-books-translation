@@ -16,8 +16,9 @@ description: Use this template when translating German public-domain or licensed
 5. 记录 `metadata/source_evidence.md` 和 `metadata/rights_checklist.md`，权利不清楚则停止。
 6. 完成本书专项研究、文体画像、术语表、预翻译试译和小样本测试。
 7. 分章翻译，每章立即生成 `qa/chapter_controls/{chapter}.control.md`，再做忠实度、可读性、术语、意象/读者可见内容和章节门禁。
-8. 生成 EPUB，运行出版 lint、资源检查、EPUBCheck、分层随机抽检、独立评审、版本化 release。
-9. 将可复用经验写回本模板的 `retrospective_lessons.md` 或对应 reference；书籍专属经验留在具体书籍工程。
+8. 生成 EPUB，运行出版 lint、资源检查、EPUBCheck；完成首轮发布前执行 `12_build_validate_zh_de.md`、`16a_stratified_random_spotcheck.md`、`16_independent_review_agents_zh_de.md`。
+9. 写入 `references/stratified_random_spotcheck.md` 所在流程的验收证据：问题族关闭、`fix_log`、`closure_check`、`validation_report`，通过 `--require-pass` 后进入版本化 release。
+10. 将可复用经验写回本模板的 `retrospective_lessons.md` 或对应 reference；书籍专属经验留在具体书籍工程。
 
 ## 德语翻译重点
 
@@ -33,3 +34,9 @@ description: Use this template when translating German public-domain or licensed
 随机抽检一旦发现任何需要修复或可能系统性复现的问题，包括但不限于 P0/P1/P2、单项 <70、读者不可理解、事实/术语/图表/公式/注释错误，或本模板硬门禁失败，主执行 AI 不得只修被抽中的样本，也不得等到第二轮才全书检查。必须先把发现归纳为问题族，再对整本读者可见书稿执行全书同类问题审计，覆盖 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；修复所有确认命中，记录合理例外，并在该轮 `fix_log.md` 与 `closure_check.md` 中关闭该问题族后，才能使用新 seed 复抽。
 
 If a random sample exposes any issue that needs correction or may recur systemically, treat it as a possible systemic defect family immediately in the current round. Audit the whole reader-facing book for similar cases, fix all confirmed matches, document justified exceptions, and close the family in the same round before a new-seed resample.
+
+## 译文质量问题族沉淀 / Translation-Quality Defect Family Backfill
+
+凡发现可复现的译文质量问题族，包括忠实度、中文顺读、术语、标题/小标题、注释、图表文字接口、源语句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释或加戏等，必须使用 `skills/translation-quality-defect-families/SKILL.md`。先在具体书籍工程完成证据记录、同类审计、修复和复查；再把可复用经验合并回填到该 skill，已有同族条目时更新归纳，不盲目重复追加。
+
+When a recurring translation-quality defect family is found, use `skills/translation-quality-defect-families/SKILL.md`. Close the evidence, similar-case audit, fixes, and recheck in the book project first; then merge only reusable lessons into the skill.

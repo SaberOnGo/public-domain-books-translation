@@ -1,0 +1,25 @@
+{
+  "current_version": "v0.0.10",
+  "main_version": 0,
+  "sub_version": 0,
+  "patch_version": 10,
+  "latest_epub": "常绿树_v0.0.10.epub",
+  "latest_release_note": "release_notes.md",
+  "latest_status": "PASS",
+  "latest_created_at": "2026-06-02T04:11:34Z",
+  "latest_sha256": "36a4b2f431399fc04637b3dc9f5a356f341310ab4a12a694ae7ce0c1647d2f56",
+  "latest_size_bytes": 326458,
+  "gate_summary": {
+    "random_spotcheck_round": "reviews/random_spotcheck/round_019",
+    "random_spotcheck_validation": "reviews/random_spotcheck/round_019/validation_report.json",
+    "release_confidence": 1.0,
+    "random_spotcheck_status": "PASS",
+    "random_spotcheck_require_pass": true,
+    "epubcheck_path": "output/epubcheck.json",
+    "epubcheck_fatal": 0,
+    "epubcheck_error": 0,
+    "epubcheck_warning": 0,
+    "publication_lint_path": "output/publication_lint.json",
+    "publication_lint_issue_count": 0
+  }
+}

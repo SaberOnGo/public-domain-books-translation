@@ -22,6 +22,7 @@ Use this skill before translating full chapters. Do not begin batch translation 
 11. Audit image-bearing word choices with `templates/image_word_audit_prompt.md`.
 12. Gate every chapter with `templates/chapter_quality_gate_prompt.md`.
 13. Score every final chapter with `templates/evaluation_rubric.md`.
+14. When a recurring translation-quality defect family is found, use `skills/translation-quality-defect-families/SKILL.md`, close the family in the current book, and merge reusable lessons into that skill.
 
 ## Hard Rules
 
@@ -36,6 +37,8 @@ Use this skill before translating full chapters. Do not begin batch translation 
 - Do not translate a chapter without a book-level style profile and a passing sample-test report.
 - In body text, prefer accurate image-bearing words over flat explanatory words when the source is symbolic, scenic, physical, or memorable.
 - Do not start batch chapter translation without a passing `qa/pretranslation/pretranslation_report.md`.
+- If a review finds a recurring quality pattern, do not only fix the sampled sentence. Classify the defect family, audit similar cases with low-token methods first, and update `skills/translation-quality-defect-families/SKILL.md` with reusable lessons.
+- 发现反复出现的质量模式时，不得只修抽中的句子。必须归纳问题族，先用低 token 方法审计同类，并把可复用经验回填到 `skills/translation-quality-defect-families/SKILL.md`。
 
 ## Quality Gate
 
@@ -53,3 +56,4 @@ A chapter can move to `chapters/final/` only if:
 - `qa/samples/sample_test_report.md` exists and says `PASS`.
 - `qa/pretranslation/pretranslation_report.md` exists and says `PASS`.
 - An imagery audit exists under `qa/imagery/` for chapters with symbolic, scenic, physical, or memorable language.
+- Any discovered translation-quality defect family has book-local evidence, confirmed fixes or exceptions, and a reusable merged lesson in `skills/translation-quality-defect-families/SKILL.md`.

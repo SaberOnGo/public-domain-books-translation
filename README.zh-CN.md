@@ -33,9 +33,13 @@ LifeBook 书坊是一个多语言公版书翻译与 EPUB 制作流程。它不�
 - 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
+翻译执行时必须逐章执行“每章译后全量检查并修复”：发现任何问题时，先修复该章，但该轮不能 PASS，必须追加新一轮整章复查，直到最新一轮零问题 PASS。
+第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”：抽检发现任何问题，不得只修被抽中的样本；必须在当轮归纳问题族、全书同类审计、修复确认命中、记录例外，并用新 seed 追加一轮。译文质量问题族必须使用 `skills/translation-quality-defect-families/SKILL.md`。
 未声明是否启用 LifeBook Digest 时，请自动判断；长篇小说、专业书籍、哲学书在 EPUB 输出后生成 Digest，短篇小说、自然科学类和其他类型不生成。
 如需生成 Digest，请在书籍工程根目录写入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/{target}/{number}_{目标语言书名}_{目标语言作者名}`。输出仍然是标准 EPUB。
 ```
+
+如果已经生成第一版 EPUB，但想继续提高质量，请不要只写“帮我精修”。使用 how-to-use 文档里的两个后期 prompt：先按需要执行 **Prompt B：章节全量复检与修复**，再执行 **Prompt C：分层随机抽检与问题族追杀**。
 
 如果是非公版书，只能使用本地私人模式。用户必须提供自己的本地电子书文件，并明确声明仅供个人学习自用、不传播、不商业使用；AI 应创建 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下的私人工程。脚本还会叠加 `template/epub_pipeline/modes/private_use/`，把私人封面、首页/前置页和产物规则与公版发布规则隔离。`books/private/` 被 Git 忽略，里面的原文、译文、QA、EPUB 和私人产物不能发布到 GitHub。
 
@@ -124,8 +128,11 @@ npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-targ
 - 私人自用项目必须带有 `modes/private_use` 覆盖层，不得复用公版封面、首页/前置页和公开 release 措辞。
 - 不使用现代受版权保护译本、盗版站或来源不明 EPUB。
 - AI 初稿不能直接发布。
+- 每章译后必须完成当前章全量检查并修复；发现问题后追加整章复查，直到最新轮零问题 PASS。
 - 具体书籍内容不能写回 `template/`。
 - 面向人的重要模板文件必须包含目标贡献者能读懂的本地语言。
+- 第一版 EPUB 后必须执行分层随机抽检；发现问题必须当轮归纳为问题族，做全书同类审计、修复、关闭，并用新 seed 复抽。
+- 译文质量问题族必须沉淀到 `skills/translation-quality-defect-families/SKILL.md`，但只合并可复用经验，不盲目重复追加。
 - 最终交付前必须经过 EPUB 校验、读者可见内容检查、分层随机抽检和版本化 release。
 
 ## 书籍工具

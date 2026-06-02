@@ -62,3 +62,7 @@ books/private/**
 # Book-specific screenshot/debug captures must stay under the matching book project.
 /almagest-*.png
 /lifebook-*.png
+
+# Temporary local book clones used for validation or comparison.
+tmp_*_book_clone/
+books/*/99_tmp_*/

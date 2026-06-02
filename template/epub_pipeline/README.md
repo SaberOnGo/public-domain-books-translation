@@ -71,6 +71,8 @@ After the first full-book EPUB is generated, every book project must run the str
 
 If any random sample exposes a defect, the executor must treat it as a possible defect family: audit the whole reader-facing book for similar cases, fix all confirmed matches, document justified exceptions, and close the family in that round's `fix_log.md` and `closure_check.md` before running a new-seed resample. 抽检发现问题时，不得只修被抽中的样本；必须先归纳问题族，再做全书同类问题审计和闭环。
 
+For translation-quality defect families, also use `skills/translation-quality-defect-families/SKILL.md`. Record book-specific evidence in the book project, then backfill only reusable lessons into that skill: how the family was found, how it was classified, how similar cases were audited, how confirmed matches were fixed, and how the fix was rechecked. 译文质量问题族还必须使用 `skills/translation-quality-defect-families/SKILL.md`：具体证据留在书籍工程内，可复用经验回填到该 skill，且只写有效归纳，不盲目重复追加。
+
 After the random spot-check gate is closed, public-domain and licensed book projects must run the versioned release module in `common/references/release_versioning.md` and `common/prompts/18a_release_versioning.md`. The release artifact must be saved under `books/{target}/{number}_{target_language_title}_{target_language_author}/output/release/`; `output/book.epub` alone is not a publishable final artifact. Private-use projects instead run the private artifact module from `modes/private_use/` and write local-only artifacts under `output/private_artifacts/`.
 
 ## Naming

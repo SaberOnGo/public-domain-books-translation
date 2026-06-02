@@ -33,9 +33,13 @@ Automatically choose the correct translation prompt:
 - If the matching source-language template does not exist yet, execute doc/public/user_prompt/book_translation_new_template.md.
 
 Do not ask me to fill technical fields unless rights or source evidence cannot be confirmed. Automatically find a reliable public-domain source, create the book project, complete translation, review, EPUB build, stratified random spot-check, and release.
+During translation, run the per-chapter post-translation full check and fix gate for every chapter. If any issue is found, fix the chapter, but that round cannot PASS; append a new full-chapter recheck until the latest round is a zero-issue PASS.
+After the first EPUB, run stratified random spot-checking and defect-family closure. If any sample exposes a defect, do not fix only that sample. Classify the defect family in the same round, audit the whole book for similar cases, fix confirmed matches, document exceptions, and run a new-seed round. Translation-quality defect families must use `skills/translation-quality-defect-families/SKILL.md`.
 If LifeBook Digest is not explicitly requested, decide automatically: generate it after EPUB output for long novels, specialist books, and philosophy books; skip short stories, natural-science books, and other categories.
 When Digest should be generated, create `digest.config.json` in the book project root with `enabled=true` and `merge_into_epub=true`, then run from the repository root: `python -m digest.lifebook_digest --book-root books/{target}/{number}_{target_language_title}_{target_language_author}`. The output remains a standard EPUB.
 ```
+
+If a first EPUB already exists and you want higher quality, do not ask the AI to "just polish it." Use the two post-EPUB prompts in the how-to-use guide: **Prompt B: Full-chapter recheck and repair** when chapter quality closure is uncertain, then **Prompt C: Stratified random spot-check and defect-family closure** before release.
 
 For non-public-domain books, use private-use mode only. The user must provide a local ebook file and explicitly declare personal study only, no redistribution, and no commercial use. The AI should create the project under `books/private/{target}/{number}_{target_language_title}_{target_language_author}/`; the script also overlays `template/epub_pipeline/modes/private_use/` so private cover, frontmatter, and artifact rules cannot be confused with public publication rules. `books/private/` is ignored by Git, and its source text, translations, QA records, EPUB files, and private artifacts must not be published to GitHub.
 
@@ -124,8 +128,11 @@ Private mode keeps the translation and QA quality bar, but changes rights, reade
 - Private-use projects must carry the `modes/private_use` overlay and must not reuse public-domain cover/frontmatter/release wording.
 - Do not use modern copyrighted translations, pirate sites, or unclear EPUB downloads.
 - Raw AI output is not publishable.
+- Every translated chapter must pass a full post-translation check and fix gate. A just-fixed round cannot PASS; the latest full-chapter recheck must be a zero-issue PASS.
 - Keep concrete book content out of `template/`.
 - Important human-facing template files must include the local language expected by contributors.
+- After the first EPUB, stratified random spot-checking must treat every finding as a possible defect family: audit similar cases across the whole book, fix confirmed matches, close the family, and rerun with a new seed.
+- Translation-quality defect families must be summarized in `skills/translation-quality-defect-families/SKILL.md`, merging reusable lessons instead of appending duplicate notes.
 - Run EPUB validation, reader-facing policy checks, stratified random spot checks, and versioned release gates before final delivery.
 
 ## Book Tooling

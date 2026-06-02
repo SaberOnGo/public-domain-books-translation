@@ -137,9 +137,9 @@ After each chapter is translated into `chapters/translated/{NNN_slug}.md`, the w
 
 每章译入 `chapters/translated/{NNN_slug}.md` 后，必须立即只针对该章执行“每章译后，全量检查并修复节点”，并在进入下一章翻译或送入终稿前完成。结果写入 `qa/chapter_controls/{NNN_slug}.control.md`。
 
-This gate must check the whole chapter and its reader-facing production context, including but not limited to metadata impact, nav/title/TOC implications, body text, notes, figures, formulas, tables, images, styles, terminology, reader-visible wording, readability, plain-language clarity, and polish. It is not enough to check only items named by the user.
+This gate must check the whole chapter and its reader-facing production context, including but not limited to fidelity, target-language readability, teaching/explanatory rhythm when applicable, terminology, case/name/title consistency, titles/subtitles, notes, figure/table/formula text interfaces, source-language syntax residue, stiff or overly literal sentences, over-explanation, invented additions, metadata impact, nav/title/TOC implications, body text, figures, formulas, tables, images, styles, reader-visible wording, readability, plain-language clarity, and polish. It is not enough to check only items named by the user.
 
-该门禁必须检查当前章整章及其读者可见文字上下文，包括但不限于本章对 metadata/nav/标题/目录的影响、正文、注释、图表/公式/表格/图片的文字接口、样式、术语、读者可见文字、可读性、通俗化和润色。不得只检查用户点名项目，也不得把它扩大成全书门禁。
+该门禁必须检查当前章整章及其读者可见文字上下文，包括但不限于忠实度、目标语顺读、适用时的教学/解释节奏、术语、案例/专名/题名一致性、标题/小标题、注释、图表/公式/表格/图片的文字接口、源语句法残留、过硬过直句、过度解释、擅自加戏、本章对 metadata/nav/标题/目录的影响、正文、样式、读者可见文字、可读性、通俗化和润色。不得只检查用户点名项目，也不得把它扩大成全书门禁。
 
 Terminology must not clutter the body with source terms by default. Use the target-language term in the body, and move source terms, definitions, and translation rationale to chapter notes, endnotes, or the glossary with a clear note marker. Body parenthetical source terms are allowed only when omitting the source term would confuse readers, the source term itself is being discussed, or competing translations must be disclosed immediately; record the reason.
 
@@ -152,6 +152,10 @@ Terminology must not clutter the body with source terms by default. Use the targ
 If any round finds any issue that requires a fix, including fidelity, terminology, reader confusion, text-interface errors, target-language awkwardness, weak polish, or over-simplification that damages specialist quality, fix the chapter but mark that round as `FIXED_RECHECK_REQUIRED`. It cannot be the PASS round. Append a new full-chapter recheck in the same control file. The workflow may continue only when the latest round records `scope: FULL_CHAPTER`, `issues_found: 0`, `fixes_applied: 0`, `unresolved_blocking_issues: 0`, `latest_round_status: PASS`, and `allow_next_chapter: true`. A failed or just-fixed chapter may not enter the next chapter translation, `chapters/final/`, or proceed as if the chapter were complete.
 
 若任一轮发现需要修复的问题，包括忠实度、术语、读者理解、文字接口、目标语翻译腔、润色不足，或为了通俗而损害专业质量，都必须先修复该章；但该轮只能记为 `FIXED_RECHECK_REQUIRED`，不能作为 PASS 轮。必须在同一 control 文件追加新一轮整章复查。只有最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，流程才可继续。失败或刚修复的章节不得进入下一章翻译、`chapters/final/`，流程也不得把该章当作完成。
+
+If a chapter check exposes a recurring translation-quality defect family, use `skills/translation-quality-defect-families/SKILL.md`. Examples include short-sentence fragmentation, metaphor collision, enumerative punctuation drag, unclear pronoun reference, source-syntax residue, terminology drift, title overload, over-explanation, and invented motive. Record immediate evidence in the book project, audit similar cases with low-token methods first, and backfill only reusable lessons into the skill.
+
+若章节检查暴露可复现的译文质量问题族，必须使用 `skills/translation-quality-defect-families/SKILL.md`。示例包括短句切断、比喻自撞、排比标点拖拽、代词指代不清、源语句法残留、术语漂移、标题超载、过度解释和加戏。即时证据写入书籍工程；先用低 token 方法审计同类；只把可复用经验回填到该 skill。
 
 Plain-language readability and professional quality are not opposites. A specialist book should be as clear, smooth, and engaging as the source permits, while preserving its specialist terms, concepts, evidence chain, and intellectual level.
 
@@ -198,6 +202,10 @@ The sampling script enforces this deterministically by reading recent `round_XXX
 Any defect found by random sampling is treated as a possible defect family, not as an isolated sample-only fix. The executor must classify the family, audit the whole reader-facing book for similar cases across `chapters/final/`, frontmatter, metadata, nav, tables, figures, formulas, captions, notes, and the generated EPUB XHTML, fix all confirmed matches, document justified exceptions, and close the family in the same round's fix log and closure check before using a new seed.
 
 随机抽检一旦发现问题，不得只修被抽中的样本。主执行 AI 必须先归纳问题族，再对整本读者可见书稿执行全书同类问题审计，覆盖 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；修复所有确认命中、记录合理例外，并在同一轮 `fix_log.md` 与 `closure_check.md` 中关闭该问题族后，才能使用新 seed 复抽。
+
+For translation-quality families, the whole-book audit should first use machine-readable candidates (`glossary/terms.csv`, forbidden renderings, title maps, `rg` scans, sample manifests, and review tables), then send only candidate passages and nearby source context to agents. If the family is reusable, update `skills/translation-quality-defect-families/SKILL.md` after book-local closure.
+
+对译文质量问题族，全书审计应先使用机器可读候选（`glossary/terms.csv`、禁用正文写法、标题映射、`rg` 扫描、抽样 manifest 和评审表），再把候选片段与邻近原文交给 agent。若该问题族可复用，书内闭环后必须更新 `skills/translation-quality-defect-families/SKILL.md`。
 
 Before final output, the stronger pass validator must succeed:
 

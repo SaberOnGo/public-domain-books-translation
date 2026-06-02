@@ -114,6 +114,7 @@
 - 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
+翻译执行时必须逐章执行“每章译后全量检查并修复”：发现问题后先修复，但该轮不能 PASS，必须追加新一轮整章复查，直到最新一轮零问题 PASS。第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”：抽检发现问题时，不得只修被抽样本，必须归纳问题族、全书同类审计、修复确认命中、新 seed 复抽。译文质量问题族必须使用 `skills/translation-quality-defect-families/SKILL.md`。
 ```
 
 ### 个人自用书翻译prompt
@@ -128,25 +129,55 @@
 
 这是我个人自用的,不传播,不用于商业,使用我给出的本地的书源。
 请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
+翻译执行时必须逐章执行“每章译后全量检查并修复”；第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”。发现译文质量问题族时，先在本书闭环，再把可复用经验合并进 `skills/translation-quality-defect-families/SKILL.md`。
 ```
 
 私人自用项目必须输出到 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，最终版本化产物位于 `output/private_artifacts/`，不是公开 release，不得发布到 GitHub。
 
 ## EPUB 后精修审校 prompt（可选）
 
-第一版 EPUB 已经生成后，如果用户想提高译本质量，可以再给 AI 这一段。`N` 是“连续无问题轮数”：`1` 最省 token，`3` 更严格，质量要求更高；不确定时填 `2`。
+第一版 EPUB 已经生成后，不要只说“帮我精修”。给小白用户时，按目的给下面两个 prompt：
+
+- **Prompt B：章节全量复检与修复。** 旧流程项目、缺少每章零问题 control 记录、或担心译文质量没做到位时先用。
+- **Prompt C：分层随机抽检与问题族追杀。** 第一版 EPUB 后发布前必用；负责抽样发现系统性盲点、全书同类审计、新 seed 复抽和 release/private artifact。
+
+如果不确定，先跑 B，再跑 C。
+
+### Prompt B：章节全量复检与修复
 
 ```text
 本书项目：{书籍项目路径，例如 books/{target}/{number}_{目标语言书名}_{目标语言作者名}}
-连续无问题退出轮数 N：{1/2/3；默认 2}
 
-请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md，以及封面、book-info/frontmatter、图表资产、质量门禁、分层随机抽检、release 相关规则。
+请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md、template/epub_pipeline/common/prompts/08a_chapter_post_translation_control.md、template/epub_pipeline/common/references/quality_gate_framework.md、目标语言质量框架，以及 `skills/translation-quality-defect-families/SKILL.md`。
 
-请设置 /goal：对已生成 EPUB 做精修审校，严格按模板要求检查封面、首页/前置页、metadata、nav、目录、正文、注释、图表、公式、表格、图片、样式、读者可见内容、EPUB 构建与 release。不得只检查我点名的项目。
+请设置 /goal：对本书所有已翻译章节执行“每章译后全量复检并修复”。每章必须对照整章原文、整章译文和读者可见上下文，覆盖但不限于忠实度、漏译误译、中文顺读、文学性、可读性和吸引力、教学/解释节奏、术语稳定、案例/专名/地名/书名/船名/机构名、标题与小标题、注释、图表/公式/表格/图片文字接口、源语句法残留、过硬过直过板句、过度解释、无依据加戏、读者可见 AI/制作痕迹、异常空格/乱码、旧纸书目录残留。
 
-启动 2 个独立评审 agent 做分层随机抽检。至少执行 4 轮；每轮使用新 seed，并按模板保存样本、证据、评审、修复和闭环记录。若任何轮发现 P0/P1/P2、单项 <70、读者不可理解、事实/术语/图表/公式错误或模板硬门禁失败，修复后必须追加新一轮。
+可并行处理不同章节，但每个章节必须独立闭环：每一轮都检查整章；只要发现任何问题，先修复该章，但该轮只能记为 `FIXED_RECHECK_REQUIRED`，不能 PASS；随后追加新一轮整章复查。只有最新一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，该章才算通过。
 
-退出条件：最近连续 N 轮均无新增阻塞问题，且 npm run review:random-validate:pass 通过。N=1 为最低强度，较省 token；N=3 更严格，审校后译本质量更高，用户可自行调整。
+若任一章发现可复现译文质量问题族，例如短句切断、比喻自撞、排比标点拖拽、代词指代不清、源语句法残留、术语漂移、标题超载、过度解释或加戏，必须按 `skills/translation-quality-defect-families/SKILL.md` 处理：记录如何发现、如何归纳、如何用低 token 方法查全书同类、如何修复、如何复查。
+
+完成后重新生成或更新章节控制和章节 gate 记录，把通过章节写入或更新到 `chapters/final/`。然后重建 EPUB，运行可用的 chapter-control/preflight/publication lint/asset/EPUBCheck 命令。报告修复章节、问题族、验证命令结果和仍需进入 Prompt C 的事项。
+```
+
+### Prompt C：分层随机抽检与问题族追杀
+
+`N` 是“连续无问题抽检轮数”：`1` 最省 token，`2` 更稳，`3` 更严格；不确定时填 `2`。
+
+```text
+本书项目：{书籍项目路径，例如 books/{target}/{number}_{目标语言书名}_{目标语言作者名}}
+连续无问题抽检轮数 N：{1/2/3；默认 2}
+
+请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md、template/epub_pipeline/common/prompts/16a_stratified_random_spotcheck.md、template/epub_pipeline/common/references/stratified_random_spotcheck.md、template/epub_pipeline/common/references/quality_gate_framework.md、封面、book-info/frontmatter、图表资产、release 相关规则，以及 `skills/translation-quality-defect-families/SKILL.md`。
+
+请设置 /goal：对已生成 EPUB 执行“分层随机抽检与问题族追杀”，并在通过后重新生成 release 或 private artifact。不要把本 prompt 当作普通润色；它的核心是发布前发现系统性盲点、全书同类审计、修复闭环和新 seed 复抽。
+
+运行分层随机抽样，抽样总体是 reader-facing audit units，不是页数，也不只是段落。必须覆盖实际存在的 paragraph、table、figure、formula/proof、caption/note。至少派生 2 个独立评审 agent，并按模板保存 `reviews/random_spotcheck/round_XXX/` 下的 seed、manifest、samples、evidence、reviews、fixes/fix_log.md、verification/closure_check.md。
+
+若任一样本发现 P0/P1/P2、单项 <70、读者不可理解、忠实度偏移、事实/术语/专名/标题/注释/图表/公式错误、源语句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释或加戏，必须在本轮把它归纳为问题族，执行全书同类问题审计并修复所有确认命中。不得只修被抽中的样本，不得等第二轮才查全书。
+
+译文质量问题族必须优先低 token 审计：先用 `rg`、`glossary/terms.csv`、`forbidden_body_renderings`、标题映射、章节控制记录、抽样 manifest 和小上下文原文对照收集候选，再把候选片段交给 agent 复核。可复用经验必须合并进 `skills/translation-quality-defect-families/SKILL.md`。
+
+每次修复后必须重建 EPUB，并用新 seed 追加下一轮抽检。退出条件：最近连续 N 个新 seed 抽检轮均 PASS，所有已发现问题族均关闭，`npm run review:random-validate:pass` 通过，且 release_confidence 达到模板要求。
 
 通过后清理或重建 staging，重新生成 EPUB，运行 publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck，以及 release 或 private artifact 脚本。公版或授权项目的最终可发布 EPUB 必须输出到该书 output/release/，release_state.json.latest_status 必须为 PASS。私人自用项目的最终私人产物必须输出到 output/private_artifacts/，private_artifact_state.json.latest_status 必须为 PASS。报告 release EPUB 或 private artifact 路径、抽检轮次、修复摘要、验证命令结果和剩余风险。
 ```

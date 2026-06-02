@@ -30,6 +30,8 @@ Automatically choose the correct translation prompt:
 - If the matching source-language template does not exist yet, execute doc/public/user_prompt/book_translation_new_template.md.
 
 Do not ask me to fill technical fields unless rights or source evidence cannot be confirmed. Automatically find a reliable public-domain source, create the book project, complete translation, review, EPUB build, stratified random spot-check, and release.
+During translation, run the per-chapter post-translation full check and fix gate for every chapter. Compare the whole source chapter and whole translated chapter for fidelity, target-language readability, terminology, titles/subtitles, notes, figure/table/formula text interfaces, source-syntax residue, stiff literal prose, over-explanation, and invented additions. If any issue is found, fix it, but that round cannot PASS; append a new full-chapter recheck until the latest round is a zero-issue PASS.
+After the first EPUB, run stratified random spot-checking and defect-family closure. If any sample exposes a defect, do not fix only that sample. Classify the defect family in that same round, audit the whole book for similar cases with `rg`, glossary rows, title maps, sample manifests, and small-context source comparison, fix confirmed matches, document exceptions, and run a new-seed round. Translation-quality defect families must use `skills/translation-quality-defect-families/SKILL.md`.
 ```
 
 ## Personal-Use Book Translation Prompt
@@ -46,25 +48,55 @@ Automatically choose the correct translation prompt:
 
 This is for my personal use only. It will not be redistributed and will not be used commercially. Use the local source I provided.
 Automatically create the project and strictly complete the full systematic translation workflow required by the templates, with no omissions.
+During translation, run the per-chapter post-translation full check and fix gate for every chapter. After the first EPUB, run stratified random spot-checking and defect-family closure. Translation-quality defect families must first be closed inside the book project, then reusable lessons must be merged into `skills/translation-quality-defect-families/SKILL.md`.
 ```
 
-Personal-use projects must be created under `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`. The final versioned artifact is under `output/private_artifacts/`; it is not a public release and must not be published to GitHub.
+Personal-use projects must be created under `books/private/{target}/{number}_{target_language_title}_{target_language_author}/`. The final versioned artifact is under `output/private_artifacts/`; it is not a public release and must not be published to GitHub.
 
-## Refinement Review Prompt (Optional)
+## Post-EPUB Refinement Prompts (Optional)
 
-After the first EPUB has been generated, use this prompt if you want a stricter refinement pass. `N` means the number of consecutive clean rounds required before exit: `1` saves tokens, `3` is stricter and usually produces a higher-quality edition; use `2` if unsure.
+After the first EPUB has been generated, do not just tell the AI "polish this book." Choose one of these two prompts:
+
+- **Prompt B: Full-chapter recheck and repair.** Use this when the project is old, lacks zero-issue `qa/chapter_controls/*.control.md` records, or you are not confident that each chapter was fully checked during translation.
+- **Prompt C: Stratified random spot-check and defect-family closure.** Use this for the mandatory post-EPUB release-confidence gate. It finds systemic blind spots, audits similar cases across the book, fixes them, and reruns new-seed rounds before release/private artifact creation.
+
+Recommended order: for old or uncertain projects, run **Prompt B** first, then **Prompt C**. If every chapter already has reliable zero-issue control records, you may run **Prompt C** directly.
+
+### Prompt B: Full-Chapter Recheck And Repair
 
 ```text
-Book project: {book project path, for example books/{target}/{number}_{目标语言书名}_{目标语言作者名}}
-Consecutive clean exit rounds N: {1/2/3; default 2}
+Book project: {book project path, for example books/{target}/{number}_{target_language_title}_{target_language_author}}
 
-First read AGENTS.md, this book's SKILL.md if present, template/epub_pipeline/README.md, template/epub_pipeline/common/README.md, and the relevant rules for cover, book-info/frontmatter, assets, quality gates, stratified random spot-check, and release.
+First read AGENTS.md, this book's SKILL.md if present, template/epub_pipeline/README.md, template/epub_pipeline/common/README.md, template/epub_pipeline/common/prompts/08a_chapter_post_translation_control.md, template/epub_pipeline/common/references/quality_gate_framework.md, the target-language quality framework, and `skills/translation-quality-defect-families/SKILL.md`.
 
-Set a /goal: refine the already generated EPUB. Strictly follow the templates and check the cover, first pages/frontmatter, metadata, nav, table of contents, body text, notes, figures, formulas, tables, images, styles, reader-facing content, EPUB build, and release. Do not limit the review to only the items I named.
+Set a /goal: run full post-translation recheck and repair for every translated chapter in this book. For each chapter, compare the whole source chapter, whole translated chapter, and reader-facing context. Check at least fidelity, omissions, mistranslations, target-language readability, literary force, reader engagement, teaching/explanatory rhythm where applicable, terminology stability, names/places/book titles/ship names/institutions, titles and subtitles, notes, figure/table/formula/image text interfaces, source-syntax residue, stiff or overly literal prose, over-explanation, unsupported invented additions, reader-facing AI/production traces, abnormal spaces/mojibake, and legacy print residue.
 
-Start 2 independent review agents for stratified random spot-checking. Run at least 4 rounds. Use a new seed each round, and save samples, evidence, reviews, fixes, and closure records exactly as the template requires. If any round finds P0/P1/P2, any item score <70, reader-incomprehensible text, factual/terminology/figure/formula errors, or a hard template-gate failure, fix the issue and add another new round.
+Different chapters may be processed in parallel if the agent environment supports it, but each chapter must close independently. Every round must inspect the whole chapter. If any issue is found, fix that chapter, but record the round as `FIXED_RECHECK_REQUIRED`, not PASS. Append a new full-chapter recheck. A chapter only passes when the latest round records `scope: FULL_CHAPTER`, `issues_found: 0`, `fixes_applied: 0`, `unresolved_blocking_issues: 0`, `latest_round_status: PASS`, and `allow_next_chapter: true`.
 
-Exit condition: the most recent N consecutive rounds have no new blocking issues, and npm run review:random-validate:pass passes. N=1 is the lowest, token-saving strictness; N=3 is stricter and aims for a higher-quality reviewed edition. The user may choose the value.
+If any chapter reveals a recurring translation-quality defect family, such as short-sentence fragmentation, metaphor collision, enumerative punctuation drag, unclear pronouns, source-syntax residue, terminology drift, title overload, over-explanation, or invented additions, use `skills/translation-quality-defect-families/SKILL.md`: record how it was found, classified, audited with low-token methods, fixed, and rechecked. Use `rg`, glossary rows, forbidden renderings, title maps, chapter controls, and small-context source comparison before asking an agent to review candidate passages. Do not ask an agent to blindly reread the whole book.
+
+When done, create or update `qa/chapter_controls/*.control.md`, needed `qa/fidelity/`, `qa/readability/`, `qa/terminology/`, and `qa/gates/` records, and promote/update passing chapters in `chapters/final/`. Rebuild the EPUB and run available chapter-control, preflight, publication lint, asset, and EPUBCheck commands. Report repaired chapters, defect families, validation results, and what still needs Prompt C.
+```
+
+### Prompt C: Stratified Random Spot-Check And Defect-Family Closure
+
+`N` means the number of consecutive clean spot-check rounds required before exit: `1` is the token-saving minimum, `2` is recommended for normal books, and `3` is stricter for terminology-heavy, scientific, mathematical, diagram-heavy, or high-quality editions.
+
+```text
+Book project: {book project path, for example books/{target}/{number}_{target_language_title}_{target_language_author}}
+Consecutive clean spot-check rounds N: {1/2/3; default 2}
+
+First read AGENTS.md, this book's SKILL.md if present, template/epub_pipeline/README.md, template/epub_pipeline/common/README.md, template/epub_pipeline/common/prompts/16a_stratified_random_spotcheck.md, template/epub_pipeline/common/references/stratified_random_spotcheck.md, template/epub_pipeline/common/references/quality_gate_framework.md, the relevant cover, book-info/frontmatter, asset, and release rules, and `skills/translation-quality-defect-families/SKILL.md`.
+
+Set a /goal: run stratified random spot-checking and defect-family closure for the already generated EPUB, then regenerate release or private artifact output after the gate passes. Do not treat this as ordinary polishing. The purpose is to discover systemic blind spots, audit similar cases across the whole reader-facing book, close fixes, and rerun new-seed rounds.
+
+Run stratified random sampling over reader-facing audit units, not pages and not just paragraphs. Cover every existing stratum: paragraph, table, figure, formula/proof, and caption/note. Use at least 2 independent review agents that do not read each other's conclusions. Save seed, manifest, samples, evidence, reviews, fixes/fix_log.md, and verification/closure_check.md under `reviews/random_spotcheck/round_XXX/`.
+
+If any sample finds P0/P1/P2, any item score <70, reader-incomprehensible text, fidelity drift, factual/terminology/name/title/note/figure/formula errors, source-syntax residue, stiff literal prose, short-sentence fragmentation, metaphor collision, enumerative punctuation drag, unclear pronouns, over-explanation, or invented additions, classify it as a defect family in the same round. Audit the whole book for similar cases and fix every confirmed match. Do not fix only the sampled unit, and do not wait for a second failed round before checking the whole book.
+
+For translation-quality defect families, use low-token auditing first: `rg`, `glossary/terms.csv`, `forbidden_body_renderings`, title maps, chapter controls, sample manifests, and small-context source comparison. Send only candidate passages to agents. Merge reusable lessons into `skills/translation-quality-defect-families/SKILL.md`.
+
+After every fix, rebuild the EPUB and run another new-seed spot-check round. Exit only when the most recent N new-seed rounds PASS, all discovered defect families are closed, `npm run review:random-validate:pass` passes, and release_confidence satisfies the template requirement.
 
 After passing, clean or rebuild staging, regenerate the EPUB, and run publication lint, asset manifest, cover output, reader-facing policy, EPUBCheck, and release or private artifact scripts. For public-domain or licensed projects, the publishable EPUB must be written under this book's output/release/, and release_state.json.latest_status must be PASS. For personal-use projects, the final private artifact must be written under output/private_artifacts/, and private_artifact_state.json.latest_status must be PASS. Report the release EPUB or private artifact path, spot-check rounds, fix summary, validation command results, and remaining risks.
 ```

@@ -28,6 +28,8 @@
 - `references/german_to_chinese_literary_refinement.md`
 - `references/translation_research_universal.md`
 - `references/quality_standard.md`
+- `references/quality_gate_framework.md`
+- `references/stratified_random_spotcheck.md`
 - `template/epub_pipeline/common/references/quality_gate_framework.md`
 - `template/epub_pipeline/common/references/cover_design_policy.md`
 - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`

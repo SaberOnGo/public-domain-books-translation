@@ -54,8 +54,7 @@ function normalizeText(text, file) {
 
     let next = line.replace(/[ \t]+$/g, '');
     if (target === 'zh-Hans') {
-      next = next.replace(/；/g, '，');
-      next = next.replace(/;/g, '，');
+      next = next.replace(/;/g, '；');
       next = next.replace(cjkMultiSpace, '$1$2');
     }
     if (!/^\s*\|/.test(next)) {

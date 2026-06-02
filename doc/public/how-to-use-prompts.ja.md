@@ -30,6 +30,8 @@
 - 対応する原言語テンプレートがまだない場合は、doc/public/user_prompt/book_translation_new_template.md を実行してください。
 
 権利または出典証拠を確認できない場合を除き、技術項目を私に入力させないでください。信頼できるパブリックドメイン原文を自動で探し、書籍プロジェクトを作成し、翻訳、レビュー、EPUB ビルド、層化ランダム抜き取り検査、release まで完了してください。
+翻訳中は、各章ごとに「翻訳後の全量チェックと修正」を必ず実行してください。章全体の原文と訳文を照合し、忠実度、対象言語としての読みやすさ、用語、タイトル/小見出し、注、図表・数式まわりの本文接続、原文構文の残留、硬すぎる直訳、過剰説明、根拠のない加筆を確認します。問題が見つかったら修正しますが、その round は PASS にしてはいけません。新しい章全体の再チェックを追加し、最新 round がゼロ問題 PASS になるまで続けてください。
+最初の EPUB 生成後は、「層化ランダム抜き取り検査と defect family の追跡」を実行してください。サンプルで問題が出た場合、そのサンプルだけを直してはいけません。同じ round で defect family として分類し、`rg`、用語表、タイトル表、sample manifest、小さな原文照合を使って全書の同類候補を監査し、確認済みの命中を修正し、例外を記録し、新しい seed で次 round を実行します。翻訳品質の defect family には `skills/translation-quality-defect-families/SKILL.md` を使用してください。
 ```
 
 ## 個人利用の書籍翻訳 prompt
@@ -46,25 +48,55 @@
 
 これは私の個人利用です。再配布せず、商用利用もしません。私が指定したローカル書源を使用してください。
 プロジェクトを自動作成し、テンプレートが定める体系的な翻訳フロー全体を厳格に完了してください。いかなる漏れも許可しません。
+翻訳中は各章ごとの全量チェックと修正を必ず実行してください。最初の EPUB 後は層化ランダム抜き取り検査と defect family closure を実行してください。翻訳品質の defect family は、まずその書籍内で閉じ、再利用できる教訓を `skills/translation-quality-defect-families/SKILL.md` に統合してください。
 ```
 
-個人利用プロジェクトは `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` に作成してください。最終版の成果物は `output/private_artifacts/` に置かれます。これは公開 release ではなく、GitHub に公開してはいけません。
+個人利用プロジェクトは `books/private/{target}/{number}_{対象言語の書名}_{対象言語の著者名}/` に作成してください。最終版の成果物は `output/private_artifacts/` に置かれます。これは公開 release ではなく、GitHub に公開してはいけません。
 
-## 精密レビュー prompt（任意）
+## EPUB 後の精密レビュー prompt（任意）
 
-最初の EPUB が生成されたあと、訳文の品質をさらに高めたい場合は次の prompt を使います。`N` は「問題なしの連続 round 数」です。`1` は token を節約する最低強度、`3` はより厳格で高品質を狙う設定です。迷う場合は `2` にします。
+最初の EPUB が生成されたあと、AI に単に「精密に直して」とだけ依頼しないでください。目的に応じて次の 2 つを使い分けます。
+
+- **Prompt B：章ごとの全量再点検と修正。** 古いフローのプロジェクト、各章のゼロ問題 `qa/chapter_controls/*.control.md` がない場合、または各章が十分に点検済みか不安な場合に使います。
+- **Prompt C：層化ランダム抜き取り検査と defect family closure。** 最初の EPUB 後の公開前ゲートです。システム的な盲点を見つけ、全書の同類箇所を監査し、修正し、新しい seed で再検査してから release/private artifact に進みます。
+
+推奨順序：古いプロジェクトまたは不確かなプロジェクトでは **Prompt B** を先に実行し、その後 **Prompt C** を実行します。各章に信頼できるゼロ問題 control 記録がある場合は、**Prompt C** から始めてもかまいません。
+
+### Prompt B：章ごとの全量再点検と修正
 
 ```text
-書籍プロジェクト：{書籍プロジェクトのパス。例：books/{target}/{number}_{目标语言书名}_{目标语言作者名}}
-終了に必要な問題なし連続 round 数 N：{1/2/3。既定は 2}
+書籍プロジェクト：{書籍プロジェクトのパス。例：books/{target}/{number}_{対象言語の書名}_{対象言語の著者名}}
 
-まず AGENTS.md、この書籍の SKILL.md（あれば）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md、および cover、book-info/frontmatter、assets、quality gates、stratified random spot-check、release に関する規則を読んでください。
+まず AGENTS.md、この書籍の SKILL.md（あれば）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md、template/epub_pipeline/common/prompts/08a_chapter_post_translation_control.md、template/epub_pipeline/common/references/quality_gate_framework.md、対象言語の品質フレームワーク、`skills/translation-quality-defect-families/SKILL.md` を読んでください。
 
-/goal を設定してください：生成済み EPUB を精密レビューし、テンプレート要件に従って cover、最初のページ/frontmatter、metadata、nav、目次、本文、注、図、数式、表、画像、style、読者に見える内容、EPUB build、release を確認してください。私が明示した項目だけに限定しないでください。
+/goal を設定してください：この書籍の翻訳済み全章について「翻訳後の章全量再点検と修正」を実行します。各章では章全体の原文、章全体の訳文、読者に見える文脈を照合し、忠実度、訳抜け/誤訳、対象言語としての読みやすさ、文学性、読者を引き込む力、必要な場合の説明リズム、用語の安定性、人名/地名/書名/船名/機関名、タイトルと小見出し、注、図表/数式/表/画像と本文の接続、原文構文の残留、硬すぎる直訳、過剰説明、根拠のない加筆、読者に見える AI/制作痕跡、異常な空白/文字化け、古い紙本目次の残留を確認してください。
 
-2 つの独立 review agent を起動し、層化ランダム抜き取り検査を行ってください。最低 4 round 実行します。各 round で新しい seed を使い、samples、evidence、reviews、fixes、closure records をテンプレートどおり保存してください。いずれかの round で P0/P1/P2、単項目 <70、読者が理解できない箇所、事実/用語/図表/数式の誤り、またはテンプレートの hard gate failure が見つかった場合は、修正後に新しい round を追加してください。
+環境が許すなら章ごとに並列処理してもよいですが、各章は独立して閉じてください。各 round は章全体を点検します。問題が見つかった場合、その章を修正しますが、その round は `FIXED_RECHECK_REQUIRED` と記録し、PASS にしてはいけません。その後、新しい章全体の再チェックを追加します。最新 round が `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` を記録した場合だけ、その章は通過です。
 
-終了条件：直近 N round 連続で新しい blocking issue がなく、npm run review:random-validate:pass が通ること。N=1 は token 節約向けの最低強度、N=3 はより厳格で、レビュー後の訳本品質を高める設定です。ユーザーが自由に選べます。
+いずれかの章で再発し得る翻訳品質 defect family が見つかった場合、たとえば短文への切断、比喩の衝突、列挙句読点の引きずり、代名詞の指示不明、原文構文の残留、用語の揺れ、タイトル過積載、過剰説明、根拠のない加筆については、`skills/translation-quality-defect-families/SKILL.md` に従ってください。発見方法、分類、低 token 監査、修正、再チェックを記録します。まず `rg`、用語表、禁止表記、タイトル表、章 control 記録、小さな原文照合で候補を集め、候補だけを agent に確認させます。agent に全書を盲目的に読ませないでください。
+
+完了後、`qa/chapter_controls/*.control.md`、必要な `qa/fidelity/`、`qa/readability/`、`qa/terminology/`、`qa/gates/` を作成または更新し、通過した章を `chapters/final/` に反映してください。その後 EPUB を再構築し、利用可能な chapter-control、preflight、publication lint、asset、EPUBCheck コマンドを実行してください。修正した章、defect family、検証結果、Prompt C に残る作業を報告してください。
+```
+
+### Prompt C：層化ランダム抜き取り検査と defect family closure
+
+`N` は「問題なしの連続 spot-check round 数」です。`1` は token 節約向けの最低強度、`2` は通常の本に推奨、`3` は用語密度が高い本、科学・数学・図表の多い本、または高品質版向けです。
+
+```text
+書籍プロジェクト：{書籍プロジェクトのパス。例：books/{target}/{number}_{対象言語の書名}_{対象言語の著者名}}
+終了に必要な問題なし連続 spot-check round 数 N：{1/2/3。既定は 2}
+
+まず AGENTS.md、この書籍の SKILL.md（あれば）、template/epub_pipeline/README.md、template/epub_pipeline/common/README.md、template/epub_pipeline/common/prompts/16a_stratified_random_spotcheck.md、template/epub_pipeline/common/references/stratified_random_spotcheck.md、template/epub_pipeline/common/references/quality_gate_framework.md、cover、book-info/frontmatter、assets、release に関する規則、`skills/translation-quality-defect-families/SKILL.md` を読んでください。
+
+/goal を設定してください：生成済み EPUB に対して「層化ランダム抜き取り検査と defect family closure」を実行し、通過後に release または private artifact を再生成します。これは普通の推敲ではありません。目的は、公開前にシステム的な盲点を見つけ、全書の同類箇所を監査し、修正を閉じ、新しい seed round を通すことです。
+
+reader-facing audit units を対象に層化ランダム抽出を実行してください。ページ数でも段落だけでもありません。実際に存在する paragraph、table、figure、formula/proof、caption/note をすべて層として扱います。最低 2 つの独立 review agent を使い、互いの結論を参照させないでください。`reviews/random_spotcheck/round_XXX/` に seed、manifest、samples、evidence、reviews、fixes/fix_log.md、verification/closure_check.md を保存します。
+
+サンプルのいずれかで P0/P1/P2、単項目 <70、読者が理解できない箇所、忠実度のずれ、事実/用語/人名/タイトル/注/図表/数式の誤り、原文構文の残留、硬い直訳、短文への切断、比喩の衝突、列挙句読点の引きずり、代名詞の指示不明、過剰説明、根拠のない加筆が見つかった場合、同じ round で defect family として分類してください。全書の同類候補を監査し、確認済みの命中をすべて修正します。サンプルだけを修正してはいけません。2 回目の失敗まで全書監査を待ってはいけません。
+
+翻訳品質 defect family では、低 token 監査を先に行ってください。`rg`、`glossary/terms.csv`、`forbidden_body_renderings`、タイトル表、章 control 記録、sample manifest、小さな原文照合で候補を集め、候補だけを agent に渡します。再利用できる教訓は `skills/translation-quality-defect-families/SKILL.md` に統合してください。
+
+修正のたびに EPUB を再構築し、新しい seed で次の spot-check round を実行します。終了条件：直近 N 個の新 seed round が PASS、発見済み defect family がすべて閉じている、`npm run review:random-validate:pass` が通る、release_confidence がテンプレート要件を満たすこと。
 
 通過後は staging を清掃または再構築し、EPUB を再生成し、publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck、および release または private artifact script を実行してください。パブリックドメインまたは許諾済みプロジェクトでは公開可能な EPUB をこの書籍の output/release/ に出力し、release_state.json.latest_status を PASS にしてください。個人利用プロジェクトでは最終 private artifact を output/private_artifacts/ に出力し、private_artifact_state.json.latest_status を PASS にしてください。release EPUB path または private artifact path、抜き取り検査 round、修正概要、検証コマンド結果、残りリスクを報告してください。
 ```

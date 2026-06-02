@@ -227,6 +227,8 @@ node scripts/asset_manifest_check.js --write-report
 - `npm run release:create` 必须拒绝未使用 `--require-pass` 生成的随机抽检校验报告；结构性抽样校验或 `DRAFT` release 不得作为 `DONE` 的依据。
 - 每次 EPUB 内容、排版、metadata、图表、注释或抽检修复发生变化后，都必须创建新的 patch release。不得覆盖旧版本 EPUB；release note 必须追加到累计 `release_notes.md` 顶部，不得每次散落新建 release note 文件。
 - 如果已经发现系统性文学精修问题，必须在 `books/{target}/{number}_{book_id_slug}/goal/` 建立本书目标，并把可复用经验回填到 common、目标语言或语言方向模板。
+- 若发现可复现译文质量问题族（如短句切断、比喻自撞、排比标点拖拽、代词指代不清、源语句法残留、术语漂移、标题超载、过度解释或加戏），必须使用 `skills/translation-quality-defect-families/SKILL.md`，在本书记录发现方式、归纳、低 token 同类审计、修复、例外和复查结果。
+- 问题族同类审计必须优先使用 `rg`、术语表、禁用译法、标题表、章节控制记录和小上下文源文对照定位候选；只有命中片段才交给 Agent 复核，不得让 Agent 盲读全书。
 - 整本 EPUB 制作后，必须派生 2 个独立 Agent 评审。
 - 评审失败时必须通过 `reviews/revision_route.md` 回到对应前置阶段。
 - 未完成复盘和经验沉淀，不得标记 `DONE`。
@@ -257,4 +259,5 @@ node scripts/asset_manifest_check.js --write-report
 - `reviews/revision_route.md` 中无未关闭 P0/P1/P2 必修项。
 - `retrospective/book_retrospective.md` 和 `retrospective/template_update_suggestions.md` 存在。
 - 重大精修问题已有书籍专属目标或修复记录，可复用经验已回填到对应模板层。
+- 已发现译文质量问题族时，本书已有发现、归纳、低 token 同类审计、修复、例外和复查记录，且可复用经验已合并进 `skills/translation-quality-defect-families/SKILL.md`。
 - `state/pipeline_state.json.status == DONE`。

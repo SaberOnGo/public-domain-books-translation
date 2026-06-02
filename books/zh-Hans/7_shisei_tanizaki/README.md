@@ -23,6 +23,8 @@
 
 目标不是“把日文换成中文”，而是产出来源清楚、文体判断明确、中文可读、有文学质感、EPUB 制作质量合格的简体中文正本书。
 
+译文质量问题族（例如短句切断、比喻自撞、排比标点拖拽、代词指代不清、日语句法残留、术语漂移、标题超载、过度解释或加戏）不得只修抽样句。必须按 `skills/translation-quality-defect-families/SKILL.md` 在本书记录发现、归纳、低 token 同类审计、修复与复查；可复用经验合并进该 skill，不盲目重复追加。
+
 This template handles Japanese source-language issues for Simplified Chinese EPUB production. It complements the target-language framework under `template/epub_pipeline/targets/zh-Hans/quality_framework/`.
 
 ## 唯一必须输入 / Required Inputs
@@ -147,3 +149,4 @@ Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `
 - 第一版全书 EPUB 后未完成分层随机抽检，不得进入最终输出。
 - `npm run review:random-validate:pass` 未通过，不得标记 `DONE`。
 - 未创建 `output/release/book_vX.X.X.epub`，或 `output/release/release_state.json.latest_status` 不是 `PASS`，不得标记 `DONE`。
+- 已发现译文质量问题族但未完成本书低 token 同类审计、修复闭环和 `skills/translation-quality-defect-families/SKILL.md` 经验沉淀，不得标记 `DONE`。

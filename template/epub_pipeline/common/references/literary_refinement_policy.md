@@ -16,6 +16,10 @@ A valid EPUB is not automatically a finished book. Passing EPUBCheck, metadata v
 
 一个 EPUB 能通过 EPUBCheck、metadata 校验和出版文本 lint，只能说明文件结构合格；这不等于书已经完成。可出版译本还必须完成编辑级精修、目标语言可读性打磨、标题设计、术语控制和模板经验回填。
 
+For recurring translation-quality defects, use `skills/translation-quality-defect-families/SKILL.md`. The quality-family skill is the shared memory for problems such as short-sentence fragmentation, metaphor collision, unclear pronoun reference, source-syntax residue, terminology drift, over-explanation, and invented additions.
+
+对于反复出现的译文质量问题，必须使用 `skills/translation-quality-defect-families/SKILL.md`。该质量问题族 skill 是短句切断、比喻自撞、代词指代不清、源语句法残留、术语漂移、过度解释和加戏等问题的共享经验库。
+
 ## Mandatory Refinement Targets / 强制精修目标
 
 Every book project must review:
@@ -107,6 +111,9 @@ Reusable lessons must be copied back into the appropriate layer:
 - `template/epub_pipeline/{source-target}/`: source-language interference, source-to-target title handling, culture-specific terms, prompts, and workflow warnings.
 - `template/epub_pipeline/{source-target}/`：源语言干扰、源到目标语言标题处理、文化专名、prompt 和流程警告。
 
+- `skills/translation-quality-defect-families/SKILL.md`: reusable translation-quality defect-family lessons, including how the family was found, classified, audited, fixed, and rechecked. Merge with existing entries when possible instead of appending duplicates.
+- `skills/translation-quality-defect-families/SKILL.md`：可复用的译文质量问题族经验，包括如何发现、归纳、审计、修复和复查。已有同族条目时应合并改进，不盲目重复追加。
+
 Book-specific findings may overlap with template rules. This is acceptable and often necessary because the book project guides work on one book, while templates guide future books.
 
 本书专属发现可以与模板规则有一定重复。这是允许且必要的，因为书籍工程指导某一本书，模板指导未来所有同类书。
@@ -156,6 +163,9 @@ A book must not be marked `DONE` if:
 
 - known reusable lessons were not added back to the relevant template layer;
 - 已知可复用经验没有回填到对应模板层；
+
+- known recurring translation-quality defect families were not merged into `skills/translation-quality-defect-families/SKILL.md`;
+- 已知可复现的译文质量问题族没有合并回填到 `skills/translation-quality-defect-families/SKILL.md`；
 
 - title design, paragraph refinement, terminology, or EPUB presentation issues remain open without a revision route;
 - 标题设计、段落精修、术语或 EPUB 呈现问题仍未关闭，也没有回退路线；

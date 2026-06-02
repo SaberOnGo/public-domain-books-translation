@@ -1,0 +1,4 @@
+interface:
+  display_name: "Translation Quality Defect Families"
+  short_description: "Capture and reuse translation-quality defect-family lessons."
+  default_prompt: "Use this skill when a LifeBook translation review finds recurring quality problems and needs to classify, audit, fix, and preserve defect-family lessons."

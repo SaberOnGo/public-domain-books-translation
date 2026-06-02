@@ -33,6 +33,9 @@
    - `template/epub_pipeline/common/metadata/source_evidence.md`
    - `template/epub_pipeline/common/metadata/private_use_declaration.md`
    - `template/epub_pipeline/common/references/` 中与来源、版权、封面、book-info、图表资产、质量门禁、随机抽检、release 有关的文件
+   - `template/epub_pipeline/common/prompts/08a_chapter_post_translation_control.md`
+   - `template/epub_pipeline/common/prompts/16a_stratified_random_spotcheck.md`
+   - `skills/translation-quality-defect-families/SKILL.md`
    - `template/epub_pipeline/modes/private_use/README.md`
    - `template/epub_pipeline/modes/private_use/references/private_use_cover_policy.md`
    - `template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md`
@@ -79,10 +82,11 @@ npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-targ
 第五阶段：完成私人书籍制作
 
 20. 私人自用模式只改变权利和目录边界，不降低质量要求。仍必须完成 book-specific research、style profile、预翻译 PASS、小样本 PASS。
-21. 分章翻译，完成每章译后控制、忠实度、可读性/意象、术语、章节 gate；只有 gate PASS 的章节进入 `chapters/final/`。
-22. 完成 `preproduction/stage1/production_spec.md`、样章 EPUB、全书 EPUB。私人自用封面底部只写 `个人学习版`，不得放长版权声明；私人首页/前置页不得写公版说明，制作标识必须使用 `参考LifeBook书坊 个人自制`。
-23. 构建和发布前清理或重建 staging 输出，避免旧 XHTML、链接或资产污染新门禁。
-24. 必须运行并通过：
+21. 分章翻译时必须执行每章译后全量检查闭环。每章写入 `chapters/translated/{chapter}.md` 后，必须立即对照整章原文和整章译文检查并修复，覆盖忠实度、漏译误译、目标语言顺读、文学性、可读性和吸引力、术语稳定、专名/案例/标题一致性、标题/小标题、注释、图表/公式/表格/图片文字接口、源语言句法残留、过硬过直句、过度解释、无依据加戏、读者可见 AI/制作痕迹、乱码/异常空格和旧纸书残留。只要发现任何问题，该轮只能记录为 `FIXED_RECHECK_REQUIRED`，不能 PASS；必须追加新一轮整章复查，直到最新一轮零问题 PASS。只有章节 control 和章节 gate 都 PASS 的章节才能进入 `chapters/final/`。
+22. 若任一章节检查、审校、抽检或修订发现可复现译文质量问题族，必须使用 `skills/translation-quality-defect-families/SKILL.md`：先在本私人工程记录发现方式、归纳、低 token 同类审计、修复、例外和复查；用 `rg`、术语表、禁用写法、标题表、章节控制记录和小上下文原文对照收集候选，只把候选片段交给 agent 复核；书内闭环后只把可复用且不暴露私人内容的通用经验合并进该 skill。
+23. 完成 `preproduction/stage1/production_spec.md`、样章 EPUB、全书 EPUB。私人自用封面底部只写 `个人学习版`，不得放长版权声明；私人首页/前置页不得写公版说明，制作标识必须使用 `参考LifeBook书坊 个人自制`。
+24. 构建和发布前清理或重建 staging 输出，避免旧 XHTML、链接或资产污染新门禁。
+25. 必须运行并通过：
     - `npm run build:epub`
     - `npm run check:epub`
     - `npm run lint:publication` 或等价 publication lint
@@ -91,12 +95,12 @@ npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-targ
     - `npm run preflight:private-use`
     - `npm run cover:check`
     - `npm run reader:private-check`
-25. 第一版全书 EPUB 后必须执行分层随机抽检，覆盖实际存在的 paragraphs、tables、figures、formulas/proof blocks、captions/notes，并保留 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、Agent A/B 独立评审、fix_log、closure_check。
-26. 抽检和修复完成后必须重新生成 EPUB，并运行 `npm run private:artifact:create` 或等价 private artifact 脚本。私人 EPUB 产物必须位于 `output/private_artifacts/`，不是公开 release，不得提交或发布到 GitHub。
+26. 第一版全书 EPUB 后必须执行分层随机抽检与问题族追杀，覆盖实际存在的 paragraphs、tables、figures、formulas/proof blocks、captions/notes，并保留 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、Agent A/B 独立评审、fix_log、closure_check。任一样本或任一 Agent 发现 P0/P1/P2、单项 <70、读者读不懂、忠实度偏移、事实/术语/专名/标题/译注/图表/公式错误、源语言句法硬搬、无依据润饰、过度解释或加戏，必须在当轮归纳为问题族，对整本读者可见书稿执行全书同类审计，修复全部确认命中，记录合理例外，重建 EPUB，并用新 seed 追加下一轮；不得只修被抽中的样本。只有最近连续 N 个新 seed 抽检轮均 PASS（N 最小 1，默认 2，高质量译本可选 3），所有问题族关闭，且 `npm run review:random-validate:pass` 通过，才可退出抽检。
+27. 抽检和修复完成后必须重新生成 EPUB，并运行 `npm run private:artifact:create` 或等价 private artifact 脚本。私人 EPUB 产物必须位于 `output/private_artifacts/`，不是公开 release，不得提交或发布到 GitHub。
 
 第六阶段：最终报告
 
-27. 最终报告必须包含：
+28. 最终报告必须包含：
     - 新建语言方向模板路径
     - 私人工程路径 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`
     - 本地书源文件名和 SHA256，不要暴露不必要的本机绝对路径

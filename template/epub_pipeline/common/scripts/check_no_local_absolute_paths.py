@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -140,8 +141,57 @@ def should_skip_path(root: Path, path: Path, scope: str) -> bool:
 
 
 def iter_files(root: Path, scope: str) -> list[Path]:
+    if scope == "repo":
+        staged = iter_staged_repo_files(root, scope)
+        if staged:
+            return staged
+
     files: list[Path] = []
     for path in root.rglob("*"):
+        if should_skip_path(root, path, scope):
+            continue
+        if path.is_file() and is_text_candidate(path):
+            files.append(path)
+    return sorted(files)
+
+
+def iter_staged_repo_files(root: Path, scope: str) -> list[Path]:
+    """Return staged repo files when the gate is run as a pre-commit check.
+
+    Repo scope is used before committing reusable docs/templates and publishable
+    book release records. A developer may still have ignored local production
+    state or unstaged private notes in the working tree; those should not affect
+    whether the staged commit can pass the portability gate.
+    """
+
+    try:
+        result = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(root),
+                "diff",
+                "--cached",
+                "--name-only",
+                "--diff-filter=ACMRT",
+                "-z",
+            ],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return []
+
+    files: list[Path] = []
+    for raw in result.stdout.split(b"\0"):
+        if not raw:
+            continue
+        try:
+            rel_path = raw.decode("utf-8")
+        except UnicodeDecodeError:
+            rel_path = raw.decode(sys.getfilesystemencoding(), errors="replace")
+        path = root / rel_path
         if should_skip_path(root, path, scope):
             continue
         if path.is_file() and is_text_candidate(path):

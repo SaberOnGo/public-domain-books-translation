@@ -33,11 +33,15 @@ AI クライアントに渡す最小 prompt：
 - 対応する原言語テンプレートがまだない場合は、doc/public/user_prompt/book_translation_new_template.md を実行してください。
 
 権利または出典証拠を確認できない場合を除き、技術項目を私に入力させないでください。信頼できるパブリックドメイン原文を自動で探し、書籍プロジェクトを作成し、翻訳、レビュー、EPUB ビルド、層化ランダム抜き取り検査、release まで完了してください。
+翻訳中は、各章ごとに「翻訳後の全量チェックと修正」を必ず実行してください。問題が見つかった場合、その章を修正しますが、その round は PASS にしてはいけません。最新 round がゼロ問題 PASS になるまで、章全体の再チェックを追加してください。
+最初の EPUB 後は「層化ランダム抜き取り検査と defect family の追跡」を必ず実行してください。サンプルで問題が出た場合、そのサンプルだけを直してはいけません。同じ round で defect family として分類し、全書の同類候補を監査し、確認済みの命中を修正し、例外を記録し、新しい seed で次 round を実行します。翻訳品質の defect family には `skills/translation-quality-defect-families/SKILL.md` を使用してください。
 LifeBook Digest の利用が明示されていない場合は自動判断します。長編小説、専門書、哲学書は EPUB 出力後に Digest を生成し、短編小説、自然科学系、その他の種類では生成しません。
-Digest を生成する場合は、書籍プロジェクトのルートに `digest.config.json`（`enabled=true`、`merge_into_epub=true`）を書き、リポジトリルートから `python -m digest.lifebook_digest --book-root books/{target}/{number}_{目标语言书名}_{目标语言作者名}` を実行してください。出力は標準 EPUB のままです。
+Digest を生成する場合は、書籍プロジェクトのルートに `digest.config.json`（`enabled=true`、`merge_into_epub=true`）を書き、リポジトリルートから `python -m digest.lifebook_digest --book-root books/{target}/{number}_{対象言語の書名}_{対象言語の著者名}` を実行してください。出力は標準 EPUB のままです。
 ```
 
-パブリックドメインではない本は、ローカルの private-use モードだけで扱います。ユーザーは自分のローカル電子書籍ファイルを提供し、個人学習用のみ、再配布なし、商用利用なしと明示する必要があります。AI は `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` に private project を作成します。スクリプトは `template/epub_pipeline/modes/private_use/` を重ね、private-use の cover、frontmatter、artifact ルールを公開用ルールから分離します。`books/private/` は Git で無視され、原文、訳文、QA、EPUB、private artifact を GitHub に公開してはいけません。
+最初の EPUB がすでにあり、品質をさらに上げたい場合は、AI に「精密に直して」とだけ依頼しないでください。how-to-use ガイドの 2 つの後続 prompt を使います。章品質の閉じ方が不確かな場合は **Prompt B：章ごとの全量再点検と修正**、release 前には **Prompt C：層化ランダム抜き取り検査と defect family closure** を使ってください。
+
+パブリックドメインではない本は、ローカルの private-use モードだけで扱います。ユーザーは自分のローカル電子書籍ファイルを提供し、個人学習用のみ、再配布なし、商用利用なしと明示する必要があります。AI は `books/private/{target}/{number}_{対象言語の書名}_{対象言語の著者名}/` に private project を作成します。スクリプトは `template/epub_pipeline/modes/private_use/` を重ね、private-use の cover、frontmatter、artifact ルールを公開用ルールから分離します。`books/private/` は Git で無視され、原文、訳文、QA、EPUB、private artifact を GitHub に公開してはいけません。
 
 ## AI クライアント
 
@@ -83,7 +87,7 @@ LifeBook Digest は現在、独立した LifeBook 後処理モジュールとし
 - `template/epub_pipeline/targets/{target}/`：対象言語の品質ルール。
 - `template/epub_pipeline/profiles/{profile-target}/`：特殊な本の種類に対する追加ルール。
 - `template/epub_pipeline/modes/private_use/`：非パブリックドメインの個人利用プロジェクトだけにコピーされる mode overlay です。private-use cover、frontmatter、artifact、gate scripts を含みます。
-- `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/`：実際の書籍プロジェクト。本固有の内容はここに置きます。
+- `books/{target}/{number}_{対象言語の書名}_{対象言語の著者名}/`：実際の書籍プロジェクト。本固有の内容はここに置きます。
 - `books/`：共有 Node.js ツール依存関係。一度だけインストールします。
 - `doc/public/`：公開ガイド、prompt 説明、候補書籍資料。
 - `doc/project/`：プロジェクトのエンジニアリング文書、AI クライアント説明、Launcher 設計、実装計画。
@@ -97,13 +101,13 @@ LifeBook Digest は現在、独立した LifeBook 後処理モジュールとし
 
 ```powershell
 cd books
-npm run new:book -- {目标语言书名}_{目标语言作者名} --source-target {source-target}
+npm run new:book -- {対象言語の書名}_{対象言語の著者名} --source-target {source-target}
 ```
 
 新しい書籍ディレクトリ：
 
 ```text
-books/{target}/{number}_{目标语言书名}_{目标语言作者名}/
+books/{target}/{number}_{対象言語の書名}_{対象言語の著者名}/
 ```
 
 スクリプトは `template/epub_pipeline/common` を先にコピーし、対応する言語方向テンプレートを重ねます。必要な場合は、その後 `profiles/{profile-target}/` を重ねます。private-use project では最後に `template/epub_pipeline/modes/private_use/` を重ねます。
@@ -112,7 +116,7 @@ private-use project は明示的に `private-use` モードで作成します。
 
 ```powershell
 cd books
-npm run new:book -- {目标语言书名}_{目标语言作者名} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "個人学習用のみ。再配布なし。商用利用なし。"
+npm run new:book -- {対象言語の書名}_{対象言語の著者名} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "個人学習用のみ。再配布なし。商用利用なし。"
 ```
 
 private mode は翻訳、レビュー、EPUB 検証、層化ランダム抜き取り検査の品質基準を下げません。ただし権利境界、読者に見える文言、artifact の意味を変えます。private cover の下部は `个人学习版`、private frontmatter は `参考LifeBook书坊 个人自制` を使い、パブリックドメイン説明を削除し、個人利用のみ、再配布なし、商用利用なし、リスクは個人が負うことを明記します。private artifact は `output/private_artifacts/` に書き込み、公開 release ではありません。
@@ -124,8 +128,11 @@ private mode は翻訳、レビュー、EPUB 検証、層化ランダム抜き�
 - private-use project は `modes/private_use` overlay を持ち、公開用 cover、frontmatter、release 文言を再利用してはいけません。
 - 現代の著作権付き翻訳、海賊版サイト、出所不明の EPUB を使わない。
 - AI 初稿をそのまま公開しない。
+- 各章は翻訳後の全量チェックと修正ゲートを通す必要があります。修正した round は PASS ではなく、最新の章全体再チェックがゼロ問題 PASS でなければなりません。
 - 本固有の内容を `template/` に書かない。
 - 人が読む重要なテンプレートファイルには、想定される貢献者が読めるローカル言語を含める。
+- 最初の EPUB 後の層化ランダム抜き取り検査では、見つかった問題を defect family 候補として扱い、全書の同類箇所を監査し、修正し、閉じ、新しい seed で再検査します。
+- 翻訳品質の defect family は `skills/translation-quality-defect-families/SKILL.md` にまとめます。ただし重複メモを増やすのではなく、再利用できる教訓を統合します。
 - 最終納品前に EPUB 検証、読者に見える内容の検査、層化ランダム抜き取り検査、バージョン付き release を通す。
 
 ## 書籍ツール

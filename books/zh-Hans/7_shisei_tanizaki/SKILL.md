@@ -90,6 +90,9 @@ Use this skill after `books/scripts/create_book_project.py` has copied `template
 - Every translated chapter must pass chapter control, fidelity review, readability/imagery review, terminology review, and final chapter gate.
 - 每章译文必须通过译后控制、忠实度审校、可读性/意象审校、术语审校和最终章节门禁。
 
+- If chapter control, review, random spot-check, or later revision exposes a recurring translation-quality defect family, use `skills/translation-quality-defect-families/SKILL.md`. Record the discovery method, classification, low-token similar-case audit, fixes, exceptions, and recheck result in this book before merging reusable lessons into that skill.
+- 如果章节控制、审校、随机抽检或后续修订发现可复现的译文质量问题族，必须使用 `skills/translation-quality-defect-families/SKILL.md`。先在本书记录发现方式、归纳分类、低 token 同类审计、修复、例外和复查结果，再把可复用经验合并进该 skill。
+
 - Before EPUB build, run `node scripts/publication_lint.js --target=zh-Hans --write-report`; fix semicolon overuse, abnormal Chinese spacing, legacy print residue, Japanese source leakage, mojibake, and reader-facing production notes before continuing.
 - EPUB 构建前必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`；如果发现分号滥用、中文异常空格、旧版纸书残留、日语原文泄漏、乱码或读者可见制作痕迹，必须先修复再继续。
 

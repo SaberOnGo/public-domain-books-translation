@@ -88,6 +88,7 @@
 - `references/quality_standard.md`：由目标语言模板或语言方向模板提供的质量标准。
 - `references/chapter_title_policy.md`：通用章节标题、目录短题名和副标题策略。
 - `references/literary_refinement_policy.md`：通用文学精修、书籍目标和模板经验回填策略。
+- `skills/translation-quality-defect-families/SKILL.md`：仓库级译文质量问题族 skill。发现忠实度、中文顺读、术语、标题/小标题、注释、图表文字接口、源语句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释或加戏等可复现质量问题时，必须用于归纳、全书同类审计、修复和经验回填。
 - `references/epub_assets_figures_tables.md`：通用 EPUB 图片、图表、表格、资源目录、XHTML 转换和 OPF manifest 规则。
 - `references/stratified_random_spotcheck.md`：第一版 EPUB 后强制执行的分层随机抽检、修复闭环和退出置信度规则。
 - `references/release_versioning.md`：EPUB 按软件版本发布的版本号、release note、`output/release/` 目录和退出门禁规则。
@@ -223,6 +224,7 @@ node scripts/asset_manifest_check.js --write-report
 - 未完成每章译后全量检查，或最近一轮不是 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 的零问题 PASS，或未满足更严格项目/profile 规则时，不得进入下一章翻译、后续审校或 `chapters/final/`。任何评分、主观印象或“已经修过”都不能抵消 P0/P1/P2、读者难以理解、事实/术语/当前章文字接口错误、中文润色不足、为了通俗而损害专业质量，或模板硬门禁失败。
 - 图表、表格、公式和图片在本节点只做当前章文字接口检查与资产分流。复杂重绘、OCR、裁剪、数值校验、公式排版、资源路径或 manifest 问题应写入资产/技术门禁记录；这类问题阻止终稿、构建和 release，但不让当前章译后文字门禁无限循环。
 - 每次未通过都必须记录问题点、修复摘要和追加复查轮次；不得覆盖旧失败记录。
+- 若每章译后全量检查发现可复现的译文质量问题族，必须使用 `skills/translation-quality-defect-families/SKILL.md`，在书籍工程记录即时证据，先用低 token 方法审计同类，再把可复用经验合并回填到该 skill。
 - `preflight:template` 在发现 `chapters/translated/*.md` 时，必须校验每个已译章节都有对应 `qa/chapter_controls/{NNN_slug}.control.md`，且最近一轮是以上零问题 PASS；在发现 `chapters/final/*.md` 时，还必须校验每个终稿章节都有 PASS 的 `qa/gates/{NNN_slug}.gate.md`。
 - 全部翻译完成后不得直接构建 EPUB，必须先完成预制作阶段 1。
 - 未通过样章制作检查，不得制作整本 EPUB。
@@ -240,6 +242,7 @@ node scripts/asset_manifest_check.js --write-report
 - 随机抽检中，两个 Agent 必须互不参考，均按模板、本书 profile 和目标语言规则检查正文、表格、图片、公式、图注/表注/注释、EPUB 阅读风险。每个样本必须逐项给出 0-100 分、问题类型、优先级、是否返工和理由。
 - 任一单项 < 70，或任一 P0/P1/P2，或任一读不懂、证明链断裂、概念误导、术语/数值/图表/公式错误，即使平均分达标也必须判为失败。
 - 任一随机抽检 Agent 未通过时，必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复。每个发现必须先归纳为问题族，并对整本读者可见书稿执行同类问题审计，范围至少包括 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；不得只修改被抽中的样本。修复后必须在旧轮次 `fixes/fix_log.md` 和 `verification/closure_check.md` 中记录问题族、检索式或审计方法、命中数、修复位置、合理例外和关闭结论，并使用新 seed 重新生成新轮次样本，不得复用上一轮样本自证通过。
+- 对译文质量问题族，审计顺序必须优先低 token：`rg`、术语表、禁用正文写法、标题映射、抽样 manifest、章节控制记录和小上下文原文对照；只有候选片段进入 agent 复核。书内闭环后，可复用经验必须合并回填到 `skills/translation-quality-defect-families/SKILL.md`。
 - 最终退出前必须运行 `npm run review:random-validate:pass`。该命令失败时，不得进入 `FINAL_OUTPUT_PASS`、`RETROSPECTIVE_DONE` 或 `DONE`。
 - `npm run review:random-validate:pass` 必须计算并写入 `release_confidence = min_h confidence_h`。若 `release_confidence < 0.80`，即使 Agent 文字评审写了 PASS，也不得退出任务。
 - `npm run review:random-validate:pass` 还必须校验每个 Agent 的 `average_score >= 75`、`lowest_score >= 70`、`blocking_issue_count = 0`，以及闭环文件中的 `open_p0_p1_p2_count = 0`。
@@ -282,4 +285,5 @@ node scripts/asset_manifest_check.js --write-report
 - `reviews/revision_route.md` 中无未关闭 P0/P1/P2 必修项。
 - `retrospective/book_retrospective.md` 和 `retrospective/template_update_suggestions.md` 存在。
 - 重大精修问题已有书籍专属目标或修复记录，可复用经验已回填到对应模板层。
+- 可复现译文质量问题族已合并回填到 `skills/translation-quality-defect-families/SKILL.md`，或在书籍复盘中明确说明没有新的可复用问题族。
 - `state/pipeline_state.json.status == DONE`。

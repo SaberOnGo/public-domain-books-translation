@@ -33,11 +33,15 @@ LifeBook 書坊是一套多語言公版書翻譯與 EPUB 製作流程。它不�
 - 如無對應源語言模板，執行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版權或來源無法確認，不要讓我填寫技術欄位。請自動查找可靠公版來源，自動建立專案，完成翻譯、審校、EPUB 建置、分層隨機抽檢和 release。
+翻譯執行時必須逐章執行「每章譯後全量檢查並修復」：發現任何問題時，先修復該章，但該輪不能 PASS，必須追加新一輪整章複查，直到最新一輪零問題 PASS。
+第一版 EPUB 後必須執行「分層隨機抽檢與問題族追殺」：抽檢發現任何問題，不得只修被抽中的樣本；必須在當輪歸納問題族、全書同類審計、修復確認命中、記錄例外，並用新 seed 追加一輪。譯文品質問題族必須使用 `skills/translation-quality-defect-families/SKILL.md`。
 未聲明是否啟用 LifeBook Digest 時，請自動判斷；長篇小說、專業書籍、哲學書在 EPUB 輸出後生成 Digest，短篇小說、自然科學類和其他類型不生成。
-如需生成 Digest，請在書籍工程根目錄寫入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），並在倉庫根目錄執行：`python -m digest.lifebook_digest --book-root books/{target}/{number}_{目标语言书名}_{目标语言作者名}`。輸出仍然是標準 EPUB。
+如需生成 Digest，請在書籍工程根目錄寫入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），並在倉庫根目錄執行：`python -m digest.lifebook_digest --book-root books/{target}/{number}_{目標語言書名}_{目標語言作者名}`。輸出仍然是標準 EPUB。
 ```
 
-如果是非公版書，只能使用本地私人模式。使用者必須提供自己的本地電子書檔案，並明確聲明僅供個人學習自用、不傳播、不商業使用；AI 應建立 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下的私人工程。腳本會疊加 `template/epub_pipeline/modes/private_use/`，把私人封面、首頁/前置頁和產物規則與公版發布規則隔離。`books/private/` 被 Git 忽略，裡面的原文、譯文、QA、EPUB 和私人產物不能發布到 GitHub。
+如果已經生成第一版 EPUB，但想繼續提高品質，請不要只寫「幫我精修」。使用 how-to-use 文件中的兩個後期 prompt：需要時先執行 **Prompt B：章節全量複檢與修復**，再執行 **Prompt C：分層隨機抽檢與問題族追殺**。
+
+如果是非公版書，只能使用本地私人模式。使用者必須提供自己的本地電子書檔案，並明確聲明僅供個人學習自用、不傳播、不商業使用；AI 應建立 `books/private/{target}/{number}_{目標語言書名}_{目標語言作者名}/` 下的私人工程。腳本會疊加 `template/epub_pipeline/modes/private_use/`，把私人封面、首頁/前置頁和產物規則與公版發布規則隔離。`books/private/` 被 Git 忽略，裡面的原文、譯文、QA、EPUB 和私人產物不能發布到 GitHub。
 
 ## AI 用戶端
 
@@ -83,7 +87,7 @@ LifeBook Digest 目前實作為獨立的 LifeBook 後處理模組。致謝與第
 - `template/epub_pipeline/targets/{target}/`：目標語言品質規則。
 - `template/epub_pipeline/profiles/{profile-target}/`：特殊書籍類型的附加規則。
 - `template/epub_pipeline/modes/private_use/`：只複製到非公版個人自用專案的模式覆蓋層，包含私人封面、首頁/前置頁、私人產物和門禁腳本。
-- `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/`：具體書籍工程。書籍內容只能寫在這裡。
+- `books/{target}/{number}_{目標語言書名}_{目標語言作者名}/`：具體書籍工程。書籍內容只能寫在這裡。
 - `books/`：共享 Node.js 工具依賴，統一安裝一次。
 - `doc/public/`：公開說明、prompt 使用文件和候選書資料。
 - `doc/project/`：專案工程文件、AI 用戶端說明、Launcher 設計和實施計畫。
@@ -97,13 +101,13 @@ LifeBook Digest 目前實作為獨立的 LifeBook 後處理模組。致謝與第
 
 ```powershell
 cd books
-npm run new:book -- {目标语言书名}_{目标语言作者名} --source-target {source-target}
+npm run new:book -- {目標語言書名}_{目標語言作者名} --source-target {source-target}
 ```
 
 新書目錄格式：
 
 ```text
-books/{target}/{number}_{目标语言书名}_{目标语言作者名}/
+books/{target}/{number}_{目標語言書名}_{目標語言作者名}/
 ```
 
 腳本會先複製 `template/epub_pipeline/common`，再覆蓋對應語言方向模板。若書籍需要特殊 profile，再疊加 `profiles/{profile-target}/`。私人自用專案還會最後疊加 `template/epub_pipeline/modes/private_use/`。
@@ -112,7 +116,7 @@ books/{target}/{number}_{目标语言书名}_{目标语言作者名}/
 
 ```powershell
 cd books
-npm run new:book -- {目标语言书名}_{目标语言作者名} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "僅供個人學習自用；不傳播；不用於商業。"
+npm run new:book -- {目標語言書名}_{目標語言作者名} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "僅供個人學習自用；不傳播；不用於商業。"
 ```
 
 私人模式不降低翻譯、審校、EPUB 校驗、分層隨機抽檢要求，但會改變權利、讀者可見措辭和產物語義。私人封面底部使用 `個人學習版`；私人首頁/前置頁使用 `參考LifeBook書坊 個人自製`，去掉所有公版說明，並寫明僅供個人自用、不傳播、不商業使用、風險由個人承擔。私人產物寫入 `output/private_artifacts/`，不是公開 release。
@@ -124,8 +128,11 @@ npm run new:book -- {目标语言书名}_{目标语言作者名} --source-target
 - 私人自用專案必須帶有 `modes/private_use` 覆蓋層，不得復用公版封面、首頁/前置頁和公開 release 措辭。
 - 不使用現代受版權保護譯本、盜版站或來源不明 EPUB。
 - AI 初稿不能直接發布。
+- 每章譯後必須完成當前章全量檢查並修復；發現問題後追加整章複查，直到最新輪零問題 PASS。
 - 具體書籍內容不能寫回 `template/`。
 - 面向人的重要模板文件必須包含目標貢獻者能讀懂的本地語言。
+- 第一版 EPUB 後必須執行分層隨機抽檢；發現問題必須當輪歸納為問題族，做全書同類審計、修復、關閉，並用新 seed 複抽。
+- 譯文品質問題族必須沉澱到 `skills/translation-quality-defect-families/SKILL.md`，但只合併可復用經驗，不盲目重複追加。
 - 最終交付前必須經過 EPUB 校驗、讀者可見內容檢查、分層隨機抽檢和版本化 release。
 
 ## 書籍工具

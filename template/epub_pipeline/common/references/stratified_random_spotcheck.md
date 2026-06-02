@@ -106,8 +106,11 @@ caption/note:
 ```text
 if any stratum or sampled unit exposes an issue needing correction or likely to recur systemically:
   classify it as a defect family in the current round
+  if it is a translation-quality family, consult skills/translation-quality-defect-families/SKILL.md
   audit the whole reader-facing book for similar cases in the current round
+  prefer machine-readable candidate collection before broad agent reading
   fix confirmed matches and document justified exceptions
+  backfill reusable translation-quality lessons into the skill after book-local closure
   close the family in fix_log.md and closure_check.md before any new-seed resample
   optionally mark the stratum as higher risk for later sampling or human review, but never use that flag as a substitute for the current-round book-wide audit
 ```
@@ -193,10 +196,10 @@ At least two independent agents must review the samples. The main executor canno
 
 1. 在 `reviews/random_spotcheck/round_XXX/reviews/` 保留 Agent 原始评审。
 2. 在 `reviews/revision_route.md` 写明回退阶段。
-3. 将每个发现归纳为问题族，例如专名误译、术语硬译、脚注裸露、英文句法、图表标签错误、公式符号错误、metadata 不一致等。
-4. 对每个问题族执行全书同类问题审计，范围至少覆盖 `chapters/final/`、读者可见 frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；不得只修改被抽中的单个样本。
+3. 将每个发现归纳为问题族，例如专名误译、术语硬译、短句切断、比喻自撞、排比标点拖拽、代词指代不清、英文句法、过度解释、加戏、脚注裸露、图表标签错误、公式符号错误、metadata 不一致等。
+4. 对每个问题族执行全书同类问题审计，范围至少覆盖 `chapters/final/`、读者可见 frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；不得只修改被抽中的单个样本。译文质量问题族必须先按 `skills/translation-quality-defect-families/SKILL.md` 使用 `rg`、术语表、禁用正文写法、标题映射和小上下文原文对照等低 token 方法收集候选，再把候选片段交给 agent 复核。
 5. 修复对应章节、表格、图片、公式、metadata 或构建脚本中的所有同类问题；若某个疑似命中被判定为合理例外，必须记录理由。
-6. 在 `round_XXX/fixes/fix_log.md` 记录每个问题族的检索式或审计方法、审计范围、命中数、修复位置、例外和复查结果。
+6. 在 `round_XXX/fixes/fix_log.md` 记录每个问题族的检索式或审计方法、审计范围、命中数、修复位置、例外和复查结果。可复用的译文质量经验必须回填到 `skills/translation-quality-defect-families/SKILL.md`，已有同族条目时合并改进，不盲目重复追加。
 7. 在 `round_XXX/verification/closure_check.md` 定点复查旧问题，并确认同类问题全书审计已关闭。
 8. 使用新 seed 生成下一轮 `round_YYY/` 抽检，不得复用旧样本自证通过。
 

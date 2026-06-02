@@ -1,0 +1,25 @@
+{
+  "current_version": "v0.0.3",
+  "main_version": 0,
+  "sub_version": 0,
+  "patch_version": 3,
+  "latest_epub": "在两个星球上_v0.0.3.epub",
+  "latest_release_note": "release_notes.md",
+  "latest_status": "PASS",
+  "latest_created_at": "2026-06-01T23:25:34Z",
+  "latest_sha256": "b6dbf5c1e32978d71e5ca62ed90a4e94c84fcccf6a37f19116a5fe4bdba167e4",
+  "latest_size_bytes": 718067,
+  "gate_summary": {
+    "random_spotcheck_round": "reviews/random_spotcheck/round_004",
+    "random_spotcheck_validation": "reviews/random_spotcheck/round_004/validation_report.json",
+    "release_confidence": 1.0,
+    "random_spotcheck_status": "PASS",
+    "random_spotcheck_require_pass": true,
+    "epubcheck_path": "output/epubcheck.json",
+    "epubcheck_fatal": 0,
+    "epubcheck_error": 0,
+    "epubcheck_warning": 0,
+    "publication_lint_path": "output/publication_lint.json",
+    "publication_lint_issue_count": 0
+  }
+}
