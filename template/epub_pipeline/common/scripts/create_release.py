@@ -133,6 +133,9 @@ def gate_summary(book_root: Path) -> dict:
         "release_confidence": validation.get("release_confidence"),
         "random_spotcheck_status": validation.get("status", ""),
         "random_spotcheck_require_pass": bool(validation.get("require_pass", False)),
+        "current_review_run_id": validation.get("current_review_run_id", ""),
+        "current_run_pass_rounds_required": int(validation.get("current_run_pass_rounds_required", 0) or 0),
+        "current_run_pass_rounds_count": int(validation.get("current_run_pass_rounds_count", 0) or 0),
         "epubcheck_path": "output/epubcheck.json" if epubcheck else "",
         "epubcheck_fatal": int(epubcheck_checker.get("nFatal", 0)) if epubcheck_checker else None,
         "epubcheck_error": int(epubcheck_checker.get("nError", 0)) if epubcheck_checker else None,
@@ -148,6 +151,14 @@ def require_pass_gates(summary: dict) -> None:
         errors.append("latest random spot-check validation status is not PASS")
     if not summary.get("random_spotcheck_require_pass"):
         errors.append("latest random spot-check validation was not run with --require-pass")
+    if not summary.get("current_review_run_id"):
+        errors.append("latest random spot-check validation is missing current review_run_id evidence")
+    required_rounds = int(summary.get("current_run_pass_rounds_required", 0) or 0)
+    counted_rounds = int(summary.get("current_run_pass_rounds_count", 0) or 0)
+    if required_rounds < 1 or counted_rounds < required_rounds:
+        errors.append(
+            f"current-run PASS round evidence is insufficient: {counted_rounds} < {max(required_rounds, 1)}"
+        )
     confidence = summary.get("release_confidence")
     if confidence is None or float(confidence) < 0.80:
         errors.append("release_confidence is missing or below 0.80")
@@ -277,6 +288,8 @@ def main() -> None:
         f"- random_spotcheck_validation: `{summary.get('random_spotcheck_validation') or 'MISSING'}`",
         f"- random_spotcheck_status: `{summary.get('random_spotcheck_status') or 'MISSING'}`",
         f"- random_spotcheck_require_pass: `{summary.get('random_spotcheck_require_pass')}`",
+        f"- current_review_run_id: `{summary.get('current_review_run_id') or 'MISSING'}`",
+        f"- current_run_pass_rounds: `{summary.get('current_run_pass_rounds_count')}/{summary.get('current_run_pass_rounds_required')}`",
         f"- release_confidence: `{summary.get('release_confidence') if summary.get('release_confidence') is not None else 'MISSING'}`",
         f"- epubcheck: `{summary.get('epubcheck_path') or 'MISSING'}`",
         f"- epubcheck_fatal: `{summary.get('epubcheck_fatal') if summary.get('epubcheck_fatal') is not None else 'MISSING'}`",

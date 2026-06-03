@@ -28,6 +28,12 @@ Do not use private EPUB artifacts as GitHub release assets. Do not commit them.
 - `private_artifact_state.json`
 - `private_artifact_index.md`
 
+## Random Spot-Check Evidence / 随机抽检证据
+
+Before creating a PASS private artifact, run `npm run review:random-validate:pass`. The validation report must include `current_review_run_id` and must show `current_run_pass_rounds_required >= 1` plus `current_run_pass_rounds_count >= current_run_pass_rounds_required`. The user may specify any current-run consecutive PASS requirement of `>=1`; when unspecified, the default is 2. PASS rounds from earlier agents, earlier public releases, or earlier private artifacts are historical records only and must not be counted as the current executor's final PASS rounds.
+
+创建 `PASS` 私人产物前，必须运行 `npm run review:random-validate:pass`。校验报告必须包含 `current_review_run_id`，且必须显示 `current_run_pass_rounds_required >= 1`、`current_run_pass_rounds_count >= current_run_pass_rounds_required`。用户可以指定任意 `>=1` 的当前运行连续 PASS 轮次要求；未指定时默认 2。旧 Agent、旧公开 release 或旧私人产物之前的 PASS 轮次只能作为历史记录，不得计入当前执行者的最后 PASS 轮次。
+
 ## Required Note Wording / 必备说明
 
 Every private artifact note must include:

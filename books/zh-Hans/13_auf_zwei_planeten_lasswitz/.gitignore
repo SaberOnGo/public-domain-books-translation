@@ -8,4 +8,4 @@ output/*
 !output/release/
 !output/release/**
 output/release/*.epub
-!output/release/在两个星球上_v0.0.3.epub
+!output/release/在两个星球上_v0.0.4.epub

@@ -110,6 +110,19 @@ Use bilingual Chinese-English wording for new major sections. Chinese may lead w
   修复方式：把原句或短原段与译文成对呈现，通常原文在前、译文在后。双语配对只用于“原句措辞本身就是论证对象”的位置，不要把普通叙述正文膨胀成对照文本。
 - Recheck: Confirm that every added source line serves a reader-facing analytical purpose, that the translation remains primary for continuous reading, and that the chapter has not drifted into indiscriminate bilingual duplication.
   复查：确认新增原文都服务于读者可见的分析目的，译文仍然是连续阅读的主文本，章节没有滑向无差别双语堆叠。
+- False-positive guard: In quote-analysis books, do not classify a visible English (or other source-language) line as `untranslated residue` if it is immediately paired with a translation and the pair is clearly functioning as a reader-facing quote interface. Audit only lines that remain source-language-only with no translated partner, or quote pairs whose presentation prevents normal reading.
+  误判防护：在引句分析型书中，如果一条可见英文（或其他源语）句子紧跟译文成对出现，并且明显承担读者可见的“原句接口”功能，就不要把它误判为 `untranslated residue`。真正要审计的是只有源语、没有译文配对的残留，或虽成对出现但呈现方式已经妨碍正常阅读的引句块。
+
+### Reader-Facing Note Marker Leak / 读者可见注号裸露
+
+- Symptom: Chapter body text exposes raw trailing digits or source-authoring note markers instead of a readable note interface, so random-sample review catches naked `3` / `9` endings or similar residue in reader-facing text.
+  症状：章节正文把尾随数字或源稿注号原样暴露出来，没有形成可读的注释接口，于是随机抽检会抓到裸露的 `3` / `9` 之类尾注残留。
+- Find by: Run `rg` or equivalent scans over `chapters/final/` for sentence-final digits, then compare with note inventory and built XHTML. Check whether the source markdown itself is readable, not only whether the EPUB builder later repairs it.
+  发现方式：先对 `chapters/final/` 用 `rg` 或等效扫描找句末数字，再对照注释清单和生成 XHTML。不要只看 EPUB 构建后有没有自动补好，还要检查源 markdown 本身是否可读。
+- Fix by: Replace raw note digits with an explicit, reader-visible note marker convention in source text, and make the build pipeline recognize that convention so source chapters and generated EPUB stay aligned.
+  修复方式：把裸数字改成源文件里明确、读者可见的注号写法，并让构建流水线识别这一写法，使源章节与生成 EPUB 保持一致。
+- Recheck: Confirm both `chapters/final/` and built XHTML no longer expose naked note digits, and that the note link still resolves to the intended note target.
+  复查：确认 `chapters/final/` 与生成 XHTML 都不再暴露裸数字注号，同时注释链接仍能正确落到目标注释。
 
 ### Unclear Pronoun Reference / 代词指代不清
 

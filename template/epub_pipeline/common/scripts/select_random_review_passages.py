@@ -8,6 +8,7 @@ import re
 import secrets
 import shutil
 from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from xml.etree import ElementTree as ET
 from urllib.parse import unquote
@@ -50,6 +51,16 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--round", default="auto", help="Round id such as round_001, or auto.")
     parser.add_argument("--rounds-planned", type=int, default=4, help="Planned random-sampling iterations T.")
+    parser.add_argument(
+        "--min-current-run-pass-rounds",
+        type=int,
+        default=2,
+        help=(
+            "Minimum PASS rounds expected in the current review run. Must be >= 1; defaults to 2 "
+            "unless the user explicitly overrides it. The sampler reuses the active review_run_id "
+            "until that many current-run PASS rounds exist, then starts a fresh run."
+        ),
+    )
     parser.add_argument("--target-confidence", type=float, default=0.80, help="Minimum target discovery confidence.")
     parser.add_argument("--defect-rate", type=float, default=0.10, help="Minimum problem rate q to defend against.")
     parser.add_argument(
@@ -138,6 +149,74 @@ def existing_round_dirs(output_dir: Path) -> list[Path]:
             if match and path.is_dir():
                 rounds.append((int(match.group(1)), path))
     return [path for _, path in sorted(rounds)]
+
+
+def read_json_file(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+
+
+def manifest_for_round(round_dir: Path) -> dict:
+    return read_json_file(round_dir / "random_sample_manifest.json")
+
+
+def validation_for_round(round_dir: Path) -> dict:
+    return read_json_file(round_dir / "validation_report.json")
+
+
+def current_run_pass_count(output_dir: Path, run_id: str) -> int:
+    count = 0
+    for round_dir in reversed(existing_round_dirs(output_dir)):
+        manifest = manifest_for_round(round_dir)
+        if manifest.get("review_run_id") != run_id:
+            break
+        validation = validation_for_round(round_dir)
+        if validation.get("status") == "PASS" and bool(validation.get("require_pass", False)):
+            count += 1
+            continue
+        break
+    return count
+
+
+def choose_review_run(output_dir: Path, min_pass_rounds: int) -> dict[str, str | int]:
+    if min_pass_rounds < 1:
+        raise SystemExit("--min-current-run-pass-rounds must be >= 1")
+    state_path = output_dir / "current_review_run.json"
+    state = read_json_file(state_path)
+    existing_run_id = str(state.get("review_run_id", "")).strip()
+    if existing_run_id and current_run_pass_count(output_dir, existing_run_id) < min_pass_rounds:
+        return {
+            "review_run_id": existing_run_id,
+            "review_run_started_at": str(state.get("started_at", "")),
+            "current_run_start_round": int(state.get("start_round_number", 0)),
+            "min_current_run_pass_rounds": min_pass_rounds,
+        }
+
+    rounds = existing_round_dirs(output_dir)
+    next_round_number = len(rounds) + 1
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return {
+        "review_run_id": secrets.token_hex(12),
+        "review_run_started_at": now,
+        "current_run_start_round": next_round_number,
+        "min_current_run_pass_rounds": min_pass_rounds,
+    }
+
+
+def write_current_review_run(output_dir: Path, run_state: dict[str, str | int]) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "review_run_id": run_state["review_run_id"],
+        "started_at": run_state["review_run_started_at"],
+        "start_round_number": run_state["current_run_start_round"],
+        "min_current_run_pass_rounds": run_state["min_current_run_pass_rounds"],
+        "rule": "Only PASS rounds generated in this review_run_id count for the current execution.",
+    }
+    write_text(output_dir / "current_review_run.json", [json.dumps(payload, ensure_ascii=False, indent=2)])
 
 
 def blocking_strata_for_round(round_dir: Path) -> set[str]:
@@ -728,6 +807,8 @@ def main() -> None:
     round_id = next_round_id(output_dir) if args.round == "auto" else args.round
     round_dir = output_dir / round_id
     seed = args.seed or secrets.token_hex(16)
+    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    run_state = choose_review_run(output_dir, args.min_current_run_pass_rounds)
     rng = random.Random(seed)
     profile = detect_profile(book_root, args.profile)
     required_total = required_total_samples(args.target_confidence, args.defect_rate)
@@ -763,6 +844,11 @@ def main() -> None:
     manifest = {
         "schema_version": "2.0",
         "round_id": round_id,
+        "generated_at": generated_at,
+        "review_run_id": run_state["review_run_id"],
+        "review_run_started_at": run_state["review_run_started_at"],
+        "current_run_start_round": run_state["current_run_start_round"],
+        "min_current_run_pass_rounds": run_state["min_current_run_pass_rounds"],
         "seed": seed,
         "book_root": ".",
         "source_dir": relative_to_book(book_root, source_dir),
@@ -788,6 +874,7 @@ def main() -> None:
     }
 
     write_text(round_dir / "seed.txt", [seed])
+    write_current_review_run(output_dir, run_state)
     write_text(round_dir / "strata_summary.json", [json.dumps(strata_summary, ensure_ascii=False, indent=2)])
     manifest_json = json.dumps(manifest, ensure_ascii=False, indent=2)
     write_text(round_dir / "random_sample_manifest.json", [manifest_json])

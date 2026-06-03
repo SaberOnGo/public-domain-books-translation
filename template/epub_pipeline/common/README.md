@@ -189,6 +189,10 @@ The sampling unit is not an EPUB page and not only a paragraph. It is a reader-v
 
 抽样单位不是 EPUB 页，也不只是正文段落，而是读者可见审计单元：正文段落、表格、图片、公式/证明块、图注或注释。样本、图片证据、表格/公式片段、Agent 评审、修复记录和闭环验证都会写入 `reviews/random_spotcheck/round_XXX/`，方便人工核查到底抽了什么、修了什么。
 
+Every new executor run must create new random spot-check rounds for that run. Historical PASS rounds from earlier agents, earlier releases, or earlier private artifacts are audit history only; they must not be counted as the current executor's final PASS rounds. The sampler records `review_run_id` and `generated_at`. The user may specify any current-run consecutive PASS requirement of `>=1`; if not specified, `npm run review:random-validate:pass` defaults to the latest consecutive 2 PASS rounds from the same current `review_run_id`, newer than the latest release/private artifact.
+
+每次新的 AI 执行随机抽检时，必须生成本次运行的新轮次。之前 Agent、之前 release 或之前 private artifact 已经 PASS 的轮次只能作为历史审计记录，不得计入当前执行者的最后 PASS 轮次。抽样脚本会写入 `review_run_id` 和 `generated_at`。用户可以指定任意 `>=1` 的当前运行连续 PASS 轮次要求；未指定时，`npm run review:random-validate:pass` 默认只接受同一当前 `review_run_id` 下、晚于最近 release/private artifact 的最新连续 2 个 PASS 轮次。
+
 Default release sampling is intentionally stronger than a smoke test while still respecting AI token budgets: `T=4`, `agents=2`, paragraph/text samples are `60` per agent per round. Tables and figures are fully scanned when `N<=80`; formula/proof blocks when `N<=100`; captions/notes when `N<=120`. Larger non-text strata sample `20` units per round total by default.
 
 默认发布前抽检强度高于快速 smoke test，但仍控制 AI token 成本：`T=4`，`agents=2`，正文层每个 Agent 每轮 60 个。表格和图片 `N<=80` 全检；公式/证明块 `N<=100` 全检；图注/表注/注释 `N<=120` 全检。超过阈值的非文本层默认每轮总抽 20 个。
@@ -218,6 +222,10 @@ npm run review:random-validate:pass
 ```powershell
 npm run review:random-validate:pass
 ```
+
+The pass report must include `current_review_run_id`, `current_run_pass_rounds_required`, `current_run_pass_rounds_count`, and `current_run_pass_rounds`. If the count is below the required value, the workflow is still not closed even when older rounds are PASS.
+
+强校验报告必须包含 `current_review_run_id`、`current_run_pass_rounds_required`、`current_run_pass_rounds_count` 和 `current_run_pass_rounds`。只要本次运行计数不足，即使旧轮次都是 PASS，也不得关闭流程。
 
 See `references/stratified_random_spotcheck.md` and `prompts/16a_stratified_random_spotcheck.md`.
 

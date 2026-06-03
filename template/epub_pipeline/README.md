@@ -69,6 +69,10 @@ Markdown chapters are authoring sources only. During EPUB production, final chap
 
 After the first full-book EPUB is generated, every book project must run the stratified random spot-check module in `common/references/stratified_random_spotcheck.md` and `common/prompts/16a_stratified_random_spotcheck.md`. The module samples reader-visible audit units, including paragraphs, tables, figures, formulas/proof blocks, captions, and notes, and writes human-checkable rounds under `books/{target}/{number}_{target_language_title}_{target_language_author}/reviews/random_spotcheck/round_XXX/`.
 
+Every executor must generate new spot-check rounds for the current run. Earlier PASS rounds from previous agents, previous releases, or previous private artifacts are audit history only; they do not count toward the current run's final PASS requirement. The user may specify any current-run consecutive PASS requirement of `>=1`; when the user does not specify it, the default is 2 latest consecutive PASS rounds under the same `review_run_id`.
+
+每个执行中的 AI 必须为当前运行生成新的抽检轮次。之前 Agent、之前 release 或之前 private artifact 已经 PASS 的轮次只能作为历史审计记录，不能计入本次运行的最终 PASS 条件。用户可以指定任意 `>=1` 的当前运行连续 PASS 轮次要求；用户未指定时，默认要求同一 `review_run_id` 下最新连续 2 轮 PASS。
+
 If any random sample exposes a defect, the executor must treat it as a possible defect family: audit the whole reader-facing book for similar cases, fix all confirmed matches, document justified exceptions, and close the family in that round's `fix_log.md` and `closure_check.md` before running a new-seed resample. 抽检发现问题时，不得只修被抽中的样本；必须先归纳问题族，再做全书同类问题审计和闭环。
 
 For translation-quality defect families, also use `skills/translation-quality-defect-families/SKILL.md`. Record book-specific evidence in the book project, then backfill only reusable lessons into that skill: how the family was found, how it was classified, how similar cases were audited, how confirmed matches were fixed, and how the fix was rechecked. 译文质量问题族还必须使用 `skills/translation-quality-defect-families/SKILL.md`：具体证据留在书籍工程内，可复用经验回填到该 skill，且只写有效归纳，不盲目重复追加。

@@ -81,7 +81,8 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 ## 第一版 EPUB 后分层随机抽检自动化规则
 
 - 第一版 `output/book.epub` 完成后，AI 必须立即执行 `prompts/16a_stratified_random_spotcheck.md` 和 `references/stratified_random_spotcheck.md`，不得直接宣布完成。
-- 每一轮精校完成后，AI 必须运行 `npm run review:random-samples`，或等效运行 `python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --target-confidence 0.80 --defect-rate 0.10 --profile auto`。
+- 每一轮精校完成后，AI 必须运行 `npm run review:random-samples`，或等效运行 `python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --min-current-run-pass-rounds 2 --target-confidence 0.80 --defect-rate 0.10 --profile auto`。
+- 每个新的 AI 执行批次必须产生自己的新随机抽检轮次；旧 Agent、旧 release 或旧 private artifact 之前已经 PASS 的 `round_XXX` 只能作为历史记录，不得计入当前执行者的退出条件。manifest 必须带 `review_run_id` 和 `generated_at`。用户可以指定任意 `>=1` 的当前运行连续 PASS 轮次要求；未指定时默认 2。强校验只统计同一当前 `review_run_id` 下、晚于最近 release/private artifact 的最新连续 PASS 轮次。
 - 默认发布前抽样预算为正文层每个 Agent 每轮 60；表格和图片 `N<=80` 全检，否则每轮总抽 20；公式/证明块 `N<=100` 全检，否则每轮总抽 20；图注/表注/注释 `N<=120` 全检，否则每轮总抽 20。
 - 若任一层、任一样本发现任何需要修复或可能系统性复现的问题，本轮立即把发现归纳为问题族，并执行全书同类问题审计和闭环；不得只修被抽中的样本，也不得等到第二轮才全书检查。同层可被标记为高风险，用于后续抽样和人工复核，但不能替代本轮全书同类问题审计。
 - 脚本必须通过最近轮次 `round_XXX/reviews/*_review.md` 中的 P0/P1/P2 样本行自动记录高风险层，不能只依赖主执行 AI 自觉标记。风险标记只用于后续抽样和复核；本轮一旦发现问题，仍必须立即执行问题族全书同类审计。
@@ -89,7 +90,7 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 - 每次抽检必须生成 `reviews/random_spotcheck/round_XXX/` 子目录，包含 seed、manifest、分层样本、图片/表格/公式证据、Agent 评审、修复记录和闭环验证文件，供人工核查。
 - 随机抽检必须至少使用 2 个独立 Agent；每个 Agent 必须逐样本给出 0-100 分、问题类型、优先级、是否返工和理由。
 - 两个 Agent 均必须按模板、本书 profile、目标语言规则和读者视角认真分析：读不读得懂、是否忠实、数学/天文学链条是否成立、表格/图片/公式/术语/数值/注释是否符合书籍设计。
-- 退出精校的最低条件是：两个 Agent 均 PASS，无单项 < 70，无未关闭 P0/P1/P2，无读不懂样本，无数学或天文学阻断，无术语/数值/图表/公式错误，并且 `npm run review:random-validate:pass` 通过。
+- 退出精校的最低条件是：两个 Agent 均 PASS，无单项 < 70，无未关闭 P0/P1/P2，无读不懂样本，无数学或天文学阻断，无术语/数值/图表/公式错误，并且 `npm run review:random-validate:pass` 通过；该报告必须记录 `current_run_pass_rounds_required >= 1` 且 `current_run_pass_rounds_count >= current_run_pass_rounds_required`。用户未指定时默认要求 2。
 - 任一 Agent 抽检不通过时，AI 必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复；每个发现必须先归纳为“问题族”，再对整本读者可见书稿执行全书同类问题审计，覆盖 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML，不得只修改被抽中的样本；修复所有确认命中、记录合理例外后，必须在旧轮次 `fixes/fix_log.md` 与 `verification/closure_check.md` 中定点关闭单个问题和该问题族，并使用新 seed 重新生成下一轮样本，不得复用旧样本。
 
 ## EPUB 版本化发布自动化规则
@@ -100,7 +101,7 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 - 私人自用项目的所有版本化 EPUB 必须写入 `output/private_artifacts/`，文件名为 `{目标语言书名}_private_vX.X.X.epub`；它不是公开 release，不得发布到 GitHub。
 - 每个版本必须把说明追加到累计 `release_notes.md` 或 `private_artifact_notes.md` 顶部，记录发布原因、问题点、修复方式、QA 证据、风险和下一轮迭代。
 - `DRAFT` release 可用于人工核查，但不得作为 `DONE` 依据。
-- `PASS` release 或 private artifact 必须来自 `npm run review:random-validate:pass` 或等效 `--require-pass` 校验，且 `release_confidence >= 0.80`、EPUBCheck fatal/error 为 0、publication lint 无未解决问题。私人自用项目还必须通过 `preflight:private-use` 和 `reader:private-check`。
+- `PASS` release 或 private artifact 必须来自 `npm run review:random-validate:pass` 或等效 `--require-pass --min-current-run-pass-rounds N` 校验，其中 `N>=1`，用户未指定时默认 `N=2`；校验报告必须满足 `current_run_pass_rounds_count >= current_run_pass_rounds_required`、`release_confidence >= 0.80`、EPUBCheck fatal/error 为 0、publication lint 无未解决问题。私人自用项目还必须通过 `preflight:private-use` 和 `reader:private-check`。
 - 后续读者评论、人工审校、阅读行为分析、自动化 QA 或随机抽检发现的问题，必须进入下一轮修复和新的 patch release 或 private artifact，不得覆盖旧产物证据。
 
 ## 失败处理

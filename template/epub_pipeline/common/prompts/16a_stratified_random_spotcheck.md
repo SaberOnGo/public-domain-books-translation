@@ -40,6 +40,14 @@ npm run review:random-samples
 python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --target-confidence 0.80 --defect-rate 0.10 --profile auto
 ```
 
+用户可以指定当前执行批次所需的连续无问题 PASS 轮次数，取值必须 `>=1`；未指定时默认 `2`。等效默认命令应使用：
+
+```powershell
+python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --min-current-run-pass-rounds 2 --target-confidence 0.80 --defect-rate 0.10 --profile auto
+```
+
+严禁把旧 Agent、旧 release、旧 private artifact 之前已经 PASS 的轮次算作本次执行的最后 PASS 轮次。那些记录只能说明历史状态，不能替当前 AI 完成本次抽检。当前执行者必须生成带 `review_run_id` 与 `generated_at` 的新轮次，并让本次运行的最新连续 PASS 轮次达到用户指定数量；用户未指定时按 2 轮执行。
+
 默认预算解释：
 
 ```text
@@ -63,6 +71,14 @@ caption/note = N<=120 全检，否则每轮总抽 20
 ```powershell
 npm run review:random-validate
 ```
+
+最终退出或创建 release/private artifact 前必须运行：
+
+```powershell
+npm run review:random-validate:pass
+```
+
+`validation_report.json` 必须显示 `current_run_pass_rounds_required >= 1` 且 `current_run_pass_rounds_count >= current_run_pass_rounds_required`；用户未指定时默认要求 2。如果只看到旧轮次 PASS，或报告缺少 `current_review_run_id` / `current_run_pass_rounds_count`，本步骤未完成。
 
 ## Agent 派生 / Independent Agents
 
@@ -122,6 +138,7 @@ If a sample reveals a defect, treat it as evidence of a possible systemic issue.
 - `validation_report.json` 为 `PASS`，且 `release_confidence >= 0.80`。
 - `reviews/scorecards/random_spotcheck_score.md` 记录本轮 PASS。
 - `npm run review:random-validate:pass` 通过。
+- `validation_report.json.current_run_pass_rounds_required >= 1`，且 `validation_report.json.current_run_pass_rounds_count >= validation_report.json.current_run_pass_rounds_required`；用户未指定时默认要求 2；旧 PASS 轮次不得计入本次执行。
 - 若本轮前发生返工，当前通过轮次必须使用新 seed。
 
 未 PASS 时，`state/pipeline_state.json.status` 必须设为 `RANDOM_SPOTCHECK_FAILED` 或 `REVISION_ROUTING_REQUIRED`，不得进入最终输出。

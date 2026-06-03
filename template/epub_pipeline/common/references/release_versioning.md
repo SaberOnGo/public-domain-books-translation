@@ -97,7 +97,9 @@ python scripts/create_release.py --status PASS --require-pass
 
 `PASS` release 必须满足随机抽检闭环、所有已发现问题族的全书同类问题审计与关闭记录、`validation_report.json.require_pass = true`、`release_confidence >= 0.80`、EPUBCheck fatal/error 为 0、publication lint 无未解决问题，以及其他最终门禁。`DRAFT` release 可以用于人工核查或候选版本，但不得作为 `DONE` 的依据。
 
-`PASS` release cannot be created from a structural-only random spot-check validation. The latest `validation_report.json` must come from `npm run review:random-validate:pass` or the equivalent `python scripts/validate_random_spotcheck.py --require-pass`, and the round fix log and closure check must prove that each discovered defect family was audited book-wide, fixed where confirmed, and closed.
+`PASS` release 还必须来自当前执行批次的新随机抽检证据：`validation_report.json` 必须包含 `current_review_run_id`，且必须满足 `current_run_pass_rounds_required >= 1`、`current_run_pass_rounds_count >= current_run_pass_rounds_required`。用户可以指定任意 `>=1` 的当前运行连续 PASS 轮次要求；未指定时默认 2。旧 Agent、旧 release 之前已经 PASS 的轮次不得计入本次 release；release 脚本必须拒绝缺少这些字段的旧报告。
+
+`PASS` release cannot be created from a structural-only random spot-check validation. The latest `validation_report.json` must come from `npm run review:random-validate:pass` or the equivalent `python scripts/validate_random_spotcheck.py --require-pass --min-current-run-pass-rounds N`, where `N>=1` and defaults to 2 when unspecified. The round fix log and closure check must prove that each discovered defect family was audited book-wide, fixed where confirmed, and closed. Historical PASS rounds from earlier agents or earlier releases do not count toward the current release.
 
 ## Done Gate / 完成门禁
 

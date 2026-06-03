@@ -68,6 +68,16 @@ npm run review:random-samples
 python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --target-confidence 0.80 --defect-rate 0.10 --profile auto
 ```
 
+用户可以指定当前执行批次所需的连续无问题 PASS 轮次数，取值必须 `>=1`；未指定时默认 `2`。等效默认命令应包含：
+
+```powershell
+python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --min-current-run-pass-rounds 2 --target-confidence 0.80 --defect-rate 0.10 --profile auto
+```
+
+The user may specify any current-run consecutive PASS requirement of `>=1`; when unspecified, the default is 2. Historical PASS rounds from earlier agents, earlier release artifacts, or earlier private artifacts are not part of the current run and must not be counted.
+
+旧 Agent 做过的 PASS 轮次、旧 release 之前的 PASS 轮次、旧 private artifact 之前的 PASS 轮次，都只能作为历史证据；它们与当前 AI 执行的退出条件无关，不得拿来凑本次连续 PASS 轮次。
+
 ## 默认抽样预算 / Default Sampling Budget
 
 发布前默认配置兼顾质量和 AI token 预算：
@@ -132,6 +142,10 @@ npm run review:random-validate:pass
 ```
 
 `review:random-validate:pass` 失败时，不得标记 `DONE`，不得宣布任务完成。
+
+`review:random-validate:pass` 必须只统计同一 `review_run_id` 下、带 `generated_at`、且晚于最近 release/private artifact 的最新连续 PASS 轮次。用户可以通过 `--min-current-run-pass-rounds N` 指定 `N>=1`；未指定时默认 `N=2`。报告必须满足 `current_run_pass_rounds_required >= 1` 且 `current_run_pass_rounds_count >= current_run_pass_rounds_required`。缺少这些字段的旧 `validation_report.json` 不可作为完成证据。
+
+`review:random-validate:pass` must count only latest consecutive PASS rounds that share the same `review_run_id`, carry `generated_at`, and are newer than the latest release/private artifact. The user may pass `--min-current-run-pass-rounds N` for any `N>=1`; when unspecified, `N=2`. The report must satisfy `current_run_pass_rounds_required >= 1` and `current_run_pass_rounds_count >= current_run_pass_rounds_required`. Old validation reports without these fields are not completion evidence.
 
 该命令会写入：
 
@@ -216,6 +230,7 @@ If a single fix has a 75% chance of success, that is only an iteration-efficienc
 - `reviews/random_spotcheck/round_XXX/random_sample_manifest.json` 存在。
 - `strata_summary.json` 记录每层候选数、抽样数、是否全检和置信度。
 - `validation_report.json` 记录 `release_confidence >= 0.80`，且 `status=PASS`。
+- `validation_report.json` 记录 `current_review_run_id`、`current_run_pass_rounds_required >= 1`，且 `current_run_pass_rounds_count >= current_run_pass_rounds_required`；用户未指定时默认要求 2。
 - 至少 2 个 Agent 的样本、评审文件存在。
 - `reviews/random_spotcheck/round_XXX/fixes/fix_log.md` 为 `PASS`。
 - `reviews/random_spotcheck/round_XXX/verification/closure_check.md` 为 `PASS`。

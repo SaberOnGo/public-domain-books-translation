@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -18,6 +19,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--round", default="latest", help="Round id such as round_001, or latest.")
     parser.add_argument("--target-confidence", type=float, default=0.80, help="Required confidence threshold.")
     parser.add_argument("--require-pass", action="store_true", help="Require agent reviews and closure files to be PASS.")
+    parser.add_argument(
+        "--min-current-run-pass-rounds",
+        type=int,
+        default=2,
+        help=(
+            "Require this many latest consecutive PASS rounds from the same current review_run_id. "
+            "Must be >= 1; defaults to 2 unless the user explicitly overrides it. Legacy rounds "
+            "without review_run_id/generated_at never count."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -45,6 +56,16 @@ def latest_round(output_dir: Path) -> Path:
     return sorted(rounds)[-1][1]
 
 
+def round_dirs(output_dir: Path) -> list[Path]:
+    rounds: list[tuple[int, Path]] = []
+    if output_dir.exists():
+        for path in output_dir.iterdir():
+            match = re.fullmatch(r"round_(\d{3})", path.name)
+            if match and path.is_dir():
+                rounds.append((int(match.group(1)), path))
+    return [path for _, path in sorted(rounds)]
+
+
 def file_contains_status(path: Path, expected: str) -> bool:
     if not path.exists():
         return False
@@ -70,18 +91,57 @@ def stratum_confidence(info: dict) -> float:
     return float(info.get("estimated_confidence_after_planned_rounds", 0))
 
 
-def main() -> None:
-    args = parse_args()
-    book_root = resolve_book_root(args.book_root)
-    output_dir = (book_root / args.output_dir).resolve() if not Path(args.output_dir).is_absolute() else Path(args.output_dir).resolve()
-    round_dir = latest_round(output_dir) if args.round == "latest" else output_dir / args.round
+def read_json(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+
+
+def parse_utc_timestamp(value: str) -> datetime | None:
+    if not value:
+        return None
+    try:
+        if value.endswith("Z"):
+            value = value[:-1] + "+00:00"
+        parsed = datetime.fromisoformat(value)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def latest_artifact_baseline(book_root: Path) -> tuple[datetime | None, str]:
+    candidates = [
+        book_root / "output" / "release" / "release_state.json",
+        book_root / "output" / "private_artifacts" / "private_artifact_state.json",
+    ]
+    existing = [path for path in candidates if path.exists()]
+    if not existing:
+        return None, ""
+    latest = max(existing, key=lambda path: path.stat().st_mtime)
+    return datetime.fromtimestamp(latest.stat().st_mtime, tz=timezone.utc), relative_to_book(book_root, latest)
+
+
+def validate_round_artifacts(
+    book_root: Path,
+    round_dir: Path,
+    *,
+    target_confidence: float,
+    require_pass: bool,
+) -> tuple[dict, dict[str, float], float, list[str]]:
     manifest_path = round_dir / "random_sample_manifest.json"
+    errors: list[str] = []
+    confidence_by_stratum: dict[str, float] = {}
+    release_confidence = 1.0
     if not manifest_path.exists():
-        raise SystemExit(f"missing manifest: {manifest_path}")
+        return {}, confidence_by_stratum, release_confidence, [f"missing manifest: {relative_to_book(book_root, manifest_path)}"]
 
     manifest_text = manifest_path.read_text(encoding="utf-8")
     manifest = json.loads(manifest_text)
-    errors: list[str] = []
     if LOCAL_ABSOLUTE_PATH.search(manifest_text):
         errors.append(f"manifest contains a local absolute path: {relative_to_book(book_root, manifest_path)}")
     if manifest.get("schema_version") != "2.0":
@@ -90,7 +150,6 @@ def main() -> None:
         errors.append("at least two independent agents are required")
 
     strata = manifest.get("strata", {})
-    confidence_by_stratum: dict[str, float] = {}
     for stratum in STRATA:
         info = strata.get(stratum)
         if info is None:
@@ -102,7 +161,7 @@ def main() -> None:
         confidence_by_stratum[stratum] = round(confidence, 6)
         if candidate_count > 0 and sample_count <= 0:
             errors.append(f"stratum has candidates but no samples: {stratum}")
-        if candidate_count > sample_count and confidence < args.target_confidence:
+        if candidate_count > sample_count and confidence < target_confidence:
             errors.append(f"stratum confidence below target: {stratum}={confidence}")
 
     active_confidences = [
@@ -116,8 +175,8 @@ def main() -> None:
         errors.append(
             f"manifest release_confidence mismatch: manifest={manifest_release_confidence}, computed={release_confidence}"
         )
-    if release_confidence < args.target_confidence:
-        errors.append(f"release_confidence below target: {release_confidence} < {args.target_confidence}")
+    if release_confidence < target_confidence:
+        errors.append(f"release_confidence below target: {release_confidence} < {target_confidence}")
 
     sample_sets = manifest.get("sample_sets", {})
     for agent_name in sample_sets:
@@ -127,7 +186,7 @@ def main() -> None:
         review_path = round_dir / "reviews" / f"{agent_name}_review.md"
         if not review_path.exists():
             errors.append(f"missing agent review file: {relative_to_book(book_root, review_path)}")
-        elif args.require_pass:
+        elif require_pass:
             if not file_contains_status(review_path, "PASS"):
                 errors.append(f"agent review is not PASS: {relative_to_book(book_root, review_path)}")
             average_score = read_number_field(review_path, "average_score")
@@ -144,16 +203,84 @@ def main() -> None:
     closure = round_dir / "verification" / "closure_check.md"
     if not fix_log.exists():
         errors.append(f"missing fix log: {relative_to_book(book_root, fix_log)}")
-    elif args.require_pass and not file_contains_status(fix_log, "PASS"):
+    elif require_pass and not file_contains_status(fix_log, "PASS"):
         errors.append(f"fix log is not PASS: {relative_to_book(book_root, fix_log)}")
     if not closure.exists():
         errors.append(f"missing closure check: {relative_to_book(book_root, closure)}")
-    elif args.require_pass:
+    elif require_pass:
         if not file_contains_status(closure, "PASS"):
             errors.append(f"closure check is not PASS: {relative_to_book(book_root, closure)}")
         open_count = read_number_field(closure, "open_p0_p1_p2_count")
         if open_count is None or open_count != 0:
             errors.append(f"open_p0_p1_p2_count must be 0: {relative_to_book(book_root, closure)}")
+
+    return manifest, confidence_by_stratum, release_confidence, errors
+
+
+def count_current_run_pass_rounds(
+    book_root: Path,
+    output_dir: Path,
+    *,
+    latest_manifest: dict,
+    target_confidence: float,
+    baseline_at: datetime | None,
+) -> tuple[str, list[str]]:
+    run_id = str(latest_manifest.get("review_run_id", "")).strip()
+    if not run_id:
+        return "", []
+    counted: list[str] = []
+    for round_dir in reversed(round_dirs(output_dir)):
+        manifest, _, _, errors = validate_round_artifacts(
+            book_root,
+            round_dir,
+            target_confidence=target_confidence,
+            require_pass=True,
+        )
+        if errors:
+            break
+        if manifest.get("review_run_id") != run_id:
+            break
+        generated_at = parse_utc_timestamp(str(manifest.get("generated_at", "")))
+        if generated_at is None:
+            break
+        if baseline_at is not None and generated_at <= baseline_at:
+            break
+        counted.append(relative_to_book(book_root, round_dir))
+    counted.reverse()
+    return run_id, counted
+
+
+def main() -> None:
+    args = parse_args()
+    if args.min_current_run_pass_rounds < 1:
+        raise SystemExit("--min-current-run-pass-rounds must be >= 1")
+    book_root = resolve_book_root(args.book_root)
+    output_dir = (book_root / args.output_dir).resolve() if not Path(args.output_dir).is_absolute() else Path(args.output_dir).resolve()
+    round_dir = latest_round(output_dir) if args.round == "latest" else output_dir / args.round
+    errors: list[str] = []
+    manifest, confidence_by_stratum, release_confidence, round_errors = validate_round_artifacts(
+        book_root,
+        round_dir,
+        target_confidence=args.target_confidence,
+        require_pass=args.require_pass,
+    )
+    errors.extend(round_errors)
+
+    baseline_at, baseline_path = latest_artifact_baseline(book_root)
+    current_run_id, counted_current_run_rounds = count_current_run_pass_rounds(
+        book_root,
+        output_dir,
+        latest_manifest=manifest,
+        target_confidence=args.target_confidence,
+        baseline_at=baseline_at,
+    )
+    if args.require_pass and args.min_current_run_pass_rounds > 0:
+        if len(counted_current_run_rounds) < args.min_current_run_pass_rounds:
+            errors.append(
+                "current-run PASS rounds are insufficient: "
+                f"{len(counted_current_run_rounds)} < {args.min_current_run_pass_rounds}; "
+                "legacy PASS rounds without this review_run_id/generated_at or before the latest release/private artifact do not count"
+            )
 
     report = {
         "round_dir": relative_to_book(book_root, round_dir),
@@ -161,6 +288,11 @@ def main() -> None:
         "release_confidence": release_confidence,
         "confidence_by_stratum": confidence_by_stratum,
         "require_pass": args.require_pass,
+        "current_review_run_id": current_run_id,
+        "current_run_pass_rounds_required": args.min_current_run_pass_rounds if args.require_pass else 0,
+        "current_run_pass_rounds_count": len(counted_current_run_rounds),
+        "current_run_pass_rounds": counted_current_run_rounds,
+        "previous_artifact_baseline": baseline_path,
         "status": "FAIL" if errors else "PASS",
         "errors": errors,
     }
