@@ -108,7 +108,7 @@
     - 以 reader-facing audit units 为总体。
     - 覆盖实际存在的 paragraphs、tables、figures、formulas/proof blocks、captions/notes。
     - 每轮生成 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、Agent A/B 独立评审、fix_log、closure_check。
-    - 任一样本或任一 Agent 发现 P0/P1/P2、单项 <70、读者读不懂、忠实度偏移、事实/叙述关系误解、源语言句法硬搬、无依据润饰、术语/专名/标题/译注/表格/图片/公式错误，必须在当轮归纳为问题族，对整本读者可见书稿执行全书同类审计，并修复全部确认命中；不得只修被抽中的样本，不得等第二轮才查全书。
+    - 任一样本或任一 Agent 发现 P0/P1/P2、单项 <80、读者读不懂、忠实度偏移、事实/叙述关系误解、源语言句法硬搬、无依据润饰、术语/专名/标题/译注/表格/图片/公式错误，必须在当轮归纳为问题族，对整本读者可见书稿执行全书同类审计，并修复全部确认命中；不得只修被抽中的样本，不得等第二轮才查全书。
     - 译文质量问题族必须先用低 token 方法审计：`rg`、`glossary/terms.csv`、`forbidden_body_renderings`、标题映射、章节控制记录、抽样 manifest 和小上下文原文对照；只把候选片段交给 agent 复核。
     - 修复后必须在本轮 `fix_log.md` 和 `closure_check.md` 记录问题族、检索式/审计方法、命中数、修复位置、合理例外和复查结果，重建 EPUB，并用新 seed 追加下一轮抽检。
     - 只有最近连续 N 个新 seed 抽检轮均 PASS（N 最小为 1，默认 2，高质量译本可选 3），所有已发现问题族关闭，且 `npm run review:random-validate:pass` 或等价 `--require-pass` 校验通过，才可退出抽检。

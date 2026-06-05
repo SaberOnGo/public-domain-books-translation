@@ -236,19 +236,19 @@ node scripts/asset_manifest_check.js --write-report
 - 整本 EPUB 构建后必须执行精修复查或等效扫描，并在 `qa/refinement/` 下记录结果。
 - 若发现来源不支持的读者可见标题、BOM、乱码、AI 输出残留、异常英文残留或 EPUB metadata 问题，不得进入最终交付。
 - 第一版全书 EPUB 生成后，必须执行分层随机抽检模块。抽样总体 `N` 是读者可见审计单元总数，不是页数，也不是正文段落数；审计单元至少包括 `paragraph`、`table`、`figure`、`formula`、`caption_note`。
-- 每一轮精校完成后，必须运行 `npm run review:random-samples`，或等效运行 `python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --min-current-run-pass-rounds 2 --target-confidence 0.80 --defect-rate 0.10 --profile auto`。脚本必须生成 `reviews/random_spotcheck/round_XXX/` 子目录、seed、manifest、分层样本和人工可核查证据。
+- 每一轮精校完成后，必须运行 `npm run review:random-samples`，或等效运行 `python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 120 --rounds-planned 4 --min-current-run-pass-rounds 2 --target-confidence 0.80 --defect-rate 0.10 --profile auto`。脚本必须生成 `reviews/random_spotcheck/round_XXX/` 子目录、seed、manifest、分层样本和人工可核查证据。
 - 每次新的 AI 执行随机抽检时，旧轮次只能作为历史证据，不能计入本次退出条件。抽样脚本必须在 manifest 写入 `review_run_id` 与 `generated_at`；用户可以通过 `--min-current-run-pass-rounds N` 指定任意 `N>=1` 的当前运行连续 PASS 轮次要求；用户未指定时默认 `N=2`。`npm run review:random-validate:pass` 只统计同一 `review_run_id` 下、晚于最近 release/private artifact 的最新连续 PASS 轮次。缺少 `review_run_id`、缺少 `generated_at`、属于旧 release/private artifact 之前、或来自不同运行批次的 PASS 轮次，一律不得计入本次连续 PASS。
 - AI 不得用已有 `round_XXX` 的历史 PASS 记录、旧 `validation_report.json`、旧 release note 或旧 private artifact state 代替本次新抽样。若用户要求继续精校、重新抽检、再出产物或确认最终质量，必须新生成本次运行的随机抽检轮次，并让 `validation_report.json.current_run_pass_rounds_count >= validation_report.json.current_run_pass_rounds_required`。
-- 默认发布前抽样预算为：正文层每个 Agent 每轮 60；表格和图片 `N<=80` 全检，否则每轮总抽 20；公式/证明块 `N<=100` 全检，否则每轮总抽 20；图注/表注/注释 `N<=120` 全检，否则每轮总抽 20。该预算用于控制 token 成本；若任一层、任一样本发现任何需要修复或可能系统性复现的问题，本轮立即把发现归纳为问题族，并执行全书同类问题审计和闭环；不得只修被抽中的样本，也不得等到第二轮才全书检查。同层可被标记为高风险，用于后续抽样和人工复核，但不能替代本轮全书同类问题审计。
+- 默认发布前抽样预算为：正文层每个 Agent 每轮 120；表格和图片 `N<=80` 全检，否则每轮总抽 20；公式/证明块 `N<=100` 全检，否则每轮总抽 20；图注/表注/注释 `N<=120` 全检，否则每轮总抽 20。该预算用于控制 token 成本；若任一层、任一样本发现任何需要修复或可能系统性复现的问题，本轮立即把发现归纳为问题族，并执行全书同类问题审计和闭环；不得只修被抽中的样本，也不得等到第二轮才全书检查。同层可被标记为高风险，用于后续抽样和人工复核，但不能替代本轮全书同类问题审计。
 - 抽样脚本必须读取最近轮次 `round_XXX/reviews/*_review.md` 中带样本单元编号的 P0/P1/P2 行，并在下一轮 manifest 中记录 `blocking_issue_strata_in_recent_rounds`、`blocking_issue_seen_in_previous_round` 和 `dedicated_audit_required_after_consecutive_blockers`。
 - 随机抽检中，两个 Agent 必须互不参考，均按模板、本书 profile 和目标语言规则检查正文、表格、图片、公式、图注/表注/注释、EPUB 阅读风险。每个样本必须逐项给出 0-100 分、问题类型、优先级、是否返工和理由。
-- 任一单项 < 70，或任一 P0/P1/P2，或任一读不懂、证明链断裂、概念误导、术语/数值/图表/公式错误，即使平均分达标也必须判为失败。
+- 任一单项 < 80，或任一 P0/P1/P2，或任一读不懂、证明链断裂、概念误导、术语/数值/图表/公式错误，即使平均分达标也必须判为失败。
 - 任一随机抽检 Agent 未通过时，必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复。每个发现必须先归纳为问题族，并对整本读者可见书稿执行同类问题审计，范围至少包括 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；不得只修改被抽中的样本。修复后必须在旧轮次 `fixes/fix_log.md` 和 `verification/closure_check.md` 中记录问题族、检索式或审计方法、命中数、修复位置、合理例外和关闭结论，并使用新 seed 重新生成新轮次样本，不得复用上一轮样本自证通过。
-- 对译文质量问题族，审计顺序必须优先低 token：`rg`、术语表、禁用正文写法、标题映射、抽样 manifest、章节控制记录和小上下文原文对照；只有候选片段进入 agent 复核。书内闭环后，可复用经验必须合并回填到 `skills/translation-quality-defect-families/SKILL.md`。
+- 对译文质量问题族，审计顺序必须优先低 token：`rg`、术语表、禁用正文写法、标题映射、抽样 manifest、章节控制记录和小上下文原文对照；只有候选片段进入 agent 复核。书内闭环后，可复用经验必须合并回填到 `skills/translation-quality-defect-families/SKILL.md`。问题轮次的 `fix_log.md` 必须用机器可读字段记录 `translation_quality_defect_family_count`、`translation_quality_skill_backfill`、`translation_quality_skill_backfill_path` 和 `translation_quality_skill_backfill_summary`；`closure_check.md` 必须记录 `translation_quality_skill_backfill_verified: true`。没有译文质量问题族时也必须写 `NOT_APPLICABLE` 和原因。
 - 最终退出前必须运行 `npm run review:random-validate:pass`。该命令失败时，不得进入 `FINAL_OUTPUT_PASS`、`RETROSPECTIVE_DONE` 或 `DONE`。
 - `npm run review:random-validate:pass` 必须写入 `current_review_run_id`、`current_run_pass_rounds_required`、`current_run_pass_rounds_count` 和 `current_run_pass_rounds`。正式退出、公开 release 或 private artifact 要求 `current_run_pass_rounds_required >= 1` 且 `current_run_pass_rounds_count >= current_run_pass_rounds_required`；用户未指定时默认 `current_run_pass_rounds_required = 2`。旧 PASS 轮次不得补数。
 - `npm run review:random-validate:pass` 必须计算并写入 `release_confidence = min_h confidence_h`。若 `release_confidence < 0.80`，即使 Agent 文字评审写了 PASS，也不得退出任务。
-- `npm run review:random-validate:pass` 还必须校验每个 Agent 的 `average_score >= 75`、`lowest_score >= 70`、`blocking_issue_count = 0`，以及闭环文件中的 `open_p0_p1_p2_count = 0`。
+- `npm run review:random-validate:pass` 还必须校验每个 Agent 的 `average_score >= 80`、`lowest_score >= 80`、`blocking_issue_count = 0`，闭环文件中的 `open_p0_p1_p2_count = 0`，以及当前 `review_run_id` 中所有问题轮次的译文质量问题族 skill backfill 字段。
 - 分层随机抽检通过后，公版或授权项目必须执行 `prompts/18a_release_versioning.md` 或等效命令 `npm run release:create`。正式发布必须生成 `output/release/{目标语言书名}_vX.X.X.epub`、`release_notes.md`、`release_state.json` 和 `release_index.md`。
 - 分层随机抽检通过后，`publication_mode=private_use` 项目必须执行 `npm run private:artifact:create`。私人自用产物必须生成 `output/private_artifacts/{目标语言书名}_private_vX.X.X.epub`、`private_artifact_notes.md`、`private_artifact_state.json` 和 `private_artifact_index.md`。
 - `npm run release:create` 和 `npm run private:artifact:create` 必须拒绝未使用 `--require-pass` 生成的随机抽检校验报告；结构性抽样校验或 `DRAFT` 产物不得作为 `DONE` 的依据。
@@ -275,7 +275,7 @@ node scripts/asset_manifest_check.js --write-report
 - `output/publication_lint.json` 存在，且无硬错误。
 - `output/asset_manifest_check.json` 存在，且无硬错误；若全书无图像、表格、样式外部资源，报告中也必须明确记录 0 asset refs。
 - `qa/refinement/` 存在；若使用 `scripts/refinement_check.js`，出版范围内 BOM、乱码、中文连续空格和不当标点应为 0，或在 QA 中记录明确例外。
-- `reviews/random_spotcheck/round_XXX/random_sample_manifest.json`、`strata_summary.json`、`validation_report.json`、`samples/`、`evidence/`、`reviews/`、`fixes/fix_log.md`、`verification/closure_check.md` 均存在；`validation_report.json.release_confidence >= 0.80`；`validation_report.json.current_run_pass_rounds_required >= 1` 且 `validation_report.json.current_run_pass_rounds_count >= validation_report.json.current_run_pass_rounds_required`；至少两个独立 Agent 分层随机抽检通过，且无单项 < 70、无未关闭 P0/P1/P2 必修项；若任何轮发现过问题，`fix_log.md` 与 `closure_check.md` 必须证明每个问题族已完成全书同类问题审计并关闭。
+- `reviews/random_spotcheck/round_XXX/random_sample_manifest.json`、`strata_summary.json`、`validation_report.json`、`samples/`、`evidence/`、`reviews/`、`fixes/fix_log.md`、`verification/closure_check.md` 均存在；`validation_report.json.release_confidence >= 0.80`；`validation_report.json.current_run_pass_rounds_required >= 1` 且 `validation_report.json.current_run_pass_rounds_count >= validation_report.json.current_run_pass_rounds_required`；至少两个独立 Agent 分层随机抽检通过，且无单项 < 80、无未关闭 P0/P1/P2 必修项；若任何轮发现过问题，`fix_log.md` 与 `closure_check.md` 必须证明每个问题族已完成全书同类问题审计并关闭。
 - `reviews/random_spotcheck/random_sample_manifest.json`、`reviews/agent_a/random_spotcheck_review.md`、`reviews/agent_b/random_spotcheck_review.md` 和 `reviews/scorecards/random_spotcheck_score.md` 均指向或记录最近通过轮次。
 - `npm run review:random-validate:pass` 通过。
 - `output/book.epub` 存在。
@@ -288,5 +288,5 @@ node scripts/asset_manifest_check.js --write-report
 - `reviews/revision_route.md` 中无未关闭 P0/P1/P2 必修项。
 - `retrospective/book_retrospective.md` 和 `retrospective/template_update_suggestions.md` 存在。
 - 重大精修问题已有书籍专属目标或修复记录，可复用经验已回填到对应模板层。
-- 可复现译文质量问题族已合并回填到 `skills/translation-quality-defect-families/SKILL.md`，或在书籍复盘中明确说明没有新的可复用问题族。
+- 可复现译文质量问题族已合并回填到 `skills/translation-quality-defect-families/SKILL.md`，并已被随机抽检 `review:random-validate:pass` 的 skill backfill 字段校验覆盖；若没有新的可复用问题族，问题轮次必须记录 `NOT_APPLICABLE` 与原因。
 - `state/pipeline_state.json.status == DONE`。

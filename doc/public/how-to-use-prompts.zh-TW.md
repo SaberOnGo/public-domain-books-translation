@@ -92,7 +92,7 @@
 
 執行分層隨機抽樣，抽樣總體是 reader-facing audit units，不是頁數，也不只是段落。必須覆蓋實際存在的 paragraph、table、figure、formula/proof、caption/note。至少派生 2 個獨立評審 agent，互不參考，並按模板保存 `reviews/random_spotcheck/round_XXX/` 下的 seed、manifest、samples、evidence、reviews、fixes/fix_log.md、verification/closure_check.md。
 
-若任一樣本發現 P0/P1/P2、單項 <70、讀者不可理解、忠實度偏移、事實/術語/專名/標題/註釋/圖表/公式錯誤、源語句法殘留、過硬過直句、短句切斷、比喻自撞、排比標點拖拽、代詞指代不清、過度解釋或加戲，必須在本輪把它歸納為問題族，執行全書同類問題審計並修復所有確認命中。不得只修被抽中的樣本，不得等第二輪才查全書。
+若任一樣本發現 P0/P1/P2、單項 <80、讀者不可理解、忠實度偏移、事實/術語/專名/標題/註釋/圖表/公式錯誤、源語句法殘留、過硬過直句、短句切斷、比喻自撞、排比標點拖拽、代詞指代不清、過度解釋或加戲，必須在本輪把它歸納為問題族，執行全書同類問題審計並修復所有確認命中。不得只修被抽中的樣本，不得等第二輪才查全書。
 
 譯文品質問題族必須優先低 token 審計：先用 `rg`、`glossary/terms.csv`、`forbidden_body_renderings`、標題映射、章節控制記錄、抽樣 manifest 和小上下文原文對照收集候選，再把候選片段交給 agent 複核。修復後在本輪 `fix_log.md` 和 `closure_check.md` 寫清問題族、檢索式/審計方法、命中數、修復位置、合理例外和複查結果；可復用經驗合併進 `skills/translation-quality-defect-families/SKILL.md`，不要重複堆條目。
 

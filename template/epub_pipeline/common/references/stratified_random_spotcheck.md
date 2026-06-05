@@ -65,13 +65,13 @@ npm run review:random-samples
 等效命令：
 
 ```powershell
-python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --target-confidence 0.80 --defect-rate 0.10 --profile auto
+python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 120 --rounds-planned 4 --target-confidence 0.80 --defect-rate 0.10 --profile auto
 ```
 
 用户可以指定当前执行批次所需的连续无问题 PASS 轮次数，取值必须 `>=1`；未指定时默认 `2`。等效默认命令应包含：
 
 ```powershell
-python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --min-current-run-pass-rounds 2 --target-confidence 0.80 --defect-rate 0.10 --profile auto
+python scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 120 --rounds-planned 4 --min-current-run-pass-rounds 2 --target-confidence 0.80 --defect-rate 0.10 --profile auto
 ```
 
 The user may specify any current-run consecutive PASS requirement of `>=1`; when unspecified, the default is 2. Historical PASS rounds from earlier agents, earlier release artifacts, or earlier private artifacts are not part of the current run and must not be counted.
@@ -87,8 +87,8 @@ T = 4
 agents = 2
 
 paragraph/text:
-  each agent samples 60 units per round
-  total planned text samples = 2 * 60 * 4 = 480
+  each agent samples 120 units per round
+  total planned text samples = 2 * 120 * 4 = 960
 
 table:
   if N <= 80, full scan
@@ -107,7 +107,7 @@ caption/note:
   otherwise sample 20 units per round total
 ```
 
-对于只有文本的长书，`480` 个文本样本可把“若真实问题文本比例至少 1%”的大总体近似漏检概率压到约 `0.99^480 ~= 0.8%`。若书很短，实际抽样受 `N` 限制，有限总体下应接近全检。
+对于只有文本的长书，`960` 个文本样本可把“若真实问题文本比例至少 1%”的大总体近似漏检概率压到约 `0.99^960 ~= 0.0065%`。若书很短，实际抽样受 `N` 限制，有限总体下应接近全检。
 
 非文本层通常数量较少，优先使用小规模全检。若表格、图片、公式或注释层很大，默认每轮总抽 20 个，以控制 token 成本。该配置主要防系统性图表/公式问题；若要防 1% 以下的极稀疏错误，应人工上调该层抽样量或触发专项审计。
 
@@ -154,7 +154,9 @@ reviews/random_spotcheck/round_XXX/validation_report.json
 ```
 
 其中必须满足 `release_confidence >= target_confidence`。
-启用 `review:random-validate:pass` 时，还必须满足每个 Agent 评审文件中 `average_score >= 75`、`lowest_score >= 70`、`blocking_issue_count = 0`，且闭环文件中 `open_p0_p1_p2_count = 0`。
+启用 `review:random-validate:pass` 时，还必须满足每个 Agent 评审文件中 `average_score >= 80`、`lowest_score >= 80`、`blocking_issue_count = 0`，且闭环文件中 `open_p0_p1_p2_count = 0`。
+
+如果同一 `review_run_id` 下任何较早轮次发现过问题，`review:random-validate:pass` 还会回看这些问题轮次的 `fix_log.md` 与 `closure_check.md`。问题轮次必须填写机器可读字段：`defect_family_count`、`translation_quality_defect_family_count`、`translation_quality_skill_backfill`、`translation_quality_skill_backfill_path`、`translation_quality_skill_backfill_summary` 或不适用理由，以及 `translation_quality_skill_backfill_verified`。只要发现译文质量问题族，`translation_quality_skill_backfill` 必须是 `UPDATED` 或 `MERGED`，路径必须是 `skills/translation-quality-defect-families/SKILL.md`；否则最终 PASS 校验失败。若本轮没有译文质量问题族，必须填 `NOT_APPLICABLE` 并说明原因。
 
 ## 轮次目录 / Round Directory
 
@@ -200,7 +202,7 @@ reviews/random_spotcheck/
 - 不得复述主执行 AI 的结论。
 - 不得把表格、图片、公式、图注当作普通段落略过。
 - 每个样本必须给出 0-100 分、问题类型、优先级、是否返工和理由。
-- 任一 P0/P1/P2、任一单项 < 70、任一读者不可理解、任一事实/术语/图表/公式错误，均判为本轮 FAIL。
+- 任一 P0/P1/P2、任一单项 < 80、任一读者不可理解、任一事实/术语/图表/公式错误，均判为本轮 FAIL。
 
 At least two independent agents must review the samples. The main executor cannot self-certify this gate.
 
@@ -213,7 +215,7 @@ At least two independent agents must review the samples. The main executor canno
 3. 将每个发现归纳为问题族，例如专名误译、术语硬译、短句切断、比喻自撞、排比标点拖拽、代词指代不清、英文句法、过度解释、加戏、脚注裸露、图表标签错误、公式符号错误、metadata 不一致等。
 4. 对每个问题族执行全书同类问题审计，范围至少覆盖 `chapters/final/`、读者可见 frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；不得只修改被抽中的单个样本。译文质量问题族必须先按 `skills/translation-quality-defect-families/SKILL.md` 使用 `rg`、术语表、禁用正文写法、标题映射和小上下文原文对照等低 token 方法收集候选，再把候选片段交给 agent 复核。
 5. 修复对应章节、表格、图片、公式、metadata 或构建脚本中的所有同类问题；若某个疑似命中被判定为合理例外，必须记录理由。
-6. 在 `round_XXX/fixes/fix_log.md` 记录每个问题族的检索式或审计方法、审计范围、命中数、修复位置、例外和复查结果。可复用的译文质量经验必须回填到 `skills/translation-quality-defect-families/SKILL.md`，已有同族条目时合并改进，不盲目重复追加。
+6. 在 `round_XXX/fixes/fix_log.md` 记录每个问题族的检索式或审计方法、审计范围、命中数、修复位置、例外和复查结果。可复用的译文质量经验必须回填到 `skills/translation-quality-defect-families/SKILL.md`，已有同族条目时合并改进，不盲目重复追加；同时必须填写 `translation_quality_skill_backfill` 相关机器可读字段，供 `review:random-validate:pass` 强制校验。
 7. 在 `round_XXX/verification/closure_check.md` 定点复查旧问题，并确认同类问题全书审计已关闭。
 8. 使用新 seed 生成下一轮 `round_YYY/` 抽检，不得复用旧样本自证通过。
 
@@ -235,6 +237,7 @@ If a single fix has a 75% chance of success, that is only an iteration-efficienc
 - `reviews/random_spotcheck/round_XXX/fixes/fix_log.md` 为 `PASS`。
 - `reviews/random_spotcheck/round_XXX/verification/closure_check.md` 为 `PASS`。
 - 每个已发现问题族都已完成全书同类问题审计，`fix_log.md` 记录审计范围、检索式或复查方法、同类命中、修复和例外。
+- 若当前执行批次任何轮次发现过译文质量问题族，`fix_log.md` 证明 skill 已 `UPDATED` 或 `MERGED`，`closure_check.md` 记录 `translation_quality_skill_backfill_verified: true`；若无译文质量问题族，必须有 `NOT_APPLICABLE` 和具体理由。
 - `npm run review:random-validate:pass` 通过。
 - 若发生返工，后续至少还有一轮新 seed 抽检通过。
 

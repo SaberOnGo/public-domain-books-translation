@@ -97,8 +97,8 @@ Release note 必须写入累计文件 `output/release/release_notes.md`，每次
 
 - `npm run review:random-validate:pass` 通过，且 `validation_report.json.require_pass = true`。
 - `validation_report.json.release_confidence >= 0.80`。
-- 至少 2 个独立 Agent PASS，无单项 `< 70`，无 blocking issue。
-- `fixes/fix_log.md` 和 `verification/closure_check.md` 为 PASS，且 `open_p0_p1_p2_count = 0`；若任一抽检轮发现过问题，二者必须证明每个问题族已完成全书同类问题审计、确认命中修复、合理例外记录和关闭。
+- 至少 2 个独立 Agent PASS，无单项 `< 80`，无 blocking issue。
+- `fixes/fix_log.md` 和 `verification/closure_check.md` 为 PASS，且 `open_p0_p1_p2_count = 0`；若任一抽检轮发现过问题，二者必须证明每个问题族已完成全书同类问题审计、确认命中修复、合理例外记录和关闭。若发现译文质量问题族，必须证明 `skills/translation-quality-defect-families/SKILL.md` 已 `UPDATED` 或 `MERGED`，且 `translation_quality_skill_backfill_verified: true`；若仅有非译文质量问题，必须写明 `NOT_APPLICABLE` 和具体理由。
 - `output/epubcheck.json` 存在，且 fatal/error 为 0。
 - `output/publication_lint.json` 存在，且 unresolved issues 为 0。
 

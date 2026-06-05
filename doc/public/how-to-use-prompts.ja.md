@@ -92,7 +92,7 @@
 
 reader-facing audit units を対象に層化ランダム抽出を実行してください。ページ数でも段落だけでもありません。実際に存在する paragraph、table、figure、formula/proof、caption/note をすべて層として扱います。最低 2 つの独立 review agent を使い、互いの結論を参照させないでください。`reviews/random_spotcheck/round_XXX/` に seed、manifest、samples、evidence、reviews、fixes/fix_log.md、verification/closure_check.md を保存します。
 
-サンプルのいずれかで P0/P1/P2、単項目 <70、読者が理解できない箇所、忠実度のずれ、事実/用語/人名/タイトル/注/図表/数式の誤り、原文構文の残留、硬い直訳、短文への切断、比喩の衝突、列挙句読点の引きずり、代名詞の指示不明、過剰説明、根拠のない加筆が見つかった場合、同じ round で defect family として分類してください。全書の同類候補を監査し、確認済みの命中をすべて修正します。サンプルだけを修正してはいけません。2 回目の失敗まで全書監査を待ってはいけません。
+サンプルのいずれかで P0/P1/P2、単項目 <80、読者が理解できない箇所、忠実度のずれ、事実/用語/人名/タイトル/注/図表/数式の誤り、原文構文の残留、硬い直訳、短文への切断、比喩の衝突、列挙句読点の引きずり、代名詞の指示不明、過剰説明、根拠のない加筆が見つかった場合、同じ round で defect family として分類してください。全書の同類候補を監査し、確認済みの命中をすべて修正します。サンプルだけを修正してはいけません。2 回目の失敗まで全書監査を待ってはいけません。
 
 翻訳品質 defect family では、低 token 監査を先に行ってください。`rg`、`glossary/terms.csv`、`forbidden_body_renderings`、タイトル表、章 control 記録、sample manifest、小さな原文照合で候補を集め、候補だけを agent に渡します。再利用できる教訓は `skills/translation-quality-defect-families/SKILL.md` に統合してください。
 

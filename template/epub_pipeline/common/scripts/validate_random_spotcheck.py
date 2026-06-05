@@ -10,6 +10,9 @@ from pathlib import Path
 DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
 STRATA = ("paragraph", "table", "figure", "formula", "caption_note")
 LOCAL_ABSOLUTE_PATH = re.compile(r"(?:[A-Za-z]:[\\/]|\\\\|file://)", re.IGNORECASE)
+MIN_REVIEW_SCORE = 80
+SKILL_BACKFILL_PATH = "skills/translation-quality-defect-families/SKILL.md"
+SKILL_BACKFILL_STATUSES = {"UPDATED", "MERGED", "NOT_APPLICABLE"}
 
 
 def parse_args() -> argparse.Namespace:
@@ -81,6 +84,39 @@ def read_number_field(path: Path, field: str) -> float | None:
     return float(match.group(1)) if match else None
 
 
+def read_text_field(path: Path, field: str) -> str | None:
+    if not path.exists():
+        return None
+    text = path.read_text(encoding="utf-8", errors="replace")
+    matches = re.findall(rf"^{re.escape(field)}:\s*(.*?)\s*$", text, flags=re.IGNORECASE | re.MULTILINE)
+    if not matches:
+        return None
+    value = matches[-1].strip()
+    if value.startswith('"'):
+        closing = value.find('"', 1)
+        if closing != -1:
+            value = value[1:closing].strip()
+    elif value.startswith("'"):
+        closing = value.find("'", 1)
+        if closing != -1:
+            value = value[1:closing].strip()
+    else:
+        value = value.split("#", 1)[0].strip()
+    return value
+
+
+def read_bool_field(path: Path, field: str) -> bool | None:
+    value = read_text_field(path, field)
+    if value is None:
+        return None
+    lowered = value.lower()
+    if lowered == "true":
+        return True
+    if lowered == "false":
+        return False
+    return None
+
+
 def stratum_confidence(info: dict) -> float:
     candidate_count = int(info.get("candidate_count", 0))
     sample_count = int(info.get("sample_count", 0))
@@ -124,6 +160,138 @@ def latest_artifact_baseline(book_root: Path) -> tuple[datetime | None, str]:
         return None, ""
     latest = max(existing, key=lambda path: path.stat().st_mtime)
     return datetime.fromtimestamp(latest.stat().st_mtime, tz=timezone.utc), relative_to_book(book_root, latest)
+
+
+def review_file_has_issue(review_path: Path) -> bool:
+    if not review_path.exists():
+        return False
+    text = review_path.read_text(encoding="utf-8", errors="replace")
+    if not file_contains_status(review_path, "PASS"):
+        return True
+    average_score = read_number_field(review_path, "average_score")
+    lowest_score = read_number_field(review_path, "lowest_score")
+    blocking_count = read_number_field(review_path, "blocking_issue_count")
+    if average_score is not None and average_score < MIN_REVIEW_SCORE:
+        return True
+    if lowest_score is not None and lowest_score < MIN_REVIEW_SCORE:
+        return True
+    if blocking_count is not None and blocking_count > 0:
+        return True
+    return bool(re.search(r"\bP[0-2]\b", text, flags=re.IGNORECASE))
+
+
+def round_has_review_issue(round_dir: Path) -> bool:
+    reviews_dir = round_dir / "reviews"
+    if not reviews_dir.exists():
+        return False
+    return any(review_file_has_issue(path) for path in reviews_dir.glob("*_review.md"))
+
+
+def validate_issue_round_skill_backfill(book_root: Path, round_dir: Path) -> list[str]:
+    errors: list[str] = []
+    fix_log = round_dir / "fixes" / "fix_log.md"
+    closure = round_dir / "verification" / "closure_check.md"
+    rel_round = relative_to_book(book_root, round_dir)
+
+    if not fix_log.exists():
+        return [f"issue round missing fix log for translation-quality skill backfill decision: {rel_round}"]
+    if not closure.exists():
+        return [f"issue round missing closure check for translation-quality skill backfill decision: {rel_round}"]
+    if not file_contains_status(fix_log, "PASS"):
+        errors.append(f"issue round fix log must be PASS before final validation: {relative_to_book(book_root, fix_log)}")
+    if not file_contains_status(closure, "PASS"):
+        errors.append(f"issue round closure check must be PASS before final validation: {relative_to_book(book_root, closure)}")
+
+    defect_family_count = read_number_field(fix_log, "defect_family_count")
+    tq_family_count = read_number_field(fix_log, "translation_quality_defect_family_count")
+    backfill_status = read_text_field(fix_log, "translation_quality_skill_backfill")
+    backfill_path = read_text_field(fix_log, "translation_quality_skill_backfill_path")
+    backfill_summary = read_text_field(fix_log, "translation_quality_skill_backfill_summary")
+    not_applicable_reason = read_text_field(fix_log, "translation_quality_skill_backfill_not_applicable_reason")
+    verified = read_bool_field(closure, "translation_quality_skill_backfill_verified")
+
+    if defect_family_count is None:
+        errors.append(f"issue round fix log missing defect_family_count: {relative_to_book(book_root, fix_log)}")
+    if tq_family_count is None:
+        errors.append(
+            "issue round fix log missing translation-quality skill backfill decision: "
+            f"{relative_to_book(book_root, fix_log)}"
+        )
+        return errors
+    if backfill_status is None:
+        errors.append(
+            "issue round fix log missing translation_quality_skill_backfill: "
+            f"{relative_to_book(book_root, fix_log)}"
+        )
+        return errors
+
+    normalized_status = backfill_status.upper()
+    if normalized_status not in SKILL_BACKFILL_STATUSES:
+        errors.append(
+            "translation_quality_skill_backfill must be UPDATED, MERGED, or NOT_APPLICABLE: "
+            f"{relative_to_book(book_root, fix_log)}"
+        )
+    if tq_family_count > 0:
+        if normalized_status not in {"UPDATED", "MERGED"}:
+            errors.append(
+                "translation-quality defect families require translation-quality skill backfill "
+                f"UPDATED or MERGED: {relative_to_book(book_root, fix_log)}"
+            )
+        if backfill_path != SKILL_BACKFILL_PATH:
+            errors.append(
+                f"translation_quality_skill_backfill_path must be {SKILL_BACKFILL_PATH}: "
+                f"{relative_to_book(book_root, fix_log)}"
+            )
+        if not backfill_summary or len(backfill_summary) < 20:
+            errors.append(
+                "translation_quality_skill_backfill_summary must describe the reusable lesson merged into the skill: "
+                f"{relative_to_book(book_root, fix_log)}"
+            )
+        if verified is not True:
+            errors.append(
+                "closure_check must set translation_quality_skill_backfill_verified: true for translation-quality "
+                f"defect families: {relative_to_book(book_root, closure)}"
+            )
+    elif normalized_status != "NOT_APPLICABLE":
+        errors.append(
+            "translation_quality_skill_backfill must be NOT_APPLICABLE when "
+            f"translation_quality_defect_family_count is 0: {relative_to_book(book_root, fix_log)}"
+        )
+    elif not not_applicable_reason or len(not_applicable_reason) < 15:
+        errors.append(
+            "translation_quality_skill_backfill_not_applicable_reason is required when no translation-quality "
+            f"family was found: {relative_to_book(book_root, fix_log)}"
+        )
+
+    return errors
+
+
+def validate_current_run_issue_backfills(
+    book_root: Path,
+    output_dir: Path,
+    *,
+    latest_manifest: dict,
+    baseline_at: datetime | None,
+) -> tuple[list[str], list[str]]:
+    run_id = str(latest_manifest.get("review_run_id", "")).strip()
+    if not run_id:
+        return [], []
+    issue_rounds: list[str] = []
+    errors: list[str] = []
+    for round_dir in round_dirs(output_dir):
+        manifest = read_json(round_dir / "random_sample_manifest.json")
+        if manifest.get("review_run_id") != run_id:
+            continue
+        generated_at = parse_utc_timestamp(str(manifest.get("generated_at", "")))
+        if generated_at is None:
+            continue
+        if baseline_at is not None and generated_at <= baseline_at:
+            continue
+        if not round_has_review_issue(round_dir):
+            continue
+        issue_rounds.append(relative_to_book(book_root, round_dir))
+        errors.extend(validate_issue_round_skill_backfill(book_root, round_dir))
+    return issue_rounds, errors
 
 
 def validate_round_artifacts(
@@ -192,10 +360,14 @@ def validate_round_artifacts(
             average_score = read_number_field(review_path, "average_score")
             lowest_score = read_number_field(review_path, "lowest_score")
             blocking_count = read_number_field(review_path, "blocking_issue_count")
-            if average_score is None or average_score < 75:
-                errors.append(f"agent average_score below 75 or missing: {relative_to_book(book_root, review_path)}")
-            if lowest_score is None or lowest_score < 70:
-                errors.append(f"agent lowest_score below 70 or missing: {relative_to_book(book_root, review_path)}")
+            if average_score is None or average_score < MIN_REVIEW_SCORE:
+                errors.append(
+                    f"agent average_score below {MIN_REVIEW_SCORE} or missing: {relative_to_book(book_root, review_path)}"
+                )
+            if lowest_score is None or lowest_score < MIN_REVIEW_SCORE:
+                errors.append(
+                    f"agent lowest_score below {MIN_REVIEW_SCORE} or missing: {relative_to_book(book_root, review_path)}"
+                )
             if blocking_count is None or blocking_count != 0:
                 errors.append(f"agent blocking_issue_count must be 0: {relative_to_book(book_root, review_path)}")
 
@@ -267,6 +439,15 @@ def main() -> None:
     errors.extend(round_errors)
 
     baseline_at, baseline_path = latest_artifact_baseline(book_root)
+    current_run_issue_rounds: list[str] = []
+    if args.require_pass:
+        current_run_issue_rounds, backfill_errors = validate_current_run_issue_backfills(
+            book_root,
+            output_dir,
+            latest_manifest=manifest,
+            baseline_at=baseline_at,
+        )
+        errors.extend(backfill_errors)
     current_run_id, counted_current_run_rounds = count_current_run_pass_rounds(
         book_root,
         output_dir,
@@ -289,6 +470,7 @@ def main() -> None:
         "confidence_by_stratum": confidence_by_stratum,
         "require_pass": args.require_pass,
         "current_review_run_id": current_run_id,
+        "current_run_issue_rounds_requiring_skill_backfill": current_run_issue_rounds,
         "current_run_pass_rounds_required": args.min_current_run_pass_rounds if args.require_pass else 0,
         "current_run_pass_rounds_count": len(counted_current_run_rounds),
         "current_run_pass_rounds": counted_current_run_rounds,

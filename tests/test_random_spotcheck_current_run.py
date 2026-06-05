@@ -10,10 +10,23 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+SELECTOR = REPO_ROOT / "template" / "epub_pipeline" / "common" / "scripts" / "select_random_review_passages.py"
 VALIDATOR = REPO_ROOT / "template" / "epub_pipeline" / "common" / "scripts" / "validate_random_spotcheck.py"
 
 
-def write_pass_round(book_root: Path, round_number: int, *, run_id: str | None, generated_at: datetime | None) -> None:
+def write_pass_round(
+    book_root: Path,
+    round_number: int,
+    *,
+    run_id: str | None,
+    generated_at: datetime | None,
+    average_score: int = 90,
+    lowest_score: int = 88,
+    review_status: str = "PASS",
+    blocking_issue_count: int = 0,
+    fix_log_extra: str = "",
+    closure_extra: str = "",
+) -> None:
     round_id = f"round_{round_number:03d}"
     round_dir = book_root / "reviews" / "random_spotcheck" / round_id
     for subdir in ["samples/agent_a", "samples/agent_b", "reviews", "fixes", "verification"]:
@@ -63,18 +76,21 @@ def write_pass_round(book_root: Path, round_number: int, *, run_id: str | None, 
             "\n".join(
                 [
                     f"# {agent}",
-                    'status: "PASS"',
-                    "average_score: 90",
-                    "lowest_score: 88",
-                    "blocking_issue_count: 0",
+                    f'status: "{review_status}"',
+                    f"average_score: {average_score}",
+                    f"lowest_score: {lowest_score}",
+                    f"blocking_issue_count: {blocking_issue_count}",
                     "",
                 ]
             ),
             encoding="utf-8",
         )
-    (round_dir / "fixes" / "fix_log.md").write_text('status: "PASS"\n', encoding="utf-8")
+    (round_dir / "fixes" / "fix_log.md").write_text(
+        f'status: "PASS"\n{fix_log_extra}',
+        encoding="utf-8",
+    )
     (round_dir / "verification" / "closure_check.md").write_text(
-        'status: "PASS"\nopen_p0_p1_p2_count: 0\n',
+        f'status: "PASS"\nopen_p0_p1_p2_count: 0\n{closure_extra}',
         encoding="utf-8",
     )
 
@@ -188,6 +204,127 @@ class RandomSpotcheckCurrentRunTests(unittest.TestCase):
             )
             self.assertEqual(report["current_run_pass_rounds_required"], 1)
             self.assertEqual(report["current_run_pass_rounds_count"], 1)
+
+    def test_require_pass_rejects_any_agent_score_below_80(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            book_root = Path(tmp)
+            write_pass_round(
+                book_root,
+                1,
+                run_id="run-current",
+                generated_at=datetime.now(timezone.utc),
+                average_score=90,
+                lowest_score=79,
+            )
+
+            result = self.run_validator(book_root, 1)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("lowest_score below 80", result.stdout + result.stderr)
+
+    def test_sampler_defaults_to_120_samples_per_agent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            book_root = Path(tmp)
+            source_dir = book_root / "chapters" / "final"
+            source_dir.mkdir(parents=True)
+            source_dir.joinpath("001_chapter.md").write_text(
+                "\n\n".join(f"Paragraph {index:03d} has enough reader-facing text for sampling and review." for index in range(300)),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SELECTOR),
+                    "--book-root",
+                    str(book_root),
+                    "--seed",
+                    "fixed-seed",
+                ],
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            manifest = json.loads(
+                (
+                    book_root
+                    / "reviews"
+                    / "random_spotcheck"
+                    / "round_001"
+                    / "random_sample_manifest.json"
+                ).read_text(encoding="utf-8")
+            )
+            self.assertEqual(manifest["samples_per_agent_per_round"], 120)
+            self.assertEqual(manifest["strata"]["paragraph"]["sample_count"], 240)
+
+    def test_require_pass_rejects_prior_current_run_issue_without_skill_backfill(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            book_root = Path(tmp)
+            started = datetime.now(timezone.utc) - timedelta(minutes=5)
+            write_pass_round(
+                book_root,
+                1,
+                run_id="run-current",
+                generated_at=started,
+                review_status="FAIL",
+                average_score=70,
+                lowest_score=60,
+                blocking_issue_count=1,
+            )
+            write_pass_round(
+                book_root,
+                2,
+                run_id="run-current",
+                generated_at=started + timedelta(minutes=1),
+            )
+
+            result = self.run_validator(book_root, 1)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("translation-quality skill backfill", result.stdout + result.stderr)
+
+    def test_require_pass_accepts_prior_current_run_issue_with_skill_backfill(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            book_root = Path(tmp)
+            started = datetime.now(timezone.utc) - timedelta(minutes=5)
+            write_pass_round(
+                book_root,
+                1,
+                run_id="run-current",
+                generated_at=started,
+                review_status="FAIL",
+                average_score=70,
+                lowest_score=60,
+                blocking_issue_count=1,
+                fix_log_extra="\n".join(
+                    [
+                        "defect_family_count: 1",
+                        "translation_quality_defect_family_count: 1",
+                        'translation_quality_skill_backfill: "MERGED" # UPDATED | MERGED | NOT_APPLICABLE',
+                        'translation_quality_skill_backfill_path: "skills/translation-quality-defect-families/SKILL.md" # repo skill path',
+                        'translation_quality_skill_backfill_summary: "Merged source-syntax metaphor residue detection, fix pattern, and recheck into the reusable skill." # reusable lesson',
+                        "",
+                    ]
+                ),
+                closure_extra="\n".join(
+                    [
+                        "translation_quality_skill_backfill_verified: true # checked",
+                        "",
+                    ]
+                ),
+            )
+            write_pass_round(
+                book_root,
+                2,
+                run_id="run-current",
+                generated_at=started + timedelta(minutes=1),
+            )
+
+            result = self.run_validator(book_root, 1)
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
 
 if __name__ == "__main__":

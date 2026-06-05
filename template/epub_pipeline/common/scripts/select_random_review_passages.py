@@ -46,7 +46,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--samples-per-agent",
         type=int,
-        default=60,
+        default=120,
         help="Minimum paragraph/text samples per agent per round.",
     )
     parser.add_argument("--round", default="auto", help="Round id such as round_001, or auto.")
@@ -694,7 +694,7 @@ def write_agent_samples(round_dir: Path, root_output_dir: Path, agent_name: str,
         "- 图片必须检查裁剪是否过大或过小、标签是否缺失、是否带入周边无关文字、插入点和说明是否正确。",
         "- 表格必须检查行列、表头、数值、单位、caption、XHTML 结构和原文对应关系。",
         "- 公式/证明块必须检查符号、依赖关系、上下文说明和读者可理解性。",
-        "- 任一 P0/P1/P2 或单项 < 70 必须判为本轮 FAIL。",
+        "- 任一 P0/P1/P2 或单项 < 80 必须判为本轮 FAIL。",
         "",
     ]
 
@@ -770,11 +770,19 @@ def write_review_templates(round_dir: Path, agent_names: list[str]) -> None:
             "# 抽检返工记录 / Spot-Check Fix Log",
             "",
             'status: "DRAFT" # PASS | FAIL',
+            "defect_family_count: 0",
+            "translation_quality_defect_family_count: 0",
+            'translation_quality_skill_backfill: "DRAFT" # UPDATED | MERGED | NOT_APPLICABLE',
+            'translation_quality_skill_backfill_path: "skills/translation-quality-defect-families/SKILL.md"',
+            'translation_quality_skill_backfill_summary: ""',
+            'translation_quality_skill_backfill_not_applicable_reason: ""',
             "",
             "| unit_id | issue | fix_summary | fixed_file | fixed_by | verification |",
             "| --- | --- | --- | --- | --- | --- |",
             "",
             "所有被抽检发现的问题必须在本文件关闭；仅重新抽样不等于关闭旧问题。",
+            "",
+            "若本轮发现任何译文质量问题族，必须把可复用经验合并回填到 `skills/translation-quality-defect-families/SKILL.md`，并将 `translation_quality_skill_backfill` 填为 `UPDATED` 或 `MERGED`。若本轮只有格式/资产/路径等非译文质量问题，将 `translation_quality_defect_family_count` 填为 `0`，`translation_quality_skill_backfill` 填为 `NOT_APPLICABLE`，并写明不适用理由。",
         ],
     )
     write_text(
@@ -785,11 +793,13 @@ def write_review_templates(round_dir: Path, agent_names: list[str]) -> None:
             'status: "DRAFT" # PASS | FAIL',
             "open_p0_p1_p2_count: 0",
             "new_seed_required_after_fix: true",
+            "translation_quality_skill_backfill_verified: false",
             "",
             "## Required Checks",
             "",
             "- [ ] 所有已发现 P0/P1/P2 均已定点复查关闭。",
             "- [ ] 修复后的文件重新通过 lint/build/EPUBCheck 中相关检查。",
+            "- [ ] 若本轮发现译文质量问题族，已确认可复用经验合并回填到 `skills/translation-quality-defect-families/SKILL.md`，且 `fix_log.md` 中的 backfill 字段完整。",
             "- [ ] 若发生返工，下一轮使用新 seed 重新抽样。",
             "- [ ] 人工可在本轮目录下查看样本、证据、评审、修复和闭环记录。",
         ],

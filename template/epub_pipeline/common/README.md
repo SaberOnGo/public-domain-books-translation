@@ -193,9 +193,9 @@ Every new executor run must create new random spot-check rounds for that run. Hi
 
 每次新的 AI 执行随机抽检时，必须生成本次运行的新轮次。之前 Agent、之前 release 或之前 private artifact 已经 PASS 的轮次只能作为历史审计记录，不得计入当前执行者的最后 PASS 轮次。抽样脚本会写入 `review_run_id` 和 `generated_at`。用户可以指定任意 `>=1` 的当前运行连续 PASS 轮次要求；未指定时，`npm run review:random-validate:pass` 默认只接受同一当前 `review_run_id` 下、晚于最近 release/private artifact 的最新连续 2 个 PASS 轮次。
 
-Default release sampling is intentionally stronger than a smoke test while still respecting AI token budgets: `T=4`, `agents=2`, paragraph/text samples are `60` per agent per round. Tables and figures are fully scanned when `N<=80`; formula/proof blocks when `N<=100`; captions/notes when `N<=120`. Larger non-text strata sample `20` units per round total by default.
+Default release sampling is intentionally stronger than a smoke test while still respecting AI token budgets: `T=4`, `agents=2`, paragraph/text samples are `120` per agent per round. Tables and figures are fully scanned when `N<=80`; formula/proof blocks when `N<=100`; captions/notes when `N<=120`. Larger non-text strata sample `20` units per round total by default.
 
-默认发布前抽检强度高于快速 smoke test，但仍控制 AI token 成本：`T=4`，`agents=2`，正文层每个 Agent 每轮 60 个。表格和图片 `N<=80` 全检；公式/证明块 `N<=100` 全检；图注/表注/注释 `N<=120` 全检。超过阈值的非文本层默认每轮总抽 20 个。
+默认发布前抽检强度高于快速 smoke test，但仍控制 AI token 成本：`T=4`，`agents=2`，正文层每个 Agent 每轮 120 个。表格和图片 `N<=80` 全检；公式/证明块 `N<=100` 全检；图注/表注/注释 `N<=120` 全检。超过阈值的非文本层默认每轮总抽 20 个。
 
 If any stratum or sampled unit exposes any issue that needs correction or may recur systemically, the current round must immediately classify it as a defect family and complete a book-wide similar-issue audit and closure. Do not fix only the sampled unit, and do not wait for a second failed round before checking the whole book. The stratum may be marked as higher risk for later sampling and human review, but that risk flag cannot replace the current-round book-wide audit.
 
@@ -210,6 +210,10 @@ Any defect found by random sampling is treated as a possible defect family, not 
 For translation-quality families, the whole-book audit should first use machine-readable candidates (`glossary/terms.csv`, forbidden renderings, title maps, `rg` scans, sample manifests, and review tables), then send only candidate passages and nearby source context to agents. If the family is reusable, update `skills/translation-quality-defect-families/SKILL.md` after book-local closure.
 
 对译文质量问题族，全书审计应先使用机器可读候选（`glossary/terms.csv`、禁用正文写法、标题映射、`rg` 扫描、抽样 manifest 和评审表），再把候选片段与邻近原文交给 agent。若该问题族可复用，书内闭环后必须更新 `skills/translation-quality-defect-families/SKILL.md`。
+
+The pass validator makes this a hard gate. If any current-run random spot-check round found an issue, its `fix_log.md` must declare the defect-family counts and the translation-quality skill backfill decision. Translation-quality families require `translation_quality_skill_backfill: "UPDATED"` or `"MERGED"` plus `translation_quality_skill_backfill_verified: true` in `closure_check.md`; non-translation-quality-only rounds must use `"NOT_APPLICABLE"` with a reason.
+
+强校验会把这件事作为硬门禁。若当前执行批次任何随机抽检轮次发现过问题，该轮 `fix_log.md` 必须声明问题族数量和译文质量 skill 回填决策。发现译文质量问题族时，必须填写 `translation_quality_skill_backfill: "UPDATED"` 或 `"MERGED"`，并在 `closure_check.md` 写入 `translation_quality_skill_backfill_verified: true`；仅有非译文质量问题时，必须填写 `"NOT_APPLICABLE"` 和原因。
 
 Before final output, the stronger pass validator must succeed:
 

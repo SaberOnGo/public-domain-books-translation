@@ -95,7 +95,7 @@ npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-targ
     - `npm run preflight:private-use`
     - `npm run cover:check`
     - `npm run reader:private-check`
-26. 第一版全书 EPUB 后必须执行分层随机抽检与问题族追杀，覆盖实际存在的 paragraphs、tables、figures、formulas/proof blocks、captions/notes，并保留 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、Agent A/B 独立评审、fix_log、closure_check。任一样本或任一 Agent 发现 P0/P1/P2、单项 <70、读者读不懂、忠实度偏移、事实/术语/专名/标题/译注/图表/公式错误、源语言句法硬搬、无依据润饰、过度解释或加戏，必须在当轮归纳为问题族，对整本读者可见书稿执行全书同类审计，修复全部确认命中，记录合理例外，重建 EPUB，并用新 seed 追加下一轮；不得只修被抽中的样本。只有最近连续 N 个新 seed 抽检轮均 PASS（N 最小 1，默认 2，高质量译本可选 3），所有问题族关闭，且 `npm run review:random-validate:pass` 通过，才可退出抽检。
+26. 第一版全书 EPUB 后必须执行分层随机抽检与问题族追杀，覆盖实际存在的 paragraphs、tables、figures、formulas/proof blocks、captions/notes，并保留 `reviews/random_spotcheck/round_XXX/` 下的样本、证据、Agent A/B 独立评审、fix_log、closure_check。任一样本或任一 Agent 发现 P0/P1/P2、单项 <80、读者读不懂、忠实度偏移、事实/术语/专名/标题/译注/图表/公式错误、源语言句法硬搬、无依据润饰、过度解释或加戏，必须在当轮归纳为问题族，对整本读者可见书稿执行全书同类审计，修复全部确认命中，记录合理例外，重建 EPUB，并用新 seed 追加下一轮；不得只修被抽中的样本。只有最近连续 N 个新 seed 抽检轮均 PASS（N 最小 1，默认 2，高质量译本可选 3），所有问题族关闭，且 `npm run review:random-validate:pass` 通过，才可退出抽检。
 27. 抽检和修复完成后必须重新生成 EPUB，并运行 `npm run private:artifact:create` 或等价 private artifact 脚本。私人 EPUB 产物必须位于 `output/private_artifacts/`，不是公开 release，不得提交或发布到 GitHub。
 
 第六阶段：最终报告

@@ -173,7 +173,7 @@
 
 运行分层随机抽样，抽样总体是 reader-facing audit units，不是页数，也不只是段落。必须覆盖实际存在的 paragraph、table、figure、formula/proof、caption/note。至少派生 2 个独立评审 agent，并按模板保存 `reviews/random_spotcheck/round_XXX/` 下的 seed、manifest、samples、evidence、reviews、fixes/fix_log.md、verification/closure_check.md。
 
-若任一样本发现 P0/P1/P2、单项 <70、读者不可理解、忠实度偏移、事实/术语/专名/标题/注释/图表/公式错误、源语句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释或加戏，必须在本轮把它归纳为问题族，执行全书同类问题审计并修复所有确认命中。不得只修被抽中的样本，不得等第二轮才查全书。
+若任一样本发现 P0/P1/P2、单项 <80、读者不可理解、忠实度偏移、事实/术语/专名/标题/注释/图表/公式错误、源语句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释或加戏，必须在本轮把它归纳为问题族，执行全书同类问题审计并修复所有确认命中。不得只修被抽中的样本，不得等第二轮才查全书。
 
 译文质量问题族必须优先低 token 审计：先用 `rg`、`glossary/terms.csv`、`forbidden_body_renderings`、标题映射、章节控制记录、抽样 manifest 和小上下文原文对照收集候选，再把候选片段交给 agent 复核。可复用经验必须合并进 `skills/translation-quality-defect-families/SKILL.md`。
 

@@ -10,7 +10,7 @@
     "cover:check": "node scripts/run_python.js scripts/check_cover_output_assets.py --write-report",
     "lint:publication": "node scripts/publication_lint.js --write-report",
     "lint:assets": "node scripts/asset_manifest_check.js --write-report",
-    "review:random-samples": "node scripts/run_python.js scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 60 --rounds-planned 4 --min-current-run-pass-rounds 2 --target-confidence 0.80 --defect-rate 0.10 --profile auto",
+    "review:random-samples": "node scripts/run_python.js scripts/select_random_review_passages.py --source-dir chapters/final --agents 2 --samples-per-agent 120 --rounds-planned 4 --min-current-run-pass-rounds 2 --target-confidence 0.80 --defect-rate 0.10 --profile auto",
     "review:random-validate": "node scripts/run_python.js scripts/validate_random_spotcheck.py --target-confidence 0.80",
     "review:random-validate:pass": "node scripts/run_python.js scripts/validate_random_spotcheck.py --target-confidence 0.80 --require-pass --min-current-run-pass-rounds 2",
     "release:draft": "npm run preflight:template && npm run cover:check && npm run reader:check && node scripts/run_python.js scripts/create_release.py --status DRAFT",
