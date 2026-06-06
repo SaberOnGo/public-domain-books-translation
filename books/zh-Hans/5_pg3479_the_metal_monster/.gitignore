@@ -8,3 +8,5 @@ output/*
 !output/release/
 !output/release/**
 output/release/*_private_*.epub
+output/release/*.epub
+!output/release/金属巨兽_v0.0.5.epub

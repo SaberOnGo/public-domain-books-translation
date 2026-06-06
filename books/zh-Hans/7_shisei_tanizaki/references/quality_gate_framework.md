@@ -29,3 +29,7 @@ This file defines quality-gate concepts that apply to every translation directio
 - 源语言干扰规则应放在 `template/epub_pipeline/{source-target}/`。
 - Book-specific decisions belong inside `books/{target}/{number}_{book_id_slug}/`.
 - 具体书籍判断应写入 `books/{target}/{number}_{book_id_slug}/`。
+
+## 专家级与多义词放行条件 / Expert and Polysemy Release Condition
+
+每章 control 最近 PASS 轮除通用字段外，还必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_context_review: "PASS"`、`polysemy_unresolved_count: 0`。发现后文推翻前文选义时，必须回到前文修订并追加新一轮整章复查；修复轮不得直接 PASS。

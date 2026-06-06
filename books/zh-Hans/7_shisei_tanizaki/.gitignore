@@ -9,4 +9,4 @@ output/*
 !output/release/**
 output/release/*_private_*.epub
 output/release/*.epub
-!output/release/黑人北极探险家-2.epub
+!output/release/刺青_v0.0.4.epub

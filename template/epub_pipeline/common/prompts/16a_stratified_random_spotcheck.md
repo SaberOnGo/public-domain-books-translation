@@ -62,7 +62,7 @@ caption/note = N<=120 全检，否则每轮总抽 20
 
 这是发布前高质量但控制 token 预算的默认值。若任一层、任一样本发现任何需要修复或可能系统性复现的问题，本轮立即把发现归纳为问题族，并执行全书同类问题审计和闭环；不得只修被抽中的样本，也不得等到第二轮才全书检查。同层可被标记为高风险，用于后续抽样和人工复核，但不能替代本轮全书同类问题审计。
 
-若发现的是译文质量问题族，必须读取并使用 `skills/translation-quality-defect-families/SKILL.md`。质量问题族包括但不限于忠实度偏移、中文不顺、术语漂移、标题/小标题超载、注释误导、图表文字接口错误、英文句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释或加戏。先用 `rg`、术语表、禁用正文写法、标题映射、抽样 manifest 和小上下文原文对照收集候选，再把候选片段交给 agent 复核。书内闭环后，必须把可复用经验合并回填到该 skill，不能盲目重复追加。
+若发现的是译文质量问题族，必须读取并使用 `skills/translation-quality-defect-families/SKILL.md`；若涉及专家级成稿质量、多义词或依赖后文判义的选词，还必须使用 `skills/expert-translation-quality/SKILL.md`。质量问题族包括但不限于忠实度偏移、中文不顺、术语漂移、上下文选义漂移、标题/小标题超载、注释误导、图表文字接口错误、英文句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释或加戏。先用 `rg`、术语表、禁用正文写法、标题映射、抽样 manifest 和小上下文原文对照收集候选，再把候选片段交给 agent 复核。书内闭环后，必须把可复用经验合并回填到该 skill，不能盲目重复追加。
 
 每个发现问题的抽检轮次都必须在 `fix_log.md` 和 `closure_check.md` 写入机器可读的 skill 回填决策。若发现译文质量问题族，`translation_quality_skill_backfill` 必须是 `UPDATED` 或 `MERGED`，`translation_quality_skill_backfill_path` 必须是 `skills/translation-quality-defect-families/SKILL.md`，并用 `translation_quality_skill_backfill_summary` 说明本次合并了什么发现方法、归纳口径、低 token 审计式、修复模式和复查模式；`closure_check.md` 必须写 `translation_quality_skill_backfill_verified: true`。若本轮只有格式、资产、路径、EPUB 结构等非译文质量问题，也必须写 `translation_quality_skill_backfill: "NOT_APPLICABLE"` 和具体理由。
 
@@ -106,6 +106,7 @@ npm run review:random-validate:pass
 必须检查：
 
 - 正文段落：忠实度、目标语言可读性、术语、专名、叙述关系、AI 味。
+- 正文段落还必须检查多义词、习语、语法关系或术语定义是否被后文推翻；发现上下文选义错误时归入译文质量问题族。
 - 表格：行列、表头、数值、单位、caption、XHTML 结构、与来源表对应关系。
 - 图片：裁剪是否过大或过小、标签是否缺失、是否带入周边无关文字、插入点、caption、alt、分辨率。
 - 公式/证明块：符号、前后依赖、数学/科学关系、读者可理解性。
@@ -118,7 +119,7 @@ npm run review:random-validate:pass
 如果本轮 FAIL，主执行 AI 必须：
 
 1. 更新 `reviews/revision_route.md`。
-2. 把每个发现归纳为问题族，例如专名误译、术语硬译、短句切断、比喻自撞、排比标点拖拽、代词指代不清、英文句法、过度解释、加戏、脚注裸露、图表标签错误、公式符号错误、注释/metadata 不一致。
+2. 把每个发现归纳为问题族，例如专名误译、术语硬译、上下文选义漂移、短句切断、比喻自撞、排比标点拖拽、代词指代不清、英文句法、过度解释、加戏、脚注裸露、图表标签错误、公式符号错误、注释/metadata 不一致。
 3. 对每个问题族执行全书同类问题审计，至少覆盖 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；不得只修改被抽中的样本。译文质量问题族必须按 `skills/translation-quality-defect-families/SKILL.md` 先用低 token 方法收集候选，再做小上下文 agent 复核。
 4. 修复对应章节、资源、表格、图片、公式、metadata 或构建脚本中的全部确认命中；合理例外必须记录原因。
 5. 在 `reviews/random_spotcheck/round_XXX/fixes/fix_log.md` 记录问题族、检索式或审计方法、范围、命中数、修复位置和例外。可复用的译文质量经验必须合并回填到 `skills/translation-quality-defect-families/SKILL.md`，并填写 `defect_family_count`、`translation_quality_defect_family_count`、`translation_quality_skill_backfill`、`translation_quality_skill_backfill_path`、`translation_quality_skill_backfill_summary` 或 `translation_quality_skill_backfill_not_applicable_reason`。

@@ -255,3 +255,13 @@ output/book.epub 不能单独作为完成依据。
 可并行处理不同章节，但每个章节必须独立闭环：每一轮都检查整章；只要发现任何问题，先修复该章，但该轮只能记为 `FIXED_RECHECK_REQUIRED`，不能 PASS；随后追加新一轮整章复查。只有最新一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，该章才算通过。
 若任一章发现可复现译文质量问题族，例如短句切断、比喻自撞、排比标点拖拽、代词指代不清、源语句法残留、术语漂移、标题超载、过度解释或加戏，必须按 `skills/translation-quality-defect-families/SKILL.md` 处理：记录如何发现、如何归纳、如何用低 token 方法查全书同类、如何修复、如何复查。先用 `rg`、术语表、禁用写法、标题表、章节控制记录和小上下文原文对照收集候选，只把候选片段交给 agent 复核；不要让 agent 盲读全书。
 完成后重新生成或更新 `qa/chapter_controls/*.control.md`、必要的 `qa/fidelity/`、`qa/readability/`、`qa/terminology/`、`qa/gates/` 记录，把通过章节写入或更新到 `chapters/final/`。然后重建 EPUB，运行可用的 chapter-control/preflight/publication lint/asset/EPUBCheck 命令。报告修复章节、问题族、验证命令结果和仍需进入 Prompt C 的事项。
+----------------------------------------------------------------
+请你启动2个独立agent, 对:
+"\books\private\zh-Hans\1_dialogue_art_verbal_action\output\private_artifacts\《对白：文字、舞台、银幕的言语行动艺术》罗伯特·麦基_private_v0.0.10.epub"
+和:
+"${LIFEBOOK_HOME}\doc\public\qa_evaluation\示例输入\对白：文字、舞台、银幕的言语行为艺术 罗伯特·麦基.epub"
+共5个译本进行多方面维度的评审(包括文学批评、忠实性、读者体验、能否吸引读者、基本错误等，不限于我提到的方面)，满分100，
+2个agent必须独立不受影响。输出结果时，要指明哪本书(写明译者)。完成评审后，请输出一套用于评价/评估译本的质量的设计或者规则，
+并参考:"\doc\public\translation_quality_evaluation_framework.md", 生成一个不限于特定书的质量评估skill文档。
+保存在:"\doc\public\qa_evaluation"(以后该文档用于执行对不同译本的质量评估),该skill需要带版本号
+可以网上搜索相关理论及研究。

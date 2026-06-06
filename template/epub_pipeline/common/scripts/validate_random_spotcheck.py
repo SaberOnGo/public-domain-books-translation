@@ -236,11 +236,14 @@ def review_file_has_issue(review_path: Path) -> bool:
     average_score = read_number_field(review_path, "average_score")
     lowest_score = read_number_field(review_path, "lowest_score")
     blocking_count = read_number_field(review_path, "blocking_issue_count")
+    polysemy_context_count = read_number_field(review_path, "polysemy_context_issue_count")
     if average_score is not None and average_score < MIN_REVIEW_SCORE:
         return True
     if lowest_score is not None and lowest_score < MIN_REVIEW_SCORE:
         return True
     if blocking_count is not None and blocking_count > 0:
+        return True
+    if polysemy_context_count is not None and polysemy_context_count > 0:
         return True
     return bool(re.search(r"\bP[0-2]\b", text, flags=re.IGNORECASE))
 
@@ -438,6 +441,7 @@ def validate_round_artifacts(
             average_score = read_number_field(review_path, "average_score")
             lowest_score = read_number_field(review_path, "lowest_score")
             blocking_count = read_number_field(review_path, "blocking_issue_count")
+            polysemy_context_count = read_number_field(review_path, "polysemy_context_issue_count")
             if average_score is None or average_score < MIN_REVIEW_SCORE:
                 errors.append(
                     f"agent average_score below {MIN_REVIEW_SCORE} or missing: {relative_to_book(book_root, review_path)}"
@@ -448,6 +452,10 @@ def validate_round_artifacts(
                 )
             if blocking_count is None or blocking_count != 0:
                 errors.append(f"agent blocking_issue_count must be 0: {relative_to_book(book_root, review_path)}")
+            if polysemy_context_count is None:
+                errors.append(f"agent polysemy_context_issue_count is missing: {relative_to_book(book_root, review_path)}")
+            elif polysemy_context_count != 0:
+                errors.append(f"agent polysemy_context_issue_count must be 0: {relative_to_book(book_root, review_path)}")
             if expected_count and reviewed_count < expected_count:
                 errors.append(
                     "agent review must include scored rows for every sampled unit: "

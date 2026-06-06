@@ -45,6 +45,10 @@
 - 不接受第一版“通顺但无味”的译文。
 - 不得直接写入 `chapters/final/`。
 
+## 专家级译文与多义词回看 / Expert Quality and Polysemy Back-Check
+
+翻译调用仍然只输出译文，不输出 QA 或流程记录；但译者必须按 `skills/expert-translation-quality/SKILL.md` 在内部建立观察清单。遇到多义词、习语、称谓、术语或需要后文判义的语法结构，先避免错误收窄；后文译出后，必须在 `08a` 回到前文位置复查并必要时修订。观察清单不得进入读者正文。
+
 ## 章节译后控制 / Post-Translation Control
 
 每章写入 `chapters/translated/` 后，必须立即进入：

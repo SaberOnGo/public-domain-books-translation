@@ -1,0 +1,4 @@
+interface:
+  display_name: "Expert Translation Quality"
+  short_description: "Drive expert-level translation review and polysemy back-checks."
+  default_prompt: "Use this skill when a LifeBook translation or review must reach expert-level quality, especially when polysemous or context-dependent source terms require downstream-context back-checking."

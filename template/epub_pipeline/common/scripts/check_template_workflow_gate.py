@@ -360,6 +360,11 @@ def check_chapter_control_closure(
     latest_issues = latest_int_value(text, "issues_found")
     latest_fixes = latest_int_value(text, "fixes_applied")
     latest_unresolved = latest_int_value(text, "unresolved_blocking_issues")
+    latest_expert_used = latest_scalar_value(text, "expert_translation_skill_used")
+    latest_expert_status = latest_scalar_value(text, "expert_level_review_status")
+    latest_polysemy_translation_status = latest_scalar_value(text, "polysemy_translation_stage_review")
+    latest_polysemy_status = latest_scalar_value(text, "polysemy_context_review")
+    latest_polysemy_unresolved = latest_int_value(text, "polysemy_unresolved_count")
 
     if latest_status != "PASS":
         add_issue(
@@ -410,16 +415,67 @@ def check_chapter_control_closure(
             "Control file must explicitly record target-language readability/polish/naturalness review, not only semantic fidelity.",
             rel(book_root, control),
         )
+    if latest_expert_used != "true":
+        add_issue(
+            issues,
+            "chapter_post_translation_control_missing_expert_translation_skill",
+            "Latest full-chapter check must record expert_translation_skill_used: true after using skills/expert-translation-quality/SKILL.md.",
+            rel(book_root, control),
+        )
+    if latest_expert_status != "PASS":
+        add_issue(
+            issues,
+            "chapter_post_translation_control_expert_review_not_pass",
+            "Latest full-chapter check must record expert_level_review_status: PASS.",
+            rel(book_root, control),
+        )
+    if latest_polysemy_translation_status != "PASS":
+        add_issue(
+            issues,
+            "chapter_post_translation_control_polysemy_translation_stage_not_pass",
+            "Latest full-chapter check must record polysemy_translation_stage_review: PASS to confirm translation-stage polysemy handling was audited.",
+            rel(book_root, control),
+        )
+    if latest_polysemy_status != "PASS":
+        add_issue(
+            issues,
+            "chapter_post_translation_control_polysemy_review_not_pass",
+            "Latest full-chapter check must record polysemy_context_review: PASS.",
+            rel(book_root, control),
+        )
+    if latest_polysemy_unresolved != 0:
+        add_issue(
+            issues,
+            "chapter_post_translation_control_polysemy_unresolved",
+            "Latest full-chapter check must record polysemy_unresolved_count: 0.",
+            rel(book_root, control),
+        )
 
     for block in split_round_blocks(text):
         round_issues = latest_int_value(block, "issues_found") or 0
         round_fixes = latest_int_value(block, "fixes_applied") or 0
         round_status = latest_scalar_value(block, "latest_round_status") or latest_scalar_value(block, "status")
+        round_expert_status = latest_scalar_value(block, "expert_level_review_status")
+        round_polysemy_translation_status = latest_scalar_value(block, "polysemy_translation_stage_review")
+        round_polysemy_status = latest_scalar_value(block, "polysemy_context_review")
+        round_polysemy_unresolved = latest_int_value(block, "polysemy_unresolved_count")
         if (round_issues > 0 or round_fixes > 0) and round_status == "PASS":
             add_issue(
                 issues,
                 "chapter_post_translation_control_fix_round_marked_pass",
                 "A round that found issues or applied fixes must be FIXED_RECHECK_REQUIRED, not PASS; append a fresh full-chapter recheck.",
+                rel(book_root, control),
+            )
+        if round_status == "PASS" and (
+            round_expert_status != "PASS"
+            or round_polysemy_translation_status != "PASS"
+            or round_polysemy_status != "PASS"
+            or round_polysemy_unresolved != 0
+        ):
+            add_issue(
+                issues,
+                "chapter_post_translation_control_pass_without_expert_polysemy_closure",
+                "A PASS round must also close expert-level review, translation-stage polysemy handling, and polysemy context review with zero unresolved polysemy items.",
                 rel(book_root, control),
             )
 

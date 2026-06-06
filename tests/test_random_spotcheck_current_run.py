@@ -81,6 +81,7 @@ def write_pass_round(
                     f"average_score: {average_score}",
                     f"lowest_score: {lowest_score}",
                     f"blocking_issue_count: {blocking_issue_count}",
+                    "polysemy_context_issue_count: 0",
                     "",
                     "| unit_id | score | issue_level | notes |",
                     "| --- | --- | --- | --- |",

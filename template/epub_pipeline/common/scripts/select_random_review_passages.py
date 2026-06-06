@@ -702,6 +702,7 @@ def write_agent_samples(round_dir: Path, root_output_dir: Path, agent_name: str,
         f"- 默认优秀出版线：每个 Agent 的 average_score >= {EXCELLENT_AVERAGE_SCORE}，lowest_score >= {EXCELLENT_LOWEST_SCORE}；达不到时不能作为最终 release/private artifact PASS。",
         "- 80-87 只能说明大体可读，仍属于必须精修的质量债；88-91 是较好但未达到最终优秀门槛。",
         "- 若样本理由出现可读但略硬、较硬、偏密、略抽象、解释化、翻译腔、英式分析腔等，应计入 style_debt 或相应问题族；反复出现时不得给最终优秀分。",
+        "- 正文样本必须检查多义词、习语、语法关系、术语定义或后文线索是否推翻当前译法；发现上下文选义错误时，应判为译文质量问题族。",
         "",
     ]
 
@@ -763,6 +764,7 @@ def write_review_templates(round_dir: Path, agent_sets: dict[str, dict[str, list
                 "blocking_issue_count: 0",
                 "reviewed_sample_row_count: 0",
                 "style_debt_count: 0",
+                "polysemy_context_issue_count: 0",
                 f"publication_min_score: {MIN_REVIEW_SCORE}",
                 f"excellent_average_score_required: {EXCELLENT_AVERAGE_SCORE}",
                 f"excellent_lowest_score_required: {EXCELLENT_LOWEST_SCORE}",
@@ -777,6 +779,7 @@ def write_review_templates(round_dir: Path, agent_sets: dict[str, dict[str, list
                 "本文件必须由独立评审 Agent 填写；每个样本必须有独立评分行。DRAFT、只写总评、缺少逐样本表格，均不得作为通过依据。",
                 "",
                 f"`{MIN_REVIEW_SCORE}` 是硬失败线，不是优秀线。最终 release/private artifact 默认还要求 `average_score >= {EXCELLENT_AVERAGE_SCORE}` 且 `lowest_score >= {EXCELLENT_LOWEST_SCORE}`；可读但略硬、偏密、解释化、抽象腔或翻译腔应压低单项分并计入润色债务。",
+                "若发现多义词、习语、语法关系或术语定义被后文线索推翻，应把 `polysemy_context_issue_count` 计入，并在 Findings 中记录可复查的 `unit_id` 与理由。",
             ],
         )
 
@@ -799,6 +802,7 @@ def write_review_templates(round_dir: Path, agent_sets: dict[str, dict[str, list
             "所有被抽检发现的问题必须在本文件关闭；仅重新抽样不等于关闭旧问题。",
             "",
             "若本轮发现任何译文质量问题族，必须把可复用经验合并回填到 `skills/translation-quality-defect-families/SKILL.md`，并将 `translation_quality_skill_backfill` 填为 `UPDATED` 或 `MERGED`。若本轮只有格式/资产/路径等非译文质量问题，将 `translation_quality_defect_family_count` 填为 `0`，`translation_quality_skill_backfill` 填为 `NOT_APPLICABLE`，并写明不适用理由。",
+            "若问题涉及专家级译文不足、多义词或上下文选义漂移，必须使用 `skills/expert-translation-quality/SKILL.md` 完成回看复查，再把可复用坏例合并到译文质量问题族 skill。",
         ],
     )
     write_text(
@@ -816,6 +820,7 @@ def write_review_templates(round_dir: Path, agent_sets: dict[str, dict[str, list
             "- [ ] 所有已发现 P0/P1/P2 均已定点复查关闭。",
             "- [ ] 修复后的文件重新通过 lint/build/EPUBCheck 中相关检查。",
             "- [ ] 若本轮发现译文质量问题族，已确认可复用经验合并回填到 `skills/translation-quality-defect-families/SKILL.md`，且 `fix_log.md` 中的 backfill 字段完整。",
+            "- [ ] 若本轮发现多义词或上下文选义问题，已按 `skills/expert-translation-quality/SKILL.md` 完成后文回看和全书同类审计。",
             "- [ ] 若发生返工，下一轮使用新 seed 重新抽样。",
             "- [ ] 人工可在本轮目录下查看样本、证据、评审、修复和闭环记录。",
         ],

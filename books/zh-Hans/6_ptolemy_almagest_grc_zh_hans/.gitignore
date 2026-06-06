@@ -8,3 +8,5 @@ output/*
 !output/release/
 !output/release/**
 output/release/*_private_*.epub
+output/release/*.epub
+!output/release/天文学大成_第一卷_v0.0.4.epub

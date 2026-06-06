@@ -45,23 +45,25 @@ Use this skill when an AI agent is asked to create a book project, add or update
    所有具体书籍的原文、译文、QA、EPUB 输出和 metadata 只能写入书籍工程目录。
 10. Run the workflow through source evidence, rights checks, research, trial translation, chapter translation, review, gates, EPUB production, validation, mandatory post-EPUB stratified random spot-check, independent review, versioned release, and retrospective.
    按来源证据、版权核查、研究、试译、章节翻译、审校、门禁、EPUB 制作、校验、EPUB 后强制分层随机抽检、独立评审、版本化发布和复盘流程执行。
-11. Before EPUB production, run `node scripts/publication_lint.js --target={target-language} --write-report` inside the book project and fix all hard errors.
+11. For translation, chapter review, random spot-check, reader feedback, and final artifact review, use `skills/expert-translation-quality/SKILL.md` to enforce expert-level prose and downstream-context polysemy back-checking without bloating every prompt.
+    翻译、章节审校、随机抽检、读者反馈和最终产物审阅时，使用 `skills/expert-translation-quality/SKILL.md`，把专家级译文与后文回看多义词复查作为执行流程，而不是把长规则塞进每个 prompt。
+12. Before EPUB production, run `node scripts/publication_lint.js --target={target-language} --write-report` inside the book project and fix all hard errors.
    EPUB 制作前，必须在书籍工程内运行 `node scripts/publication_lint.js --target={target-language} --write-report`，并修复所有硬错误。
-12. Before final EPUB output, check long chapter titles against `references/chapter_title_policy.md` and any matching source-to-target title strategy. EPUB navigation must use concise labels, not printed-TOC title chains.
+13. Before final EPUB output, check long chapter titles against `references/chapter_title_policy.md` and any matching source-to-target title strategy. EPUB navigation must use concise labels, not printed-TOC title chains.
     最终 EPUB 输出前，必须按 `references/chapter_title_policy.md` 及对应语言方向标题策略检查长章节标题。EPUB 目录应使用短题名，不应塞入纸书目录式标题链。
-13. After the first full-book EPUB is built, run the stratified random spot-check module from `references/stratified_random_spotcheck.md` and `prompts/16a_stratified_random_spotcheck.md`. Use deterministic scripts, keep all samples and evidence under `books/{target}/{number}_{book_id_slug}/reviews/random_spotcheck/round_XXX/`, close every discovered P0/P1/P2, and run `npm run review:random-validate:pass` before final output.
+14. After the first full-book EPUB is built, run the stratified random spot-check module from `references/stratified_random_spotcheck.md` and `prompts/16a_stratified_random_spotcheck.md`. Use deterministic scripts, keep all samples and evidence under `books/{target}/{number}_{book_id_slug}/reviews/random_spotcheck/round_XXX/`, close every discovered P0/P1/P2, and run `npm run review:random-validate:pass` before final output.
     第一版全书 EPUB 生成后，必须执行 `references/stratified_random_spotcheck.md` 和 `prompts/16a_stratified_random_spotcheck.md` 定义的分层随机抽检模块。必须使用确定性脚本，所有样本和证据保存在 `books/{target}/{number}_{book_id_slug}/reviews/random_spotcheck/round_XXX/`，所有发现的 P0/P1/P2 必须关闭，最终输出前必须通过 `npm run review:random-validate:pass`。
     The current executor must generate new random spot-check rounds. Historical PASS rounds from previous agents, previous releases, or previous private artifacts do not count. The user may specify any current-run consecutive PASS requirement of `>=1`; when unspecified, the default validator requires the latest consecutive 2 PASS rounds from the same `review_run_id`.
     当前执行者必须生成新的随机抽检轮次。之前 Agent、之前 release 或之前 private artifact 已经 PASS 的历史轮次不得计入本次执行。用户可以指定任意 `>=1` 的当前运行连续 PASS 轮次要求；未指定时，默认强校验要求同一 `review_run_id` 下最新连续 2 轮 PASS。
-14. After random spot-check closure, run the versioned release module from `references/release_versioning.md` and `prompts/18a_release_versioning.md`. Create `output/release/book_vX.X.X.epub`, `release_note_vX.X.X.md`, `release_state.json`, and `release_index.md`; `output/book.epub` alone is not enough for `DONE`.
+15. After random spot-check closure, run the versioned release module from `references/release_versioning.md` and `prompts/18a_release_versioning.md`. Create `output/release/book_vX.X.X.epub`, `release_note_vX.X.X.md`, `release_state.json`, and `release_index.md`; `output/book.epub` alone is not enough for `DONE`.
     随机抽检闭环通过后，必须执行 `references/release_versioning.md` 和 `prompts/18a_release_versioning.md` 定义的版本化发布模块。必须创建 `output/release/book_vX.X.X.epub`、`release_note_vX.X.X.md`、`release_state.json` 和 `release_index.md`；只有 `output/book.epub` 不能标记 `DONE`。
-15. For translated titles, title occurrences do not count as first body occurrences for terminology notes. Chapter titles, subtitles, and navigation titles must follow target-language title style; source names or parenthetical original names belong at the first natural body occurrence, in notes, or in the glossary.
+16. For translated titles, title occurrences do not count as first body occurrences for terminology notes. Chapter titles, subtitles, and navigation titles must follow target-language title style; source names or parenthetical original names belong at the first natural body occurrence, in notes, or in the glossary.
     对译文标题而言，标题中的出现不计入术语译注的“正文首次出现”。章节标题、副标题和目录题名必须按目标语言标题习惯处理；原文名或括注原名应放在正文第一次自然出现处、译注或术语表中。
-16. If a specific book has systematic refinement issues, place its goal under `books/{target}/{number}_{book_id_slug}/goal/`, then backfill reusable lessons into common, target-language, or source-target templates.
+17. If a specific book has systematic refinement issues, place its goal under `books/{target}/{number}_{book_id_slug}/goal/`, then backfill reusable lessons into common, target-language, or source-target templates.
     如果某本书有系统性精修问题，目标文档应放在 `books/{target}/{number}_{book_id_slug}/goal/`，再把可复用经验回填到 common、目标语言或语言方向模板。
-17. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
+18. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
    特定语言方向的脚本、数据集和探索性调研应放在 `research/{source-target}/...` 或对应语言方向模板中，不要放在仓库根目录。
-18. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
+19. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
     不要在脚本或 prompt 中写死本机绝对路径。路径应基于脚本位置、仓库根目录或用户显式传入的参数解析。
 
 ## Policy Boundary Lessons / Policy 边界教训

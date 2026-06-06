@@ -33,3 +33,7 @@
 
 - 全书首次 EPUB 与每次 post-EPUB 精修后必须执行分层随机抽检闭环（参见 `references/stratified_random_spotcheck.md`）。
 - 至少两个独立审校 Agent 复核样本；发现缺口需先建问题族，做本书同类问题全量追查与修复，再用新 seed 复抽通过。
+
+## 专家级与多义词放行条件 / Expert and Polysemy Release Condition
+
+每章 control 最近 PASS 轮除通用字段外，还必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_context_review: "PASS"`、`polysemy_unresolved_count: 0`。发现后文推翻前文选义时，必须回到前文修订并追加新一轮整章复查；修复轮不得直接 PASS。

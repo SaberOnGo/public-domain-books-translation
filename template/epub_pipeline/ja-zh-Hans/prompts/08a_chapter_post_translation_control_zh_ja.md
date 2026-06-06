@@ -32,6 +32,22 @@
 - 每一轮发现的问题、修复项、复查结论、总分和是否允许进入下一章。
 - 最终 `latest_round_status` 与 `allow_next_chapter`。
 
+## 专家级与多义词回看 / Expert Quality and Polysemy Back-Check
+
+本节点必须使用 `skills/expert-translation-quality/SKILL.md`。后文已译出后，必须回看当前章前文的多义词、习语、称谓、术语和依赖上下文判义的语法结构。`qa/chapter_controls/{chapter}.control.md` 的最近 PASS 轮必须记录：
+
+```text
+expert_translation_skill_used: true
+expert_translation_skill_path: "skills/expert-translation-quality/SKILL.md"
+expert_level_review_status: "PASS"
+polysemy_context_review: "PASS"
+polysemy_watchlist_count: {number_checked}
+polysemy_revisited_count: {number_revisited}
+polysemy_unresolved_count: 0
+```
+
+若回看后修正了前文选义，该轮只能记为 `FIXED_RECHECK_REQUIRED`，必须追加新的整章复查轮才可 PASS。
+
 ## 人类反馈 / Human Feedback
 
 如果用户对某一章不满意：

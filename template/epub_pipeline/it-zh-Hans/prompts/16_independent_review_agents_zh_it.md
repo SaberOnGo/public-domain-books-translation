@@ -9,3 +9,7 @@
 若该轮发现译文质量问题族，还必须在 `fix_log.md` 填写 `translation_quality_skill_backfill: "UPDATED"` 或 `"MERGED"`、`translation_quality_skill_backfill_path: "skills/translation-quality-defect-families/SKILL.md"` 和回填摘要，并在 `closure_check.md` 填写 `translation_quality_skill_backfill_verified: true`；若仅有非译文质量问题，必须填写 `NOT_APPLICABLE` 和具体理由。
 
 If a random sample exposes any issue that needs correction or may recur systemically, treat it as a possible systemic defect family immediately in the current round. Audit the whole reader-facing book for similar cases, fix all confirmed matches, document justified exceptions, and close the family in the same round before a new-seed resample.
+
+## 专家级与多义词抽检 / Expert Quality and Polysemy Review
+
+独立评审必须按 `skills/expert-translation-quality/SKILL.md` 检查样本是否达到专家级出版质量，并确认多义词、习语、语法关系、术语定义或后文线索没有推翻当前译法。发现上下文选义错误时，归入译文质量问题族，不能用“整体可读”给 PASS。

@@ -14,3 +14,19 @@
 - 段落覆盖、裸外文、术语禁用写法和生产痕迹自动扫描结果。
 
 每一轮都必须是当前章的全量检查，不得只复查上一轮问题点。发现任何问题后必须先修复，但该轮只能记录为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS；随后必须追加一轮新的整章全量检查。只有最后一轮记录 `scope: "FULL_CHAPTER"`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: "PASS"`、`allow_next_chapter: true`，才可继续下一章。
+
+## 专家级与多义词回看 / Expert Quality and Polysemy Back-Check
+
+本节点必须使用 `skills/expert-translation-quality/SKILL.md`。后文已译出后，必须回看当前章前文的多义词、习语、称谓、术语和依赖上下文判义的语法结构。`qa/chapter_controls/{chapter}.control.md` 的最近 PASS 轮必须记录：
+
+```text
+expert_translation_skill_used: true
+expert_translation_skill_path: "skills/expert-translation-quality/SKILL.md"
+expert_level_review_status: "PASS"
+polysemy_context_review: "PASS"
+polysemy_watchlist_count: {number_checked}
+polysemy_revisited_count: {number_revisited}
+polysemy_unresolved_count: 0
+```
+
+若回看后修正了前文选义，该轮只能记为 `FIXED_RECHECK_REQUIRED`，必须追加新的整章复查轮才可 PASS。

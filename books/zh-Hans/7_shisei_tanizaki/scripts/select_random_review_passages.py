@@ -8,6 +8,7 @@ import re
 import secrets
 import shutil
 from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from xml.etree import ElementTree as ET
 from urllib.parse import unquote
@@ -17,6 +18,9 @@ DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
 STRATA = ("paragraph", "table", "figure", "formula", "caption_note")
 BLOCKING_PRIORITY_RE = re.compile(r"\bP[0-2]\b", flags=re.IGNORECASE)
 XHTML_NS = "{http://www.w3.org/1999/xhtml}"
+MIN_REVIEW_SCORE = 80
+EXCELLENT_AVERAGE_SCORE = 92
+EXCELLENT_LOWEST_SCORE = 88
 
 
 @dataclass(frozen=True)
@@ -45,18 +49,28 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--samples-per-agent",
         type=int,
-        default=60,
+        default=120,
         help="Minimum paragraph/text samples per agent per round.",
     )
     parser.add_argument("--round", default="auto", help="Round id such as round_001, or auto.")
     parser.add_argument("--rounds-planned", type=int, default=4, help="Planned random-sampling iterations T.")
+    parser.add_argument(
+        "--min-current-run-pass-rounds",
+        type=int,
+        default=2,
+        help=(
+            "Minimum PASS rounds expected in the current review run. Must be >= 1; defaults to 2 "
+            "unless the user explicitly overrides it. The sampler reuses the active review_run_id "
+            "until that many current-run PASS rounds exist, then starts a fresh run."
+        ),
+    )
     parser.add_argument("--target-confidence", type=float, default=0.80, help="Minimum target discovery confidence.")
     parser.add_argument("--defect-rate", type=float, default=0.10, help="Minimum problem rate q to defend against.")
     parser.add_argument(
         "--profile",
-        choices=("auto", "standard", "science"),
+        choices=("auto", "standard", "science", "academic"),
         default="auto",
-        help="Sampling intensity profile. auto detects science/table-heavy overlays.",
+        help="Sampling intensity profile. auto detects science/table-heavy or academic-professional overlays.",
     )
     parser.add_argument("--seed", default=None, help="Optional seed. If omitted, a random seed is generated and recorded.")
     return parser.parse_args()
@@ -140,6 +154,74 @@ def existing_round_dirs(output_dir: Path) -> list[Path]:
     return [path for _, path in sorted(rounds)]
 
 
+def read_json_file(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+
+
+def manifest_for_round(round_dir: Path) -> dict:
+    return read_json_file(round_dir / "random_sample_manifest.json")
+
+
+def validation_for_round(round_dir: Path) -> dict:
+    return read_json_file(round_dir / "validation_report.json")
+
+
+def current_run_pass_count(output_dir: Path, run_id: str) -> int:
+    count = 0
+    for round_dir in reversed(existing_round_dirs(output_dir)):
+        manifest = manifest_for_round(round_dir)
+        if manifest.get("review_run_id") != run_id:
+            break
+        validation = validation_for_round(round_dir)
+        if validation.get("status") == "PASS" and bool(validation.get("require_pass", False)):
+            count += 1
+            continue
+        break
+    return count
+
+
+def choose_review_run(output_dir: Path, min_pass_rounds: int) -> dict[str, str | int]:
+    if min_pass_rounds < 1:
+        raise SystemExit("--min-current-run-pass-rounds must be >= 1")
+    state_path = output_dir / "current_review_run.json"
+    state = read_json_file(state_path)
+    existing_run_id = str(state.get("review_run_id", "")).strip()
+    if existing_run_id and current_run_pass_count(output_dir, existing_run_id) < min_pass_rounds:
+        return {
+            "review_run_id": existing_run_id,
+            "review_run_started_at": str(state.get("started_at", "")),
+            "current_run_start_round": int(state.get("start_round_number", 0)),
+            "min_current_run_pass_rounds": min_pass_rounds,
+        }
+
+    rounds = existing_round_dirs(output_dir)
+    next_round_number = len(rounds) + 1
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return {
+        "review_run_id": secrets.token_hex(12),
+        "review_run_started_at": now,
+        "current_run_start_round": next_round_number,
+        "min_current_run_pass_rounds": min_pass_rounds,
+    }
+
+
+def write_current_review_run(output_dir: Path, run_state: dict[str, str | int]) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "review_run_id": run_state["review_run_id"],
+        "started_at": run_state["review_run_started_at"],
+        "start_round_number": run_state["current_run_start_round"],
+        "min_current_run_pass_rounds": run_state["min_current_run_pass_rounds"],
+        "rule": "Only PASS rounds generated in this review_run_id count for the current execution.",
+    }
+    write_text(output_dir / "current_review_run.json", [json.dumps(payload, ensure_ascii=False, indent=2)])
+
+
 def blocking_strata_for_round(round_dir: Path) -> set[str]:
     strata: set[str] = set()
     reviews_dir = round_dir / "reviews"
@@ -170,6 +252,14 @@ def detect_profile(book_root: Path, requested: str) -> str:
         "metadata/reference_witness_policy.md",
         "qa/technical/diagram_table_inventory.md",
     )
+    academic_markers = (
+        "references/academic_professional_readability_policy.md",
+        "metadata/academic_professional_style_profile.md",
+        "qa/readability/_TEMPLATE.chapter_academic_readability_audit.md",
+        "qa/readability/academic_professional_polish_round_001.md",
+    )
+    if any((book_root / marker).exists() for marker in academic_markers):
+        return "academic"
     return "science" if any((book_root / marker).exists() for marker in science_markers) else "standard"
 
 
@@ -178,6 +268,14 @@ def stratum_policy(profile: str, agents: int, samples_per_agent: int) -> dict[st
     if profile == "science":
         return {
             "paragraph": {"min_per_round": paragraph_min, "full_scan_if_lte": 0},
+            "table": {"min_per_round": 20, "full_scan_if_lte": 80},
+            "figure": {"min_per_round": 20, "full_scan_if_lte": 80},
+            "formula": {"min_per_round": 20, "full_scan_if_lte": 100},
+            "caption_note": {"min_per_round": 20, "full_scan_if_lte": 120},
+        }
+    if profile == "academic":
+        return {
+            "paragraph": {"min_per_round": max(paragraph_min, 160), "full_scan_if_lte": 0},
             "table": {"min_per_round": 20, "full_scan_if_lte": 80},
             "figure": {"min_per_round": 20, "full_scan_if_lte": 80},
             "formula": {"min_per_round": 20, "full_scan_if_lte": 100},
@@ -599,7 +697,12 @@ def write_agent_samples(round_dir: Path, root_output_dir: Path, agent_name: str,
         "- 图片必须检查裁剪是否过大或过小、标签是否缺失、是否带入周边无关文字、插入点和说明是否正确。",
         "- 表格必须检查行列、表头、数值、单位、caption、XHTML 结构和原文对应关系。",
         "- 公式/证明块必须检查符号、依赖关系、上下文说明和读者可理解性。",
-        "- 任一 P0/P1/P2 或单项 < 70 必须判为本轮 FAIL。",
+        "- 每个样本必须在评审文件中保留独立评分行；只写总评或汇总分无效。",
+        f"- 发布硬失败线：任一 P0/P1/P2 或单项 < {MIN_REVIEW_SCORE} 必须判为本轮 FAIL。",
+        f"- 默认优秀出版线：每个 Agent 的 average_score >= {EXCELLENT_AVERAGE_SCORE}，lowest_score >= {EXCELLENT_LOWEST_SCORE}；达不到时不能作为最终 release/private artifact PASS。",
+        "- 80-87 只能说明大体可读，仍属于必须精修的质量债；88-91 是较好但未达到最终优秀门槛。",
+        "- 若样本理由出现可读但略硬、较硬、偏密、略抽象、解释化、翻译腔、英式分析腔等，应计入 style_debt 或相应问题族；反复出现时不得给最终优秀分。",
+        "- 正文样本必须检查多义词、习语、语法关系、术语定义或后文线索是否推翻当前译法；发现上下文选义错误时，应判为译文质量问题族。",
         "",
     ]
 
@@ -646,17 +749,25 @@ def write_agent_samples(round_dir: Path, root_output_dir: Path, agent_name: str,
     write_text(root_output_dir / f"{agent_name}_samples.md", combined_lines)
 
 
-def write_review_templates(round_dir: Path, agent_names: list[str]) -> None:
-    for agent_name in agent_names:
+def write_review_templates(round_dir: Path, agent_sets: dict[str, dict[str, list[AuditUnit]]]) -> None:
+    for agent_name, samples_by_stratum in agent_sets.items():
+        sample_count = sum(len(samples) for samples in samples_by_stratum.values())
         write_text(
             round_dir / "reviews" / f"{agent_name}_review.md",
             [
                 f"# {agent_name} 抽检评审 / Spot-Check Review",
                 "",
                 'status: "DRAFT" # PASS | FAIL',
+                f"sample_count: {sample_count}",
                 "average_score: 0",
                 "lowest_score: 0",
                 "blocking_issue_count: 0",
+                "reviewed_sample_row_count: 0",
+                "style_debt_count: 0",
+                "polysemy_context_issue_count: 0",
+                f"publication_min_score: {MIN_REVIEW_SCORE}",
+                f"excellent_average_score_required: {EXCELLENT_AVERAGE_SCORE}",
+                f"excellent_lowest_score_required: {EXCELLENT_LOWEST_SCORE}",
                 "",
                 "## Findings",
                 "",
@@ -665,7 +776,10 @@ def write_review_templates(round_dir: Path, agent_names: list[str]) -> None:
                 "",
                 "## Conclusion",
                 "",
-                "本文件必须由独立评审 Agent 填写。DRAFT 不得作为通过依据。",
+                "本文件必须由独立评审 Agent 填写；每个样本必须有独立评分行。DRAFT、只写总评、缺少逐样本表格，均不得作为通过依据。",
+                "",
+                f"`{MIN_REVIEW_SCORE}` 是硬失败线，不是优秀线。最终 release/private artifact 默认还要求 `average_score >= {EXCELLENT_AVERAGE_SCORE}` 且 `lowest_score >= {EXCELLENT_LOWEST_SCORE}`；可读但略硬、偏密、解释化、抽象腔或翻译腔应压低单项分并计入润色债务。",
+                "若发现多义词、习语、语法关系或术语定义被后文线索推翻，应把 `polysemy_context_issue_count` 计入，并在 Findings 中记录可复查的 `unit_id` 与理由。",
             ],
         )
 
@@ -675,11 +789,20 @@ def write_review_templates(round_dir: Path, agent_names: list[str]) -> None:
             "# 抽检返工记录 / Spot-Check Fix Log",
             "",
             'status: "DRAFT" # PASS | FAIL',
+            "defect_family_count: 0",
+            "translation_quality_defect_family_count: 0",
+            'translation_quality_skill_backfill: "DRAFT" # UPDATED | MERGED | NOT_APPLICABLE',
+            'translation_quality_skill_backfill_path: "skills/translation-quality-defect-families/SKILL.md"',
+            'translation_quality_skill_backfill_summary: ""',
+            'translation_quality_skill_backfill_not_applicable_reason: ""',
             "",
             "| unit_id | issue | fix_summary | fixed_file | fixed_by | verification |",
             "| --- | --- | --- | --- | --- | --- |",
             "",
             "所有被抽检发现的问题必须在本文件关闭；仅重新抽样不等于关闭旧问题。",
+            "",
+            "若本轮发现任何译文质量问题族，必须把可复用经验合并回填到 `skills/translation-quality-defect-families/SKILL.md`，并将 `translation_quality_skill_backfill` 填为 `UPDATED` 或 `MERGED`。若本轮只有格式/资产/路径等非译文质量问题，将 `translation_quality_defect_family_count` 填为 `0`，`translation_quality_skill_backfill` 填为 `NOT_APPLICABLE`，并写明不适用理由。",
+            "若问题涉及专家级译文不足、多义词或上下文选义漂移，必须使用 `skills/expert-translation-quality/SKILL.md` 完成回看复查，再把可复用坏例合并到译文质量问题族 skill。",
         ],
     )
     write_text(
@@ -690,11 +813,14 @@ def write_review_templates(round_dir: Path, agent_names: list[str]) -> None:
             'status: "DRAFT" # PASS | FAIL',
             "open_p0_p1_p2_count: 0",
             "new_seed_required_after_fix: true",
+            "translation_quality_skill_backfill_verified: false",
             "",
             "## Required Checks",
             "",
             "- [ ] 所有已发现 P0/P1/P2 均已定点复查关闭。",
             "- [ ] 修复后的文件重新通过 lint/build/EPUBCheck 中相关检查。",
+            "- [ ] 若本轮发现译文质量问题族，已确认可复用经验合并回填到 `skills/translation-quality-defect-families/SKILL.md`，且 `fix_log.md` 中的 backfill 字段完整。",
+            "- [ ] 若本轮发现多义词或上下文选义问题，已按 `skills/expert-translation-quality/SKILL.md` 完成后文回看和全书同类审计。",
             "- [ ] 若发生返工，下一轮使用新 seed 重新抽样。",
             "- [ ] 人工可在本轮目录下查看样本、证据、评审、修复和闭环记录。",
         ],
@@ -712,6 +838,8 @@ def main() -> None:
     round_id = next_round_id(output_dir) if args.round == "auto" else args.round
     round_dir = output_dir / round_id
     seed = args.seed or secrets.token_hex(16)
+    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    run_state = choose_review_run(output_dir, args.min_current_run_pass_rounds)
     rng = random.Random(seed)
     profile = detect_profile(book_root, args.profile)
     required_total = required_total_samples(args.target_confidence, args.defect_rate)
@@ -742,11 +870,16 @@ def main() -> None:
     agent_sets = distribute_to_agents(evidenced_samples, args.agents)
     for agent_name, samples in agent_sets.items():
         write_agent_samples(round_dir, output_dir, agent_name, samples, seed)
-    write_review_templates(round_dir, list(agent_sets))
+    write_review_templates(round_dir, agent_sets)
 
     manifest = {
         "schema_version": "2.0",
         "round_id": round_id,
+        "generated_at": generated_at,
+        "review_run_id": run_state["review_run_id"],
+        "review_run_started_at": run_state["review_run_started_at"],
+        "current_run_start_round": run_state["current_run_start_round"],
+        "min_current_run_pass_rounds": run_state["min_current_run_pass_rounds"],
         "seed": seed,
         "book_root": ".",
         "source_dir": relative_to_book(book_root, source_dir),
@@ -772,6 +905,7 @@ def main() -> None:
     }
 
     write_text(round_dir / "seed.txt", [seed])
+    write_current_review_run(output_dir, run_state)
     write_text(round_dir / "strata_summary.json", [json.dumps(strata_summary, ensure_ascii=False, indent=2)])
     manifest_json = json.dumps(manifest, ensure_ascii=False, indent=2)
     write_text(round_dir / "random_sample_manifest.json", [manifest_json])

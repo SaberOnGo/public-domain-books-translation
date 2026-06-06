@@ -34,6 +34,12 @@ Before creating a PASS private artifact, run `npm run review:random-validate:pas
 
 创建 `PASS` 私人产物前，必须运行 `npm run review:random-validate:pass`。校验报告必须包含 `current_review_run_id`，且必须显示 `current_run_pass_rounds_required >= 1`、`current_run_pass_rounds_count >= current_run_pass_rounds_required`。用户可以指定任意 `>=1` 的当前运行连续 PASS 轮次要求；未指定时默认 2。旧 Agent、旧公开 release 或旧私人产物之前的 PASS 轮次只能作为历史记录，不得计入当前执行者的最后 PASS 轮次。
 
+## Expert Translation Closure / 专家级译文闭环
+
+Before creating a PASS private artifact, translation QA must use `skills/expert-translation-quality/SKILL.md` when expert-level prose, context-dependent word choice, or polysemy back-checking matters. A valid current-run random review PASS must show `polysemy_context_issue_count: 0`; chapter controls must record `expert_translation_skill_used: true`, `expert_level_review_status: "PASS"`, `polysemy_context_review: "PASS"`, and `polysemy_unresolved_count: 0`.
+
+创建 `PASS` 私人产物前，只要涉及专家级译文、上下文依赖选义或多义词回看，译文 QA 必须使用 `skills/expert-translation-quality/SKILL.md`。有效的当前运行随机抽检 PASS 必须显示 `polysemy_context_issue_count: 0`；章节 control 必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`。
+
 ## Required Note Wording / 必备说明
 
 Every private artifact note must include:

@@ -51,3 +51,7 @@ If a random sample exposes any issue that needs correction or may recur systemic
 最终 release/private artifact 默认要求每个独立 Agent `average_score >= 92`、`lowest_score >= 88`、`blocking_issue_count = 0`，并且每个抽中样本都有逐项评分行。只写总评、缺少逐样本表格，或把“可读但略硬/偏密/略抽象/解释化/翻译腔”当作优秀分，均不得作为最终 PASS 证据。
 
 反复出现的“可读但不顺”必须归入 `style_debt` 或相应译文质量问题族，回到目标语独立润色、源语句法重组或本书专项精修。随机抽检用于发现盲点和验证闭环，不应成为主要润色引擎。
+
+## 专家级译文与上下文选义 / Expert Quality and Context Disambiguation
+
+专家级译文不是“意思正确且大体顺”。翻译、审校和最终抽检必须按 `skills/expert-translation-quality/SKILL.md` 执行目标语独立阅读、原文忠实复核、多义词后文回看和句法重建。多义词、习语、称谓、术语和依赖后文判义的语法结构若被后文推翻，前文译法必须修订；保留未决歧义只能发生在原文本身有意暧昧，且译文保留了同等暧昧时。

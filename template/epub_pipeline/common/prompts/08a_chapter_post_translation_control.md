@@ -15,6 +15,9 @@ Check at least:
 - fidelity, omissions, mistranslations, unsupported additions;
 - target-language readability, naturalness, polish, rhythm, and sentence breathing;
 - whether the chapter reads clearly, smoothly, and, where the source permits, engagingly;
+- expert-level publication quality using `skills/expert-translation-quality/SKILL.md`;
+- whether the translation stage actively resolved locally decidable polysemy instead of deferring it to review;
+- polysemous or context-dependent source words after downstream context has been translated;
 - whether plain-language revision has damaged specialist terms, concepts, evidence chains, or the professional level of the book;
 - terminology, source-term display, forbidden body renderings, and note density;
 - title/nav/TOC/metadata effects;
@@ -26,11 +29,31 @@ Check at least:
 - 忠实度、漏译、误译、无依据增译；
 - 目标语可读性、自然度、成稿润色、节奏和句子呼吸；
 - 本章是否尽量读得清楚、顺畅、不费劲，并在原文允许时有趣；
+- 使用 `skills/expert-translation-quality/SKILL.md` 检查专家级出版质量；
+- 翻译阶段是否已主动处理局部上下文可判清的多义词，而不是推给审校；
+- 后文已译出后，回看复查多义词或依赖上下文判义的源语结构；
 - 通俗化是否损害了专业术语、概念层级、证据链或本书应有的专业水准；
 - 术语、原词呈现、正文禁用写法和注释密度；
 - 标题、nav、TOC、metadata 影响；
 - 注释、图注、alt text、图表/表格/公式/图片文字接口；
 - 读者可见生产痕迹、裸源语/外文、URL、prompt、QA 记录、TODO/FIXME、代码块和陈旧模板文本。
+
+## 专家级与多义词回看 / Expert Quality and Polysemy Back-Check
+
+本节点必须使用 `skills/expert-translation-quality/SKILL.md`。翻译阶段是多义词处理的第一责任节点；08a 负责审计该责任是否已经执行，并在后文已译出后回看当前章前文的多义词、习语、称谓、术语和依赖上下文判义的语法结构。若发现译文把局部上下文已能判清的选义推给后续审校，该轮不能 PASS。`qa/chapter_controls/{chapter}.control.md` 的最近 PASS 轮必须记录：
+
+```text
+expert_translation_skill_used: true
+expert_translation_skill_path: "skills/expert-translation-quality/SKILL.md"
+expert_level_review_status: "PASS"
+polysemy_translation_stage_review: "PASS"
+polysemy_context_review: "PASS"
+polysemy_watchlist_count: {number_checked}
+polysemy_revisited_count: {number_revisited}
+polysemy_unresolved_count: 0
+```
+
+若回看后修正了前文选义，该轮只能记为 `FIXED_RECHECK_REQUIRED`，必须追加新的整章复查轮才可 PASS。
 
 ## Round Closure / 轮次闭环
 
@@ -42,6 +65,14 @@ Every round must be a full-chapter check. If any issue is found, fix it, but tha
 
 ```text
 scope: "FULL_CHAPTER"
+expert_translation_skill_used: true
+expert_translation_skill_path: "skills/expert-translation-quality/SKILL.md"
+expert_level_review_status: "FIXED_RECHECK_REQUIRED"
+polysemy_translation_stage_review: "FIXED_RECHECK_REQUIRED"
+polysemy_context_review: "FIXED_RECHECK_REQUIRED"
+polysemy_watchlist_count: {number_found}
+polysemy_revisited_count: {number_revisited}
+polysemy_unresolved_count: {number_unresolved}
 issues_found: {number_found}
 fixes_applied: {number_fixed}
 unresolved_blocking_issues: {number_unresolved}
@@ -53,6 +84,14 @@ allow_next_chapter: false
 
 ```text
 scope: "FULL_CHAPTER"
+expert_translation_skill_used: true
+expert_translation_skill_path: "skills/expert-translation-quality/SKILL.md"
+expert_level_review_status: "FIXED_RECHECK_REQUIRED"
+polysemy_translation_stage_review: "FIXED_RECHECK_REQUIRED"
+polysemy_context_review: "FIXED_RECHECK_REQUIRED"
+polysemy_watchlist_count: {观察项数量}
+polysemy_revisited_count: {已回看数量}
+polysemy_unresolved_count: {未关闭数量}
 issues_found: {发现数量}
 fixes_applied: {修复数量}
 unresolved_blocking_issues: {未关闭阻塞数量}
@@ -64,6 +103,14 @@ Then append a new full-chapter recheck. The workflow may continue only when the 
 
 ```text
 scope: "FULL_CHAPTER"
+expert_translation_skill_used: true
+expert_translation_skill_path: "skills/expert-translation-quality/SKILL.md"
+expert_level_review_status: "PASS"
+polysemy_translation_stage_review: "PASS"
+polysemy_context_review: "PASS"
+polysemy_watchlist_count: {number_checked}
+polysemy_revisited_count: {number_revisited}
+polysemy_unresolved_count: 0
 issues_found: 0
 fixes_applied: 0
 unresolved_blocking_issues: 0
@@ -75,6 +122,14 @@ allow_next_chapter: true
 
 ```text
 scope: "FULL_CHAPTER"
+expert_translation_skill_used: true
+expert_translation_skill_path: "skills/expert-translation-quality/SKILL.md"
+expert_level_review_status: "PASS"
+polysemy_translation_stage_review: "PASS"
+polysemy_context_review: "PASS"
+polysemy_watchlist_count: {已检查观察项数量}
+polysemy_revisited_count: {已回看数量}
+polysemy_unresolved_count: 0
 issues_found: 0
 fixes_applied: 0
 unresolved_blocking_issues: 0

@@ -36,3 +36,7 @@
 - 预翻译试译为 `PASS`。
 - 每章译后控制、忠实度审校、可读性/意象审校、术语审校和章节门禁均为 `PASS`。
 - EPUB 构建、publication lint、asset manifest check、reader-facing policy check、随机抽检和 release gate 均通过。
+
+## 专家级译文与上下文选义 / Expert Quality and Context Disambiguation
+
+专家级译文不是“意思正确且大体顺”。翻译、审校和最终抽检必须按 `skills/expert-translation-quality/SKILL.md` 执行目标语独立阅读、原文忠实复核、多义词后文回看和句法重建。多义词、习语、称谓、术语和依赖后文判义的语法结构若被后文推翻，前文译法必须修订；保留未决歧义只能发生在原文本身有意暧昧，且译文保留了同等暧昧时。

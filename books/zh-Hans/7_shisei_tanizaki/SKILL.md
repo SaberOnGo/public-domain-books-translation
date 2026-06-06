@@ -101,3 +101,9 @@ Use this skill after `books/scripts/create_book_project.py` has copied `template
 
 - After random spot-check closure, create a versioned EPUB release with `npm run release:create`. The publishable artifact is `output/release/book_vX.X.X.epub` with `release_notes.md`, `release_state.json`, and `release_index.md`; `output/book.epub` alone is not enough for `DONE`.
 - 随机抽检闭环通过后，必须运行 `npm run release:create` 创建带版本号的 EPUB 发布产物。可发布产物是 `output/release/book_vX.X.X.epub` 及 `release_notes.md`、`release_state.json`、`release_index.md`；只有 `output/book.epub` 不能标记 `DONE`。
+
+## Expert Translation Quality / 专家级译文质量
+
+Translation, chapter controls, independent review, random spot-checks, final artifact review, private-use artifact review, and reader-feedback fixes must use `skills/expert-translation-quality/SKILL.md` when expert-level prose, context-dependent word choice, or polysemy back-checking matters. Recurring concrete defects still belong in `skills/translation-quality-defect-families/SKILL.md`.
+
+翻译、章节 control、独立审校、随机抽检、最终产物审阅、private-use 产物审阅和读者反馈修复中，只要涉及专家级译文、上下文依赖选义或多义词回看，必须使用 `skills/expert-translation-quality/SKILL.md`。具体复发坏例仍沉淀到 `skills/translation-quality-defect-families/SKILL.md`。

@@ -31,6 +31,10 @@ AI 必须派生两个评审 Agent：
 - `reviews/random_spotcheck/agent_b_samples.md`
 - `reviews/random_spotcheck/round_XXX/`
 
+## 专家级与多义词抽检 / Expert Quality and Polysemy Review
+
+独立评审必须按 `skills/expert-translation-quality/SKILL.md` 检查样本是否达到专家级出版质量，并确认多义词、习语、语法关系、术语定义或后文线索没有推翻当前译法。发现上下文选义错误时，归入译文质量问题族，不能用“整体可读”给 PASS。
+
 ## 输出 / Output
 
 - `reviews/agent_a/review.md`

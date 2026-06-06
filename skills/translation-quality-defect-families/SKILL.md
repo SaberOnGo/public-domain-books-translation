@@ -360,8 +360,25 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   修复方式：区分 `locked`、`preferred` 或可随上下文变化的术语；锁定术语必须稳定，允许变体必须记录。
 - Concept-triad guard: When a craft book defines a recurring triad, lock the whole set rather than polishing each occurrence independently. For `the said / the unsaid / the unsayable`, prefer `所言 / 未言 / 不可言说`: `所言` avoids the misleading completed-time feel of `已言/已说`, `未言` names conscious withheld content, and `不可言说` captures subconscious material beyond words. Audit and forbid drift such as `已说之物`, `未说之物`, `不可说之物`, and `说出的/未说出的/无法说出的` when they are used as the defined terms.
   概念三分组防护：技法书定义一组三分概念时，要锁定整组术语，而不是逐处自由润色。`the said / the unsaid / the unsayable` 宜译为“所言 / 未言 / 不可言说”：`所言` 避免 `已言/已说` 的时间完成态误导，`未言` 指有意识但被扣留的内容，`不可言说` 对应意识之下、语言不能及的材料。作为定义术语出现时，应审计并禁用“已说之物”“未说之物”“不可说之物”“说出的/未说出的/无法说出的”等漂移译法。
+- Defined-concept quotation guard: When a recurring translated concept has a book-specific technical meaning, mark the concept name with target-language main quotation marks in body prose, but not in headings where the heading role already marks the term. In zh-Hans, use Chinese double quotation marks such as `“所言”`, `“未言”`, and `“不可言说”`; reserve single quotation marks for nested quotes. Do not let later polishing strip these marks from explanatory body sentences.
+  定义概念引号防护：反复出现的译名若在本书中具有专门定义，正文论述中应用目标语主引号标识概念名；小标题处可不加，因为标题功能本身已经标示术语。简体中文用中文双引号，如“所言”“未言”“不可言说”；单引号只用于引号内嵌套。后续润色不得为了“顺眼”把解释性正文中的这些引号删掉。
 - Recheck: Scan final chapters and generated XHTML for forbidden body renderings and unauthorized source-term parentheses.
   复查：扫描终稿章节和生成 XHTML，查禁用写法和未授权原词括注。
+
+### Context-Disambiguation Drift / 上下文选义漂移
+
+- Symptom: A polysemous or context-dependent source word is translated with a plausible early meaning, but later context shows the wrong sense. The paragraph may read smoothly, so ordinary readability review misses it.
+  症状：多义词或依赖上下文的源语词在前文被译成一个看似合理的义项，但后文证明选义错误。句子可能很顺，所以普通顺读审校容易漏掉。
+- Risk: Readers receive a false fact, wrong conceptual category, wrong emotional relation, or unstable term family while the prose still looks polished. This is especially dangerous in literary symbolism, historical titles, legal or institutional words, craft-analysis terms, scientific terms, and dialogue idioms.
+  风险：读者会得到错误事实、错误概念类别、错误情感关系或不稳定术语族，而译文表面仍像成稿。文学象征、历史称谓、法律/制度词、写作技法术语、科学术语和台词习语尤其高危。
+- Find by: During translation and chapter control, keep an internal watchlist of source words whose sense depends on later clauses, later paragraphs, speaker identity, plot outcome, or technical definitions. During review, revisit earlier watchlist items after downstream context has been translated. Reader feedback that says "this word choice feels wrong later" should trigger this family immediately.
+  发现方式：翻译和章节 control 中，对依赖后文从句、后文段落、说话人身份、情节结果或术语定义才能判义的源语词建立内部观察清单。审校时，在后文已译出后回到前文观察项复查。读者反馈“后文看起来这个词选错了”时，立即归入本问题族。
+- Fix by: Use `skills/expert-translation-quality/SKILL.md`. If the sense is unresolved, choose a target phrasing that preserves the source ambiguity instead of forcing a guessed sense. Once later context resolves it, revise the earlier occurrence. If the wrong choice may recur, audit same source trigger, same target residue, glossary rows, and nearby source-target pairs.
+  修复方式：使用 `skills/expert-translation-quality/SKILL.md`。义项未决时，先用不错误收窄的目标语表达保留原文暧昧，不要强行猜义。后文判清后，回到前文修订。若可能复现，审计同一源语触发式、同一目标语残留、术语表行和邻近源文-译文对。
+- Low-token audit: Start with the human or sample-cited source phrase, then search paired source and target text. Prefer exact source triggers and confirmed target residues; avoid asking an agent to reread whole chapters before a candidate pass.
+  低 token 审计：从人工反馈或样本点名的源语短语开始，再搜索成对源文和译文。优先使用精确源语触发式和已确认目标语残留；不要在候选收集前让 agent 重读整章。
+- Recheck: The chapter control or closure check must record `polysemy_context_review: "PASS"` and `polysemy_unresolved_count: 0`. If a deliberate source ambiguity remains, record why the target wording preserves rather than resolves it.
+  复查：章节 control 或闭环检查必须记录 `polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`。若原文故意保留暧昧，必须记录目标语为何是在保留暧昧，而不是未判清。
 
 ### Technique-Term and Idiom Interface / 技法术语与成语接口
 

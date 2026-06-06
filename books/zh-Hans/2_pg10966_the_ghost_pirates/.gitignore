@@ -8,3 +8,5 @@ output/*
 !output/release/
 !output/release/**
 output/release/*_private_*.epub
+output/release/*.epub
+!output/release/幽灵海盗-2.epub

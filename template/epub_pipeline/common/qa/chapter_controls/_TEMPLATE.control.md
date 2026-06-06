@@ -11,6 +11,9 @@ score:
 - omissions_mistranslations_additions / 漏译误译擅自增译：
 - target_language_readability / 目标语可读性：
 - target_language_polish_naturalness / 目标语成稿润色与自然流畅度：
+- expert_translation_quality / 专家级译文质量：
+- polysemy_translation_stage_handling / 翻译阶段多义词主动处理：
+- polysemy_context_backcheck / 多义词上下文回看：
 - plain_language_without_flattening / 通俗顺读但不损害专业度：
 - terminology_and_source_term_display / 术语和原词呈现：
 - notes_or_endnotes / 注释或章末注：
@@ -36,6 +39,14 @@ score:
 ### round 1
 
 - scope: "FULL_CHAPTER"
+- expert_translation_skill_used:
+- expert_translation_skill_path: "skills/expert-translation-quality/SKILL.md"
+- expert_level_review_status:
+- polysemy_translation_stage_review:
+- polysemy_context_review:
+- polysemy_watchlist_count:
+- polysemy_revisited_count:
+- polysemy_unresolved_count:
 - issues_found:
 - fixes_applied:
 - checked_after_fix:
@@ -47,7 +58,16 @@ score:
 
 latest_round_status:
 allow_next_chapter:
+expert_translation_skill_used:
+expert_level_review_status:
+polysemy_translation_stage_review:
+polysemy_context_review:
+polysemy_unresolved_count:
 
 > Mandatory rule: every round must inspect the whole current chapter. If a round finds any issue and applies any fix, that round must be `FIXED_RECHECK_REQUIRED`, not `PASS`; append a new full-chapter recheck. Only a latest round with `scope: "FULL_CHAPTER"`, `issues_found: 0`, `fixes_applied: 0`, `unresolved_blocking_issues: 0`, `latest_round_status: "PASS"`, and `allow_next_chapter: true` may unlock the next chapter.
 >
 > 强制规则：每一轮都必须检查当前整章。若某轮发现任何问题并应用任何修复，该轮只能记为 `FIXED_RECHECK_REQUIRED`，不得记为 `PASS`；必须追加新的整章复查。只有最近一轮同时满足 `scope: "FULL_CHAPTER"`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: "PASS"`、`allow_next_chapter: true`，才允许进入下一章。
+>
+> Expert/polysemy rule: a PASS round must also record `expert_translation_skill_used: true`, `expert_level_review_status: "PASS"`, `polysemy_translation_stage_review: "PASS"`, `polysemy_context_review: "PASS"`, and `polysemy_unresolved_count: 0`. If locally decidable polysemy was deferred to review, or downstream context changes an earlier word choice, the fix round is `FIXED_RECHECK_REQUIRED`; only the next full-chapter recheck can PASS.
+>
+> 专家级/多义词规则：PASS 轮还必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_translation_stage_review: "PASS"`、`polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`。如果局部上下文已能判清的多义词被推给审校，或后文语境改变了前文选义，修复轮只能记为 `FIXED_RECHECK_REQUIRED`；只有下一轮整章复查可 PASS。
