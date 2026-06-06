@@ -67,6 +67,7 @@
 - 原文意图摘要。
 - 语气判断。
 - 难点说明。
+- 多义词、习语、称谓、术语和上下文依赖语法的主动判义：局部上下文、术语表、说话人身份、论证功能或可用后文线索已经能判清时，必须在翻译阶段处理；证据不足时才保留为后文回看项。
 - 意象词/场景词判断：列出本段不能平译成解释词的关键词。
 - 译文。
 
@@ -99,6 +100,8 @@
 正文只保留 D，不保留候选过程。
 
 每章写入 `chapters/translated/{chapter}.md` 后，必须立即只针对该章进入“每章译后，全量检查并修复节点”，不得先翻译下一章来把该章问题留到全书后期。
+
+分章翻译、译后控制和后续审校涉及专家级成稿质量、上下文依赖选义或多义词时，必须使用 `skills/expert-translation-quality/SKILL.md`。翻译阶段是第一责任节点；译后控制负责审计该责任是否执行，并在后文译出后回看真正需要后文判义的前文位置。
 
 如果翻译或复检中发现可复现的译文质量问题族，立即使用 `skills/translation-quality-defect-families/SKILL.md`。问题族可以来自忠实度、中文顺读、教学节奏、术语稳定、案例译名、标题/小标题、注释、图表文字接口、英文句法残留、过硬过直句、过度解释或加戏，也可以来自未预先列出的质量缺陷。
 
@@ -159,6 +162,8 @@
 - `fixes_applied`：修复摘要和文件位置。
 - `remaining_risk`：剩余风险或明确无剩余阻塞。
 - `allow_next_chapter`：`true` 只可在最近一轮同时记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS` 时写入；若项目/profile 有更严格规则，按更严格规则。任何评分、主观印象或“已经修过”都不能抵消 P0/P1/P2、读者难以理解、事实/术语/文字接口错误、模板硬门禁失败、中文润色不足，或为了通俗而损害专业质量。
+
+涉及专家级译文或多义词时，最近 PASS 轮还必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_translation_stage_review: "PASS"`、`polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`。若发现局部上下文已能判清但翻译阶段推给审校，或后文推翻前文选义，该轮不能 PASS。
 
 图表、表格、公式和图片在本节点只做当前章文字接口检查与资产分流。图题、表题、正文引用、alt text、变量、单位和读者说明影响本章理解时，必须在本节点修复；重绘、OCR、裁剪、数值复核、公式排版、资源路径或 manifest 问题应写入 `qa/assets/{chapter}.asset_followup.md` 或 `qa/technical/{chapter}.diagram_table_audit.md`。已路由问题阻止 `chapters/final/`、构建和 release，但不让当前章译后文字门禁无限循环。
 

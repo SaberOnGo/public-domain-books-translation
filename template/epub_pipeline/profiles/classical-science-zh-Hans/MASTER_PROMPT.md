@@ -52,6 +52,7 @@ REFERENCE_TRANSLATION_URLS = {REFERENCE_TRANSLATION_URLS}
 - 公开项目未确认原书语言公版或授权来源，不得翻译；私人自用项目没有本地书源文件和 `metadata/private_use_declaration.md`，不得翻译。
 - 未记录参考译本版权状态和使用边界，不得使用参考译本。
 - 未完成术语锁定，不得批量分章翻译。
+- 分章翻译必须使用 `skills/expert-translation-quality/SKILL.md` 的专家级译文流程。翻译阶段必须主动处理局部上下文、术语系统、证明链、说话人/论证功能已能判清的多义词或歧义结构；只有源文证据确实不足时，才可保留为后文回看项。不得把本应在翻译阶段判清的选义推给译后审校。
 - 未完成图表/表格清单，不得进入全书生产。
 - 未完成参考译本差异记录、术语变更记录和必要数值校验记录，不得进入最终输出。
 - 涉及定义、命题、证明、公式、单位、表格或技术断言时，必须完成 proof dependency、notation registry、table validation、claim traceability 和 domain authority 记录。

@@ -36,7 +36,7 @@
 4. 生成 `qa/pretranslation/pretranslation_report.md`，且结论为 PASS。
 5. 生成 `qa/samples/sample_test_report.md`，且结论为 PASS。
 6. 如使用《情人》等仍在版权期优秀译本，只做私有短样本对照，结论写入 `qa/benchmark/`，不保存长段版权文本。
-7. 分章翻译：翻译 prompt 必须瘦身，只输出译文；自然中文优先，QA 和工程门禁后置。
+7. 分章翻译：翻译 prompt 必须瘦身，只输出译文；自然中文优先，QA 和工程门禁后置。但多义词处理不是后置任务：翻译阶段必须按 `skills/expert-translation-quality/SKILL.md` 主动判义，局部上下文已能判清的不得留给译后审校。
 8. 每章翻译后立即只针对该章执行“每章译后，全量检查并修复节点”，生成 `qa/chapter_controls/{chapter}.control.md`。该节点必须覆盖该章对 metadata/nav/目录的影响、正文、注释、图表/公式/表格/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目，也不得扩大成全书章节检查。
 9. 每章生成 `qa/imagery/{chapter}.imagery.md` 和 `qa/gates/{chapter}.gate.md`。`qa/chapter_controls/{chapter}.control.md` 和 `qa/gates/{chapter}.gate.md` 均 PASS 后，才可写入 `chapters/final/`。
 

@@ -15,11 +15,11 @@
 
 逐段核查，但不要机械逐句润色。你的任务是发现不能出版的问题，并给出可执行修改意见。
 
-在开始判断前，必须先读取 `qa/chapter_controls/{chapter_file}.control.md`。如果该文件不存在、最近一轮不是 PASS/允许继续，或未记录全章检查范围、问题、修复和复查，本章直接 FAIL，不得进入 `chapters/final/`。最近 PASS 轮还必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_context_review: "PASS"`、`polysemy_unresolved_count: 0`；缺任一项即 FAIL。
+在开始判断前，必须先读取 `qa/chapter_controls/{chapter_file}.control.md`。如果该文件不存在、最近一轮不是 PASS/允许继续，或未记录全章检查范围、问题、修复和复查，本章直接 FAIL，不得进入 `chapters/final/`。最近 PASS 轮还必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_translation_stage_review: "PASS"`、`polysemy_context_review: "PASS"`、`polysemy_unresolved_count: 0`；缺任一项即 FAIL。
 
 门禁判断必须先看中文是否像一本自然的中文书，再看术语和工程项。准确但不像中文书、需要读者按英文句法倒推才能理解的译文，不得 PASS。
 
-若发现可能复现的译文质量问题族，必须按 `skills/translation-quality-defect-families/SKILL.md` 处理；若涉及专家级成稿质量、多义词或后文线索推翻前文译法，还必须按 `skills/expert-translation-quality/SKILL.md` 回看。问题族包括但不限于忠实度偏移、中文不顺、术语漂移、上下文选义漂移、标题/小标题超载、注释误导、图表文字接口错误、英文句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释和加戏。先在本章门禁报告中记录如何发现和如何归纳；若可复用，书内闭环后回填到该 skill。
+若发现可能复现的译文质量问题族，必须按 `skills/translation-quality-defect-families/SKILL.md` 处理；若涉及专家级成稿质量、翻译阶段多义词处理、多义词回看或后文线索推翻前文译法，还必须按 `skills/expert-translation-quality/SKILL.md` 回看。问题族包括但不限于忠实度偏移、中文不顺、术语漂移、上下文选义漂移、标题/小标题超载、注释误导、图表文字接口错误、英文句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释和加戏。先在本章门禁报告中记录如何发现和如何归纳；若可复用，书内闭环后回填到该 skill。
 
 ## 一票否决
 

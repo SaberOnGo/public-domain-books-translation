@@ -41,12 +41,13 @@ allow_next_chapter: true
 
 ## 专家级与多义词回看 / Expert Quality and Polysemy Back-Check
 
-本节点必须使用 `skills/expert-translation-quality/SKILL.md`。后文已译出后，必须回看当前章前文的多义词、习语、称谓、术语和依赖上下文判义的语法结构。`qa/chapter_controls/{chapter}.control.md` 的最近 PASS 轮必须记录：
+本节点必须使用 `skills/expert-translation-quality/SKILL.md`。翻译阶段是多义词处理的第一责任节点；08a 负责审计该责任是否已经执行。后文已译出后，必须回看当前章前文的多义词、习语、称谓、术语和依赖上下文判义的语法结构。若发现译文把局部上下文已能判清的选义推给后续审校，该轮不能 PASS。`qa/chapter_controls/{chapter}.control.md` 的最近 PASS 轮必须记录：
 
 ```text
 expert_translation_skill_used: true
 expert_translation_skill_path: "skills/expert-translation-quality/SKILL.md"
 expert_level_review_status: "PASS"
+polysemy_translation_stage_review: "PASS"
 polysemy_context_review: "PASS"
 polysemy_watchlist_count: {number_checked}
 polysemy_revisited_count: {number_revisited}

@@ -36,4 +36,4 @@
 
 ## 专家级与多义词放行条件 / Expert and Polysemy Release Condition
 
-每章 control 最近 PASS 轮除通用字段外，还必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_context_review: "PASS"`、`polysemy_unresolved_count: 0`。发现后文推翻前文选义时，必须回到前文修订并追加新一轮整章复查；修复轮不得直接 PASS。
+每章 control 最近 PASS 轮除通用字段外，还必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_translation_stage_review: "PASS"`、`polysemy_context_review: "PASS"`、`polysemy_unresolved_count: 0`。发现局部上下文已能判清但翻译阶段推给审校，或后文推翻前文选义时，必须回到前文修订并追加新一轮整章复查；修复轮不得直接 PASS。

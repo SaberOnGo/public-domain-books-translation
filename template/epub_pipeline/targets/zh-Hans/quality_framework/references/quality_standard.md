@@ -172,7 +172,7 @@
 
 随机抽检和章节复检里的 `80` 分只表示硬下限：低于 80 必须失败；超过 80 也不自动代表优秀。
 
-专家级译文必须使用 `skills/expert-translation-quality/SKILL.md` 进行目标语独立阅读、原文忠实复核、多义词上下文回看和句法重建。章节 control 必须记录 `expert_level_review_status: "PASS"`、`polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`，否则不能作为优秀出版证据。
+专家级译文必须使用 `skills/expert-translation-quality/SKILL.md` 进行目标语独立阅读、原文忠实复核、翻译阶段多义词主动判义、多义词上下文回看和句法重建。章节 control 必须记录 `expert_level_review_status: "PASS"`、`polysemy_translation_stage_review: "PASS"`、`polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`，否则不能作为优秀出版证据。
 
 面向最终 release 或 private artifact 的简体中文译文，默认采用优秀出版线：
 

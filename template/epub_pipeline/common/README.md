@@ -141,9 +141,9 @@ This gate must check the whole chapter and its reader-facing production context,
 
 该门禁必须检查当前章整章及其读者可见文字上下文，包括但不限于忠实度、目标语顺读、适用时的教学/解释节奏、术语、案例/专名/题名一致性、标题/小标题、注释、图表/公式/表格/图片的文字接口、源语句法残留、过硬过直句、过度解释、擅自加戏、本章对 metadata/nav/标题/目录的影响、正文、样式、读者可见文字、可读性、通俗化和润色。不得只检查用户点名项目，也不得把它扩大成全书门禁。
 
-For expert-level translation quality and context-dependent word choice, the chapter gate must use `skills/expert-translation-quality/SKILL.md`. In particular, polysemous source words or grammar whose meaning is clarified by later context must be revisited after downstream translation. The chapter control must record `expert_translation_skill_used: true`, `expert_level_review_status: "PASS"`, `polysemy_context_review: "PASS"`, and `polysemy_unresolved_count: 0`.
+For expert-level translation quality and context-dependent word choice, the chapter gate must use `skills/expert-translation-quality/SKILL.md`. The translation stage must actively resolve locally decidable polysemy before output, and polysemous source words or grammar clarified by later context must still be revisited after downstream translation. The chapter control must record `expert_translation_skill_used: true`, `expert_level_review_status: "PASS"`, `polysemy_translation_stage_review: "PASS"`, `polysemy_context_review: "PASS"`, and `polysemy_unresolved_count: 0`.
 
-专家级译文质量与上下文依赖选义必须使用 `skills/expert-translation-quality/SKILL.md`。尤其是多义词或需后文判义的语法结构，必须在后文译出后回看复查。章节 control 必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`。
+专家级译文质量与上下文依赖选义必须使用 `skills/expert-translation-quality/SKILL.md`。翻译阶段必须先主动处理局部上下文已能判清的多义词；后文才判清的多义词或语法结构，必须在后文译出后回看复查。章节 control 必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_translation_stage_review: "PASS"`、`polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`。
 
 Terminology must not clutter the body with source terms by default. Use the target-language term in the body, and move source terms, definitions, and translation rationale to chapter notes, endnotes, or the glossary with a clear note marker. Body parenthetical source terms are allowed only when omitting the source term would confuse readers, the source term itself is being discussed, or competing translations must be disclosed immediately; record the reason.
 

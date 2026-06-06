@@ -36,9 +36,9 @@ Before creating a PASS private artifact, run `npm run review:random-validate:pas
 
 ## Expert Translation Closure / 专家级译文闭环
 
-Before creating a PASS private artifact, translation QA must use `skills/expert-translation-quality/SKILL.md` when expert-level prose, context-dependent word choice, or polysemy back-checking matters. A valid current-run random review PASS must show `polysemy_context_issue_count: 0`; chapter controls must record `expert_translation_skill_used: true`, `expert_level_review_status: "PASS"`, `polysemy_context_review: "PASS"`, and `polysemy_unresolved_count: 0`.
+Before creating a PASS private artifact, translation QA must use `skills/expert-translation-quality/SKILL.md` when expert-level prose, context-dependent word choice, translation-stage polysemy handling, or downstream polysemy back-checking matters. A valid current-run random review PASS must show `polysemy_context_issue_count: 0`; chapter controls must record `expert_translation_skill_used: true`, `expert_level_review_status: "PASS"`, `polysemy_translation_stage_review: "PASS"`, `polysemy_context_review: "PASS"`, and `polysemy_unresolved_count: 0`.
 
-创建 `PASS` 私人产物前，只要涉及专家级译文、上下文依赖选义或多义词回看，译文 QA 必须使用 `skills/expert-translation-quality/SKILL.md`。有效的当前运行随机抽检 PASS 必须显示 `polysemy_context_issue_count: 0`；章节 control 必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`。
+创建 `PASS` 私人产物前，只要涉及专家级译文、上下文依赖选义、翻译阶段多义词处理或多义词回看，译文 QA 必须使用 `skills/expert-translation-quality/SKILL.md`。有效的当前运行随机抽检 PASS 必须显示 `polysemy_context_issue_count: 0`；章节 control 必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_translation_stage_review: "PASS"`、`polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`。
 
 ## Required Note Wording / 必备说明
 
