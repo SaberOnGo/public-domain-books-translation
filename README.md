@@ -11,7 +11,7 @@
 
 LifeBook Shufang is a multilingual workflow for turning public-domain books into reviewed, readable EPUB editions. It is not a one-click raw AI translation repository. The workflow keeps source evidence, rights checks, translation drafts, review records, EPUB validation, random spot checks, and versioned release artifacts.
 
-You can help without being a programmer: propose a book, verify public-domain sources, read a chapter, compare source and translation, report awkward passages, test EPUB files, or improve templates and scripts.
+Contributors can help without being programmers: propose a book, verify public-domain sources, read a chapter, compare source and translation, report awkward passages, test EPUB files, or improve templates and scripts.
 
 ## Quick Start
 
@@ -39,7 +39,7 @@ If LifeBook Digest is not explicitly requested, decide automatically: generate i
 When Digest should be generated, create `digest.config.json` in the book project root with `enabled=true` and `merge_into_epub=true`, then run from the repository root: `python -m digest.lifebook_digest --book-root books/{target}/{number}_{target_language_title}_{target_language_author}`. The output remains a standard EPUB.
 ```
 
-If a first EPUB already exists and you want higher quality, do not ask the AI to "just polish it." Use the two post-EPUB prompts in the how-to-use guide: **Prompt B: Full-chapter recheck and repair** when chapter quality closure is uncertain, then **Prompt C: Stratified random spot-check and defect-family closure** before release.
+If a first EPUB already exists and higher quality is needed, do not ask the AI to "just polish it." Use the two post-EPUB prompts in the how-to-use guide: **Prompt B: Full-chapter recheck and repair** when chapter quality closure is uncertain, then **Prompt C: Stratified random spot-check and defect-family closure** before release.
 
 For non-public-domain books, use private-use mode only. The user must provide a local ebook file and explicitly declare personal study only, no redistribution, and no commercial use. The AI should create the project under `books/private/{target}/{number}_{target_language_title}_{target_language_author}/`; the script also overlays `template/epub_pipeline/modes/private_use/` so private cover, frontmatter, and artifact rules cannot be confused with public publication rules. `books/private/` is ignored by Git, and its source text, translations, QA records, EPUB files, and private artifacts must not be published to GitHub.
 
@@ -60,7 +60,7 @@ The launcher does not store API keys and does not include OpenCode binaries in t
 
 - `.\template\epub_pipeline`: check which source-language and source-to-target templates currently exist. Language-pair folders such as `en-zh-Hans`, `ja-zh-Hans`, and `grc-zh-Hans` live here.
 - `.\tools\lifebook-launcher`: LifeBook Launcher client install and launch folder. Users need this path to use the LifeBook project and install OpenCode.
-- `.\doc\public\user_prompt`: public starter prompts. Read or adjust these if you want to understand or manually refine the prompt given to an AI client.
+- `.\doc\public\user_prompt`: public starter prompts. Read or adjust these when the prompt given to an AI client needs review or manual refinement.
 - `.\books\zh-Hans`: the most important output area for Simplified Chinese books. After translation succeeds, open the matching book folder and check `output\release\`; only release artifacts count as publishable results.
 - `.\books\private`: local private-use book projects. This is for user-provided local sources used for personal non-public-domain translation. It is ignored by Git and must not be published to GitHub.
 

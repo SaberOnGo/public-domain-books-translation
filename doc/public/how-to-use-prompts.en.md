@@ -1,28 +1,28 @@
 # AI Client Guide: Using This Repository's Prompts to Make a Book
 
-This guide is for people who want to use an AI client to make a translated public-domain book. You do not need to be a programmer. You only need to open the project, paste a short request, and check the book files the AI creates.
+This guide is for people who want to use an AI client to make a translated public-domain book. No programming experience is required. The usual workflow is to open the project, paste a short request, and check the book files the AI creates.
 
 ## Three Things To Understand First
 
 1. **A normal user only needs three items.**
-   Tell the AI which book you want translated, the target language, and the rule for choosing the correct translation prompt automatically. The full wording for that rule is in the [Easiest Starter Prompt](#easiest-starter-prompt). The AI should handle the reliable source, source language, template, project folder, release, and validation commands.
+   Tell the AI which book should be translated, the target language, and the rule for choosing the correct translation prompt automatically. The full wording for that rule is in the [Easiest Starter Prompt](#easiest-starter-prompt). The AI should handle the reliable source, source language, template, project folder, release, and validation commands.
 
 2. **Let the AI read the rules.**
-   You do not need to understand the repository rules. Ask the AI to choose the correct public prompt automatically.
+   Readers do not need to understand the repository rules. Ask the AI to choose the correct public prompt automatically.
 
 3. **Only treat the release or private artifact result as finished.**
    The AI will handle source checks, rights checks, translation, review, EPUB build, spot-check, and release. For public-domain or licensed projects, check `output/release/`; for personal-use projects, check `output/private_artifacts/`.
 
 ## Easiest Starter Prompt
 
-Open your AI client and open this project, or let LifeBook Launcher open it for you.
+Open the AI client and open this project, or let LifeBook Launcher open it.
 
-Paste this into your AI client, replacing the `{...}` placeholders:
+Paste this into the AI client, replacing the `{...}` placeholders:
 
 ### Public-Domain Book Translation Prompt
 
 ```text
-Book I want translated: {title, author optional; include a reliable source link if you already have one}
+Book I want translated: {title, author optional; include a reliable source link if one is already available}
 Target language: {for example Simplified Chinese}
 
 Automatically choose the correct translation prompt:
@@ -36,7 +36,7 @@ After the first EPUB, run stratified random spot-checking and defect-family clos
 
 ## Personal-Use Book Translation Prompt
 
-If you already have a local source file and only want a personal study translation, with no redistribution and no commercial use, use this prompt:
+If a local source file is already available and the translation is only for personal study, with no redistribution and no commercial use, use this prompt:
 
 ```text
 Book I want translated: {title, local folder/path: XXX}
@@ -57,10 +57,10 @@ Personal-use projects must be created under `books/private/{target}/{number}_{ta
 
 After the first EPUB has been generated, do not just tell the AI "polish this book." Choose one of these two prompts:
 
-- **Prompt B: Full-chapter recheck and repair.** Use this when the project is old, lacks zero-issue `qa/chapter_controls/*.control.md` records, or you are not confident that each chapter was fully checked during translation.
+- **Prompt B: Full-chapter recheck and repair.** Use this when the project is old, lacks zero-issue `qa/chapter_controls/*.control.md` records, or chapter-level checking is uncertain.
 - **Prompt C: Stratified random spot-check and defect-family closure.** Use this for the mandatory post-EPUB release-confidence gate. It finds systemic blind spots, audits similar cases across the book, fixes them, and reruns new-seed rounds before release/private artifact creation.
 
-Recommended order: for old or uncertain projects, run **Prompt B** first, then **Prompt C**. If every chapter already has reliable zero-issue control records, you may run **Prompt C** directly.
+Recommended order: for old or uncertain projects, run **Prompt B** first, then **Prompt C**. If every chapter already has reliable zero-issue control records, **Prompt C** may run directly.
 
 ### Prompt B: Full-Chapter Recheck And Repair
 
@@ -105,7 +105,7 @@ After passing, clean or rebuild staging, regenerate the EPUB, and run publicatio
 
 - `.\template\epub_pipeline`: check which source-language and source-to-target templates currently exist. The AI uses this to decide whether to run the existing-template prompt or the new-template prompt.
 - `.\tools\lifebook-launcher`: LifeBook Launcher client install and launch folder. Users need this path to use the LifeBook project and install OpenCode.
-- `.\doc\public\user_prompt`: the public prompts live here. Read or edit these if you want to understand or manually adjust the prompt.
+- `.\doc\public\user_prompt`: the public prompts live here. Read or edit these when the prompt needs review or manual adjustment.
 - `.\books\zh-Hans`: the most important output area for Simplified Chinese books. After translation succeeds, open the matching book folder and check `output\release\`; only release artifacts count as publishable results.
 - `.\books\private`: private-use book project folder. Non-public-domain private translations should keep source text, translations, QA, EPUB output, and `output\private_artifacts\` private artifacts here only; this folder is ignored by Git and is not published to GitHub.
 
@@ -117,7 +117,7 @@ After passing, clean or rebuild staging, regenerate the EPUB, and run publicatio
 - `doc/public/user_prompt/book_translation_private_new_template.md`: use for a personal-use local source when the matching source-language template does not exist yet.
 - `doc/public/user_prompt/how_to_use_book_translation_prompts.md`: a shorter beginner-facing guide that only explains how to fill in the three items.
 
-If you are unsure which one applies, ask the AI to check whether the template exists first. Normal users do not need to understand `source-target`, slug, profile, release version, or npm commands.
+If it is unclear which one applies, ask the AI to check whether the template exists first. Normal users do not need to understand `source-target`, slug, profile, release version, or npm commands.
 
 ## Which Client Should I Use?
 
@@ -130,7 +130,7 @@ If you are unsure which one applies, ask the AI to check whether the template ex
 
 ## LifeBook Launcher
 
-If you do not want to handle project and client setup manually, use LifeBook Launcher. Launcher can download and open the OpenCode client. OpenCode supports most mainstream AI models, including DeepSeek and Doubao. Before use, configure the model provider API key inside OpenCode.
+For people who prefer not to handle project and client setup manually, use LifeBook Launcher. Launcher can download and open the OpenCode client. OpenCode supports most mainstream AI models, including DeepSeek and Doubao. Before use, configure the model provider API key inside OpenCode.
 
 - Open **LifeBook Launcher**.
 - Select or open this project.

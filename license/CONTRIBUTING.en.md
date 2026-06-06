@@ -9,7 +9,7 @@
   </tr>
 </table>
 
-Thank you for helping improve public-domain book translations. By submitting a pull request, issue suggestion, translation, edit, review, glossary entry, metadata change, cover/layout improvement, or any other contribution to this project, you agree to the rules below.
+Thank you for helping improve public-domain book translations. By submitting a pull request, issue suggestion, translation, edit, review, glossary entry, metadata change, cover/layout improvement, or any other contribution to this project, contributors agree to the rules below.
 
 ## Contributions
 
@@ -17,11 +17,11 @@ Contributions may include translations, edits, proofreading, glossary entries, s
 
 ## Public Release
 
-Your non-code contributions may be included in this project and released to the public under `CC BY-NC-SA 4.0`, as described in [LICENSE.en.md](LICENSE.en.md).
+Submitted non-code contributions may be included in this project and released to the public under `CC BY-NC-SA 4.0`, as described in [LICENSE.en.md](LICENSE.en.md).
 
 ## LifeBook Shufang Use
 
-By contributing, you agree that your contribution may be used by LifeBook Shufang in LifeBook products and services.
+By contributing, contributors agree that submitted contributions may be used by LifeBook Shufang in LifeBook products and services.
 
 LifeBook Shufang is responsible for project organization, editing, publication, quality control, license management, and contributor return arrangements.
 
@@ -35,8 +35,8 @@ Third-party commercial use of translations, EPUBs, edited content, or other non-
 
 ## Code Contributions
 
-By contributing code, you agree that the code may be released under the MIT License in [LICENSE.en.md](LICENSE.en.md), unless a file or directory clearly states another license.
+By contributing code, contributors agree that the code may be released under the MIT License in [LICENSE.en.md](LICENSE.en.md), unless a file or directory clearly states another license.
 
 ## Do Not Submit
 
-Please do not submit modern copyrighted translations, text copied from pirate sites or unclear EPUB downloads, materials you do not have the right to submit, or private credentials and paid resources.
+Please do not submit modern copyrighted translations, text copied from pirate sites or unclear EPUB downloads, materials the contributor does not have the right to submit, or private credentials and paid resources.

@@ -1,28 +1,28 @@
 # AI 客户端使用说明：怎样让 AI 按本仓库模板做书
 
-这份说明写给希望用 AI 客户端协作制书的人。你不需要会写代码；只需要打开项目、复制一段文字、检查 AI 做出来的书籍文件。
+这份说明写给希望用 AI 客户端协作制书的人。您不需要会写代码；只需要打开项目、复制一段文字、检查 AI 做出来的书籍文件。
 
-## 你要先明白的 3 件事
+## 您要先明白的 3 件事
 
 1. **普通用户只需要给三项内容。**
-   你只需要告诉 AI“我要翻译的书”“目标语言”和“自动选择翻译 prompt 的规则”。“自动选择翻译 prompt 的规则”的完整写法见下面的[最简单的启动方式](#最简单的启动方式)。可靠来源、源语言、模板、目录名、release 和检查命令都由 AI 自动处理。
+   您只需要告诉 AI“我要翻译的书”“目标语言”和“自动选择翻译 prompt 的规则”。“自动选择翻译 prompt 的规则”的完整写法见下面的[最简单的启动方式](#最简单的启动方式)。可靠来源、源语言、模板、目录名、release 和检查命令都由 AI 自动处理。
 
 2. **让 AI 自己读规则。**
-   你不需要理解仓库规则，只要要求 AI 自动选择正确的公共 prompt。
+   您不需要理解仓库规则，只要要求 AI 自动选择正确的公共 prompt。
 
 3. **最后只看 release 或私人产物结果。**
    AI 会自动完成来源核查、版权核查、翻译、审校、EPUB 构建、抽检和发布。公版或授权项目最后检查 `output/release/`；个人自用项目最后检查 `output/private_artifacts/`。
 
 ## 最简单的启动方式
 
-打开你正在使用的 AI 客户端，进入这个项目或让 Launcher 打开项目。
+打开您正在使用的 AI 客户端，进入这个项目或让 Launcher 打开项目。
 
-然后复制下面这段，把 `{...}` 换成你的书名和目标语言：
+然后复制下面这段，把 `{...}` 换成您的书名和目标语言：
 
 ### 公版书翻译 prompt
 
 ```text
-我要翻译的书：{书名、作者（可选）；如果你已经有可靠来源链接，也可以贴上}
+我要翻译的书：{书名、作者（可选）；如果您已经有可靠来源链接，也可以贴上}
 目标语言：{例如 简体中文}
 
 请自动选择正确的翻译 prompt：
@@ -38,7 +38,7 @@
 
 ## 个人自用书翻译 prompt
 
-如果这是你自己已有的本地书源，只供个人学习自用，不传播、不商业使用，可以使用下面这段：
+如果这是您自己已有的本地书源，只供个人学习自用，不传播、不商业使用，可以使用下面这段：
 
 ```text
 我要翻译的书：{书名、本地目录: XXX }
@@ -64,7 +64,7 @@
 - **Prompt B：章节全量复检与修复。** 用于担心之前翻译阶段没把每章质量做到位，或旧项目缺少 `qa/chapter_controls/*.control.md` 零问题 PASS 记录时。它会逐章做源文对照全量复检并修到零问题。
 - **Prompt C：分层随机抽检与问题族追杀。** 用于第一版 EPUB 后的发布前置信度检查。它负责抽样发现系统性盲点、问题族全书审计、新 seed 复抽和 release/private artifact。
 
-推荐顺序：如果书是旧流程或你不确定每章是否做过零问题复检，先跑 **Prompt B**，再跑 **Prompt C**。如果本书每章已有可靠的零问题 control 记录，可以直接跑 **Prompt C**。
+推荐顺序：如果书是旧流程或您不确定每章是否做过零问题复检，先跑 **Prompt B**，再跑 **Prompt C**。如果本书每章已有可靠的零问题 control 记录，可以直接跑 **Prompt C**。
 
 ### Prompt B：章节全量复检与修复
 
@@ -84,7 +84,7 @@
 
 ### Prompt C：分层随机抽检与问题族追杀
 
-`N` 是“连续无问题抽检轮数”：`1` 最省 token，是模板最低退出强度；`2` 更稳，推荐给普通书；`3` 更严格，适合术语密集、科学/数学/图表多或你想冲更高质量的书。
+`N` 是“连续无问题抽检轮数”：`1` 最省 token，是模板最低退出强度；`2` 更稳，推荐给普通书；`3` 更严格，适合术语密集、科学/数学/图表多或您想冲更高质量的书。
 
 ```text
 本书项目：{书籍项目路径，例如 books/{target}/{number}_{目标语言书名}_{目标语言作者名}}
@@ -105,7 +105,7 @@
 通过后清理或重建 staging，重新生成 EPUB，运行 publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck，以及 release 或 private artifact 脚本。公版或授权项目的最终可发布 EPUB 必须输出到该书 output/release/，release_state.json.latest_status 必须为 PASS。个人自用项目的最终私人产物必须输出到 output/private_artifacts/，private_artifact_state.json.latest_status 必须为 PASS。报告 release EPUB 或 private artifact 路径、抽检轮次、修复摘要、验证命令结果和剩余风险。
 ```
 
-## 你需要知道的关键位置
+## 您需要知道的关键位置
 
 - `.\template\epub_pipeline`：查看当前有哪些源语言/语言方向模板。AI 会据此判断该用已有模板 prompt，还是新建语言模板 prompt。
 - `.\tools\lifebook-launcher`：LifeBook Launcher 客户端安装启动目录。用户需要知道这个位置，以使用 LifeBook 项目和安装 OpenCode。
@@ -122,7 +122,7 @@
 - `doc/public/user_prompt/book_translation_private_new_template.md`：个人自用、本地书源、还没有对应源语言模板时使用。
 - `doc/public/user_prompt/how_to_use_book_translation_prompts.md`：更短的小白版说明，只解释怎么填写三项内容。
 
-如果你不确定该用哪个，就让 AI 先检查模板是否存在。普通用户不需要理解 `source-target`、slug、profile、release version 或 npm 命令。
+如果您不确定该用哪个，就让 AI 先检查模板是否存在。普通用户不需要理解 `source-target`、slug、profile、release version 或 npm 命令。
 
 ## 选择哪个客户端
 
@@ -135,7 +135,7 @@
 
 ## LifeBook Launcher
 
-如果你不想手动处理项目和客户端，可以使用 LifeBook Launcher。Launcher 可以下载并打开 OpenCode 客户端；OpenCode 支持市面上大多数 AI 模型，例如 DeepSeek、豆包等。使用前需要在 OpenCode 里配置对应模型的 API Key。
+如果您不想手动处理项目和客户端，可以使用 LifeBook Launcher。Launcher 可以下载并打开 OpenCode 客户端；OpenCode 支持市面上大多数 AI 模型，例如 DeepSeek、豆包等。使用前需要在 OpenCode 里配置对应模型的 API Key。
 
 - 打开 **LifeBook Launcher**。
 - 选择或打开本项目。
@@ -161,7 +161,7 @@ Codex App 适合这个仓库的长流程任务，因为它方便查看 AI 修改
 2. 打开本仓库作为 workspace。
 3. 在 agent 输入框粘贴目标 prompt。
 4. 让 agent 先读 `AGENTS.md` 和 `template/epub_pipeline/`。
-5. 开启需要确认的执行模式，避免 agent 在你没看清前执行危险命令。
+5. 开启需要确认的执行模式，避免 agent 在您没看清前执行危险命令。
 6. 最后检查 diff、测试输出和 release 文件。
 
 ## 常见错误

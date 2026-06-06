@@ -1,28 +1,28 @@
 # AI 用戶端使用說明：如何讓 AI 依照本倉庫模板製作書籍
 
-這份說明寫給希望用 AI 用戶端協作製書的人。你不需要會寫程式；只需要打開專案、複製一段文字、檢查 AI 做出的書籍檔案。
+這份說明寫給希望用 AI 用戶端協作製書的人。您不需要會寫程式；只需要打開專案、複製一段文字、檢查 AI 做出的書籍檔案。
 
 ## 先理解 3 件事
 
 1. **普通用戶只需要提供三項內容。**
-   你只需要告訴 AI「我要翻譯的書」「目標語言」和「自動選擇翻譯 prompt 的規則」。「自動選擇翻譯 prompt 的規則」的完整寫法見下面的[最簡單的啟動方式](#最簡單的啟動方式)。可靠來源、源語言、模板、目錄名、release 和檢查命令都由 AI 自動處理。
+   您只需要告訴 AI「我要翻譯的書」「目標語言」和「自動選擇翻譯 prompt 的規則」。「自動選擇翻譯 prompt 的規則」的完整寫法見下面的[最簡單的啟動方式](#最簡單的啟動方式)。可靠來源、源語言、模板、目錄名、release 和檢查命令都由 AI 自動處理。
 
 2. **讓 AI 自己讀規則。**
-   你不需要理解倉庫規則，只要要求 AI 自動選擇正確的公共 prompt。
+   您不需要理解倉庫規則，只要要求 AI 自動選擇正確的公共 prompt。
 
 3. **最後只看 release 或私人產物結果。**
    AI 會自動完成來源核查、版權核查、翻譯、審校、EPUB 建置、抽檢和發布。公版或授權專案最後檢查 `output/release/`；個人自用專案最後檢查 `output/private_artifacts/`。
 
 ## 最簡單的啟動方式
 
-打開你正在使用的 AI 用戶端，進入這個專案或讓 Launcher 打開專案。
+打開您正在使用的 AI 用戶端，進入這個專案或讓 Launcher 打開專案。
 
-然後把下面這段貼給 AI，將 `{...}` 換成你的書名和目標語言：
+然後把下面這段貼給 AI，將 `{...}` 換成您的書名和目標語言：
 
 ### 公版書翻譯 prompt
 
 ```text
-我要翻譯的書：{書名、作者（可選）；如果你已經有可靠來源連結，也可以貼上}
+我要翻譯的書：{書名、作者（可選）；如果您已經有可靠來源連結，也可以貼上}
 目標語言：{例如 簡體中文}
 
 請自動選擇正確的翻譯 prompt：
@@ -36,7 +36,7 @@
 
 ## 個人自用書翻譯 prompt
 
-如果這是你自己已有的本地書源，只供個人學習自用，不傳播、不商業使用，可以使用下面這段：
+如果這是您自己已有的本地書源，只供個人學習自用，不傳播、不商業使用，可以使用下面這段：
 
 ```text
 我要翻譯的書：{書名、本地目錄: XXX }
@@ -57,7 +57,7 @@
 
 第一版 EPUB 已經生成後，不要只給 AI 一句「幫我精修」。請依目的選擇下面兩個 prompt：
 
-- **Prompt B：章節全量複檢與修復。** 適用於舊流程專案、缺少每章零問題 control 記錄，或你不確定每章是否已完整檢查時。
+- **Prompt B：章節全量複檢與修復。** 適用於舊流程專案、缺少每章零問題 control 記錄，或您不確定每章是否已完整檢查時。
 - **Prompt C：分層隨機抽檢與問題族追殺。** 適用於第一版 EPUB 後的發布前信心檢查；負責抽樣發現系統性盲點、全書同類審計、新 seed 複抽和 release/private artifact。
 
 建議順序：如果是舊流程或不確定每章是否已零問題閉環，先跑 **Prompt B**，再跑 **Prompt C**。若每章已有可靠的零問題 control 記錄，可以直接跑 **Prompt C**。
@@ -101,7 +101,7 @@
 通過後清理或重建 staging，重新生成 EPUB，執行 publication lint、asset manifest、cover output、reader-facing policy、EPUBCheck，以及 release 或 private artifact 腳本。公版或授權專案的最終可發布 EPUB 必須輸出到該書 output/release/，release_state.json.latest_status 必須為 PASS。個人自用專案的最終私人產物必須輸出到 output/private_artifacts/，private_artifact_state.json.latest_status 必須為 PASS。報告 release EPUB 或 private artifact 路徑、抽檢輪次、修復摘要、驗證命令結果和剩餘風險。
 ```
 
-## 你需要知道的關鍵位置
+## 您需要知道的關鍵位置
 
 - `.\template\epub_pipeline`：查看目前有哪些源語言/語言方向模板。AI 會據此判斷該用已有模板 prompt，還是新建語言模板 prompt。
 - `.\tools\lifebook-launcher`：LifeBook Launcher 用戶端安裝啟動目錄。使用者需要知道這個位置，以使用 LifeBook 專案和安裝 OpenCode。
@@ -117,7 +117,7 @@
 - `doc/public/user_prompt/book_translation_private_new_template.md`：個人自用、本地書源、還沒有對應源語言模板時使用。
 - `doc/public/user_prompt/how_to_use_book_translation_prompts.md`：更短的小白版說明，只解釋怎麼填寫三項內容。
 
-如果你不確定該用哪個，就讓 AI 先檢查模板是否存在。普通用戶不需要理解 `source-target`、slug、profile、release version 或 npm 命令。
+如果您不確定該用哪個，就讓 AI 先檢查模板是否存在。普通用戶不需要理解 `source-target`、slug、profile、release version 或 npm 命令。
 
 ## 選哪個用戶端
 

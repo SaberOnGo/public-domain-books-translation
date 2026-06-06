@@ -17,11 +17,11 @@
 
 ## 公開
 
-あなたの非コードの貢献は本プロジェクトに取り込まれ、[LICENSE.ja.md](LICENSE.ja.md) に記載された `CC BY-NC-SA 4.0` の条件で公開される場合があります。
+提出された非コードの貢献は本プロジェクトに取り込まれ、[LICENSE.ja.md](LICENSE.ja.md) に記載された `CC BY-NC-SA 4.0` の条件で公開される場合があります。
 
 ## LifeBook 書坊による利用
 
-貢献を提出することで、あなたの貢献が LifeBook 書坊により LifeBook products and services に利用されることに同意したものとします。
+貢献を提出することで、提出された貢献が LifeBook 書坊により LifeBook products and services に利用されることに同意したものとします。
 
 LifeBook 書坊は、本プロジェクトの組織、編集、公開、品質管理、ライセンス管理、貢献者への還元に関する取り決めを担当します。
 
