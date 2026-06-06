@@ -8,4 +8,4 @@ output/*
 !output/release/
 !output/release/**
 output/release/*.epub
-!output/release/常绿树_v0.0.14.epub
+!output/release/常绿树(沈熏_原文韩语)_v0.0.14.epub

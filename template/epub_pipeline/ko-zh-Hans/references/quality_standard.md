@@ -44,3 +44,10 @@
 若该轮发现译文质量问题族，还必须在 `fix_log.md` 填写 `translation_quality_skill_backfill: "UPDATED"` 或 `"MERGED"`、`translation_quality_skill_backfill_path: "skills/translation-quality-defect-families/SKILL.md"` 和回填摘要，并在 `closure_check.md` 填写 `translation_quality_skill_backfill_verified: true`；若仅有非译文质量问题，必须填写 `NOT_APPLICABLE` 和具体理由。
 
 If a random sample exposes any issue that needs correction or may recur systemically, treat it as a possible systemic defect family immediately in the current round. Audit the whole reader-facing book for similar cases, fix all confirmed matches, document justified exceptions, and close the family in the same round before a new-seed resample.
+## 随机抽检优秀出版线 / Random Review Excellence Gate
+
+`80` 分只是硬失败线，不是优秀线。低于 80 必须 FAIL；80-87 代表基本可读但仍需精修；88-91 代表较好但未达到最终优秀门槛。
+
+最终 release/private artifact 默认要求每个独立 Agent `average_score >= 92`、`lowest_score >= 88`、`blocking_issue_count = 0`，并且每个抽中样本都有逐项评分行。只写总评、缺少逐样本表格，或把“可读但略硬/偏密/略抽象/解释化/翻译腔”当作优秀分，均不得作为最终 PASS 证据。
+
+反复出现的“可读但不顺”必须归入 `style_debt` 或相应译文质量问题族，回到目标语独立润色、源语句法重组或本书专项精修。随机抽检用于发现盲点和验证闭环，不应成为主要润色引擎。

@@ -7,7 +7,7 @@ main_version: 0
 sub_version: 0
 patch_version: 6
 created_at: 2026-06-01T23:30:24Z
-epub: 一座山的故事_v0.0.6.epub
+epub: 一座山的故事-埃利泽·勒克吕(Élisée Reclus)_原文法语_v0.0.6.epub
 sha256: 8f99586448bab2afc390821f0e62c76404ffbafc04f94c9b10619b6cf3d0b549
 size_bytes: 282089
 

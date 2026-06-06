@@ -7,7 +7,7 @@ main_version: 0
 sub_version: 0
 patch_version: 4
 created_at: 2026-06-03T10:36:42Z
-epub: 在两个星球上_v0.0.4.epub
+epub: 在两个星球上-库尔德·拉斯维茨（Kurd Laßwitz）原文德语_v0.0.4.epub
 sha256: 53c540e99bd51f7dccbac96973aeb9099834c2205aa0e6bb220caef1e1850ba8
 size_bytes: 718068
 

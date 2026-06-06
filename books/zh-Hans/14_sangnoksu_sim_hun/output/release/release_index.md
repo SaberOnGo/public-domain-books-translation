@@ -15,4 +15,4 @@
 | v0.0.11 | PASS | `常绿树_v0.0.11.epub` | `release_notes.md` | 2026-06-02T15:27:18Z |
 | v0.0.12 | PASS | `常绿树_v0.0.12.epub` | `release_notes.md` | 2026-06-03T10:46:09Z |
 | v0.0.13 | PASS | `常绿树_v0.0.13.epub` | `release_notes.md` | 2026-06-03T10:51:12Z |
-| v0.0.14 | PASS | `常绿树_v0.0.14.epub` | `release_notes.md` | 2026-06-03T10:58:43Z |
+| v0.0.14 | PASS | `常绿树(沈熏_原文韩语)_v0.0.14.epub` | `release_notes.md` | 2026-06-03T10:58:43Z |

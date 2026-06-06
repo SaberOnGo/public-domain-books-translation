@@ -11,6 +11,8 @@ DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
 STRATA = ("paragraph", "table", "figure", "formula", "caption_note")
 LOCAL_ABSOLUTE_PATH = re.compile(r"(?:[A-Za-z]:[\\/]|\\\\|file://)", re.IGNORECASE)
 MIN_REVIEW_SCORE = 80
+EXCELLENT_AVERAGE_SCORE = 92
+EXCELLENT_LOWEST_SCORE = 88
 SKILL_BACKFILL_PATH = "skills/translation-quality-defect-families/SKILL.md"
 SKILL_BACKFILL_STATUSES = {"UPDATED", "MERGED", "NOT_APPLICABLE"}
 
@@ -22,6 +24,26 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--round", default="latest", help="Round id such as round_001, or latest.")
     parser.add_argument("--target-confidence", type=float, default=0.80, help="Required confidence threshold.")
     parser.add_argument("--require-pass", action="store_true", help="Require agent reviews and closure files to be PASS.")
+    parser.add_argument(
+        "--skip-excellence-gate",
+        action="store_true",
+        help=(
+            "Only enforce hard publication minimums. By default, --require-pass also enforces "
+            "the final-artifact excellence gate."
+        ),
+    )
+    parser.add_argument(
+        "--excellent-average-score",
+        type=float,
+        default=EXCELLENT_AVERAGE_SCORE,
+        help="Minimum agent average_score for final-artifact excellence validation.",
+    )
+    parser.add_argument(
+        "--excellent-lowest-score",
+        type=float,
+        default=EXCELLENT_LOWEST_SCORE,
+        help="Minimum agent lowest_score for final-artifact excellence validation.",
+    )
     parser.add_argument(
         "--min-current-run-pass-rounds",
         type=int,
@@ -115,6 +137,49 @@ def read_bool_field(path: Path, field: str) -> bool | None:
     if lowered == "false":
         return False
     return None
+
+
+def expected_agent_sample_count(manifest: dict, agent_name: str) -> int:
+    sample_set = manifest.get("sample_sets", {}).get(agent_name, {})
+    if not isinstance(sample_set, dict):
+        return 0
+    total = 0
+    for samples in sample_set.values():
+        if isinstance(samples, list):
+            total += len(samples)
+    return total
+
+
+def agent_unit_ids(manifest: dict, agent_name: str) -> set[str]:
+    sample_set = manifest.get("sample_sets", {}).get(agent_name, {})
+    if not isinstance(sample_set, dict):
+        return set()
+    unit_ids: set[str] = set()
+    for samples in sample_set.values():
+        if not isinstance(samples, list):
+            continue
+        for sample in samples:
+            if isinstance(sample, dict) and sample.get("id"):
+                unit_ids.add(str(sample["id"]))
+    return unit_ids
+
+
+def scored_reviewed_unit_ids(review_path: Path, unit_ids: set[str]) -> set[str]:
+    if not review_path.exists() or not unit_ids:
+        return set()
+    text = review_path.read_text(encoding="utf-8", errors="replace")
+    scored: set[str] = set()
+    for line in text.splitlines():
+        if "|" not in line:
+            continue
+        matching_ids = [unit_id for unit_id in unit_ids if unit_id in line]
+        if not matching_ids:
+            continue
+        cells = [cell.strip().strip("`") for cell in line.strip().strip("|").split("|")]
+        has_score = any(re.fullmatch(r"(?:100|[1-9]?[0-9])(?:\.\d+)?", cell) for cell in cells)
+        if has_score:
+            scored.update(matching_ids)
+    return scored
 
 
 def stratum_confidence(info: dict) -> float:
@@ -300,13 +365,19 @@ def validate_round_artifacts(
     *,
     target_confidence: float,
     require_pass: bool,
-) -> tuple[dict, dict[str, float], float, list[str]]:
+    require_excellence_gate: bool,
+    excellent_average_score: float,
+    excellent_lowest_score: float,
+) -> tuple[dict, dict[str, float], float, dict[str, dict[str, int | float | bool]], list[str]]:
     manifest_path = round_dir / "random_sample_manifest.json"
     errors: list[str] = []
+    agent_review_checks: dict[str, dict[str, int | float | bool]] = {}
     confidence_by_stratum: dict[str, float] = {}
     release_confidence = 1.0
     if not manifest_path.exists():
-        return {}, confidence_by_stratum, release_confidence, [f"missing manifest: {relative_to_book(book_root, manifest_path)}"]
+        return {}, confidence_by_stratum, release_confidence, agent_review_checks, [
+            f"missing manifest: {relative_to_book(book_root, manifest_path)}"
+        ]
 
     manifest_text = manifest_path.read_text(encoding="utf-8")
     manifest = json.loads(manifest_text)
@@ -352,6 +423,13 @@ def validate_round_artifacts(
         if not all_samples.exists():
             errors.append(f"missing agent sample file: {relative_to_book(book_root, all_samples)}")
         review_path = round_dir / "reviews" / f"{agent_name}_review.md"
+        expected_count = expected_agent_sample_count(manifest, agent_name)
+        reviewed_count = len(scored_reviewed_unit_ids(review_path, agent_unit_ids(manifest, agent_name)))
+        agent_review_checks[agent_name] = {
+            "expected_sample_count": expected_count,
+            "scored_sample_row_count": reviewed_count,
+            "all_samples_scored": reviewed_count >= expected_count if expected_count else True,
+        }
         if not review_path.exists():
             errors.append(f"missing agent review file: {relative_to_book(book_root, review_path)}")
         elif require_pass:
@@ -370,6 +448,22 @@ def validate_round_artifacts(
                 )
             if blocking_count is None or blocking_count != 0:
                 errors.append(f"agent blocking_issue_count must be 0: {relative_to_book(book_root, review_path)}")
+            if expected_count and reviewed_count < expected_count:
+                errors.append(
+                    "agent review must include scored rows for every sampled unit: "
+                    f"{reviewed_count} < {expected_count}: {relative_to_book(book_root, review_path)}"
+                )
+            if require_excellence_gate:
+                if average_score is None or average_score < excellent_average_score:
+                    errors.append(
+                        "agent average_score below final-artifact excellence threshold "
+                        f"{excellent_average_score}: {relative_to_book(book_root, review_path)}"
+                    )
+                if lowest_score is None or lowest_score < excellent_lowest_score:
+                    errors.append(
+                        "agent lowest_score below final-artifact excellence threshold "
+                        f"{excellent_lowest_score}: {relative_to_book(book_root, review_path)}"
+                    )
 
     fix_log = round_dir / "fixes" / "fix_log.md"
     closure = round_dir / "verification" / "closure_check.md"
@@ -386,7 +480,7 @@ def validate_round_artifacts(
         if open_count is None or open_count != 0:
             errors.append(f"open_p0_p1_p2_count must be 0: {relative_to_book(book_root, closure)}")
 
-    return manifest, confidence_by_stratum, release_confidence, errors
+    return manifest, confidence_by_stratum, release_confidence, agent_review_checks, errors
 
 
 def count_current_run_pass_rounds(
@@ -396,17 +490,23 @@ def count_current_run_pass_rounds(
     latest_manifest: dict,
     target_confidence: float,
     baseline_at: datetime | None,
+    require_excellence_gate: bool,
+    excellent_average_score: float,
+    excellent_lowest_score: float,
 ) -> tuple[str, list[str]]:
     run_id = str(latest_manifest.get("review_run_id", "")).strip()
     if not run_id:
         return "", []
     counted: list[str] = []
     for round_dir in reversed(round_dirs(output_dir)):
-        manifest, _, _, errors = validate_round_artifacts(
+        manifest, _, _, _, errors = validate_round_artifacts(
             book_root,
             round_dir,
             target_confidence=target_confidence,
             require_pass=True,
+            require_excellence_gate=require_excellence_gate,
+            excellent_average_score=excellent_average_score,
+            excellent_lowest_score=excellent_lowest_score,
         )
         if errors:
             break
@@ -426,15 +526,19 @@ def main() -> None:
     args = parse_args()
     if args.min_current_run_pass_rounds < 1:
         raise SystemExit("--min-current-run-pass-rounds must be >= 1")
+    require_excellence_gate = bool(args.require_pass and not args.skip_excellence_gate)
     book_root = resolve_book_root(args.book_root)
     output_dir = (book_root / args.output_dir).resolve() if not Path(args.output_dir).is_absolute() else Path(args.output_dir).resolve()
     round_dir = latest_round(output_dir) if args.round == "latest" else output_dir / args.round
     errors: list[str] = []
-    manifest, confidence_by_stratum, release_confidence, round_errors = validate_round_artifacts(
+    manifest, confidence_by_stratum, release_confidence, agent_review_checks, round_errors = validate_round_artifacts(
         book_root,
         round_dir,
         target_confidence=args.target_confidence,
         require_pass=args.require_pass,
+        require_excellence_gate=require_excellence_gate,
+        excellent_average_score=args.excellent_average_score,
+        excellent_lowest_score=args.excellent_lowest_score,
     )
     errors.extend(round_errors)
 
@@ -454,6 +558,9 @@ def main() -> None:
         latest_manifest=manifest,
         target_confidence=args.target_confidence,
         baseline_at=baseline_at,
+        require_excellence_gate=require_excellence_gate,
+        excellent_average_score=args.excellent_average_score,
+        excellent_lowest_score=args.excellent_lowest_score,
     )
     if args.require_pass and args.min_current_run_pass_rounds > 0:
         if len(counted_current_run_rounds) < args.min_current_run_pass_rounds:
@@ -469,6 +576,11 @@ def main() -> None:
         "release_confidence": release_confidence,
         "confidence_by_stratum": confidence_by_stratum,
         "require_pass": args.require_pass,
+        "publication_min_review_score": MIN_REVIEW_SCORE,
+        "excellence_gate_required": require_excellence_gate,
+        "excellent_average_score_required": args.excellent_average_score if require_excellence_gate else 0,
+        "excellent_lowest_score_required": args.excellent_lowest_score if require_excellence_gate else 0,
+        "agent_review_checks": agent_review_checks,
         "current_review_run_id": current_run_id,
         "current_run_issue_rounds_requiring_skill_backfill": current_run_issue_rounds,
         "current_run_pass_rounds_required": args.min_current_run_pass_rounds if args.require_pass else 0,

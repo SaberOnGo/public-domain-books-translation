@@ -7,7 +7,7 @@ main_version: 0
 sub_version: 0
 patch_version: 5
 created_at: 2026-06-03T10:33:26Z
-epub: 孟普拉森之虎_v0.0.5.epub
+epub: 孟普拉森之虎（Emilio Salgari-原文意大利语）_v0.0.5.epub
 sha256: 638bb613587ff5a173aae9a78c86cdcc88e270bc6a01fce5e18e23c8cb1d1c5b
 size_bytes: 808574
 

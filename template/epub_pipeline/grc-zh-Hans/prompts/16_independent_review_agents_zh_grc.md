@@ -81,7 +81,7 @@ python scripts/select_random_review_passages.py --source-dir chapters/final --ag
 评分规则：
 
 - 每个样本 0-100 分。
-- 每个 Agent 的平均分必须 >= 80。
+- 发布硬失败线：每个 Agent 的平均分和最低分不得低于 80；最终优秀出版线：每个 Agent 平均分必须 >= 92，最低分必须 >= 88。
 - 任一单段 < 80，则该 Agent 抽检失败。
 - 任一样本出现读者读不懂、数学证明链断裂、天文学概念误导、术语/数值/图表/公式/裁剪错误，必须判为失败，即使平均分达标。
 - 任一 Agent 抽检失败时，必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复；修复后必须在旧轮次 `fixes/fix_log.md` 和 `verification/closure_check.md` 中记录问题族、全书同类问题审计范围、命中、修复、合理例外和关闭结论，并用新 seed 重新生成样本。
@@ -112,7 +112,7 @@ python scripts/select_random_review_passages.py --source-dir chapters/final --ag
 
 - Agent A 总分 >= 85。
 - Agent B 总分 >= 85。
-- 分层随机抽检已通过：Agent A/B 抽检平均分均 >= 80，无单项 < 80，无未关闭 P0/P1/P2，且 `npm run review:random-validate:pass` 通过。
+- 分层随机抽检已通过：Agent A/B 抽检均达到优秀出版线（平均分 >= 92、最低分 >= 88），无单项 < 80，无缺失逐样本评分行，无未关闭 P0/P1/P2，且 `npm run review:random-validate:pass` 通过。
 - 任一 P0/P1 问题必须返工。
 - 任一 Agent 明确指出严重问题时，主执行 AI 必须进入回退路由，不得忽略。
 

@@ -7,7 +7,7 @@ main_version: 0
 sub_version: 0
 patch_version: 14
 created_at: 2026-06-03T10:58:43Z
-epub: 常绿树_v0.0.14.epub
+epub: 常绿树(沈熏_原文韩语)_v0.0.14.epub
 sha256: e2b1d44378b85225186aa76768612045c8470c2069301c119083df17d369928c
 size_bytes: 326459
 

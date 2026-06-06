@@ -227,6 +227,8 @@ npm run review:random-validate:pass
 npm run review:random-validate:pass
 ```
 
+`review:random-validate:pass` 默认执行优秀出版线：两个 Agent 必须逐样本评分，`average_score >= 92`、`lowest_score >= 88`，且无阻塞问题。`80` 只是硬失败线，用来判定“低于此分必须失败”；80 多分的“可读但略硬/偏密/解释化”不能作为最终优秀出版证据。若只需诊断硬下限，可显式运行 `npm run review:random-validate:hard-minimum`，但该结果不得替代最终 release/private artifact 的 PASS 证据。
+
 The pass report must include `current_review_run_id`, `current_run_pass_rounds_required`, `current_run_pass_rounds_count`, and `current_run_pass_rounds`. If the count is below the required value, the workflow is still not closed even when older rounds are PASS.
 
 强校验报告必须包含 `current_review_run_id`、`current_run_pass_rounds_required`、`current_run_pass_rounds_count` 和 `current_run_pass_rounds`。只要本次运行计数不足，即使旧轮次都是 PASS，也不得关闭流程。

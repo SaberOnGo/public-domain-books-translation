@@ -6,6 +6,19 @@
 
 译文要像优秀中文译者写出来的书，而不是英文文本的中文影子。
 
+## 优秀出版线 / Excellence Gate
+
+英语到简体中文的最终 EPUB 不能只做到“可读”。随机抽检里的 `80` 是硬失败线；80 多分常常仍表示较硬、偏密、解释化、抽象腔或英文句法残留。
+
+正式 release/private artifact 默认要求：
+
+- 每个独立 Agent `average_score >= 92`。
+- 每个独立 Agent `lowest_score >= 88`。
+- 每个抽中样本都有逐项评分行，不能只写总评。
+- 反复出现的“可读但略硬/偏密/解释化/抽象”必须作为 `style_debt` 或译文质量问题族处理。
+
+Final output must pass the excellence gate, not only the hard minimum. Scores in the 80s indicate readable but still unfinished prose unless the review evidence proves otherwise.
+
 ## 五维质量
 
 1. 准确：事实、人物、地点、数字、因果、语气不误。
@@ -60,4 +73,10 @@
 - 为了生动而越界发挥。
 - 为了简洁而省成提纲。
 - 历史敏感称谓未经判断就现代化或硬搬。
+## 随机抽检优秀出版线 / Random Review Excellence Gate
 
+`80` 分只是硬失败线，不是优秀线。低于 80 必须 FAIL；80-87 代表基本可读但仍需精修；88-91 代表较好但未达到最终优秀门槛。
+
+最终 release/private artifact 默认要求每个独立 Agent `average_score >= 92`、`lowest_score >= 88`、`blocking_issue_count = 0`，并且每个抽中样本都有逐项评分行。只写总评、缺少逐样本表格，或把“可读但略硬/偏密/略抽象/解释化/翻译腔”当作优秀分，均不得作为最终 PASS 证据。
+
+反复出现的“可读但不顺”必须归入 `style_debt` 或相应译文质量问题族，回到目标语独立润色、源语句法重组或本书专项精修。随机抽检用于发现盲点和验证闭环，不应成为主要润色引擎。

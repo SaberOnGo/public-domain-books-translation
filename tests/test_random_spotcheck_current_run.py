@@ -20,7 +20,7 @@ def write_pass_round(
     *,
     run_id: str | None,
     generated_at: datetime | None,
-    average_score: int = 90,
+    average_score: int = 92,
     lowest_score: int = 88,
     review_status: str = "PASS",
     blocking_issue_count: int = 0,
@@ -71,6 +71,7 @@ def write_pass_round(
         encoding="utf-8",
     )
     for agent in ["agent_a", "agent_b"]:
+        sample_id = manifest["sample_sets"][agent]["paragraph"][0]["id"]
         (round_dir / "samples" / agent / "all_samples.md").write_text("# samples\n", encoding="utf-8")
         (round_dir / "reviews" / f"{agent}_review.md").write_text(
             "\n".join(
@@ -80,6 +81,10 @@ def write_pass_round(
                     f"average_score: {average_score}",
                     f"lowest_score: {lowest_score}",
                     f"blocking_issue_count: {blocking_issue_count}",
+                    "",
+                    "| unit_id | score | issue_level | notes |",
+                    "| --- | --- | --- | --- |",
+                    f"| `{sample_id}` | {lowest_score} | PASS | Sample cleared. |",
                     "",
                 ]
             ),

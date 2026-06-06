@@ -8,4 +8,4 @@ output/*
 !output/release/
 !output/release/**
 output/release/*.epub
-!output/release/一座山的故事_v0.0.6.epub
+!output/release/一座山的故事-埃利泽·勒克吕(Élisée Reclus)_原文法语_v0.0.6.epub

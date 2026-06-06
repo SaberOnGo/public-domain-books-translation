@@ -55,8 +55,8 @@ release_confidence_status: "DRAFT" # PASS | FAIL
 - 两个 Agent 必须独立完成，不得互相参考。
 - 抽样必须覆盖 `paragraph`、`table`、`figure`、`formula`、`caption_note` 中实际存在的层。
 - 表格、图片、公式、图注/注释不得被普通段落样本替代。
-- 每个样本必须逐项评分；不得只写总评。
-- 每个 Agent 平均分必须 >= 80。
+- 每个样本必须逐项评分；不得只写总评。缺少任一样本评分行时，评审无效。
+- 发布硬失败线：每个 Agent 平均分和最低分不得低于 80；最终优秀出版线：每个 Agent 平均分必须 >= 92，最低分必须 >= 88。
 - 任一单项 < 80，则本轮 FAIL。
 - 任一 P0/P1/P2、读不懂、事实误解、术语/专名/译注错误、表格错误、图片裁剪/标签错误、公式/证明错误，则本轮 FAIL。
 - FAIL 后必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复；修复后旧问题必须在 `fix_log.md` 和 `closure_check.md` 定点关闭，并使用新 seed 重新抽样。

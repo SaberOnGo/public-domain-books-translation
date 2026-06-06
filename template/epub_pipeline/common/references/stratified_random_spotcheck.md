@@ -154,7 +154,9 @@ reviews/random_spotcheck/round_XXX/validation_report.json
 ```
 
 其中必须满足 `release_confidence >= target_confidence`。
-启用 `review:random-validate:pass` 时，还必须满足每个 Agent 评审文件中 `average_score >= 80`、`lowest_score >= 80`、`blocking_issue_count = 0`，且闭环文件中 `open_p0_p1_p2_count = 0`。
+启用 `review:random-validate:pass` 时，`80` 只作为出版硬失败线：每个 Agent 评审文件中 `average_score >= 80`、`lowest_score >= 80`、`blocking_issue_count = 0`，且闭环文件中 `open_p0_p1_p2_count = 0`。最终 release/private artifact 默认还必须满足优秀出版线：每个 Agent `average_score >= 92`、`lowest_score >= 88`，并且评审文件必须为每个抽中样本保留逐项评分行。只写总评、缺少逐样本表格、或只有“可读但略硬/偏密/解释化/抽象腔”的 80 多分结果，不能作为最终优秀 PASS。
+
+若维护者只需要诊断硬下限，可显式运行 `--skip-excellence-gate` 或 `npm run review:random-validate:hard-minimum`；该结果不得替代正式 `review:random-validate:pass` 的最终发布证据。
 
 如果同一 `review_run_id` 下任何较早轮次发现过问题，`review:random-validate:pass` 还会回看这些问题轮次的 `fix_log.md` 与 `closure_check.md`。问题轮次必须填写机器可读字段：`defect_family_count`、`translation_quality_defect_family_count`、`translation_quality_skill_backfill`、`translation_quality_skill_backfill_path`、`translation_quality_skill_backfill_summary` 或不适用理由，以及 `translation_quality_skill_backfill_verified`。只要发现译文质量问题族，`translation_quality_skill_backfill` 必须是 `UPDATED` 或 `MERGED`，路径必须是 `skills/translation-quality-defect-families/SKILL.md`；否则最终 PASS 校验失败。若本轮没有译文质量问题族，必须填 `NOT_APPLICABLE` 并说明原因。
 
@@ -203,6 +205,7 @@ reviews/random_spotcheck/
 - 不得把表格、图片、公式、图注当作普通段落略过。
 - 每个样本必须给出 0-100 分、问题类型、优先级、是否返工和理由。
 - 任一 P0/P1/P2、任一单项 < 80、任一读者不可理解、任一事实/术语/图表/公式错误，均判为本轮 FAIL。
+- 80-87 是“硬门槛以上但需要精修”，88-91 是“较好但未达最终优秀门槛”。若样本只是“可读”但明显较硬、偏密、略抽象、解释化或仍有源语句法残留，应计入 `style_debt` 或相应问题族，不能用高分掩盖。
 
 At least two independent agents must review the samples. The main executor cannot self-certify this gate.
 
@@ -233,6 +236,7 @@ If a single fix has a 75% chance of success, that is only an iteration-efficienc
 - `strata_summary.json` 记录每层候选数、抽样数、是否全检和置信度。
 - `validation_report.json` 记录 `release_confidence >= 0.80`，且 `status=PASS`。
 - `validation_report.json` 记录 `current_review_run_id`、`current_run_pass_rounds_required >= 1`，且 `current_run_pass_rounds_count >= current_run_pass_rounds_required`；用户未指定时默认要求 2。
+- `validation_report.json.excellence_gate_required = true`，并记录每个 Agent `average_score >= 92`、`lowest_score >= 88`，以及 `agent_review_checks.*.all_samples_scored = true`。
 - 至少 2 个 Agent 的样本、评审文件存在。
 - `reviews/random_spotcheck/round_XXX/fixes/fix_log.md` 为 `PASS`。
 - `reviews/random_spotcheck/round_XXX/verification/closure_check.md` 为 `PASS`。

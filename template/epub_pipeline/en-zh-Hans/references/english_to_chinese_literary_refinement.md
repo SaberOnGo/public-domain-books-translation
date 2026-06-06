@@ -57,7 +57,8 @@ Names and historically loaded terms need a stable first-mention and note policy.
 - 至少 2 个独立 Agent 检查样本，不能由主执行 AI 人工挑选内容。
 - 抽样层至少包括正文段落、表格、图片、公式/证明块、图注和注释；实际存在的表格、图片、公式不得被普通段落抽样替代。
 - 抽检 Agent 必须假设自己是认真阅读本书的中文读者，逐项判断：中文是否读得懂、是否忠实于英文公版原文、是否有英文句法硬搬、是否无依据润饰、专名/称谓/译注/标题策略是否一致，表格/图片/公式是否正确。
-- 每个样本 0-100 分；每个 Agent 平均分必须 >= 80，且不得有单项 < 80。
+- 每个样本 0-100 分；`80` 只是硬失败线，低于 80 必须 FAIL。最终 release/private artifact 默认要求每个 Agent `average_score >= 92`、`lowest_score >= 88`，且每个抽中样本都有逐项评分行。80-87 代表可读但仍需精修；88-91 代表较好但未达最终优秀门槛。
+- 评语中若出现“可读但略硬”“较硬”“偏密”“略抽象”“稍显解释化”“英式分析腔”等，不得只当作温和瑕疵后给优秀分；应计入 `style_debt` 或相应问题族，反复出现时回到中文独立润色和英语句法重组。
 - 任一样本存在读不懂、事实误解、叙述关系误判、英文腔明显、术语/专名/译注/表格/图片/公式错误，即使平均分达标，也必须回到精校或更早阶段修复；修复后在旧轮次关闭问题，并使用新 seed 重新生成样本。
 
 Stratified random spot checks are a hard post-EPUB gate. They test whether the book reads as Chinese and whether reader-facing tables, figures, formulas, captions, and notes survive publication production.

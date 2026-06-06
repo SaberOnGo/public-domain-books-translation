@@ -18,6 +18,9 @@ DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
 STRATA = ("paragraph", "table", "figure", "formula", "caption_note")
 BLOCKING_PRIORITY_RE = re.compile(r"\bP[0-2]\b", flags=re.IGNORECASE)
 XHTML_NS = "{http://www.w3.org/1999/xhtml}"
+MIN_REVIEW_SCORE = 80
+EXCELLENT_AVERAGE_SCORE = 92
+EXCELLENT_LOWEST_SCORE = 88
 
 
 @dataclass(frozen=True)
@@ -694,7 +697,11 @@ def write_agent_samples(round_dir: Path, root_output_dir: Path, agent_name: str,
         "- 图片必须检查裁剪是否过大或过小、标签是否缺失、是否带入周边无关文字、插入点和说明是否正确。",
         "- 表格必须检查行列、表头、数值、单位、caption、XHTML 结构和原文对应关系。",
         "- 公式/证明块必须检查符号、依赖关系、上下文说明和读者可理解性。",
-        "- 任一 P0/P1/P2 或单项 < 80 必须判为本轮 FAIL。",
+        "- 每个样本必须在评审文件中保留独立评分行；只写总评或汇总分无效。",
+        f"- 发布硬失败线：任一 P0/P1/P2 或单项 < {MIN_REVIEW_SCORE} 必须判为本轮 FAIL。",
+        f"- 默认优秀出版线：每个 Agent 的 average_score >= {EXCELLENT_AVERAGE_SCORE}，lowest_score >= {EXCELLENT_LOWEST_SCORE}；达不到时不能作为最终 release/private artifact PASS。",
+        "- 80-87 只能说明大体可读，仍属于必须精修的质量债；88-91 是较好但未达到最终优秀门槛。",
+        "- 若样本理由出现可读但略硬、较硬、偏密、略抽象、解释化、翻译腔、英式分析腔等，应计入 style_debt 或相应问题族；反复出现时不得给最终优秀分。",
         "",
     ]
 
@@ -741,17 +748,24 @@ def write_agent_samples(round_dir: Path, root_output_dir: Path, agent_name: str,
     write_text(root_output_dir / f"{agent_name}_samples.md", combined_lines)
 
 
-def write_review_templates(round_dir: Path, agent_names: list[str]) -> None:
-    for agent_name in agent_names:
+def write_review_templates(round_dir: Path, agent_sets: dict[str, dict[str, list[AuditUnit]]]) -> None:
+    for agent_name, samples_by_stratum in agent_sets.items():
+        sample_count = sum(len(samples) for samples in samples_by_stratum.values())
         write_text(
             round_dir / "reviews" / f"{agent_name}_review.md",
             [
                 f"# {agent_name} 抽检评审 / Spot-Check Review",
                 "",
                 'status: "DRAFT" # PASS | FAIL',
+                f"sample_count: {sample_count}",
                 "average_score: 0",
                 "lowest_score: 0",
                 "blocking_issue_count: 0",
+                "reviewed_sample_row_count: 0",
+                "style_debt_count: 0",
+                f"publication_min_score: {MIN_REVIEW_SCORE}",
+                f"excellent_average_score_required: {EXCELLENT_AVERAGE_SCORE}",
+                f"excellent_lowest_score_required: {EXCELLENT_LOWEST_SCORE}",
                 "",
                 "## Findings",
                 "",
@@ -760,7 +774,9 @@ def write_review_templates(round_dir: Path, agent_names: list[str]) -> None:
                 "",
                 "## Conclusion",
                 "",
-                "本文件必须由独立评审 Agent 填写。DRAFT 不得作为通过依据。",
+                "本文件必须由独立评审 Agent 填写；每个样本必须有独立评分行。DRAFT、只写总评、缺少逐样本表格，均不得作为通过依据。",
+                "",
+                f"`{MIN_REVIEW_SCORE}` 是硬失败线，不是优秀线。最终 release/private artifact 默认还要求 `average_score >= {EXCELLENT_AVERAGE_SCORE}` 且 `lowest_score >= {EXCELLENT_LOWEST_SCORE}`；可读但略硬、偏密、解释化、抽象腔或翻译腔应压低单项分并计入润色债务。",
             ],
         )
 
@@ -849,7 +865,7 @@ def main() -> None:
     agent_sets = distribute_to_agents(evidenced_samples, args.agents)
     for agent_name, samples in agent_sets.items():
         write_agent_samples(round_dir, output_dir, agent_name, samples, seed)
-    write_review_templates(round_dir, list(agent_sets))
+    write_review_templates(round_dir, agent_sets)
 
     manifest = {
         "schema_version": "2.0",

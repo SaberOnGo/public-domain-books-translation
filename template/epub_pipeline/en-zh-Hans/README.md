@@ -112,7 +112,7 @@ Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `
 - `private_use` 项目未创建 `output/private_artifacts/{title}_private_vX.X.X.epub`，或 `output/private_artifacts/private_artifact_state.json.latest_status` 不是 `PASS`，不得标记 `DONE`。
 - 未完成双 Agent 独立评审，不得宣布完成。
 - 每轮精校后未完成双 Agent 分层随机抽检，不得宣布精校完成。
-- 随机抽检中任一 Agent 平均分 < 80、任一单项 < 80，或指出读不懂、事实误解、英文句法硬搬、无依据润饰、术语/专名/译注/表格/图片/公式错误，必须回退精校或更早阶段。
+- 随机抽检中 `80` 只是硬失败线；任一 Agent 平均分 < 80、最低分 < 80、任一单项 < 80，或指出读不懂、事实误解、英文句法硬搬、无依据润饰、术语/专名/译注/表格/图片/公式错误，必须回退精校或更早阶段。最终 release/private artifact 默认还要求每个 Agent 平均分 >= 92、最低分 >= 88，且逐样本评分完整；80 多分的“可读但略硬/偏密/解释化”不能当作优秀。
 - 评审未通过，必须回退返工。
 - 未完成复盘和经验沉淀，不得标记 `DONE`。
 - 已发现系统性精修问题但没有书籍专属 `goal/` 目标文档，不得标记 `DONE`。

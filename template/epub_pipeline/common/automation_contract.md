@@ -90,7 +90,7 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 - 每次抽检必须生成 `reviews/random_spotcheck/round_XXX/` 子目录，包含 seed、manifest、分层样本、图片/表格/公式证据、Agent 评审、修复记录和闭环验证文件，供人工核查。
 - 随机抽检必须至少使用 2 个独立 Agent；每个 Agent 必须逐样本给出 0-100 分、问题类型、优先级、是否返工和理由。
 - 两个 Agent 均必须按模板、本书 profile、目标语言规则和读者视角认真分析：读不读得懂、是否忠实、数学/天文学链条是否成立、表格/图片/公式/术语/数值/注释是否符合书籍设计。
-- 退出精校的最低条件是：两个 Agent 均 PASS，无单项 < 80，无未关闭 P0/P1/P2，无读不懂样本，无数学或天文学阻断，无术语/数值/图表/公式错误，并且 `npm run review:random-validate:pass` 通过；该报告必须记录 `current_run_pass_rounds_required >= 1` 且 `current_run_pass_rounds_count >= current_run_pass_rounds_required`。用户未指定时默认要求 2。
+- 退出精校的最低条件分两层：`80` 是硬失败线，任一单项 < 80 必须 FAIL；最终 release/private artifact 默认还必须达到优秀出版线，即两个 Agent 均 PASS、每个 Agent `average_score >= 92`、`lowest_score >= 88`、每个样本都有逐项评分行、无未关闭 P0/P1/P2、无读不懂样本、无数学或天文学阻断、无术语/数值/图表/公式错误，并且 `npm run review:random-validate:pass` 通过；该报告必须记录 `excellence_gate_required = true`、`current_run_pass_rounds_required >= 1` 且 `current_run_pass_rounds_count >= current_run_pass_rounds_required`。用户未指定时默认要求 2。
 - 任一 Agent 抽检不通过时，AI 必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复；每个发现必须先归纳为“问题族”，再对整本读者可见书稿执行全书同类问题审计，覆盖 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML，不得只修改被抽中的样本；修复所有确认命中、记录合理例外后，必须在旧轮次 `fixes/fix_log.md` 与 `verification/closure_check.md` 中定点关闭单个问题和该问题族。若发现译文质量问题族，`fix_log.md` 必须证明 `skills/translation-quality-defect-families/SKILL.md` 已 `UPDATED` 或 `MERGED`，`closure_check.md` 必须写 `translation_quality_skill_backfill_verified: true`；若仅有非译文质量问题，必须写明 `NOT_APPLICABLE` 和具体理由。随后使用新 seed 重新生成下一轮样本，不得复用旧样本。
 
 ## EPUB 版本化发布自动化规则
@@ -101,7 +101,7 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 - 私人自用项目的所有版本化 EPUB 必须写入 `output/private_artifacts/`，文件名为 `{目标语言书名}_private_vX.X.X.epub`；它不是公开 release，不得发布到 GitHub。
 - 每个版本必须把说明追加到累计 `release_notes.md` 或 `private_artifact_notes.md` 顶部，记录发布原因、问题点、修复方式、QA 证据、风险和下一轮迭代。
 - `DRAFT` release 可用于人工核查，但不得作为 `DONE` 依据。
-- `PASS` release 或 private artifact 必须来自 `npm run review:random-validate:pass` 或等效 `--require-pass --min-current-run-pass-rounds N` 校验，其中 `N>=1`，用户未指定时默认 `N=2`；校验报告必须满足 `current_run_pass_rounds_count >= current_run_pass_rounds_required`、`release_confidence >= 0.80`、EPUBCheck fatal/error 为 0、publication lint 无未解决问题。私人自用项目还必须通过 `preflight:private-use` 和 `reader:private-check`。
+- `PASS` release 或 private artifact 必须来自默认优秀线的 `npm run review:random-validate:pass` 或等效 `--require-pass --min-current-run-pass-rounds N` 校验，其中 `N>=1`，用户未指定时默认 `N=2`；校验报告必须满足 `excellence_gate_required = true`、`current_run_pass_rounds_count >= current_run_pass_rounds_required`、`release_confidence >= 0.80`、每个 Agent `average_score >= 92`、`lowest_score >= 88`、逐样本评分完整、EPUBCheck fatal/error 为 0、publication lint 无未解决问题。显式 `--skip-excellence-gate` 或 `review:random-validate:hard-minimum` 只能用于诊断，不得作为 PASS release/private artifact 依据。私人自用项目还必须通过 `preflight:private-use` 和 `reader:private-check`。
 - 后续读者评论、人工审校、阅读行为分析、自动化 QA 或随机抽检发现的问题，必须进入下一轮修复和新的 patch release 或 private artifact，不得覆盖旧产物证据。
 
 ## 失败处理
