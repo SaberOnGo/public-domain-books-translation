@@ -46,6 +46,6 @@ Every private artifact note must include:
 
 - `仅供个人自用，不传播，不商业使用`
 - 风险由个人承担。
-- LifeBook书坊仅发布 LifeBook 翻译发布系统，不承担任何因其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+- public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
 
-每份私人产物说明必须包含上述使用边界、个人风险和 LifeBook 书坊责任边界。
+每份私人产物说明必须包含上述使用边界、个人风险和 public-domain-books-translation 开源项目责任边界。

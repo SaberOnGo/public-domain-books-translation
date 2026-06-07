@@ -242,8 +242,8 @@ def write_private_use_declaration(project_root: Path, record: dict[str, str | bo
                 "- No redistribution. / 不得传播。",
                 "- No commercial use. / 不得商业使用。",
                 "- Personal risk is borne by the individual user. / 风险由个人承担。",
-                "- LifeBook Shufang publishes only the LifeBook translation publishing system. / LifeBook书坊仅发布 LifeBook 翻译发布系统。",
-                "- LifeBook Shufang does not assume copyright risk or liability caused by other individuals' translation, storage, redistribution, or use of non-public-domain content. / LifeBook书坊不承担任何因其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。",
+                "- The public-domain-books-translation open-source project is intended only for public-domain book translation and publication. / public-domain-books-translation 开源项目仅用于公版书翻译发布。",
+                "- The public-domain-books-translation open-source project does not assume copyright risk or liability caused by other individuals' translation, storage, redistribution, or use of non-public-domain content. / public-domain-books-translation 开源项目不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。",
                 "- Do not publish source text, translations, QA files, or EPUB output to GitHub. / 不得把原文、译文、QA 或 EPUB 输出发布到 GitHub。",
                 "",
             ]

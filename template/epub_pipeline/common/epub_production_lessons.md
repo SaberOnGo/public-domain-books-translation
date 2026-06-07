@@ -22,7 +22,7 @@
 ## Metadata 与版本说明 / Metadata and Book Info
 
 - 读者看到的书籍详情首先应是本项目版本信息，不只是原书信息。
-- 公版或授权项目必须包含：`LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明、作者信息、原书信息、本书简介。`publication_mode=private_use` 项目必须改用 `modes/private_use` 覆盖层：`参考LifeBook书坊 个人自制`、个人自用/不传播/不商业使用、风险边界、本地书源证据，且不得含公版说明。
+- 公版或授权项目必须包含：`LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明、作者信息、原书信息、本书简介。`publication_mode=private_use` 项目必须改用 `modes/private_use` 覆盖层：`参考public-domain-books-translation 开源项目 个人自制`、个人自用/不传播/不商业使用、风险边界、本地书源证据，且不得含公版说明。
 - 品牌名必须全书一致，不得出现旧名称残留，例如 `LifeBook 翻译组`。
 
 ## 标题与排版 / Headings and Layout

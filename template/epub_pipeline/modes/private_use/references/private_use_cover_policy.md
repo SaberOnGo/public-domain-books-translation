@@ -5,9 +5,9 @@ scope: "publication_mode=private_use only / 仅私人自用模式"
 
 ## Purpose / 目的
 
-Private-use covers must make the EPUB usable for the individual user while avoiding any signal that the book is a public-domain, licensed, or LifeBook-published edition.
+Private-use covers must make the EPUB usable for the individual user while avoiding any signal that the book is a public-domain, licensed, or public-domain-books-translation-published edition.
 
-私人自用封面要方便用户个人阅读管理，但必须避免让读者误以为这是公版、授权发布或 LifeBook 公开出版版本。
+私人自用封面要方便用户个人阅读管理，但必须避免让读者误以为这是公版、授权发布或 public-domain-books-translation 项目公开出版版本。
 
 ## Required Text / 必备文字
 
@@ -24,13 +24,13 @@ Do not add a public-project source line such as `依据 Project Gutenberg #xxxxx
 - Do not put public-domain source claims on the cover.
 - Do not put public license wording on the cover.
 - Do not use `LifeBook 书坊 译制`, `LifeBook 书坊 SaberOnGo`, or `LifeBook 书坊 + 个人名`.
-- Do not imply LifeBook Shufang published or authorized this private translation.
+- Do not imply the public-domain-books-translation project published or authorized this private translation.
 
 - 封面不写 `仅供个人自用，不传播，不商业使用`。
 - 封面不写公版来源声明。
 - 封面不写公开授权措辞。
 - 封面不使用 `LifeBook 书坊 译制`、`LifeBook 书坊 SaberOnGo` 或 `LifeBook 书坊 + 个人名`。
-- 封面不得暗示 LifeBook 书坊发布或授权了该私人译本。
+- 封面不得暗示 public-domain-books-translation 项目发布或授权了该私人译本。
 
 ## Design Requirements / 设计要求
 

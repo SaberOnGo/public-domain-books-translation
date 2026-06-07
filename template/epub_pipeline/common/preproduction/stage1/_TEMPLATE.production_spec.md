@@ -9,11 +9,11 @@ human_required: false
 - 英文原名：
 - 作者：
 - 公版或授权项目译制：LifeBook 书坊 + 个人名
-- 私人自用项目制作标识：参考LifeBook书坊 个人自制
+- 私人自用项目制作标识：参考public-domain-books-translation 开源项目 个人自制
 - 翻译/译制时间：
 - 公版或授权来源 URL：
 - 公版说明（仅公版或授权项目）：
-- 私人自用说明（仅 `publication_mode=private_use`）：仅供个人自用，不传播，不商业使用；风险由个人承担；LifeBook书坊仅发布 LifeBook 翻译发布系统，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+- 私人自用说明（仅 `publication_mode=private_use`）：仅供个人自用，不传播，不商业使用；风险由个人承担；public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
 
 ## 封面 / Cover
 
@@ -40,7 +40,7 @@ human_required: false
 1. 目标语言书名。
 2. 原书名。
 3. 作者信息。
-4. 公版或授权项目使用 `LifeBook 书坊 + 个人名` 译制；`private_use` 项目使用 `参考LifeBook书坊 个人自制`。
+4. 公版或授权项目使用 `LifeBook 书坊 + 个人名` 译制；`private_use` 项目使用 `参考public-domain-books-translation 开源项目 个人自制`。
 5. 译制时间。
 6. 公版来源名称与 URL。
 7. 公版说明：公版或授权项目用一条简短说明写清源文本公版/授权依据，并提醒跨地区发行需复核目标地区版权状态。`private_use` 项目不得写公版说明，必须写个人自用边界和风险责任。

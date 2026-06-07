@@ -23,7 +23,7 @@
 
 1. EPUBCheck：fatal=0，error=0；warning 必须解释或修复。
 2. EPUB 内有封面，且 OPF manifest 标记 `cover-image`。
-3. 公版或授权项目的版本说明页存在，并含 `LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明；`private_use` 项目必须按 `modes/private_use` 覆盖层检查私人首页/前置页，含 `参考LifeBook书坊 个人自制`、个人自用/不传播/不商业使用和风险边界，且不得含公版说明。
+3. 公版或授权项目的版本说明页存在，并含 `LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明；`private_use` 项目必须按 `modes/private_use` 覆盖层检查私人首页/前置页，含 `参考public-domain-books-translation 开源项目 个人自制`、个人自用/不传播/不商业使用和风险边界，且不得含公版说明。
 4. 无旧品牌名残留。
 5. 标题层级、字体策略、正文排版符合 `production_spec.md`。
 6. 章节标题已按 `references/chapter_title_policy.md` 和 `references/english_chapter_title_strategy.md` 检查：无半截标题、无机械破折号长链，EPUB 目录使用短题名。

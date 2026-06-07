@@ -11,7 +11,7 @@ human_required: false
 - [ ] 封面存在。
 - [ ] OPF `cover-image` 正确。
 - [ ] 版本说明页存在。
-- [ ] 公版或授权项目书籍信息页含 `LifeBook 书坊 + 个人名`；`private_use` 项目改用 `参考LifeBook书坊 个人自制`，且不含公版说明。
+- [ ] 公版或授权项目书籍信息页含 `LifeBook 书坊 + 个人名`；`private_use` 项目改用 `参考public-domain-books-translation 开源项目 个人自制`，且不含公版说明。
 - [ ] 无 `LifeBook 翻译组` 等旧品牌残留。
 - [ ] 字体未被不合理锁死。
 - [ ] 未嵌入完整超大中文字体。

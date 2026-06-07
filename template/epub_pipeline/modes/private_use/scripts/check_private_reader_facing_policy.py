@@ -17,27 +17,33 @@ FORBIDDEN_PUBLIC_SNIPPETS = [
     "CC BY-NC-SA",
     "PUBLICATION_PASS",
     "LICENSED_PASS",
-    "public-domain",
-    "Public-domain",
+    "public-domain notice",
+    "Public-domain notice",
+    "public-domain source",
+    "Public-domain source",
     "public release",
     "publishable release",
 ]
 
 FORBIDDEN_LIFEBOOK_PRODUCER_SNIPPETS = [
+    "参考LifeBook书坊 个人自制",
+    "LifeBook书坊仅发布",
+    "LifeBook 翻译发布系统",
     "LifeBook 书坊 SaberOnGo",
     "LifeBook 书坊 +",
     "LifeBook 书坊 译制",
     "LifeBook书坊译制",
+    "LifeBook Shufang",
 ]
 
 REQUIRED_BOOK_INFO_SNIPPETS = [
-    "参考LifeBook书坊 个人自制",
+    "参考public-domain-books-translation 开源项目 个人自制",
     "仅供个人自用",
     "不传播",
     "不商业使用",
     "风险由个人承担",
-    "LifeBook书坊仅发布",
-    "LifeBook 翻译发布系统",
+    "public-domain-books-translation 开源项目仅用于公版书翻译发布",
+    "不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任",
 ]
 
 

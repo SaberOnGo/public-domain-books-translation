@@ -40,7 +40,7 @@ Here, “book info” means reader-visible pages added by the translation projec
 - 书籍信息页必须使用目标语言贡献者能读懂的本地语言；英文可以并列补充，但不能只用英文，除非目标语言本身是英语。
 - 书籍信息页、封面、OPF metadata、`metadata/book.yaml` 中的书名、作者、译者/译制者、出版方、来源和版权说明必须一致。
 - 不得保留旧品牌名，例如 `LifeBook 翻译组`。
-- 公版或授权发布项目的书籍信息页中，译者/译制者必须写详细，格式为 `LifeBook 书坊 + 个人名`，个人名按 contributor 提供的拼写精确写入。`publication_mode=private_use` 项目必须改用 `template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md`，制作标识为 `参考LifeBook书坊 个人自制`。
+- 公版或授权发布项目的书籍信息页中，译者/译制者必须写详细，格式为 `LifeBook 书坊 + 个人名`，个人名按 contributor 提供的拼写精确写入。`publication_mode=private_use` 项目必须改用 `template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md`，制作标识为 `参考public-domain-books-translation 开源项目 个人自制`。
 
 ## 必备内容 / Required Content
 
@@ -66,9 +66,9 @@ Here, “book info” means reader-visible pages added by the translation projec
 - 译者说明：仅在确有必要时说明译名原则、术语原则、版本选择或特殊排版处理。
 - 权利与发行说明：中文译本或目标语译本的项目授权状态。
 
-`publication_mode=private_use` 例外：不得把私人自用书籍信息页写成公版说明或公开授权页。必须改读并遵守 `template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md`。私人自用首页/前置页应以目标语言简短标明“私人学习版本 / Personal study edition”、制作标识 `参考LifeBook书坊 个人自制`、本地书源文件名或校验摘要、`仅供个人自用，不传播，不商业使用`，并写清风险由个人承担、LifeBook书坊仅发布 LifeBook 翻译发布系统且不承担任何因其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。私人自用 EPUB 不是公开 release，不适用项目默认公开授权。
+`publication_mode=private_use` 例外：不得把私人自用书籍信息页写成公版说明或公开授权页。必须改读并遵守 `template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md`。私人自用首页/前置页应以目标语言简短标明“私人学习版本 / Personal study edition”、制作标识 `参考public-domain-books-translation 开源项目 个人自制`、本地书源文件名或校验摘要、`仅供个人自用，不传播，不商业使用`，并写清风险由个人承担、public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。私人自用 EPUB 不是公开 release，不适用项目默认公开授权。
 
-`publication_mode=private_use` exception: do not describe the book-info page as a public-domain notice or public license page. Additionally read and follow `template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md`. Briefly label it in the target language as a personal study edition, use the producer line `参考LifeBook书坊 个人自制`, record the local source file name or checksum summary, state `仅供个人自用，不传播，不商业使用`, and record that personal risk is borne by the individual user while LifeBook Shufang publishes/provides only the LifeBook translation publishing system and does not assume copyright risk or liability caused by other individuals' translation, storage, redistribution, or use of non-public-domain content. A private-use EPUB is not a public release and is not covered by the project's default public license.
+`publication_mode=private_use` exception: do not describe the book-info page as a public-domain notice or public license page. Additionally read and follow `template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md`. Briefly label it in the target language as a personal study edition, use the producer line `参考public-domain-books-translation 开源项目 个人自制`, record the local source file name or checksum summary, state `仅供个人自用，不传播，不商业使用`, and record that personal risk is borne by the individual user while the public-domain-books-translation open-source project is intended only for public-domain book translation and publication and does not assume copyright risk or liability caused by other individuals' translation, storage, redistribution, or use of non-public-domain content. A private-use EPUB is not a public release and is not covered by the project's default public license.
 
 长度要求：
 

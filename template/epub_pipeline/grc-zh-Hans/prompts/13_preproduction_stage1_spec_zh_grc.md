@@ -23,7 +23,7 @@
 必须包含：
 
 1. 封面方案：图像来源、尺寸、格式、压缩目标、OPF `cover-image` 写入方式。
-2. 书籍详情页：公版或授权项目优先显示本项目版本信息，包括 `LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明；`private_use` 项目必须改用 `modes/private_use/references/private_use_frontmatter_policy.md`，使用 `参考LifeBook书坊 个人自制`，去掉所有公版说明，并写明个人自用边界和风险责任。
+2. 书籍详情页：公版或授权项目优先显示本项目版本信息，包括 `LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明；`private_use` 项目必须改用 `modes/private_use/references/private_use_frontmatter_policy.md`，使用 `参考public-domain-books-translation 开源项目 个人自制`，去掉所有公版说明，并写明个人自用边界和风险责任。
 3. 作者信息：生卒年、国籍、基本人生、代表作、与本书关系。
 4. 原书信息：古希腊文题名、通行中文题名、出版/校勘年代、编辑者、来源版本、扫描/转写来源或其他公版来源。
 5. 字体策略：默认不得锁死难看字体；除非做字体子集化，不得嵌入完整中文字体。
@@ -41,7 +41,7 @@
 - 封面 PNG 可能过大，3MB 封面对于 280KB 正文不合理，应压缩为数百 KB 级 JPG。
 - 直接嵌入完整中文字体可能达到几十 MB，不适合批量公版 EPUB；如需指定字体，必须做字体子集化。
 - 写死 `font-family` 可能导致读书 App 无法切换字体；默认应让阅读器字体接管。
-- `LifeBook 翻译组` 这种名称像字幕组。公版或授权发布项目的书籍信息页使用 `LifeBook 书坊 + 个人名`，例如 `LifeBook 书坊 {贡献者名}`；`private_use` 项目不得使用该署名，必须使用 `参考LifeBook书坊 个人自制`。
+- `LifeBook 翻译组` 这种名称像字幕组。公版或授权发布项目的书籍信息页使用 `LifeBook 书坊 + 个人名`，例如 `LifeBook 书坊 {贡献者名}`；`private_use` 项目不得使用该署名，必须使用 `参考public-domain-books-translation 开源项目 个人自制`。
 - 校勘版、扫描本或现代编辑者目录可能有很长的说明性题名，但中文 EPUB 不应机械照搬成破折号长链；应为 `nav.xhtml` 设计短题名，并在页面内用副标题、译注或制作说明承载次级信息。
 - EPUB 里有图表时，不能只在 Markdown 里留下图片链接。构建脚本必须把它们转成 XHTML、复制资源、登记 OPF manifest，并保留 alt/figcaption/table caption。
 

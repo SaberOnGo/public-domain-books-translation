@@ -93,7 +93,7 @@
 - `references/stratified_random_spotcheck.md`：第一版 EPUB 后强制执行的分层随机抽检、修复闭环和退出置信度规则。
 - `references/release_versioning.md`：EPUB 按软件版本发布的版本号、release note、`output/release/` 目录和退出门禁规则。
 - `references/private_use_cover_policy.md`：仅由 `modes/private_use` 覆盖层提供。私人自用封面不得放长版权免责声明或公版来源行；私人自用边界必须写在书籍信息页/前置页和 metadata 中。
-- `references/private_use_frontmatter_policy.md`：仅由 `modes/private_use` 覆盖层提供。私人自用首页/前置页不得包含公版说明，制作标识必须使用 `参考LifeBook书坊 个人自制`。
+- `references/private_use_frontmatter_policy.md`：仅由 `modes/private_use` 覆盖层提供。私人自用首页/前置页不得包含公版说明，制作标识必须使用 `参考public-domain-books-translation 开源项目 个人自制`。
 - `references/private_use_artifact_policy.md`：仅由 `modes/private_use` 覆盖层提供。私人自用版本化产物写入 `output/private_artifacts/`，不是公开 release。
 - `automation_contract.md`：自动化执行合约。
 
@@ -263,7 +263,7 @@ node scripts/asset_manifest_check.js --write-report
 必须同时满足：
 
 - `metadata/rights_checklist.md` 明确可继续：公开项目必须是 `PUBLICATION_PASS` 或 `LICENSED_PASS`；私人自用项目必须是 `PRIVATE_USE_PASS`。
-- 若 `publication_mode=private_use`，`metadata/private_use_declaration.md` 必须存在并记录用户本地书源文件名、SHA256、个人自用、不传播、不商业使用声明、风险由个人承担、LifeBook书坊仅发布 LifeBook 翻译发布系统且不承担他人翻译/保存/传播/使用非公版内容导致的版权风险及责任；工程路径必须位于 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。
+- 若 `publication_mode=private_use`，`metadata/private_use_declaration.md` 必须存在并记录用户本地书源文件名、SHA256、个人自用、不传播、不商业使用声明、风险由个人承担、public-domain-books-translation 开源项目仅用于公版书翻译发布，且不承担他人翻译/保存/传播/使用非公版内容导致的版权风险及责任；工程路径必须位于 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。
 - 若启用特殊书型 profile，`metadata/reference_witness_policy.md` 必须明确原文底本和第二语言参考译本的使用边界。
 - `qa/pretranslation/pretranslation_report.md` 结论为 `PASS`。
 - 所有章节存在 `qa/chapter_controls/*.control.md` 且结论为 `PASS`。

@@ -119,7 +119,7 @@ cd books
 npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
 ```
 
-私人模式不降低翻译、审校、EPUB 校验、分层随机抽检要求，但会改变权利、读者可见措辞和产物语义。私人封面底部使用 `个人学习版`；私人首页/前置页使用 `参考LifeBook书坊 个人自制`，去掉所有公版说明，并写明仅供个人自用、不传播、不商业使用、风险由个人承担。私人产物写入 `output/private_artifacts/`，不是公开 release。
+私人模式不降低翻译、审校、EPUB 校验、分层随机抽检要求，但会改变权利、读者可见措辞和产物语义。私人封面底部使用 `个人学习版`；私人首页/前置页使用 `参考public-domain-books-translation 开源项目 个人自制`，去掉所有公版说明，并写明仅供个人自用、不传播、不商业使用、风险由个人承担。私人产物写入 `output/private_artifacts/`，不是公开 release。
 
 ## 核心规则
 
@@ -174,7 +174,7 @@ npm run private:artifact:create
 
 本项目产生的译文、注释、封面、排版和 EPUB 打包等非代码内容，默认按 `CC BY-NC-SA 4.0` 发布；第三方商业使用必须另行取得 LifeBook 书坊及相关权利人的授权。
 
-`books/private/` 下的私人自用项目不属于公开发布内容，不适用默认公开授权，不得提交或发布到 GitHub。任何私人译本仅供个人自用，不传播，不商业使用；相关风险由个人承担。LifeBook书坊仅发布 LifeBook 翻译发布系统，不承担任何因其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+`books/private/` 下的私人自用项目不属于公开发布内容，不适用默认公开授权，不得提交或发布到 GitHub。任何私人译本仅供个人自用，不传播，不商业使用；相关风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
 
 参见：
 

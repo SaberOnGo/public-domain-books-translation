@@ -55,7 +55,7 @@ The script writes private projects under `books/private/{target}/{number}_{targe
 
 脚本会把私人项目写入 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，并在 common、语言方向和 profile 层之后叠加 `template/epub_pipeline/modes/private_use/`。该目录被 Git 忽略。脚本、模板和配置可以发布到 GitHub，但 `books/private/` 下的私人原文、译文、QA、EPUB 输出、私人产物和具体书籍 metadata 不得发布。
 
-Private-use cover and frontmatter rules are mode-specific. The cover must not show public-domain source claims or long rights disclaimers; the book-info/frontmatter producer line is `参考LifeBook书坊 个人自制`; public-domain notices and public license wording must be removed. Versioned private artifacts are created with:
+Private-use cover and frontmatter rules are mode-specific. The cover must not show public-domain source claims or long rights disclaimers; the book-info/frontmatter producer line is `参考public-domain-books-translation 开源项目 个人自制`; public-domain notices and public license wording must be removed. Versioned private artifacts are created with:
 
 ```powershell
 npm run private:artifact:create

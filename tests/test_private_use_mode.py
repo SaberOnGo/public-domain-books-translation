@@ -91,7 +91,7 @@ def write_minimal_template(repo_root: Path) -> None:
         "# Private cover\n\n个人学习版\n", encoding="utf-8"
     )
     (mode / "references" / "private_use_frontmatter_policy.md").write_text(
-        "# Private frontmatter\n\n参考LifeBook书坊 个人自制\n", encoding="utf-8"
+        "# Private frontmatter\n\n参考public-domain-books-translation 开源项目 个人自制\n", encoding="utf-8"
     )
     (mode / "references" / "private_use_artifact_policy.md").write_text(
         "# Private artifacts\n", encoding="utf-8"
@@ -205,7 +205,7 @@ class PrivateUseModeTests(unittest.TestCase):
             )
             declaration = (project_root / "metadata" / "private_use_declaration.md").read_text(encoding="utf-8")
             self.assertIn("风险由个人承担", declaration)
-            self.assertIn("LifeBook书坊仅发布 LifeBook 翻译发布系统", declaration)
+            self.assertIn("public-domain-books-translation 开源项目仅用于公版书翻译发布", declaration)
             self.assertTrue((project_root / "references" / "private_use_cover_policy.md").exists())
             self.assertTrue((project_root / "references" / "private_use_frontmatter_policy.md").exists())
             self.assertTrue((project_root / "references" / "private_use_artifact_policy.md").exists())
@@ -419,6 +419,87 @@ class PrivateUseModeTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("missing_private_cover_frontmatter", result.stdout)
             self.assertIn("missing_private_book_info_frontmatter", result.stdout)
+
+    def test_private_reader_gate_accepts_open_project_private_boundary(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            book_root = Path(tmp) / "books" / "private" / "zh-Hans" / "1_private_book"
+            frontmatter = book_root / "frontmatter"
+            frontmatter.mkdir(parents=True)
+            (frontmatter / "cover.md").write_text("# 私人书籍封面\n\n作者：某作者\n", encoding="utf-8")
+            (frontmatter / "book-info.md").write_text(
+                "\n".join(
+                    [
+                        "# 书籍信息",
+                        "",
+                        "书名：私人书籍",
+                        "作者：某作者",
+                        "版本：私人学习版本",
+                        "制作标识：参考public-domain-books-translation 开源项目 个人自制",
+                        "本地书源：source.epub",
+                        "书源校验：SHA256 abc123",
+                        "",
+                        "仅供个人自用，不传播，不商业使用。",
+                        "",
+                        "风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        REPO_ROOT
+                        / "template"
+                        / "epub_pipeline"
+                        / "modes"
+                        / "private_use"
+                        / "scripts"
+                        / "check_private_reader_facing_policy.py"
+                    ),
+                    "--book-root",
+                    str(book_root),
+                ],
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_private_use_templates_do_not_prescribe_lifebook_reader_facing_private_wording(self) -> None:
+        checked_files = [
+            "AGENTS.md",
+            "README.zh-CN.md",
+            "template/epub_pipeline/README.md",
+            "template/epub_pipeline/common/preproduction/stage1/_TEMPLATE.production_spec.md",
+            "template/epub_pipeline/common/references/book_info_frontmatter_policy.md",
+            "template/epub_pipeline/common/metadata/private_use_declaration.md",
+            "template/epub_pipeline/common/metadata/rights_checklist.md",
+            "template/epub_pipeline/modes/private_use/README.md",
+            "template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md",
+            "template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md",
+            "template/epub_pipeline/modes/private_use/preproduction/stage1/_TEMPLATE.private_use_production_spec.md",
+            "template/epub_pipeline/modes/private_use/scripts/create_private_artifact.py",
+        ]
+        forbidden = [
+            "参考LifeBook书坊 个人自制",
+            "LifeBook书坊仅发布 LifeBook 翻译发布系统",
+            "LifeBook书坊不承担任何因其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任",
+            "LifeBook Shufang publishes only the LifeBook translation publishing system",
+            "LifeBook Shufang does not assume copyright risk or liability",
+        ]
+
+        failures = []
+        for relative in checked_files:
+            text = (REPO_ROOT / relative).read_text(encoding="utf-8")
+            for snippet in forbidden:
+                if snippet in text:
+                    failures.append(f"{relative}: {snippet}")
+
+        self.assertEqual(failures, [])
 
 
 if __name__ == "__main__":

@@ -23,7 +23,7 @@
 必须包含：
 
 1. 封面方案：图像来源、尺寸、格式、压缩目标、OPF `cover-image` 写入方式。
-2. 书籍详情页：公版或授权项目优先显示本项目版本信息，包括 `LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明；`private_use` 项目必须改用 `modes/private_use/references/private_use_frontmatter_policy.md`，使用 `参考LifeBook书坊 个人自制`，去掉所有公版说明，并写明个人自用边界和风险责任。
+2. 书籍详情页：公版或授权项目优先显示本项目版本信息，包括 `LifeBook 书坊 + 个人名`、译制时间、公版来源 URL、公版说明；`private_use` 项目必须改用 `modes/private_use/references/private_use_frontmatter_policy.md`，使用 `参考public-domain-books-translation 开源项目 个人自制`，去掉所有公版说明，并写明个人自用边界和风险责任。
 3. 作者信息：生卒年、国籍、基本人生、代表作、与本书关系。
 4. 原书信息：韩文/朝鲜文原名、读音（必要时）、初出/出版年代、来源版本、韩国 Wikisource/国立国会图书馆/Wikisource/Internet Archive 或其他公版来源。
 5. 字体策略：默认不得锁死难看字体；除非做字体子集化，不得嵌入完整中文字体。
@@ -39,7 +39,7 @@
 - 封面 PNG 可能过大，3MB 封面对于 280KB 正文不合理，应压缩为数百 KB 级 JPG。
 - 直接嵌入完整中文字体可能达到几十 MB，不适合批量公版 EPUB；如需指定字体，必须做字体子集化。
 - 写死 `font-family` 可能导致读书 App 无法切换字体；默认应让阅读器字体接管。
-- `LifeBook 翻译组` 这种名称像字幕组。公版或授权发布项目的书籍信息页使用 `LifeBook 书坊 + 个人名`，例如 `LifeBook 书坊 {贡献者名}`；`private_use` 项目不得使用该署名，必须使用 `参考LifeBook书坊 个人自制`。
+- `LifeBook 翻译组` 这种名称像字幕组。公版或授权发布项目的书籍信息页使用 `LifeBook 书坊 + 个人名`，例如 `LifeBook 书坊 {贡献者名}`；`private_use` 项目不得使用该署名，必须使用 `参考public-domain-books-translation 开源项目 个人自制`。
 - 韩语/朝鲜语题名、韩文/汉字题名、无题分隔和页眉残留必须在标题策略中区分；`nav.xhtml` 使用短题名，页面主标题保留作品身份，解释性信息放入 `title_note`、书籍信息页或 QA，不挤进目录。
 
 ## 输出 / Output
