@@ -13,7 +13,7 @@
 参考已有的epub书的制作:"a_negro_explorer_at_the_north_pole" 的对话历史以及该书的制作经验与教训。
 文学出版级还需要做标题工程、章节精修、术语/译注统一和长段落处理,包括专业名词、术语(在语境中准确翻译)等等。
 并且需按照模板("\template\epub_pipeline")的要求严格执行,
-并且也要按照本书的要求".\books\zh-Hans\2_pg10966_the_ghost_pirates"严格执行.
+并且也要按照本书的要求".\books\zh-Hans\2_幽灵海盗_威廉·霍普·霍奇森"严格执行.
 对于重要段落，高潮段落等，以及重要内容、细节等进行认真检查翻译、文学性等。
 文学性检查、"信达雅"检查要全书分析进行。
 请查漏补缺,不可遗漏,写成'/goal'目标执行。
@@ -199,7 +199,7 @@ output/book.epub 不能单独作为完成依据。
 总之严格按照模板要求执行。
 ------------------------------------------------------------------
 请你启动2个独立agent, 对:"{path_to_external_translation_set}" 和:
-"books/zh-Hans/8_chijin_no_ai_tanizaki/output/release/{latest_chijin_no_ai_epub}"
+"books/zh-Hans/8_痴人之爱_谷崎润一郎/output/release/{latest_chijin_no_ai_epub}"
 共5个译本进行多方面维度的评审(包括文学批评、忠实性、读者体验、能否吸引读者、基本错误等，不限于我提到的方面)，满分100，
 2个agent必须独立不受影响。输出结果时，要指明哪本书(写明译者)。完成评审后，请输出一套用于评价/评估译本的质量的设计或者规则，
 保存在:"doc/public/"(以后该文档用于执行对不同译本的质量评估)。
@@ -257,7 +257,7 @@ output/book.epub 不能单独作为完成依据。
 完成后重新生成或更新 `qa/chapter_controls/*.control.md`、必要的 `qa/fidelity/`、`qa/readability/`、`qa/terminology/`、`qa/gates/` 记录，把通过章节写入或更新到 `chapters/final/`。然后重建 EPUB，运行可用的 chapter-control/preflight/publication lint/asset/EPUBCheck 命令。报告修复章节、问题族、验证命令结果和仍需进入 Prompt C 的事项。
 ----------------------------------------------------------------
 请你启动2个独立agent, 对:
-"\books\private\zh-Hans\1_dialogue_art_verbal_action\output\private_artifacts\《对白：文字、舞台、银幕的言语行动艺术》罗伯特·麦基_private_v0.0.10.epub"
+"\books\private\zh-Hans\1_对白_罗伯特·麦基\output\private_artifacts\《对白：文字、舞台、银幕的言语行动艺术》罗伯特·麦基_private_v0.0.10.epub"
 和:
 "${LIFEBOOK_HOME}\doc\public\qa_evaluation\示例输入\对白：文字、舞台、银幕的言语行为艺术 罗伯特·麦基.epub"
 共5个译本进行多方面维度的评审(包括文学批评、忠实性、读者体验、能否吸引读者、基本错误等，不限于我提到的方面)，满分100，

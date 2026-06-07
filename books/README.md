@@ -26,19 +26,19 @@ The result is `books/{target}/{number}_{target_language_title}_{target_language_
 
 Current Simplified Chinese book projects:
 
-- `books/zh-Hans/1_pg20923_a_negro_explorer_at_the_north_pole/`
-- `books/zh-Hans/2_pg10966_the_ghost_pirates/`
-- `books/zh-Hans/3_pg19141_edisons_conquest_of_mars/`
-- `books/zh-Hans/4_pg16611_ansons_voyage_round_the_world/`
-- `books/zh-Hans/5_pg3479_the_metal_monster/`
+- `books/zh-Hans/1_黑人北极探险家_马修·A·汉森/`
+- `books/zh-Hans/2_幽灵海盗_威廉·霍普·霍奇森/`
+- `books/zh-Hans/3_爱迪生征服火星_加勒特·P·瑟维斯/`
+- `books/zh-Hans/4_环球航海记_理查德·沃尔特/`
+- `books/zh-Hans/5_金属巨兽_亚伯拉罕·梅里特/`
 
 当前简体中文书籍工程：
 
-- `books/zh-Hans/1_pg20923_a_negro_explorer_at_the_north_pole/`
-- `books/zh-Hans/2_pg10966_the_ghost_pirates/`
-- `books/zh-Hans/3_pg19141_edisons_conquest_of_mars/`
-- `books/zh-Hans/4_pg16611_ansons_voyage_round_the_world/`
-- `books/zh-Hans/5_pg3479_the_metal_monster/`
+- `books/zh-Hans/1_黑人北极探险家_马修·A·汉森/`
+- `books/zh-Hans/2_幽灵海盗_威廉·霍普·霍奇森/`
+- `books/zh-Hans/3_爱迪生征服火星_加勒特·P·瑟维斯/`
+- `books/zh-Hans/4_环球航海记_理查德·沃尔特/`
+- `books/zh-Hans/5_金属巨兽_亚伯拉罕·梅里特/`
 
 ## Node.js Dependencies / Node.js 依赖
 
@@ -56,7 +56,7 @@ Node 依赖统一安装在 `books/node_modules/`，供所有书籍工程共享�
 From a book directory, normal scripts still run locally:
 
 ```powershell
-cd books/zh-Hans/2_pg10966_the_ghost_pirates
+cd books/zh-Hans/2_幽灵海盗_威廉·霍普·霍奇森
 npm run lint:publication
 npm run build:epub
 npm run check:epub

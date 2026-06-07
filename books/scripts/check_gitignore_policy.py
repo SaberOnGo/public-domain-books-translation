@@ -38,7 +38,7 @@ FORBIDDEN_PUBLIC_RELEASE_PATTERNS = [
 ]
 
 REFERENCE_PROJECTS = {
-    "zh-Hans/7_shisei_tanizaki",
+    "zh-Hans/7_刺青_谷崎润一郎",
 }
 
 
