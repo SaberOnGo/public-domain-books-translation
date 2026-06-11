@@ -105,6 +105,8 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   修复方式：把该问题族回退到目标语独立阅读和有原文依据的句法重组。简体中文中，80-87 应作为返修候选，88-91 仍未达优秀；最终产物评审必须达到 `average_score >= 92`、`lowest_score >= 88` 且每个样本逐项评分。不要靠提高总评分解决；要修正文风，或阻止该轮作为最终 PASS。
 - Low-token audit: Scan review files first with `rg -n "可读|略硬|较硬|偏密|略抽象|解释化|翻译腔|英式分析腔|分析稍密|较机械|稍显" reviews/random_spotcheck`, then inspect only the cited sample units and nearby source context before book-wide pattern searches.
   低 token 审计：先扫评审文件：`rg -n "可读|略硬|较硬|偏密|略抽象|解释化|翻译腔|英式分析腔|分析稍密|较机械|稍显" reviews/random_spotcheck`，再只检查被点名样本及邻近原文，然后按确认的问题族扩大全书候选检索。
+- Fiction-dialogue refinement guard: In novels, random samples often expose non-blocking but non-publishable stiffness through child speech, domestic banter, and emotional narration rather than through explicit factual mistakes. When a sample phrase is semantically correct but reads like a literal shell such as `正好吻合`, `这是最好的地方`, or `深而急地思考着`, classify it under this family, audit the whole book with exact-string or near-string searches for the same residue type, and rebuild into target-language novel diction instead of patching only the sampled line.
+  小说对白精修防护：小说抽样里，很多不过线级而未达出版级的问题，不是事实错，而是孩童口吻、家常对白、情绪叙述里残留的半直译硬壳。若样本出现语义没错、但读感像直译外壳的句子，如“正好吻合”“这是最好的地方”“深而急地思考着”，应归入本问题族；随后用精确残留词或近似残留词做全书扫描，不得只修样本句，必须整体重写为目标语小说腔。
 - Recheck: The next new-seed round should not merely remove blocking issues; the distribution should show excellence-level prose, with no summary-only review file and no cluster of "readable but stiff" comments.
   复查：下一轮新 seed 不只看阻塞问题是否消失；分数分布应体现优秀级译文，不能有只写总评的评审文件，也不能继续集中出现“可读但硬”的评语。
 

@@ -470,6 +470,113 @@ def write_report(book_root: Path, issues: list[str], json_path: Path, md_path: P
     write_json(book_root / "output" / "translation_metrics_check.json", report)
 
 
+def render_markdown_localized(data: dict[str, Any]) -> str:
+    book = data.get("book", {})
+    estimate = data.get("pretranslation_estimate", {})
+    actual = data.get("post_translation_actual", {})
+    profile = estimate.get("book_complexity_profile", {}) if isinstance(estimate, dict) else {}
+    recommendations = estimate.get("model_recommendations", []) if isinstance(estimate, dict) else []
+    models = actual.get("models_used", []) if isinstance(actual, dict) else []
+    level_zh = {"low": "低", "medium": "中", "high": "高", "very_high": "超高"}
+    book_type_zh = {
+        "fiction": "小说",
+        "history": "历史",
+        "philosophy": "哲学",
+        "programming": "编程",
+        "language_learning": "语言学习",
+        "science": "科学",
+        "nature": "自然书写",
+        "historical_context": "历史语境",
+    }
+
+    def zh_term(value: Any, mapping: dict[str, str]) -> str:
+        return mapping.get(str(value), str(value))
+
+    rec_lines = [
+        f"- {item.get('provider', '')}：建议等级 {zh_term(item.get('model_tier', ''), level_zh)}"
+        f"（{item.get('model_tier', '')}）；用途：{item.get('recommended_for', '') or '待补充'}；"
+        f"预估输入 token {item.get('estimated_input_tokens', 0)}；预估输出 token {item.get('estimated_output_tokens', 0)}。"
+        for item in recommendations
+        if isinstance(item, dict)
+    ] or ["- 暂无模型建议。"]
+    model_lines = [
+        f"- {item.get('provider', '')}：{item.get('model_name', '') or '未记录模型名'}"
+        f"（等级 {zh_term(item.get('model_tier', ''), level_zh)}），角色 {item.get('role', '') or '未记录'}，"
+        f"输入 token {item.get('input_tokens', 0)}，输出 token {item.get('output_tokens', 0)}。"
+        for item in models
+        if isinstance(item, dict)
+    ] or ["- 尚未记录。"]
+    lesson_lines = [f"- {item}" for item in actual.get("lessons_for_future_estimates", [])] or ["- 尚未记录。"]
+    history = estimate.get("historical_reference", {}) if isinstance(estimate, dict) else {}
+    history_rates = history.get("estimated_from_history", {}) if isinstance(history, dict) else {}
+    domains = profile.get("domains", []) if isinstance(profile, dict) else []
+    return "\n".join(
+        [
+            "# 翻译任务预估与实际统计",
+            "",
+            "本文件用于公开记录翻译前预估与翻译后实际统计，方便后续用户和 AI 参考相似书籍的时间、难度、token 消耗和模型等级选择。机器可读取的事实源是同目录下的 `translation_metrics.json`。",
+            "",
+            "## 书籍信息",
+            "",
+            f"- 书名（title）：{book.get('title', '') or '未记录'}",
+            f"- 原书名（original_title）：{book.get('original_title', '') or '未记录'}",
+            f"- 作者（author）：{book.get('author', '') or '未记录'}",
+            f"- 语言方向模板（source_target）：{book.get('source_target', '')}",
+            f"- 发布模式（publication_mode）：{book.get('publication_mode', '')}",
+            "",
+            "## 翻译前预估",
+            "",
+            f"- 状态（status）：{estimate.get('status', '')}",
+            f"- 主要书籍类型（primary_book_type）：{zh_term(profile.get('primary_book_type', ''), book_type_zh)}",
+            f"- 领域（domains）：{'、'.join(domains) or '未识别'}",
+            f"- 原文规模（source_unit_count）：{profile.get('source_unit_count', 0)} {profile.get('source_unit', '')}",
+            f"- 章节数（chapter_count）：{profile.get('chapter_count', 0)}",
+            f"- 图像/图示数量（figures_count）：{profile.get('figures_count', 0)}",
+            f"- 表格数量（tables_count）：{profile.get('tables_count', 0)}",
+            f"- 公式或代码块数量（formula_or_code_block_count）：{profile.get('formula_or_code_block_count', 0)}",
+            f"- 注释数量（notes_or_annotations_count）：{profile.get('notes_or_annotations_count', 0)}",
+            f"- 难度（difficulty）：{zh_term(estimate.get('difficulty_level', ''), level_zh)}（{estimate.get('difficulty_score_1_to_5', 0)}/5）",
+            f"- 难度说明（difficulty_rationale）：{estimate.get('difficulty_rationale', '') or '未记录'}",
+            f"- 预估日历时间（estimated_calendar_days）：{estimate.get('estimated_calendar_days', {}).get('min', 0)}-{estimate.get('estimated_calendar_days', {}).get('max', 0)} 天",
+            f"- 预估有效工时（estimated_active_hours）：{estimate.get('estimated_active_hours', {}).get('min', 0)}-{estimate.get('estimated_active_hours', {}).get('max', 0)} 小时",
+            f"- 预估审校轮次（estimated_review_rounds）：{estimate.get('estimated_review_rounds', 0)}",
+            f"- 历史相似书籍数量（historical_reference_matched_count）：{history.get('matched_count', 0) if isinstance(history, dict) else 0}",
+            f"- 历史每 1 万原文单位有效工时（historical_active_hours_per_10k_source_units）：{history_rates.get('active_hours_per_10k_source_units', 0)}",
+            "",
+            "### 模型选择",
+            "",
+            *rec_lines,
+            "",
+            "## 翻译后实际统计",
+            "",
+            f"- 状态（status）：{actual.get('status', '')}",
+            f"- 开始时间（started_at）：{actual.get('started_at', '') or '尚未记录'}",
+            f"- 完成时间（finished_at）：{actual.get('finished_at', '') or '尚未记录'}",
+            f"- 实际日历天数（actual_calendar_days）：{actual.get('actual_calendar_days', 0)}",
+            f"- 实际有效工时（actual_active_hours）：{actual.get('actual_active_hours', 0)}",
+            f"- 实际审校轮次（actual_review_rounds）：{actual.get('actual_review_rounds', 0)}",
+            f"- 实际难度（actual_difficulty）：{zh_term(actual.get('actual_difficulty_level', ''), level_zh)}（{actual.get('actual_difficulty_score_1_to_5', 0)}/5）",
+            f"- 总输入 token（total_input_tokens）：{actual.get('total_input_tokens', 0)}",
+            f"- 总输出 token（total_output_tokens）：{actual.get('total_output_tokens', 0)}",
+            f"- 与预估的偏差（variance_against_estimate）：{actual.get('variance_against_estimate', '') or '尚未记录'}",
+            "",
+            "### 实际模型使用",
+            "",
+            *model_lines,
+            "",
+            "### 后续预估经验",
+            "",
+            *lesson_lines,
+            "",
+            "## 隐私与发布边界",
+            "",
+            "- 本文件不得包含原文、译文片段、prompt、私人 QA 日志或本机绝对路径。",
+            "- 私人自用项目的 metrics 不得发布到 GitHub。",
+            "",
+        ]
+    )
+
+
 def main() -> int:
     args = parse_args()
     book_root = resolve_book_root(args.book_root)
@@ -484,7 +591,7 @@ def main() -> int:
         else:
             data = default_metrics(book_root)
         write_json(json_path, data)
-        md_path.write_text(render_markdown(data), encoding="utf-8", newline="\n")
+        md_path.write_text(render_markdown_localized(data), encoding="utf-8", newline="\n")
         if args.write_report:
             write_report(book_root, [], json_path, md_path)
         print(f"initialized {rel(book_root, json_path)}")
@@ -502,7 +609,7 @@ def main() -> int:
         return 1
 
     data = read_json(json_path)
-    md_path.write_text(render_markdown(data), encoding="utf-8", newline="\n")
+    md_path.write_text(render_markdown_localized(data), encoding="utf-8", newline="\n")
     issues = validate_metrics(data, args.require_actual_pass)
     if not md_path.exists():
         issues.append(f"missing {rel(book_root, md_path)}")

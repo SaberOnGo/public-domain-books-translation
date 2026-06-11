@@ -630,6 +630,109 @@ def render_assessment_md(data: dict[str, Any]) -> str:
     )
 
 
+def render_assessment_md_localized(data: dict[str, Any]) -> str:
+    profile = data["book_complexity_profile"]
+    components = data["difficulty_components_1_to_5"]
+    recs = data["model_recommendations"]
+    history = data.get("historical_reference", {})
+    similar_books = history.get("similar_books", []) if isinstance(history, dict) else []
+    level_zh = {"low": "低", "medium": "中", "high": "高", "very_high": "超高"}
+    density_zh = {"low": "低", "medium": "中", "high": "高", "very_high": "超高"}
+    book_type_zh = {
+        "fiction": "小说",
+        "history": "历史",
+        "philosophy": "哲学",
+        "programming": "编程",
+        "language_learning": "语言学习",
+        "science": "科学",
+        "nature": "自然书写",
+        "historical_context": "历史语境",
+    }
+    component_zh = {
+        "source_language_complexity": "源语言复杂度",
+        "domain_knowledge_load": "领域知识负荷",
+        "terminology_density": "术语密度",
+        "argument_or_plot_complexity": "论证或情节复杂度",
+        "historical_context_load": "历史语境负荷",
+        "philosophical_or_theoretical_density": "哲学/理论密度",
+        "technical_code_or_formula_load": "技术、代码或公式负荷",
+        "tables_figures_formula_load": "图表/公式处理负荷",
+        "target_style_difficulty": "目标语文体难度",
+        "annotation_and_cross_reference_load": "注释与交叉引用负荷",
+    }
+    provider_use_zh = {
+        "deepseek": "低成本初译、术语扩展和章节草稿",
+        "gpt": "章节质控、疑难段落、终稿润色和 release 前 QA",
+        "claude": "长上下文一致性复核、风格比较和独立 QA",
+    }
+
+    def zh_term(value: Any, mapping: dict[str, str]) -> str:
+        return mapping.get(str(value), str(value))
+
+    def zh_list(values: list[str], mapping: dict[str, str]) -> str:
+        return "、".join(zh_term(value, mapping) for value in values) or "未识别"
+
+    historical_rates = history.get("estimated_from_history", {}) if isinstance(history, dict) else {}
+    history_lines = [
+        f"- {item.get('book_title', '')}：相似度 {item.get('similarity', 0)}，"
+        f"实际工时 {item.get('actual_active_hours', 0)} 小时，"
+        f"总 token {(item.get('total_input_tokens') or 0) + (item.get('total_output_tokens') or 0)}，"
+        f"模型等级 {', '.join(item.get('model_tiers_used', [])) or '未记录'}"
+        for item in similar_books
+        if isinstance(item, dict)
+    ] or ["- 暂未找到可发布的相似书籍历史 metrics。"]
+    return "\n".join(
+        [
+            "# 翻译难度评估",
+            "",
+            "这是翻译前的聚合预估记录，不包含原文摘录或 prompt 文本。机器可读取的事实源是同目录下的 `translation_difficulty_assessment.json`。",
+            "",
+            "## 总体判断",
+            "",
+            f"- 难度等级（difficulty）：{zh_term(data['overall_difficulty_level'], level_zh)}（{data['overall_difficulty_score_1_to_5']}/5）",
+            f"- 预估日历时间（estimated_calendar_days）：{data['estimated_calendar_days']['min']}-{data['estimated_calendar_days']['max']} 天",
+            f"- 预估有效工时（estimated_active_hours）：{data['estimated_active_hours']['min']}-{data['estimated_active_hours']['max']} 小时",
+            f"- 预估审校轮次（estimated_review_rounds）：{data['estimated_review_rounds']} 轮",
+            f"- 判断说明：本书主要类型为{zh_term(profile['primary_book_type'], book_type_zh)}，检测到 {profile['chapter_count']} 章、约 {profile['source_unit_count']} {profile['source_unit']}；专名密度为{zh_term(profile['named_entity_density'], density_zh)}，目标语文体难度为 {components.get('target_style_difficulty', 0)}/5。",
+            "",
+            "## 复杂度画像",
+            "",
+            f"- 主要书籍类型（primary_book_type）：{zh_term(profile['primary_book_type'], book_type_zh)}",
+            f"- 检测到的类型（detected_book_types）：{zh_list(profile.get('detected_book_types', []), book_type_zh)}",
+            f"- 原文规模（source_unit_count）：{profile['source_unit_count']} {profile['source_unit']}",
+            f"- 章节数（chapter_count）：{profile['chapter_count']}",
+            f"- 图像/图示数量（figures_count）：{profile['figures_count']}",
+            f"- 表格数量（tables_count）：{profile['tables_count']}",
+            f"- 公式或代码块数量（formula_or_code_block_count）：{profile['formula_or_code_block_count']}",
+            f"- 注释数量（notes_or_annotations_count）：{profile['notes_or_annotations_count']}",
+            f"- 专名密度（named_entity_density）：{zh_term(profile['named_entity_density'], density_zh)}",
+            "",
+            "## 分项评分",
+            "",
+            *[f"- {component_zh.get(key, key)}（{key}）：{value}/5" for key, value in components.items()],
+            "",
+            "## 历史统计参考",
+            "",
+            f"- 匹配到的相似书籍数量（matched_count）：{history.get('matched_count', 0) if isinstance(history, dict) else 0}",
+            f"- 历史每 1 万原文单位有效工时（active_hours_per_10k_source_units）：{historical_rates.get('active_hours_per_10k_source_units', 0)}",
+            f"- 历史每原文单位输入 token（input_tokens_per_source_unit）：{historical_rates.get('input_tokens_per_source_unit', 0)}",
+            f"- 历史每原文单位输出 token（output_tokens_per_source_unit）：{historical_rates.get('output_tokens_per_source_unit', 0)}",
+            "",
+            *history_lines,
+            "",
+            "## 模型建议",
+            "",
+            *[
+                f"- {item['provider']}：建议等级 {zh_term(item['model_tier'], level_zh)}（{item['model_tier']}）；"
+                f"用途：{provider_use_zh.get(item['provider'], item['recommended_for'])}；"
+                f"预估输入 token {item['estimated_input_tokens']}；预估输出 token {item['estimated_output_tokens']}。"
+                for item in recs
+            ],
+            "",
+        ]
+    )
+
+
 def merge_metrics(book_root: Path, assessment: dict[str, Any], release_dir: Path) -> None:
     metrics_path = release_dir / "translation_metrics.json"
     if metrics_path.exists():
@@ -715,7 +818,7 @@ def main() -> int:
     assessment_json = release_dir / "translation_difficulty_assessment.json"
     assessment_md = release_dir / "translation_difficulty_assessment.md"
     write_json(assessment_json, assessment)
-    assessment_md.write_text(render_assessment_md(assessment), encoding="utf-8", newline="\n")
+    assessment_md.write_text(render_assessment_md_localized(assessment), encoding="utf-8", newline="\n")
     if args.write_metrics:
         merge_metrics(book_root, assessment, release_dir)
     print(f"translation difficulty: {assessment['overall_difficulty_level']} ({assessment['overall_difficulty_score_1_to_5']}/5)")

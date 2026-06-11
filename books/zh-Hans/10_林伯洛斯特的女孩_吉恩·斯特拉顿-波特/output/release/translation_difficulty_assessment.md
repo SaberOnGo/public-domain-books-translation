@@ -1,53 +1,51 @@
-# Translation Difficulty Assessment / 翻译难度评估
+# 翻译难度评估
 
-This is a pre-translation aggregate estimate. It contains no source excerpts or prompt text.
+这是翻译前的聚合预估记录，不包含原文摘录或 prompt 文本。机器可读取的事实源是同目录下的 `translation_difficulty_assessment.json`。
 
-这是翻译前的聚合预估记录，不包含原文摘录或 prompt 文本。
+## 总体判断
 
-## Overall / 总体判断
+- 难度等级（difficulty）：高（4/5）
+- 预估日历时间（estimated_calendar_days）：14-45 天
+- 预估有效工时（estimated_active_hours）：70-180 小时
+- 预估审校轮次（estimated_review_rounds）：4 轮
+- 判断说明：本书主要类型为小说，检测到 25 章、约 348290 characters；专名密度为高，目标语文体难度为 4/5。
 
-- difficulty: high (4/5)
-- rationale: Primary detected type is fiction; secondary types: history, science, language_learning, programming, philosophy. Source size is 348290 characters; chapter_count=52. Detected figures=0, tables=0, formula_or_code_blocks=1, notes=0. Named-entity density is very_high.
-- estimated_calendar_days: 41-114
-- estimated_active_hours: 204-341
-- estimated_review_rounds: 4
+## 复杂度画像
 
-## Complexity Profile / 复杂度画像
+- 主要书籍类型（primary_book_type）：小说
+- 检测到的类型（detected_book_types）：小说、自然书写、历史语境
+- 原文规模（source_unit_count）：348290 characters
+- 章节数（chapter_count）：25
+- 图像/图示数量（figures_count）：0
+- 表格数量（tables_count）：0
+- 公式或代码块数量（formula_or_code_block_count）：0
+- 注释数量（notes_or_annotations_count）：0
+- 专名密度（named_entity_density）：高
 
-- primary_book_type: fiction
-- detected_book_types: fiction, history, science, language_learning, programming, philosophy
-- source_unit_count: 348290 characters
-- chapter_count: 52
-- figures_count: 0
-- tables_count: 0
-- formula_or_code_block_count: 1
-- notes_or_annotations_count: 0
-- named_entity_density: very_high
+## 分项评分
 
-## Component Scores / 分项评分
+- 源语言复杂度（source_language_complexity）：3/5
+- 领域知识负荷（domain_knowledge_load）：3/5
+- 术语密度（terminology_density）：4/5
+- 论证或情节复杂度（argument_or_plot_complexity）：3/5
+- 历史语境负荷（historical_context_load）：4/5
+- 哲学/理论密度（philosophical_or_theoretical_density）：1/5
+- 技术、代码或公式负荷（technical_code_or_formula_load）：1/5
+- 图表/公式处理负荷（tables_figures_formula_load）：1/5
+- 目标语文体难度（target_style_difficulty）：4/5
+- 注释与交叉引用负荷（annotation_and_cross_reference_load）：1/5
 
-- source_language_complexity: 2/5
-- domain_knowledge_load: 5/5
-- terminology_density: 5/5
-- argument_or_plot_complexity: 4/5
-- historical_context_load: 4/5
-- philosophical_or_theoretical_density: 4/5
-- technical_code_or_formula_load: 1/5
-- tables_figures_formula_load: 1/5
-- target_style_difficulty: 3/5
-- annotation_and_cross_reference_load: 1/5
+## 历史统计参考
 
-## Historical Reference / 历史统计参考
+- 匹配到的相似书籍数量（matched_count）：0
+- 历史每 1 万原文单位有效工时（active_hours_per_10k_source_units）：0
+- 历史每原文单位输入 token（input_tokens_per_source_unit）：0
+- 历史每原文单位输出 token（output_tokens_per_source_unit）：0
 
-- matched_count: 0
-- active_hours_per_10k_source_units: 0
-- input_tokens_per_source_unit: 0
-- output_tokens_per_source_unit: 0
+- 暂未找到可发布的相似书籍历史 metrics。
 
-- No publishable similar-book metrics found yet.
+## 模型建议
 
-## Model Recommendations / 模型建议
-
-- deepseek: tier=medium; use=low-cost first-pass translation, terminology expansion, and broad chapter drafts; estimated_input_tokens=916700; estimated_output_tokens=720300
-- gpt: tier=high; use=final-quality translation, difficult passages, polysemy checks, and release-facing QA; estimated_input_tokens=1113100; estimated_output_tokens=785700
-- claude: tier=high; use=long-context consistency review, style comparison, and independent QA; estimated_input_tokens=982200; estimated_output_tokens=294700
+- deepseek：建议等级 中（medium）；用途：低成本初译、术语扩展和章节草稿；预估输入 token 900000；预估输出 token 700000。
+- gpt：建议等级 高（high）；用途：章节质控、疑难段落、终稿润色和 release 前 QA；预估输入 token 1100000；预估输出 token 780000。
+- claude：建议等级 高（high）；用途：长上下文一致性复核、风格比较和独立 QA；预估输入 token 950000；预估输出 token 280000。

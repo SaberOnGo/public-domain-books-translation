@@ -20,6 +20,10 @@ output/release/translation_metrics.md
 
 `translation_metrics.json` is the AI-readable source of truth. `translation_metrics.md` is the GitHub-readable human summary.
 
+Generated Markdown summaries such as `translation_metrics.md` and `translation_difficulty_assessment.md` are human-facing release files. They must use the target contributor language first, with English field keys kept only as stable machine-readable hints when useful. For Simplified Chinese projects, Chinese-only or Chinese-primary output is acceptable and does not reduce AI readability because AI agents should read the structured JSON as the source of truth.
+
+自动生成的 Markdown 摘要（例如 `translation_metrics.md` 和 `translation_difficulty_assessment.md`）属于面向人的 release 文件，必须以目标贡献者语言为主；英文 key 只作为稳定的机器提示保留即可。对简体中文项目，全中文或中文优先输出都是允许的，不会降低 AI 可读性，因为 AI 应以结构化 JSON 作为事实源。
+
 `translation_metrics.json` 是 AI 可读取的事实源；`translation_metrics.md` 是面向 GitHub 用户的人类可读摘要。
 
 ## Module Boundary / 模块边界

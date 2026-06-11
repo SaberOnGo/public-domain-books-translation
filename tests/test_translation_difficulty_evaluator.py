@@ -101,7 +101,10 @@ class TranslationDifficultyEvaluatorTests(unittest.TestCase):
             self.assertGreaterEqual(assessment["overall_difficulty_score_1_to_5"], 3)
             providers = {item["provider"] for item in assessment["model_recommendations"]}
             self.assertEqual({"deepseek", "gpt", "claude"}, providers)
-            self.assertTrue((book_root / "output" / "release" / "translation_difficulty_assessment.md").exists())
+            assessment_md = (book_root / "output" / "release" / "translation_difficulty_assessment.md").read_text(encoding="utf-8")
+            self.assertIn("# 翻译难度评估", assessment_md)
+            self.assertIn("## 模型建议", assessment_md)
+            self.assertNotIn("# Translation Difficulty Assessment", assessment_md)
 
             metrics = json.loads((book_root / "output" / "release" / "translation_metrics.json").read_text(encoding="utf-8"))
             estimate = metrics["pretranslation_estimate"]
@@ -245,7 +248,9 @@ class TranslationDifficultyEvaluatorTests(unittest.TestCase):
             )
 
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-            self.assertTrue((book_root / "output" / "release" / "translation_metrics.md").exists())
+            metrics_md = (book_root / "output" / "release" / "translation_metrics.md").read_text(encoding="utf-8")
+            self.assertIn("# 翻译任务预估与实际统计", metrics_md)
+            self.assertIn("## 翻译后实际统计", metrics_md)
             report = json.loads((book_root / "output" / "translation_metrics_check.json").read_text(encoding="utf-8"))
             self.assertEqual(report["status"], "PASS")
 
