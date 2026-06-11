@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
-NUMBERED_BOOK_DIR = re.compile(r"^\d+_[A-Za-z0-9][A-Za-z0-9._-]*$")
+NUMBERED_BOOK_DIR = re.compile(r'^\d+_[^\\/:*?"<>|]+$')
 
 REQUIRED_SPEC_TOKENS = [
     "template/epub_pipeline/common/preproduction/stage1/_TEMPLATE.production_spec.md",

@@ -391,6 +391,56 @@ class PrivateUseModeTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("public_project_contains_private_use_overlay", result.stdout)
 
+    def test_template_workflow_gate_accepts_unicode_public_book_directory_name(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            copy_script("template/epub_pipeline/common/scripts/check_template_workflow_gate.py", repo)
+            write_minimal_template(repo)
+            book_root = repo / "books" / "zh-Hans" / "10_林伯洛斯特的女孩_吉恩·斯特拉顿-波特"
+            shutil.copytree(repo / "template" / "epub_pipeline" / "common", book_root)
+            spec = book_root / "preproduction" / "stage1" / "production_spec.md"
+            spec.parent.mkdir(parents=True, exist_ok=True)
+            spec.write_text(
+                "\n".join(
+                    [
+                        "template/epub_pipeline/common/preproduction/stage1/_TEMPLATE.production_spec.md",
+                        "template/epub_pipeline/common/references/cover_design_policy.md",
+                        "template/epub_pipeline/common/references/book_info_frontmatter_policy.md",
+                        "template/epub_pipeline/common/references/epub_assets_figures_tables.md",
+                        "template/epub_pipeline/common/references/quality_gate_framework.md",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            state_path = book_root / "state" / "pipeline_state.json"
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            state.update(
+                {
+                    "project_root": "books/zh-Hans/10_林伯洛斯特的女孩_吉恩·斯特拉顿-波特",
+                    "common_template_root": "template/epub_pipeline/common",
+                    "template_root": "template/epub_pipeline/en-zh-Hans",
+                    "publication_mode": "public_domain",
+                }
+            )
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(repo / "template" / "epub_pipeline" / "common" / "scripts" / "check_template_workflow_gate.py"),
+                    "--book-root",
+                    str(book_root),
+                ],
+                cwd=repo,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("template workflow gate PASS", result.stdout)
+
     def test_private_reader_gate_rejects_missing_private_cover_and_book_info(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             book_root = Path(tmp) / "books" / "private" / "zh-Hans" / "1_private_book"

@@ -1,0 +1,174 @@
+﻿{
+  "schema_version": "1.0.0",
+  "metrics_status": "DRAFT",
+  "created_at": "2026-06-11T03:13:05Z",
+  "updated_at": "2026-06-11T03:13:08Z",
+  "privacy_contract": {
+    "contains_source_text": false,
+    "contains_prompt_text": false,
+    "contains_local_absolute_paths": false,
+    "publishable_to_github": true
+  },
+  "book": {
+    "title": "林伯洛斯特的女孩",
+    "original_title": "",
+    "author": "",
+    "source_target": "template/epub_pipeline/en-zh-Hans",
+    "publication_mode": "public_domain",
+    "profile": ""
+  },
+  "pretranslation_estimate": {
+    "status": "PASS",
+    "created_at": "2026-06-11T03:13:08Z",
+    "book_complexity_profile": {
+      "primary_book_type": "fiction",
+      "secondary_book_types": [
+        "history",
+        "science",
+        "language_learning",
+        "programming",
+        "philosophy"
+      ],
+      "domains": [
+        "fiction",
+        "history",
+        "science",
+        "language_learning",
+        "programming",
+        "philosophy"
+      ],
+      "source_unit": "characters",
+      "source_unit_count": 348290,
+      "chapter_count": 52,
+      "estimated_target_unit_count": 400533,
+      "figures_count": 0,
+      "tables_count": 0,
+      "formula_or_code_block_count": 1,
+      "notes_or_annotations_count": 0,
+      "named_entity_density": "very_high",
+      "requires_external_research": false,
+      "requires_table_or_figure_reconstruction": false,
+      "requires_formula_or_code_validation": true,
+      "requires_historical_or_philosophical_context": true,
+      "special_risk_notes": [
+        "Primary detected type is fiction; secondary types: history, science, language_learning, programming, philosophy.",
+        "Source size is 348290 characters; chapter_count=52.",
+        "Detected figures=0, tables=0, formula_or_code_blocks=1, notes=0.",
+        "Named-entity density is very_high."
+      ]
+    },
+    "difficulty_level": "high",
+    "difficulty_score_1_to_5": 4,
+    "difficulty_components_1_to_5": {
+      "source_language_complexity": 2,
+      "domain_knowledge_load": 5,
+      "terminology_density": 5,
+      "argument_or_plot_complexity": 4,
+      "historical_context_load": 4,
+      "philosophical_or_theoretical_density": 4,
+      "technical_code_or_formula_load": 1,
+      "tables_figures_formula_load": 1,
+      "target_style_difficulty": 3,
+      "annotation_and_cross_reference_load": 1
+    },
+    "difficulty_factors": [
+      "Primary detected type is fiction; secondary types: history, science, language_learning, programming, philosophy.",
+      "Source size is 348290 characters; chapter_count=52.",
+      "Detected figures=0, tables=0, formula_or_code_blocks=1, notes=0.",
+      "Named-entity density is very_high."
+    ],
+    "difficulty_rationale": "Primary detected type is fiction; secondary types: history, science, language_learning, programming, philosophy. Source size is 348290 characters; chapter_count=52. Detected figures=0, tables=0, formula_or_code_blocks=1, notes=0. Named-entity density is very_high.",
+    "estimated_calendar_days": {
+      "min": 41,
+      "max": 114
+    },
+    "estimated_active_hours": {
+      "min": 204,
+      "max": 341
+    },
+    "estimated_review_rounds": 4,
+    "historical_reference": {
+      "history_root": "books",
+      "matched_count": 0,
+      "candidate_count": 0,
+      "similar_books": [],
+      "estimated_from_history": {
+        "active_hours_per_10k_source_units": 0,
+        "input_tokens_per_source_unit": 0,
+        "output_tokens_per_source_unit": 0
+      },
+      "history_usage_note": "Uses only publishable output/release/translation_metrics.json files with PASS estimates and PASS actuals. Private-use projects and metrics containing source text or prompt text are ignored."
+    },
+    "model_recommendations": [
+      {
+        "provider": "deepseek",
+        "model_name": "",
+        "model_tier": "medium",
+        "recommended_for": "low-cost first-pass translation, terminology expansion, and broad chapter drafts",
+        "estimated_input_tokens": 916700,
+        "estimated_output_tokens": 720300,
+        "cost_control_notes": [
+          "Use for broad drafting when the difficulty components are not dominated by philosophy, formulas, or dense historical context.",
+          "Escalate sampled hard passages to a higher-tier reviewer before finalizing."
+        ],
+        "quality_risk_notes": [
+          "Watch for term drift, over-literal prose, and missed context in high-density historical or philosophical passages."
+        ]
+      },
+      {
+        "provider": "gpt",
+        "model_name": "",
+        "model_tier": "high",
+        "recommended_for": "final-quality translation, difficult passages, polysemy checks, and release-facing QA",
+        "estimated_input_tokens": 1113100,
+        "estimated_output_tokens": 785700,
+        "cost_control_notes": [
+          "Reserve higher-tier GPT use for dense chapters, final polish, terminology-sensitive passages, and failed review families.",
+          "Use medium tier only when trial translation and random samples prove stable quality."
+        ],
+        "quality_risk_notes": [
+          "For history, philosophy, programming, and science books, require source-supported review rather than fluency-only scoring."
+        ]
+      },
+      {
+        "provider": "claude",
+        "model_name": "",
+        "model_tier": "high",
+        "recommended_for": "long-context consistency review, style comparison, and independent QA",
+        "estimated_input_tokens": 982200,
+        "estimated_output_tokens": 294700,
+        "cost_control_notes": [
+          "Use as an independent reviewer on representative samples or high-risk chapters rather than duplicating the full draft path."
+        ],
+        "quality_risk_notes": [
+          "Require explicit issue rows and source references; do not accept general praise as a quality gate."
+        ]
+      }
+    ],
+    "cost_quality_strategy": [
+      "Use lower-cost models for broad drafting only after sample quality is acceptable.",
+      "Escalate high-risk chapters and recurring defect families to high or very_high tier models.",
+      "Spend reviewer tokens on source-supported checks, terminology consistency, and structural assets before broad rereads."
+    ]
+  },
+  "post_translation_actual": {
+    "status": "DRAFT",
+    "started_at": "",
+    "finished_at": "",
+    "actual_calendar_days": 0,
+    "actual_active_hours": 0,
+    "actual_review_rounds": 0,
+    "actual_difficulty_level": "",
+    "actual_difficulty_score_1_to_5": 0,
+    "models_used": [],
+    "total_input_tokens": 0,
+    "total_output_tokens": 0,
+    "quality_scores": {
+      "random_spotcheck_average": 0,
+      "random_spotcheck_lowest": 0,
+      "release_confidence": 0
+    },
+    "variance_against_estimate": "",
+    "lessons_for_future_estimates": []
+  }
+}

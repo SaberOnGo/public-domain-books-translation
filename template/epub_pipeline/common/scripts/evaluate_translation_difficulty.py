@@ -120,6 +120,18 @@ def find_books_root(book_root: Path) -> Path:
     return book_root.resolve().parents[1]
 
 
+def repo_relative_path(anchor: Path, target: Path) -> str:
+    resolved_target = target.resolve()
+    for parent in [anchor.resolve(), *anchor.resolve().parents]:
+        if parent.name == "books":
+            repo_root = parent.parent
+            try:
+                return resolved_target.relative_to(repo_root).as_posix()
+            except ValueError:
+                break
+    return resolved_target.name
+
+
 def write_json(path: Path, data: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
@@ -371,7 +383,7 @@ def build_historical_reference(book_root: Path, profile: dict[str, Any], history
         input_tokens_per_source_unit = 0
         output_tokens_per_source_unit = 0
     return {
-        "history_root": history_root.as_posix(),
+        "history_root": repo_relative_path(book_root, history_root),
         "matched_count": len(selected),
         "candidate_count": len(candidates),
         "similar_books": selected,
