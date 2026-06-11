@@ -125,8 +125,13 @@ def gate_summary(book_root: Path) -> dict:
     validation = read_json(validation_report) if validation_report else {}
     epubcheck = read_json(book_root / "output" / "epubcheck.json")
     lint = read_json(book_root / "output" / "publication_lint.json")
+    metrics_path = book_root / "output" / "release" / "translation_metrics.json"
+    metrics = read_json(metrics_path)
     epubcheck_checker = epubcheck.get("checker", {}) if isinstance(epubcheck, dict) else {}
     lint_issues = lint.get("issues", []) if isinstance(lint, dict) else []
+    estimate = metrics.get("pretranslation_estimate", {}) if isinstance(metrics, dict) else {}
+    actual = metrics.get("post_translation_actual", {}) if isinstance(metrics, dict) else {}
+    profile = estimate.get("book_complexity_profile", {}) if isinstance(estimate, dict) else {}
     return {
         "random_spotcheck_round": rel_or_abs(book_root, round_dir) if round_dir else "",
         "random_spotcheck_validation": rel_or_abs(book_root, validation_report) if validation_report and validation_report.exists() else "",
@@ -142,6 +147,16 @@ def gate_summary(book_root: Path) -> dict:
         "epubcheck_warning": int(epubcheck_checker.get("nWarning", 0)) if epubcheck_checker else None,
         "publication_lint_path": "output/publication_lint.json" if lint else "",
         "publication_lint_issue_count": len(lint_issues) if lint else None,
+        "translation_metrics_path": "output/release/translation_metrics.json" if metrics else "",
+        "translation_metrics_status": metrics.get("metrics_status", "") if isinstance(metrics, dict) else "",
+        "translation_metrics_estimate_status": estimate.get("status", "") if isinstance(estimate, dict) else "",
+        "translation_metrics_actual_status": actual.get("status", "") if isinstance(actual, dict) else "",
+        "translation_metrics_primary_book_type": profile.get("primary_book_type", "") if isinstance(profile, dict) else "",
+        "translation_metrics_difficulty_level": estimate.get("difficulty_level", "") if isinstance(estimate, dict) else "",
+        "translation_metrics_actual_difficulty_level": actual.get("actual_difficulty_level", "") if isinstance(actual, dict) else "",
+        "translation_metrics_actual_active_hours": actual.get("actual_active_hours") if isinstance(actual, dict) else None,
+        "translation_metrics_total_input_tokens": actual.get("total_input_tokens") if isinstance(actual, dict) else None,
+        "translation_metrics_total_output_tokens": actual.get("total_output_tokens") if isinstance(actual, dict) else None,
     }
 
 
@@ -170,6 +185,12 @@ def require_pass_gates(summary: dict) -> None:
         errors.append("output/publication_lint.json is missing")
     elif summary.get("publication_lint_issue_count") not in (0, None):
         errors.append("publication lint has unresolved issues")
+    if not summary.get("translation_metrics_path"):
+        errors.append("output/release/translation_metrics.json is missing")
+    if summary.get("translation_metrics_estimate_status") != "PASS":
+        errors.append("translation metrics pretranslation estimate is not PASS")
+    if summary.get("translation_metrics_actual_status") != "PASS":
+        errors.append("translation metrics post-translation actuals are not PASS")
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
@@ -297,6 +318,14 @@ def main() -> None:
         f"- epubcheck_warning: `{summary.get('epubcheck_warning') if summary.get('epubcheck_warning') is not None else 'MISSING'}`",
         f"- publication_lint: `{summary.get('publication_lint_path') or 'MISSING'}`",
         f"- publication_lint_issue_count: `{summary.get('publication_lint_issue_count') if summary.get('publication_lint_issue_count') is not None else 'MISSING'}`",
+        f"- translation_metrics: `{summary.get('translation_metrics_path') or 'MISSING'}`",
+        f"- translation_metrics_estimate_status: `{summary.get('translation_metrics_estimate_status') or 'MISSING'}`",
+        f"- translation_metrics_actual_status: `{summary.get('translation_metrics_actual_status') or 'MISSING'}`",
+        f"- translation_metrics_primary_book_type: `{summary.get('translation_metrics_primary_book_type') or 'MISSING'}`",
+        f"- translation_metrics_difficulty_level: `{summary.get('translation_metrics_difficulty_level') or 'MISSING'}`",
+        f"- translation_metrics_actual_difficulty_level: `{summary.get('translation_metrics_actual_difficulty_level') or 'MISSING'}`",
+        f"- translation_metrics_actual_active_hours: `{summary.get('translation_metrics_actual_active_hours') if summary.get('translation_metrics_actual_active_hours') is not None else 'MISSING'}`",
+        f"- translation_metrics_total_tokens: `{(summary.get('translation_metrics_total_input_tokens') or 0) + (summary.get('translation_metrics_total_output_tokens') or 0)}`",
         "",
         "## Risks / 风险",
         "",
