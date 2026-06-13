@@ -49,6 +49,8 @@ Use this skill when an AI agent is asked to create a book project, add or update
     翻译、章节审校、随机抽检、读者反馈和最终产物审阅时，使用 `skills/expert-translation-quality/SKILL.md`，把专家级译文与后文回看多义词复查作为执行流程，而不是把长规则塞进每个 prompt。
 12. Before EPUB production, run `node scripts/publication_lint.js --target={target-language} --write-report` inside the book project and fix all hard errors.
    EPUB 制作前，必须在书籍工程内运行 `node scripts/publication_lint.js --target={target-language} --write-report`，并修复所有硬错误。
+    Before a translated or final chapter can pass chapter controls or template preflight, also run the structural translation coverage gate: `npm run check:translation-coverage` or `python scripts/check_translation_coverage.py --write-report`. This gate compares `chapters/src/` against `chapters/translated/` and `chapters/final/` for severe paragraph-block shrinkage, chapter character shrinkage, lost footnote references, lost footnote definitions, and lost table/figure/formula units. A chapter control file that claims PASS cannot override this machine gate.
+    已译章节或终稿章节通过章节控制或模板预检前，还必须运行结构性译文覆盖门禁：`npm run check:translation-coverage` 或 `python scripts/check_translation_coverage.py --write-report`。该门禁对比 `chapters/src/` 与 `chapters/translated/`、`chapters/final/`，拦截严重段落块缩水、章节字数异常缩水、脚注引用丢失、脚注定义丢失，以及表格/图片/公式单元丢失。章节 control 自称 PASS 不能覆盖这个机器门禁。
 13. Before final EPUB output, check long chapter titles against `references/chapter_title_policy.md` and any matching source-to-target title strategy. EPUB navigation must use concise labels, not printed-TOC title chains.
     最终 EPUB 输出前，必须按 `references/chapter_title_policy.md` 及对应语言方向标题策略检查长章节标题。EPUB 目录应使用短题名，不应塞入纸书目录式标题链。
 14. After the first full-book EPUB is built, run the stratified random spot-check module from `references/stratified_random_spotcheck.md` and `prompts/16a_stratified_random_spotcheck.md`. Use deterministic scripts, keep all samples and evidence under `books/{target}/{number}_{book_id_slug}/reviews/random_spotcheck/round_XXX/`, close every discovered P0/P1/P2, and run `npm run review:random-validate:pass` before final output.
@@ -74,6 +76,17 @@ Use this skill when an AI agent is asked to create a book project, add or update
 - 封面使用简洁署名 `LifeBook 书坊 译制`。个人贡献者名只在书籍信息页 policy 要求时进入 `book-info.xhtml` 和 metadata。
 - Before asset or publication lint, remove or rebuild stale staging output so old XHTML and old asset links cannot affect the new result.
 - 运行资产检查或出版检查前，应清理或重新生成旧的 staging 输出，避免旧 XHTML 和旧资产链接影响新结果。
+
+## Structural Translation Coverage / 结构性译文覆盖
+
+- Treat large-chapter shrinkage and note loss as pipeline defects, not as model-style problems. The durable fix is a deterministic coverage gate, not a one-off prompt reminder.
+  大章后段缩水和注释丢失应视为流水线缺陷，不是单纯模型风格问题。长期解决必须依靠确定性覆盖门禁，而不是一次性 prompt 提醒。
+- `check_translation_coverage.py` is the shared gate. It checks matching chapter filenames across `chapters/src/`, `chapters/translated/`, and `chapters/final/`. It fails on low paragraph-block coverage, low non-space character coverage for long chapters, note reference/definition loss, unresolved target note references, and lost table/image/formula units.
+  `check_translation_coverage.py` 是共享门禁。它按同名章节对比 `chapters/src/`、`chapters/translated/` 和 `chapters/final/`。若段落块覆盖率过低、长章非空白字符覆盖率过低、注释引用/定义丢失、译文注号没有定义，或表格/图片/公式单元丢失，必须失败。
+- `preflight:template` and `check:chapter-controls` must include this gate. If an Agent writes a PASS chapter control while the coverage gate fails, the PASS is invalid and the chapter must return to translation or reconstruction before any EPUB build or release.
+  `preflight:template` 和 `check:chapter-controls` 必须包含该门禁。若 Agent 写出 PASS 的章节 control，但覆盖门禁失败，该 PASS 无效；章节必须回到翻译或重组后才能进入 EPUB 构建或发布。
+- For very long chapters, split translation work into stable paragraph or small-block units and keep notes with the relevant unit or a dedicated note unit. The final merge must not proceed until every unit and note definition has a target counterpart.
+  对超长章节，应按稳定段落或小块单元翻译，并让注释跟随相关单元或独立注释单元。所有单元和注释定义都有对应译文前，不得合并为终稿。
 
 ## Language Requirements / 语言要求
 

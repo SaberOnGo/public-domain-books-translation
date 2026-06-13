@@ -17,6 +17,10 @@ def copy_script(src_relative: str, repo_root: Path) -> None:
     dst = repo_root / src_relative
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
+    if src_relative.endswith("check_template_workflow_gate.py"):
+        coverage_src = REPO_ROOT / "template/epub_pipeline/common/scripts/check_translation_coverage.py"
+        coverage_dst = repo_root / "template/epub_pipeline/common/scripts/check_translation_coverage.py"
+        shutil.copy2(coverage_src, coverage_dst)
 
 
 def merge_package_scripts(package_path: Path, overlay_path: Path) -> None:
@@ -61,8 +65,9 @@ def write_minimal_template(repo_root: Path) -> None:
         json.dumps(
             {
                 "scripts": {
+                    "check:translation-coverage": "python scripts/check_translation_coverage.py --write-report",
                     "preflight:template": "python scripts/check_template_workflow_gate.py",
-                    "check:chapter-controls": "python scripts/check_template_workflow_gate.py --chapter-controls-only",
+                    "check:chapter-controls": "npm run check:translation-coverage && python scripts/check_template_workflow_gate.py --chapter-controls-only",
                     "cover:check": "python scripts/check_cover_output_assets.py",
                     "reader:check": "python scripts/check_reader_facing_policy.py",
                     "lint:publication": "node scripts/publication_lint.js",

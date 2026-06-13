@@ -4,7 +4,15 @@ import argparse
 import csv
 import json
 import re
+import sys
 from pathlib import Path
+
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from check_translation_coverage import check_coverage
 
 
 DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +28,7 @@ REQUIRED_SPEC_TOKENS = [
 
 REQUIRED_PACKAGE_SCRIPTS = [
     "preflight:template",
+    "check:translation-coverage",
     "check:chapter-controls",
     "cover:check",
     "reader:check",
@@ -601,6 +610,21 @@ def check_chapter_quality_artifacts(book_root: Path, issues: list[dict]) -> None
                 )
 
 
+def check_translation_coverage_gate(book_root: Path, issues: list[dict], *, write_report: bool = False) -> None:
+    report = check_coverage(book_root)
+    if write_report:
+        out = book_root / "output" / "translation_coverage.json"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    for issue in report["issues"]:
+        add_issue(
+            issues,
+            issue["rule"],
+            issue["detail"],
+            issue["path"],
+        )
+
+
 def main() -> None:
     args = parse_args()
     book_root = resolve_book_root(args.book_root)
@@ -616,6 +640,7 @@ def main() -> None:
         check_private_use_overlay_files(book_root, state_data, issues)
         check_package_scripts(book_root, state_data, issues)
         check_glossary_schema_and_forbidden_renderings(book_root, issues)
+    check_translation_coverage_gate(book_root, issues, write_report=args.write_report)
     check_chapter_quality_artifacts(book_root, issues)
 
     report = {
