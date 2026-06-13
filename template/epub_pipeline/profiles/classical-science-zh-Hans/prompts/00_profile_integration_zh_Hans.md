@@ -27,7 +27,7 @@ This profile adds technical production controls to a language-pair EPUB pipeline
 
 ## 适用边界 / Boundary
 
-- 原文语言问题仍由 `{source-target}` 语言模板处理。
+- 原文语言问题仍由 `{language-pair-template}` 语言模板处理。
 - 目标中文质量仍由 `targets/zh-Hans` 处理。
 - 本 profile 只处理古典科学/数学/天文学/图表/表格/数值/技术证明的生产风险。
 

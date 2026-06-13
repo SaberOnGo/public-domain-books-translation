@@ -1,6 +1,6 @@
 # 小白用户使用说明：只填三项内容
 
-这套 prompt 的目标是：用户不需要懂 EPUB、source-target、目录名、模板、抽检、release。用户只要给 AI 三项内容：
+这套 prompt 的目标是：用户不需要懂 EPUB、语言方向模板名、目录名、模板、抽检、release。用户只要给 AI 三项内容：
 
 1. 我要翻译的书是什么。
 2. 我要翻译成什么语言。
@@ -25,8 +25,8 @@
 目标语言：简体中文
 
 请自动选择正确的翻译 prompt：
-- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
-- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 ```
 
 如果仓库里还没有这个源语言到目标语言的模板，例如法语到简体中文：
@@ -36,8 +36,8 @@
 目标语言：简体中文
 
 请自动选择正确的翻译 prompt：
-- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
-- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 ```
 
 如果你不确定有没有模板，就这样写：
@@ -47,8 +47,8 @@
 目标语言：{目标语言}
 
 请自动选择正确的翻译 prompt：
-- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
-- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 ```
 
 ## 你不需要填写这些
@@ -56,7 +56,7 @@
 不要让普通用户填写这些技术字段：
 
 - 源语言标签。
-- source-target，例如 `ja-zh-Hans`。
+- 语言方向模板名，例如 `Japanese-to-Simplified-Chinese`。
 - 目录名。AI 必须按目标语言生成 `目标语言书名_目标语言作者名`，例如简体中文目标书用 `天文学大成_托勒密`，日语目标书用日语书名和作者名。
 - SOURCE_URL。
 - profile。
@@ -76,8 +76,8 @@
 目标语言：简体中文
 
 请自动选择正确的翻译 prompt：
-- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
-- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 
 请先核查这个文件的来源、版权状态和我是否有权提交。
 如果版权或来源不清楚，请停止，不要开始翻译。
@@ -93,8 +93,8 @@
 私人自用声明：仅供个人学习自用；不传播；不用于商业。
 
 请自动选择正确的私人自用翻译 prompt：
-- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
-- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
 ```
 
 私人自用项目必须创建在 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，不是公开 `books/{target}/`。`books/private/` 被 Git 忽略，不得发布到 GitHub。
@@ -110,8 +110,8 @@
 目标语言：{例如 简体中文}
 
 请自动选择正确的翻译 prompt：
-- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
-- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
 翻译执行时必须逐章执行“每章译后全量检查并修复”：发现问题后先修复，但该轮不能 PASS，必须追加新一轮整章复查，直到最新一轮零问题 PASS。第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”：抽检发现问题时，不得只修被抽样本，必须归纳问题族、全书同类审计、修复确认命中、新 seed 复抽。译文质量问题族必须使用 `skills/translation-quality-defect-families/SKILL.md`。
@@ -124,8 +124,8 @@
 目标语言： {例如 简体中文}
 
 请自动选择正确的翻译 prompt：
-- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
-- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
 
 这是我个人自用的,不传播,不用于商业,使用我给出的本地的书源。
 请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。

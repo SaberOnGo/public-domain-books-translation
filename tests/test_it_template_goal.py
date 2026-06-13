@@ -11,7 +11,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 class ItalianTemplateGoalTests(unittest.TestCase):
     def test_it_language_template_has_required_goal_files(self) -> None:
-        template_root = REPO_ROOT / "template" / "epub_pipeline" / "it-zh-Hans"
+        template_root = REPO_ROOT / "template" / "epub_pipeline" / "Italian-to-Simplified-Chinese"
         required_files = [
             "AGENTS.md",
             "SKILL.md",
@@ -71,7 +71,7 @@ class ItalianTemplateGoalTests(unittest.TestCase):
                 str(REPO_ROOT / "books" / "scripts" / "create_book_project.py"),
                 "le_tigri_di_mompracem_template_smoke_delete_me",
                 "--source-target",
-                "it-zh-Hans",
+                "Italian-to-Simplified-Chinese",
                 "--dry-run",
             ],
             cwd=REPO_ROOT,
@@ -88,7 +88,7 @@ class ItalianTemplateGoalTests(unittest.TestCase):
             REPO_ROOT
             / "template"
             / "epub_pipeline"
-            / "it-zh-Hans"
+            / "Italian-to-Simplified-Chinese"
             / "references"
             / "italian_source_notes.md"
         ).read_text(encoding="utf-8")

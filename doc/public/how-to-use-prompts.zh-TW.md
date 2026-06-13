@@ -117,7 +117,7 @@
 - `doc/public/user_prompt/book_translation_private_new_template.md`：個人自用、本地書源、還沒有對應源語言模板時使用。
 - `doc/public/user_prompt/how_to_use_book_translation_prompts.md`：更短的小白版說明，只解釋怎麼填寫三項內容。
 
-如果您不確定該用哪個，就讓 AI 先檢查模板是否存在。普通用戶不需要理解 `source-target`、slug、profile、release version 或 npm 命令。
+如果您不確定該用哪個，就讓 AI 先檢查模板是否存在。普通用戶不需要理解 `language-pair template name`、slug、profile、release version 或 npm 命令。
 
 ## 選哪個用戶端
 

@@ -1,0 +1,78 @@
+# 分层随机抽检评分表模板 / Stratified Random Spot-Check Scorecard Template
+
+review_round: "round_001"
+sample_manifest: "reviews/random_spotcheck/round_001/random_sample_manifest.json"
+latest_manifest: "reviews/random_spotcheck/random_sample_manifest.json"
+source_scope: "chapters/final + reader-facing assets"
+status: "DRAFT" # PASS | FAIL
+
+## Strata / 抽样层
+
+| stratum | candidate_count | sample_count | full_scan | estimated_confidence | status |
+| --- | ---: | ---: | --- | ---: | --- |
+| paragraph | 0 | 0 | false | 0 | DRAFT |
+| table | 0 | 0 | false | 0 | DRAFT |
+| figure | 0 | 0 | false | 0 | DRAFT |
+| formula | 0 | 0 | false | 0 | DRAFT |
+| caption_note | 0 | 0 | false | 0 | DRAFT |
+
+## Agent A
+
+review_file: "reviews/random_spotcheck/round_001/reviews/agent_a_review.md"
+compat_review_file: "reviews/agent_a/random_spotcheck_review.md"
+sample_count: 0
+average_score: 0
+lowest_score: 0
+blocking_issue_count: 0
+status: "DRAFT" # PASS | FAIL
+
+## Agent B
+
+review_file: "reviews/random_spotcheck/round_001/reviews/agent_b_review.md"
+compat_review_file: "reviews/agent_b/random_spotcheck_review.md"
+sample_count: 0
+average_score: 0
+lowest_score: 0
+blocking_issue_count: 0
+status: "DRAFT" # PASS | FAIL
+
+## Fix Closure / 修复闭环
+
+fix_log: "reviews/random_spotcheck/round_001/fixes/fix_log.md"
+closure_check: "reviews/random_spotcheck/round_001/verification/closure_check.md"
+fix_log_status: "DRAFT" # PASS | FAIL
+closure_status: "DRAFT" # PASS | FAIL
+new_seed_round_after_rework: "required_if_failed"
+validator: "npm run review:random-validate:pass"
+validator_status: "DRAFT" # PASS | FAIL
+validation_report: "reviews/random_spotcheck/round_001/validation_report.json"
+release_confidence: 0
+target_confidence: 0.80
+release_confidence_status: "DRAFT" # PASS | FAIL
+
+## PASS 条件 / PASS Criteria
+
+- 两个 Agent 必须独立完成，不得互相参考。
+- 抽样必须覆盖 `paragraph`、`table`、`figure`、`formula`、`caption_note` 中实际存在的层。
+- 表格、图片、公式、图注/注释不得被普通段落样本替代。
+- 每个样本必须逐项评分；不得只写总评。缺少任一样本评分行时，评审无效。
+- 发布硬失败线：每个 Agent 平均分和最低分不得低于 80；最终优秀出版线：每个 Agent 平均分必须 >= 92，最低分必须 >= 88。
+- 任一单项 < 80，则本轮 FAIL。
+- 任一 P0/P1/P2、读不懂、数学证明链断裂、天文学概念误导、术语/数值/图表/公式/裁剪错误，则本轮 FAIL。
+- FAIL 后必须写入 `reviews/revision_route.md`，回到精校或更早阶段修复；修复后旧问题必须在 `fix_log.md` 和 `closure_check.md` 定点关闭，并使用新 seed 重新抽样。
+- `npm run review:random-validate:pass` 必须通过。
+- `validation_report.json.release_confidence` 必须 >= 0.80。
+
+## 结论 / Conclusion
+
+final_status: "DRAFT"
+revision_route_required: true
+notes: ""
+
+## 随机抽检同类问题全书审计 / Book-Wide Similar-Issue Audit
+
+随机抽检一旦发现任何需要修复或可能系统性复现的问题，包括但不限于 P0/P1/P2、单项 <80、读者不可理解、事实/术语/图表/公式/注释错误，或本模板硬门禁失败，主执行 AI 不得只修被抽中的样本，也不得等到第二轮才全书检查。必须先把发现归纳为问题族，再对整本读者可见书稿执行全书同类问题审计，覆盖 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；修复所有确认命中，记录合理例外，并在该轮 `fix_log.md` 与 `closure_check.md` 中关闭该问题族后，才能使用新 seed 复抽。
+
+若该轮发现译文质量问题族，还必须在 `fix_log.md` 填写 `translation_quality_skill_backfill: "UPDATED"` 或 `"MERGED"`、`translation_quality_skill_backfill_path: "skills/translation-quality-defect-families/SKILL.md"` 和回填摘要，并在 `closure_check.md` 填写 `translation_quality_skill_backfill_verified: true`；若仅有非译文质量问题，必须填写 `NOT_APPLICABLE` 和具体理由。
+
+If a random sample exposes any issue that needs correction or may recur systemically, treat it as a possible systemic defect family immediately in the current round. Audit the whole reader-facing book for similar cases, fix all confirmed matches, document justified exceptions, and close the family in the same round before a new-seed resample.

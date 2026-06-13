@@ -6,8 +6,8 @@ This file is for agents using the `academic-professional-zh-Hans` profile overla
 
 ## Mandatory Rules / 强制规则
 
-- Overlay order must be `common -> {source-target} -> profiles/academic-professional-zh-Hans`, followed by `modes/private_use` when applicable.
-- 覆盖顺序必须是 `common -> {source-target} -> profiles/academic-professional-zh-Hans`；如为私人自用项目，最后再覆盖 `modes/private_use`。
+- Overlay order must be `common -> {language-pair-template} -> profiles/academic-professional-zh-Hans`, followed by `modes/private_use` when applicable.
+- 覆盖顺序必须是 `common -> {language-pair-template} -> profiles/academic-professional-zh-Hans`；如为私人自用项目，最后再覆盖 `modes/private_use`。
 
 - This profile is for academic monographs, thesis-like books, and professional books in fields such as politics, economics, computer science, engineering, electronics, biology, chemistry, medicine, law, and other specialized domains.
 - 本 profile 适用于学术专著、论文型书籍，以及政治学、经济学、计算机、机械、电子、生物、化学、医学、法律等专业领域书籍。

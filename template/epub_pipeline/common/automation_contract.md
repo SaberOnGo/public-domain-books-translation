@@ -31,7 +31,7 @@ AI 必须自动决定：
 
 ## 模板保护硬规则 / Template Protection
 
-- `template/epub_pipeline/common` 和 `template/epub_pipeline/{source-target}` 语言方向模板永远视为只读模板。
+- `template/epub_pipeline/common` 和 `template/epub_pipeline/{language-pair-template}` 语言方向模板永远视为只读模板。
 - `template/epub_pipeline/profiles/{profile-target}` 控制模板也永远视为只读模板。
 - 任何具体书籍的数据不得写入模板目录。
 - 若当前工作目录就是模板目录，AI 必须先创建并切换到独立工程目录。

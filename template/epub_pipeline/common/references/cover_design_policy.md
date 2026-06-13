@@ -13,11 +13,11 @@ This policy centralizes cover requirements that were previously scattered across
 
 - `template/epub_pipeline/common/preproduction/stage1/_TEMPLATE.production_spec.md`
 - `template/epub_pipeline/common/epub_production_lessons.md`
-- `template/epub_pipeline/en-zh-Hans/prompts/13_preproduction_stage1_spec_zh_en.md`
-- `template/epub_pipeline/en-zh-Hans/prompts/14_preproduction_stage2_sample_zh_en.md`
-- `template/epub_pipeline/en-zh-Hans/prompts/15_full_book_production_zh_en.md`
-- `template/epub_pipeline/en-zh-Hans/prompts/16_independent_review_agents_zh_en.md`
-- `template/epub_pipeline/en-zh-Hans/prompts/18_final_output_zh_en.md`
+- `template/epub_pipeline/English-to-Simplified-Chinese/prompts/13_preproduction_stage1_spec_zh_en.md`
+- `template/epub_pipeline/English-to-Simplified-Chinese/prompts/14_preproduction_stage2_sample_zh_en.md`
+- `template/epub_pipeline/English-to-Simplified-Chinese/prompts/15_full_book_production_zh_en.md`
+- `template/epub_pipeline/English-to-Simplified-Chinese/prompts/16_independent_review_agents_zh_en.md`
+- `template/epub_pipeline/English-to-Simplified-Chinese/prompts/18_final_output_zh_en.md`
 - prior successful EPUB QA and cover revision records / 既有成功 EPUB 的封面整改记录
 
 ## 硬性要求 / Hard Requirements

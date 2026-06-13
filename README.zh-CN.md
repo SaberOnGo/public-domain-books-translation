@@ -29,8 +29,8 @@ LifeBook 书坊是一个多语言公版书翻译与 EPUB 制作流程。它不�
 目标语言：{例如 简体中文、英文、日文、西班牙文}
 
 请自动选择正确的翻译 prompt：
-- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
-- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
 翻译执行时必须逐章执行“每章译后全量检查并修复”：发现任何问题时，先修复该章，但该轮不能 PASS，必须追加新一轮整章复查，直到最新一轮零问题 PASS。
@@ -58,7 +58,7 @@ Launcher 不会保存 API Key，也不会把 OpenCode 本体放进本仓库。Op
 
 ## 用户需要知道的重要目录
 
-- `.\template\epub_pipeline`：查看当前有哪些源语言/语言方向模板。`en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans` 等目录都在这里。
+- `.\template\epub_pipeline`：查看当前有哪些源语言/语言方向模板。`English-to-Simplified-Chinese`、`Japanese-to-Simplified-Chinese`、`Ancient-Greek-to-Simplified-Chinese` 等目录都在这里。
 - `.\tools\lifebook-launcher`：LifeBook Launcher 客户端安装启动目录。用户需要知道这个位置，以使用 LifeBook 项目和安装 OpenCode。
 - `.\doc\public\user_prompt`：公共启动提示词目录。用户想了解提示词细节，或想手动调整给 AI 的 prompt，可以看这里。
 - `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
@@ -83,7 +83,7 @@ LifeBook Digest 当前实现为独立的 LifeBook 后处理模块。致谢与第
 - `digest/`：LifeBook Digest 通用后处理模块；由具体书籍的 `digest.config.json` 控制是否启用、是否合并进 EPUB。
 - `template/epub_pipeline/`：权威流程模板和规则。
 - `template/epub_pipeline/common/`：通用 EPUB 流程、脚本、来源证据、版权核查、质量门禁、随机抽检和发布规则。
-- `template/epub_pipeline/{source-target}/`：具体语言方向的提示词、术语、文风和审校规则。
+- `template/epub_pipeline/{language-pair-template}/`：具体语言方向的提示词、术语、文风和审校规则。
 - `template/epub_pipeline/targets/{target}/`：目标语言质量规则。
 - `template/epub_pipeline/profiles/{profile-target}/`：特殊书籍类型的附加规则。
 - `template/epub_pipeline/modes/private_use/`：只复制到非公版个人自用项目的模式覆盖层，包含私人封面、首页/前置页、私人产物和门禁脚本。
@@ -91,7 +91,7 @@ LifeBook Digest 当前实现为独立的 LifeBook 后处理模块。致谢与第
 - `books/`：共享 Node.js 工具依赖，统一安装一次。
 - `doc/public/`：公开说明、prompt 使用文档和候选书资料。
 - `doc/project/`：项目工程文档、AI 客户端说明、Launcher 设计和实施计划。
-- `research/{source-target}/`：特定语言方向调研产物。
+- `research/{language-pair-template}/`：特定语言方向调研产物。
 - `.opencode/` 与 `opencode.jsonc`：OpenCode 薄适配层，不是流程规则源。
 - `tools/lifebook-launcher/`：LifeBook Launcher 桌面启动器入口；`source/` 内是开发源码。
 
@@ -101,7 +101,7 @@ LifeBook Digest 当前实现为独立的 LifeBook 后处理模块。致谢与第
 
 ```powershell
 cd books
-npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {source-target}
+npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {language-pair-template}
 ```
 
 新书目录格式：
@@ -116,7 +116,7 @@ books/{target}/{number}_{目标语言书名}_{目标语言作者名}/
 
 ```powershell
 cd books
-npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
+npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {language-pair-template} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
 ```
 
 私人模式不降低翻译、审校、EPUB 校验、分层随机抽检要求，但会改变权利、读者可见措辞和产物语义。私人封面底部使用 `个人学习版`；私人首页/前置页使用 `参考public-domain-books-translation 开源项目 个人自制`，去掉所有公版说明，并写明仅供个人自用、不传播、不商业使用、风险由个人承担。私人产物写入 `output/private_artifacts/`，不是公开 release。

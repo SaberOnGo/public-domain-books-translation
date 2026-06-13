@@ -1,6 +1,6 @@
-# 非公版私人自用翻译执行 Prompt：已有源语言模板
+# 非公版私人自用翻译执行 Prompt：已有语言方向模板
 
-适用场景：用户提供本地电子书/文本文件，明确声明“仅个人学习自用、不传播、不商业使用”，且仓库里已经有对应语言方向模板，例如 `ja-zh-Hans`、`en-zh-Hans` 或 `grc-zh-Hans`。
+适用场景：用户提供本地电子书/文本文件，明确声明“仅个人学习自用、不传播、不商业使用”，且仓库里已经有对应语言方向模板，例如 `Japanese-to-Simplified-Chinese`、`English-to-Simplified-Chinese` 或 `Ancient-Greek-to-Simplified-Chinese`。
 
 这个 prompt 不用于公版或可发布项目。它只创建 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下的本地私人工程。`books/private/` 被 Git 忽略，里面的原文、译文、QA、EPUB 和 book-specific metadata 不得发布到 GitHub。
 
@@ -46,15 +46,15 @@
    - `template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md`
    - `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md`
    - 匹配的 `template/epub_pipeline/targets/{target}/`
-   - 匹配的 `template/epub_pipeline/{source-target}/`
+   - 匹配的 `template/epub_pipeline/{language-pair-template}/`
 3. 不得依赖记忆、历史执行经验或假设；必须以当前仓库文件为准。
-4. 根据本地文件、书名、作者和目标语言，自动判断源语言、目标语言标签、source-target 模板和目录名。目录名必须使用目标语言书名和目标语言作者名。
-5. 必须确认 `template/epub_pipeline/{source-target}` 已存在；若不存在，改用 `doc/public/user_prompt/book_translation_private_new_template.md`。
+4. 根据本地文件、书名、作者和目标语言，自动判断源语言、目标语言标签、语言方向模板和目录名。目录名必须使用目标语言书名和目标语言作者名。
+5. 必须确认 `template/epub_pipeline/{language-pair-template}` 已存在；若不存在，改用 `doc/public/user_prompt/book_translation_private_new_template.md`。
 6. 必须使用以下模式创建工程，不得创建到公开 `books/{target}/`：
 
 ```powershell
 cd books
-npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {source-target} --mode private-use --local-source-file "{用户本地文件路径}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
+npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {language-pair-template} --mode private-use --local-source-file "{用户本地文件路径}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
 ```
 
 7. 工程必须位于 `books/private/{target}/{next_number}_{目标语言书名}_{目标语言作者名}/`。如果脚本没有创建到 `books/private/`，必须停止并修正。

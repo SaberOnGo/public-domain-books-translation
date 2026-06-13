@@ -117,7 +117,7 @@ After passing, clean or rebuild staging, regenerate the EPUB, and run publicatio
 - `doc/public/user_prompt/book_translation_private_new_template.md`: use for a personal-use local source when the matching source-language template does not exist yet.
 - `doc/public/user_prompt/how_to_use_book_translation_prompts.md`: a shorter beginner-facing guide that only explains how to fill in the three items.
 
-If it is unclear which one applies, ask the AI to check whether the template exists first. Normal users do not need to understand `source-target`, slug, profile, release version, or npm commands.
+If it is unclear which one applies, ask the AI to check whether the template exists first. Normal users do not need to understand `language-pair template name`, slug, profile, release version, or npm commands.
 
 ## Which Client Should I Use?
 

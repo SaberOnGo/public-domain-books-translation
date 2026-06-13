@@ -7,7 +7,7 @@
 - 书名（title）：林伯洛斯特的女孩
 - 原书名（original_title）：A Girl of the Limberlost
 - 作者（author）：吉恩·斯特拉顿-波特 (Gene Stratton-Porter)
-- 语言方向模板（source_target）：template/epub_pipeline/en-zh-Hans
+- 语言方向模板（source_target）：template/epub_pipeline/English-to-Simplified-Chinese
 - 发布模式（publication_mode）：public_domain
 
 ## 翻译前预估

@@ -27,7 +27,7 @@ When a review finds a defect that may recur, do the following before declaring t
    记录发现方式：章节控制、随机样本、人工意见、`rg` 扫描、术语扫描、原文对照、生成 XHTML 检查或读者反馈。
 3. Define the risk: what reader misunderstanding, fidelity loss, rhythm damage, terminology drift, or unauthorized invention it causes.
    定义风险：它会造成什么误读、失真、节奏损伤、术语漂移或擅自加戏。
-4. Audit similar cases with the cheapest reliable method first: glossary fields, `rg`, title maps, source-target term lists, chapter controls, or targeted small-context agent review.
+4. Audit similar cases with the cheapest reliable method first: glossary fields, `rg`, title maps, source-to-target term lists, chapter controls, or targeted small-context agent review.
    先用最低 token 且可靠的方法查同类：术语表字段、`rg`、标题映射、源语-目标语词表、章节控制，或小上下文 agent 专项复核。
 5. Fix confirmed matches and record justified exceptions.
    修复确认命中，并记录合理例外。
@@ -92,6 +92,23 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   忠实度、顺读、节奏和术语问题，主要应在每章全量复检阶段解决。
 
 ## Defect Family Register / 问题族注册表
+
+### Historical Names and Currency Left in Source Form / 历史人名与币名裸留源语
+
+- Symptom: A literary translation keeps ordinary source-language names, currency units, or social terms in Latin letters inside continuous target-language narration, such as `Zaide`, `blanca`, `maravedí`, or `real`, even though the passage is not discussing source-language form.
+  症状：文学译文在连续目标语叙事中裸留普通源语人名、币名或社会词，例如 `Zaide`、`blanca`、`maravedí`、`real`，但该处并不是在讨论源语词形。
+- Find by: Start from random-sample hits, then scan final chapters, translated drafts, generated EPUB XHTML, and glossary forbidden renderings with exact strings and `rg --no-ignore` when ordinary directory scans are affected by ignore rules.
+  发现方式：先从随机抽样命中出发，再用精确字符串扫描终稿、译稿、生成 XHTML 和术语表禁用写法；若普通目录扫描受 ignore 规则影响，使用 `rg --no-ignore`。
+- Risk: Readers are forced to decode unexplained source words, and the prose feels unfinished. Small currency words are especially risky because they carry poverty, price, and social-status evidence in the scene.
+  风险：读者被迫自行解码未说明的源语词，译文呈现未完成感。小额币名尤其危险，因为它们承担贫困、价格和阶层证据。
+- Fix by: Translate or transliterate into target-language form and add a short class word when needed, such as `扎伊德`, `布兰卡小钱`, `马拉维迪铜钱`, or `雷亚尔银币`. Keep the source form in the glossary or a concise note only when useful; do not leave it bare in ordinary narrative.
+  修复方式：译成或音译成目标语形式，并在需要时加简短类别词，例如“扎伊德”“布兰卡小钱”“马拉维迪铜钱”“雷亚尔银币”。源语形式可留在术语表或简短说明中，不要裸留在普通叙事正文。
+- Low-token audit: For Spanish-to-Chinese work, scan likely residue with `rg --no-ignore -n "Zaide|blanca|maraved|real|reales" chapters/final chapters/translated output/epub_work/EPUB glossary`, then classify frontmatter source-title/source-evidence mentions as documented exceptions.
+  低 token 审计：西译中可用 `rg --no-ignore -n "Zaide|blanca|maraved|real|reales" chapters/final chapters/translated output/epub_work/EPUB glossary` 扫描候选，再把前置页原名、来源证据等有记录的源语提及列为例外。
+- Post-replacement spacing and measure-word audit: After converting bare source forms to target-language forms, scan for half-repaired Chinese such as `扎伊德 `, ` 布兰卡小钱`, ` 马拉维迪铜钱`, ` 雷亚尔银币`, and source-like quantifiers such as `个 布兰卡小钱` or `三十 马拉维迪铜钱`. Repair them into target prose units such as `扎伊德的`, `半枚布兰卡小钱`, `一枚雷亚尔银币`, and `三十枚马拉维迪铜钱`.
+  替换后空格与量词审计：把裸露源语改成目标语形式后，还要扫描半修复中文，例如 `扎伊德 `、` 布兰卡小钱`、` 马拉维迪铜钱`、` 雷亚尔银币`，以及 `个 布兰卡小钱`、`三十 马拉维迪铜钱` 这类源语式量词。应修成目标语叙事单位，如“扎伊德的”“半枚布兰卡小钱”“一枚雷亚尔银币”“三十枚马拉维迪铜钱”。
+- Recheck: Rebuild EPUB and rerun publication lint plus a fresh new-seed random round; the stale sample manifest from before the fix must not be counted as a final PASS round.
+  复查：重建 EPUB，并用新 seed 追加随机抽检；修复前生成的旧样本 manifest 不得计入最终 PASS 轮次。
 
 ### Gate-Passing Style Debt / 过线但不优秀的顺读债务
 
@@ -379,10 +396,12 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   风险：读者会得到错误事实、错误概念类别、错误情感关系或不稳定术语族，而译文表面仍像成稿。文学象征、历史称谓、法律/制度词、写作技法术语、科学术语和台词习语尤其高危。
 - Find by: During translation and chapter control, keep an internal watchlist of source words whose sense depends on later clauses, later paragraphs, speaker identity, plot outcome, or technical definitions. During review, revisit earlier watchlist items after downstream context has been translated. Reader feedback that says "this word choice feels wrong later" should trigger this family immediately.
   发现方式：翻译和章节 control 中，对依赖后文从句、后文段落、说话人身份、情节结果或术语定义才能判义的源语词建立内部观察清单。审校时，在后文已译出后回到前文观察项复查。读者反馈“后文看起来这个词选错了”时，立即归入本问题族。
-- Fix by: Use `skills/expert-translation-quality/SKILL.md`. If the sense is unresolved, choose a target phrasing that preserves the source ambiguity instead of forcing a guessed sense. Once later context resolves it, revise the earlier occurrence. If the wrong choice may recur, audit same source trigger, same target residue, glossary rows, and nearby source-target pairs.
+- Fix by: Use `skills/expert-translation-quality/SKILL.md`. If the sense is unresolved, choose a target phrasing that preserves the source ambiguity instead of forcing a guessed sense. Once later context resolves it, revise the earlier occurrence. If the wrong choice may recur, audit same source trigger, same target residue, glossary rows, and nearby source-to-target pairs.
   修复方式：使用 `skills/expert-translation-quality/SKILL.md`。义项未决时，先用不错误收窄的目标语表达保留原文暧昧，不要强行猜义。后文判清后，回到前文修订。若可能复现，审计同一源语触发式、同一目标语残留、术语表行和邻近源文-译文对。
 - Low-token audit: Start with the human or sample-cited source phrase, then search paired source and target text. Prefer exact source triggers and confirmed target residues; avoid asking an agent to reread whole chapters before a candidate pass.
   低 token 审计：从人工反馈或样本点名的源语短语开始，再搜索成对源文和译文。优先使用精确源语触发式和已确认目标语残留；不要在候选收集前让 agent 重读整章。
+- Spanish ironic truth guard: Early modern Spanish comparisons such as `mejor les ayude Dios que ellos dicen la verdad` may deny or undercut a rumor instead of affirming that the speakers tell the truth. When `verdad` appears near `mejor ... que`, `aunque`, rumor words, or narrator self-defense, audit the local logic before translating it as `说的是真话`.
+  西语反讽真话防护：近代西语中类似 `mejor les ayude Dios que ellos dicen la verdad` 的比较式可能是在否认或消解流言，而不是确认说话者“说真话”。当 `verdad` 与 `mejor ... que`、`aunque`、流言词或叙述者自辩同现时，先审计局部逻辑，再决定是否能译作“说的是真话”。
 - Recheck: The chapter control or closure check must record `polysemy_context_review: "PASS"` and `polysemy_unresolved_count: 0`. If a deliberate source ambiguity remains, record why the target wording preserves rather than resolves it.
   复查：章节 control 或闭环检查必须记录 `polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`。若原文故意保留暧昧，必须记录目标语为何是在保留暧昧，而不是未判清。
 

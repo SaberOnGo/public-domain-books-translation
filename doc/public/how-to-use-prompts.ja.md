@@ -117,7 +117,7 @@ reader-facing audit units を対象に層化ランダム抽出を実行してく
 - `doc/public/user_prompt/book_translation_private_new_template.md`：個人利用のローカル書源で、対応する原言語テンプレートがまだない場合に使います。
 - `doc/public/user_prompt/how_to_use_book_translation_prompts.md`：3 項目の入力方法だけを説明する、さらに短い初心者向けガイドです。
 
-どちらを使うべきか分からない場合は、まずテンプレートが存在するか AI に確認させてください。通常のユーザーは `source-target`、slug、profile、release version、npm コマンドを理解する必要はありません。
+どちらを使うべきか分からない場合は、まずテンプレートが存在するか AI に確認させてください。通常のユーザーは `language-pair template name`、slug、profile、release version、npm コマンドを理解する必要はありません。
 
 ## どのクライアントを使うべきか
 

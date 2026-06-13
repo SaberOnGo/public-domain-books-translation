@@ -36,7 +36,7 @@ class TranslationDifficultyEvaluatorTests(unittest.TestCase):
         (book_root / "state" / "pipeline_state.json").write_text(
             json.dumps(
                 {
-                    "template_root": "template/epub_pipeline/en-zh-Hans",
+                    "template_root": "template/epub_pipeline/English-to-Simplified-Chinese",
                     "publication_mode": "public_domain",
                     "profile": "classical-history-zh-Hans",
                 },

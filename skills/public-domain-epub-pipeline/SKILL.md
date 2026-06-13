@@ -35,8 +35,8 @@ Use this skill when an AI agent is asked to create a book project, add or update
    - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
    - `template/epub_pipeline/common/references/quality_gate_framework.md`
    - `template/epub_pipeline/common/references/release_versioning.md`
-6. Select the matching language-pair template, for example `fr-en`, `ja-es`, `en-zh-Hans`, or `zh-Hant-de`.
-   选择匹配的语言方向模板，例如 `fr-en`、`ja-es`、`en-zh-Hans` 或 `zh-Hant-de`。
+6. Select the matching language-pair template, for example `French-to-English`, `Japanese-to-Spanish`, `English-to-Simplified-Chinese`, or `Traditional-Chinese-to-German`.
+   选择匹配的语言方向模板，例如 `French-to-English`、`Japanese-to-Spanish`、`English-to-Simplified-Chinese` 或 `Traditional-Chinese-to-German`。
 7. If a matching target-language framework exists under `template/epub_pipeline/targets/{target}/`, read it before translating.
    如果 `template/epub_pipeline/targets/{target}/` 下存在匹配的目标语言质量框架，翻译前必须读取。
 8. Create the book project with `books/scripts/create_book_project.py`; it copies `template/epub_pipeline/common` into `books/{target}/{number}_{book_id_slug}/`, then overlays the matching language-pair template.
@@ -61,10 +61,10 @@ Use this skill when an AI agent is asked to create a book project, add or update
     随机抽检闭环通过后，必须执行 `references/release_versioning.md` 和 `prompts/18a_release_versioning.md` 定义的版本化发布模块。必须创建 `output/release/book_vX.X.X.epub`、`release_note_vX.X.X.md`、`release_state.json` 和 `release_index.md`；只有 `output/book.epub` 不能标记 `DONE`。
 16. For translated titles, title occurrences do not count as first body occurrences for terminology notes. Chapter titles, subtitles, and navigation titles must follow target-language title style; source names or parenthetical original names belong at the first natural body occurrence, in notes, or in the glossary.
     对译文标题而言，标题中的出现不计入术语译注的“正文首次出现”。章节标题、副标题和目录题名必须按目标语言标题习惯处理；原文名或括注原名应放在正文第一次自然出现处、译注或术语表中。
-17. If a specific book has systematic refinement issues, place its goal under `books/{target}/{number}_{book_id_slug}/goal/`, then backfill reusable lessons into common, target-language, or source-target templates.
+17. If a specific book has systematic refinement issues, place its goal under `books/{target}/{number}_{book_id_slug}/goal/`, then backfill reusable lessons into common, target-language, or language-pair templates.
     如果某本书有系统性精修问题，目标文档应放在 `books/{target}/{number}_{book_id_slug}/goal/`，再把可复用经验回填到 common、目标语言或语言方向模板。
-18. Put language-pair-specific scripts, datasets, and exploratory research under `research/{source-target}/...` or the matching language-pair template, not in the repository root.
-   特定语言方向的脚本、数据集和探索性调研应放在 `research/{source-target}/...` 或对应语言方向模板中，不要放在仓库根目录。
+18. Put language-pair-specific scripts, datasets, and exploratory research under `research/{language-pair-template}/...` or the matching language-pair template, not in the repository root.
+   特定语言方向的脚本、数据集和探索性调研应放在 `research/{language-pair-template}/...` 或对应语言方向模板中，不要放在仓库根目录。
 19. Do not hard-code local absolute paths in scripts or prompts. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
     不要在脚本或 prompt 中写死本机绝对路径。路径应基于脚本位置、仓库根目录或用户显式传入的参数解析。
 
@@ -94,8 +94,8 @@ Use this skill when an AI agent is asked to create a book project, add or update
 - 面向人的重要文件必须包含目标贡献者能读懂的本地语言。
 - English may be included in parallel as a bridge language, but English-only important instructions are not acceptable unless English is the template's contributor language.
 - 英文可以作为桥接语言并列出现，但除非英语就是该模板贡献者语言，否则重要说明不能只写英文。
-- For `en-ja`, use Japanese plus optional English. For `de-zh-Hant`, use Traditional Chinese plus optional English. For `fr-en`, English is acceptable.
-- `en-ja` 使用日文，可并列英文；`de-zh-Hant` 使用繁体中文，可并列英文；`fr-en` 可使用英文。
+- For `English-to-Japanese`, use Japanese plus optional English. For `German-to-Traditional-Chinese`, use Traditional Chinese plus optional English. For `French-to-English`, English is acceptable.
+- `English-to-Japanese` 使用日文，可并列英文；`German-to-Traditional-Chinese` 使用繁体中文，可并列英文；`French-to-English` 可使用英文。
 - Shared repository-level documentation should include Chinese when project-owner review is expected.
 - 需要项目发起者审阅的共享仓库级文档应包含中文。
 

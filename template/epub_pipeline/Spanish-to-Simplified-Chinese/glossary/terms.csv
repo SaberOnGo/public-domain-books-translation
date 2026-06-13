@@ -1,0 +1,11 @@
+type,source_term,target_term,display_policy,note_text,exception_reason,forbidden_body_renderings
+historical_term,vuestra merced,尊驾,target_only,叙述对象称谓；按作品语境可译尊驾/大人/阁下或省略，但必须记录策略。,,"vuestra merced；阁下（vuestra merced）；尊驾（vuestra merced）"
+literary_term,picaro,流浪汉,target_only,西班牙流浪汉小说传统中的底层机智人物；正文按语境可译为流浪汉或小骗子。,,"picaro；皮卡罗"
+literary_term,novela picaresca,流浪汉小说,target_only,文学类型名，术语表或译注可说明原词。,,"picaresque；novela picaresca"
+historical_term,amo,主人,target_only,主仆关系词，按上下文可译主人/东家。,,"amo；东家（amo）"
+historical_term,clérigo,教士,target_only,宗教身份词，具体职位按上下文复核。,,"clerigo；clérigo"
+historical_term,escudero,侍从,target_only,西班牙身份/阶层词，可能涉及没落荣誉观；首次出现需短注。,,"escudero；侍从（escudero）"
+person,Zaide,扎伊德,target_only,西语人名进入中文正文时应译为中文名；必要时在术语表记录原文。,,"Zaide"
+currency,blanca,布兰卡小钱,target_only,旧币名应中文化处理，不在普通叙事正文裸留西语。,,"blanca"
+currency,maravedí,马拉维迪铜钱,target_only,旧币名应中文化处理，不在普通叙事正文裸留西语。,,"maravedí；maravedís"
+currency,real,雷亚尔银币,target_only,旧币名应中文化处理，不在普通叙事正文裸留西语。,,"real；reales"

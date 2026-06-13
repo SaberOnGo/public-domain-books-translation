@@ -1,6 +1,6 @@
-# 非公版私人自用翻译执行 Prompt：没有源语言模板
+# 非公版私人自用翻译执行 Prompt：没有语言方向模板
 
-适用场景：用户提供本地电子书/文本文件，明确声明“仅个人学习自用、不传播、不商业使用”，但仓库里还没有对应语言方向模板，例如想做 `fr-zh-Hans`，而 `template/epub_pipeline/fr-zh-Hans/` 不存在。
+适用场景：用户提供本地电子书/文本文件，明确声明“仅个人学习自用、不传播、不商业使用”，但仓库里还没有对应语言方向模板，例如想做 `French-to-Simplified-Chinese`，而 `template/epub_pipeline/French-to-Simplified-Chinese/` 不存在。
 
 这个 prompt 允许创建可复用的语言方向模板并提交到 GitHub，但具体非公版书籍工程必须创建在 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下。`books/private/` 被 Git 忽略，里面的原文、译文、QA、EPUB 和 book-specific metadata 不得发布到 GitHub。
 
@@ -41,18 +41,18 @@
    - `template/epub_pipeline/modes/private_use/references/private_use_frontmatter_policy.md`
    - `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md`
    - 匹配的 `template/epub_pipeline/targets/{target}/`
-   - 至少一个现有语言方向模板，例如 `en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans`，只用于学习目录结构，不得照搬源语言规则
-3. 根据本地文件、书名、作者和目标语言，自动判断源语言、目标语言标签、source-target 名称和目录名。目录名必须使用目标语言书名和目标语言作者名。
-4. 确认 `template/epub_pipeline/{source-target}` 不存在。若已存在，改用 `doc/public/user_prompt/book_translation_private_existing_template.md`。
+   - 至少一个现有语言方向模板，例如 `English-to-Simplified-Chinese`、`Japanese-to-Simplified-Chinese`、`Ancient-Greek-to-Simplified-Chinese`，只用于学习目录结构，不得照搬源语言规则
+3. 根据本地文件、书名、作者和目标语言，自动判断源语言、目标语言标签、语言方向模板名和目录名。目录名必须使用目标语言书名和目标语言作者名。
+4. 确认 `template/epub_pipeline/{language-pair-template}` 不存在。若已存在，改用 `doc/public/user_prompt/book_translation_private_existing_template.md`。
 5. 如果 `template/epub_pipeline/targets/{target}/` 不存在，先停止并报告需要创建目标语言质量框架；不能把 `zh-Hans` 规则当默认规则。
 
 第二阶段：创建最小语言方向模板
 
-6. 在 `template/epub_pipeline/{source-target}/` 创建可复用语言方向模板。模板、脚本和配置可以发布到 GitHub。
+6. 在 `template/epub_pipeline/{language-pair-template}/` 创建可复用语言方向模板。模板、脚本和配置可以发布到 GitHub。
 7. 模板只放可复用规则，不得放该非公版书的原文、译文、QA、EPUB、release 或 book-specific metadata。
 8. 可参考现有模板的目录骨架，但必须逐项改写为当前 `{source} -> {target}` 的真实规则；不得留下其他语言方向的继承残留。
 9. 语言方向模板的重要文件必须包含该模板贡献者预期能读懂的本地语言。英文可并列用于精确说明，但重要说明不能只用英文，除非目标贡献者语言就是英文。
-10. 若需要源语言专项脚本、数据或探索文件，放到 `research/{source-target}/...` 或该语言方向模板内，不得放仓库根目录。
+10. 若需要源语言专项脚本、数据或探索文件，放到 `research/{language-pair-template}/...` 或该语言方向模板内，不得放仓库根目录。
 11. 不得在脚本或 prompt 中写死 Windows 盘符、本机绝对路径或某个贡献者的工作目录。
 
 第三阶段：创建私人书籍工程
@@ -61,7 +61,7 @@
 
 ```powershell
 cd books
-npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {source-target} --mode private-use --local-source-file "{用户本地文件路径}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
+npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {language-pair-template} --mode private-use --local-source-file "{用户本地文件路径}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
 ```
 
 13. 工程必须位于 `books/private/{target}/{next_number}_{目标语言书名}_{目标语言作者名}/`。如果脚本没有创建到 `books/private/`，必须停止并修正。

@@ -164,7 +164,7 @@
 
 - 本仓库 `template/epub_pipeline/common/references/quality_gate_framework.md`：来源证据、章节全量检查、随机抽检、发布门禁。
 - 本仓库 `template/epub_pipeline/targets/zh-Hans/quality_framework/references/quality_standard.md`：准确、通达、风格、审美、可出版。
-- 本仓库 `template/epub_pipeline/ja-zh-Hans/references/quality_standard.md` 与 `japanese_source_notes.md`：日语省略、敬语、汉字词、官能与心理描写边界。
+- 本仓库 `template/epub_pipeline/Japanese-to-Simplified-Chinese/references/quality_standard.md` 与 `japanese_source_notes.md`：日语省略、敬语、汉字词、官能与心理描写边界。
 - MQM / Multidimensional Quality Metrics：把翻译错误拆成准确性、流畅性、术语、风格、locale convention 等可标注问题。
 - ATA Framework for Standardized Error Marking：把误译、漏译、术语、语法、标点、风格等错误类型化，适合做扣分和复核。
 - Juliane House 的 Translation Quality Assessment：强调源文与译文在功能、语域、语篇层面的对应。

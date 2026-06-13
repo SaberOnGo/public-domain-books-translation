@@ -1,12 +1,12 @@
-# 书籍翻译执行 Prompt：没有源语言模板
+# 书籍翻译执行 Prompt：没有语言方向模板
 
-适用场景：仓库里还没有对应语言方向模板，例如想做 `fr-zh-Hans`，但 `template/epub_pipeline/fr-zh-Hans/` 还不存在。
+适用场景：仓库里还没有对应语言方向模板，例如想做 `French-to-Simplified-Chinese`，但 `template/epub_pipeline/French-to-Simplified-Chinese/` 还不存在。
 
 用户入口只需要包含三项内容：
 
 - 我要翻译的书：`{书名、作者、来源线索，或本地文件路径}`
 - 目标语言：`{例如 简体中文 / English / 日本語 / Español}`
-- 自动选择 prompt 规则：执行本文件；若源语言模板已存在，则改用 `doc/public/user_prompt/book_translation_existing_template.md`
+- 自动选择 prompt 规则：执行本文件；若语言方向模板已存在，则改用 `doc/public/user_prompt/book_translation_existing_template.md`
 
 把上面三项内容和下面 prompt 一起发给 AI Agent。
 
@@ -16,12 +16,12 @@
 用户入口只提供三项内容：
 - 我要翻译的书：{用户填写}
 - 目标语言：{用户填写}
-- 自动选择 prompt 规则：没有源语言模板时执行本文件；已有源语言模板时改用 `doc/public/user_prompt/book_translation_existing_template.md`
+- 自动选择 prompt 规则：没有语言方向模板时执行本文件；已有语言方向模板时改用 `doc/public/user_prompt/book_translation_existing_template.md`
 
-除此之外，源语言、可靠公版/授权来源 URL 或私人本地书源模式、source-target 语言方向、目标语言标签、目录名、是否需要 profile、建书目录编号，都必须由你自动判断、自动记录。不要要求用户补充这些技术字段，除非版权状态、来源权利、目标语言规则无法确认，或用户请求非公版私人自用但没有提供本地书源文件。
+除此之外，源语言、可靠公版/授权来源 URL 或私人本地书源模式、语言方向模板、目标语言标签、目录名、是否需要 profile、建书目录编号，都必须由你自动判断、自动记录。不要要求用户补充这些技术字段，除非版权状态、来源权利、目标语言规则无法确认，或用户请求非公版私人自用但没有提供本地书源文件。
 
 任务目标：
-在源语言方向模板尚不存在的情况下，先创建最小可复用的 `{source-target}` 语言方向模板，再用该模板创建并完成一本 EPUB 书籍项目。公开项目最终必须生成 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/output/release/` 下 latest_status=PASS 的可发布 EPUB；私人自用项目必须位于被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，其版本化 EPUB 只是个人自用产物，不得发布到 GitHub。
+在源语言方向模板尚不存在的情况下，先创建最小可复用的 `{language-pair-template}` 语言方向模板，再用该模板创建并完成一本 EPUB 书籍项目。公开项目最终必须生成 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/output/release/` 下 latest_status=PASS 的可发布 EPUB；私人自用项目必须位于被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，其版本化 EPUB 只是个人自用产物，不得发布到 GitHub。
 
 第一阶段：读取规则与确认缺口
 
@@ -36,15 +36,15 @@
    - `skills/translation-quality-defect-families/SKILL.md`
    - 若进入私人自用模式，还必须读取 `template/epub_pipeline/modes/private_use/README.md`、`references/private_use_cover_policy.md`、`references/private_use_frontmatter_policy.md`、`references/private_use_artifact_policy.md`
    - 匹配的 `template/epub_pipeline/targets/{target}/`
-   - 至少一个现有语言方向模板，例如 `en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans`，只用于学习目录结构，不得照搬源语言规则
+   - 至少一个现有语言方向模板，例如 `English-to-Simplified-Chinese`、`Japanese-to-Simplified-Chinese`、`Ancient-Greek-to-Simplified-Chinese`，只用于学习目录结构，不得照搬源语言规则
    - 现有已完成书籍项目结构
 3. 根据书名、作者、来源线索或本地文件，自动判断源语言和目标语言标签。
-4. 确认 `template/epub_pipeline/{source-target}` 不存在。若已存在，改用“已有源语言模板”的公共 prompt 流程。
+4. 确认 `template/epub_pipeline/{language-pair-template}` 不存在。若已存在，改用“已有语言方向模板”的公共 prompt 流程。
 5. 若 `template/epub_pipeline/targets/{target}/` 也不存在，先停止并报告需要创建目标语言质量框架；不能把 `zh-Hans` 规则当默认规则。
 
 第二阶段：创建最小语言方向模板
 
-6. 在 `template/epub_pipeline/{source-target}/` 创建可复用语言方向模板。
+6. 在 `template/epub_pipeline/{language-pair-template}/` 创建可复用语言方向模板。
 7. 模板只放可复用规则，不得放具体书籍原文、译文、QA、EPUB、release 或 book-specific metadata。
 8. 可参考现有模板的目录骨架，但必须逐项改写为当前 `{source} -> {target}` 的真实规则；不得留下其他语言方向的继承残留。
 9. 最小模板至少应包含：
@@ -69,7 +69,7 @@
    - `references/{source_language}_to_{target_language}_literary_refinement.md`
    - `prompts/00` 到 `19` 的执行链，或等价的完整阶段 prompt
 10. 模板重要文件必须包含该模板贡献者预期能读懂的本地语言。英文可并列用于精确说明，但重要说明不能只用英文，除非目标贡献者语言就是英文。
-11. 若需要源语言专项脚本、数据或探索文件，放到 `research/{source-target}/...` 或该语言方向模板内，不得放仓库根目录。
+11. 若需要源语言专项脚本、数据或探索文件，放到 `research/{language-pair-template}/...` 或该语言方向模板内，不得放仓库根目录。
 12. 不得在脚本或 prompt 中写死 Windows 盘符、本机绝对路径或某个贡献者的工作目录。
 
 第三阶段：验证模板可建书

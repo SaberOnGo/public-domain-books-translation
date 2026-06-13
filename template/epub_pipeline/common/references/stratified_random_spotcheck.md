@@ -1,6 +1,6 @@
 # 分层随机抽检门禁 / Stratified Random Spot-Check Gate
 
-本文件定义第一版全书 EPUB 生成后必须执行的强制质量门禁。它适用于所有语言方向；具体目标语言风格规则由 `targets/{target}/` 和 `{source-target}/` 模板追加。
+本文件定义第一版全书 EPUB 生成后必须执行的强制质量门禁。它适用于所有语言方向；具体目标语言风格规则由 `targets/{target}/` 和 `{language-pair-template}/` 模板追加。
 
 This file defines the mandatory post-EPUB quality gate. It applies to every language direction; target-language and source-to-target rules add their own review criteria.
 

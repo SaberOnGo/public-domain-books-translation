@@ -93,7 +93,7 @@ If a polysemy mistake, expert-level prose failure, or context-disambiguation fai
 
 1. Classify it as a translation-quality defect family.
    归纳为译文质量问题族。
-2. Audit similar cases using low-token evidence first: `rg`, glossary rows, forbidden renderings, title maps, chapter controls, and nearby source-target pairs.
+2. Audit similar cases using low-token evidence first: `rg`, glossary rows, forbidden renderings, title maps, chapter controls, and nearby source-to-target pairs.
    先用低 token 证据审计同类：`rg`、术语表、禁用写法、标题映射、章节 control、邻近源文-译文对。
 3. Fix confirmed matches and record justified exceptions.
    修复确认命中并记录合理例外。

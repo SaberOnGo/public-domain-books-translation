@@ -26,8 +26,8 @@
 目标语言：{例如 简体中文}
 
 请自动选择正确的翻译 prompt：
-- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
-- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_new_template.md。
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
 翻译执行时必须逐章执行“每章译后全量检查并修复”：每章都要对照整章原文和整章译文检查忠实度、中文顺读、术语、标题/小标题、注释、图表文字接口、源语句法残留、过硬过直句、过度解释或加戏等问题；发现问题后先修复，但该轮不能 PASS，必须追加新一轮整章复查，直到最新一轮零问题 PASS。
@@ -45,8 +45,8 @@
 目标语言： {例如 简体中文}
 
 请自动选择正确的翻译 prompt：
-- 如已有对应源语言模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
-- 如无对应源语言模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
 
 这是我个人自用的,不传播,不用于商业,使用我给出的本地的书源。
 请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
@@ -116,13 +116,13 @@
 
 ## 四个翻译 prompt 是什么
 
-- `doc/public/user_prompt/book_translation_existing_template.md`：仓库已经有对应源语言模板时使用，例如日语到简体中文、英语到简体中文、古希腊语到简体中文。
-- `doc/public/user_prompt/book_translation_new_template.md`：仓库还没有对应源语言模板时使用，例如第一次做法语到简体中文。
-- `doc/public/user_prompt/book_translation_private_existing_template.md`：个人自用、本地书源、已有对应源语言模板时使用。
-- `doc/public/user_prompt/book_translation_private_new_template.md`：个人自用、本地书源、还没有对应源语言模板时使用。
+- `doc/public/user_prompt/book_translation_existing_template.md`：仓库已经有对应语言方向模板时使用，例如日语到简体中文、英语到简体中文、古希腊语到简体中文。
+- `doc/public/user_prompt/book_translation_new_template.md`：仓库还没有对应语言方向模板时使用，例如第一次做法语到简体中文。
+- `doc/public/user_prompt/book_translation_private_existing_template.md`：个人自用、本地书源、已有对应语言方向模板时使用。
+- `doc/public/user_prompt/book_translation_private_new_template.md`：个人自用、本地书源、还没有对应语言方向模板时使用。
 - `doc/public/user_prompt/how_to_use_book_translation_prompts.md`：更短的小白版说明，只解释怎么填写三项内容。
 
-如果您不确定该用哪个，就让 AI 先检查模板是否存在。普通用户不需要理解 `source-target`、slug、profile、release version 或 npm 命令。
+如果您不确定该用哪个，就让 AI 先检查模板是否存在。普通用户不需要理解 `language-pair template name`、slug、profile、release version 或 npm 命令。
 
 ## 选择哪个客户端
 

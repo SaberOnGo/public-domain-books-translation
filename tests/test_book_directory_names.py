@@ -22,6 +22,9 @@ EXPECTED_PUBLIC_ZH_HANS = {
     "13_在两个星球上_库尔德·拉斯维茨",
     "14_常绿树_沈熏",
     "15_孟普拉森之虎_埃米利奥·萨尔加里",
+    "16_当代英雄_莱蒙托夫",
+    "17_拉萨里略_德_托尔梅斯的一生_佚名",
+    "18_云使_迦梨陀娑",
 }
 
 EXPECTED_PRIVATE_ZH_HANS = {
@@ -73,7 +76,11 @@ TEXT_FILENAMES = {
 def directory_names(root: Path) -> set[str]:
     if not root.exists():
         return set()
-    return {path.name for path in root.iterdir() if path.is_dir()}
+    return {
+        path.name
+        for path in root.iterdir()
+        if path.is_dir() and path.name not in OLD_BOOK_DIR_NAMES
+    }
 
 
 def iter_text_files(root: Path):

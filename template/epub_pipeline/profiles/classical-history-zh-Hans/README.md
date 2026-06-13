@@ -4,7 +4,7 @@
 
 本目录不是单一语言方向模板，而是一个第三层控制 overlay。它服务于古代历史叙事、编年、列传、外交、战争、礼制、人物关系密集文本。
 
-It is not a source-target language-pair template. It is an optional third-layer production-control profile for ancient historical works translated into Simplified Chinese.
+It is not a language-pair template. It is an optional third-layer production-control profile for ancient historical works translated into Simplified Chinese.
 
 ## 适用对象
 
@@ -13,9 +13,9 @@ It is not a source-target language-pair template. It is an optional third-layer 
 - 人物、国名、地名、官名、爵位、宗族、年代、战争、外交、礼制密集文本。
 - 需要高密度但受控注释的文本。
 
-## 与 `lzh-zh-Hans` 的关系
+## 与 `Literary-Chinese-to-Simplified-Chinese` 的关系
 
-`lzh-zh-Hans` 负责文言文到现代中文的语言问题：底本、断句、古今词义、原文-今译对照、注释总策略。
+`Literary-Chinese-to-Simplified-Chinese` 负责文言文到现代中文的语言问题：底本、断句、古今词义、原文-今译对照、注释总策略。
 
 本 profile 负责历史叙事控制：人物是谁、属于哪国、处于什么时代、事件前后关系、官爵制度、地理变迁、战争外交和读者必要背景。
 
@@ -23,7 +23,7 @@ It is not a source-target language-pair template. It is an optional third-layer 
 
 ```text
 template/epub_pipeline/common
-template/epub_pipeline/lzh-zh-Hans
+template/epub_pipeline/Literary-Chinese-to-Simplified-Chinese
 template/epub_pipeline/profiles/classical-history-zh-Hans
 books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/
 ```

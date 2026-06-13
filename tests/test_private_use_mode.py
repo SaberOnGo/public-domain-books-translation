@@ -34,7 +34,7 @@ def merge_package_scripts(package_path: Path, overlay_path: Path) -> None:
 
 def write_minimal_template(repo_root: Path) -> None:
     common = repo_root / "template" / "epub_pipeline" / "common"
-    language = repo_root / "template" / "epub_pipeline" / "en-zh-Hans"
+    language = repo_root / "template" / "epub_pipeline" / "English-to-Simplified-Chinese"
     targets = repo_root / "template" / "epub_pipeline" / "targets" / "zh-Hans"
     mode = repo_root / "template" / "epub_pipeline" / "modes" / "private_use"
     (common / "state").mkdir(parents=True, exist_ok=True)
@@ -181,7 +181,7 @@ class PrivateUseModeTests(unittest.TestCase):
                     str(repo / "books" / "scripts" / "create_book_project.py"),
                     "private_book",
                     "--source-target",
-                    "en-zh-Hans",
+                    "English-to-Simplified-Chinese",
                     "--mode",
                     "private-use",
                     "--local-source-file",
@@ -235,7 +235,7 @@ class PrivateUseModeTests(unittest.TestCase):
                     str(repo / "books" / "scripts" / "create_book_project.py"),
                     "public_book",
                     "--source-target",
-                    "en-zh-Hans",
+                    "English-to-Simplified-Chinese",
                 ],
                 cwd=repo,
                 text=True,
@@ -262,7 +262,7 @@ class PrivateUseModeTests(unittest.TestCase):
                     str(repo / "books" / "scripts" / "create_book_project.py"),
                     "天文学大成：第一卷？_托勒密",
                     "--source-target",
-                    "en-zh-Hans",
+                    "English-to-Simplified-Chinese",
                 ],
                 cwd=repo,
                 text=True,
@@ -292,7 +292,7 @@ class PrivateUseModeTests(unittest.TestCase):
                 {
                     "project_root": "books/private/zh-Hans/1_private_book",
                     "common_template_root": "template/epub_pipeline/common",
-                    "template_root": "template/epub_pipeline/en-zh-Hans",
+                    "template_root": "template/epub_pipeline/English-to-Simplified-Chinese",
                     "publication_mode": "private_use",
                 }
             )
@@ -328,7 +328,7 @@ class PrivateUseModeTests(unittest.TestCase):
                 {
                     "project_root": "books/private/zh-Hans/1_private_book",
                     "common_template_root": "template/epub_pipeline/common",
-                    "template_root": "template/epub_pipeline/en-zh-Hans",
+                    "template_root": "template/epub_pipeline/English-to-Simplified-Chinese",
                     "publication_mode": "private_use",
                 }
             )
@@ -374,7 +374,7 @@ class PrivateUseModeTests(unittest.TestCase):
                 {
                     "project_root": "books/zh-Hans/1_public_book",
                     "common_template_root": "template/epub_pipeline/common",
-                    "template_root": "template/epub_pipeline/en-zh-Hans",
+                    "template_root": "template/epub_pipeline/English-to-Simplified-Chinese",
                     "publication_mode": "public_domain",
                 }
             )
@@ -424,7 +424,7 @@ class PrivateUseModeTests(unittest.TestCase):
                 {
                     "project_root": "books/zh-Hans/10_林伯洛斯特的女孩_吉恩·斯特拉顿-波特",
                     "common_template_root": "template/epub_pipeline/common",
-                    "template_root": "template/epub_pipeline/en-zh-Hans",
+                    "template_root": "template/epub_pipeline/English-to-Simplified-Chinese",
                     "publication_mode": "public_domain",
                 }
             )

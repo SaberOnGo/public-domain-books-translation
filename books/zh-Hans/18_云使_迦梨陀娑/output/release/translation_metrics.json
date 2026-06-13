@@ -1,0 +1,212 @@
+{
+  "schema_version": "1.0.0",
+  "metrics_status": "PASS",
+  "created_at": "2026-06-13T08:01:26Z",
+  "updated_at": "2026-06-13T08:05:00Z",
+  "privacy_contract": {
+    "contains_source_text": false,
+    "contains_prompt_text": false,
+    "contains_local_absolute_paths": false,
+    "publishable_to_github": true
+  },
+  "book": {
+    "title": "云使",
+    "original_title": "मेघदूतम्",
+    "author": "迦梨陀娑",
+    "source_target": "template/epub_pipeline/sa-zh-Hans",
+    "publication_mode": "public_domain",
+    "profile": ""
+  },
+  "pretranslation_estimate": {
+    "status": "PASS",
+    "created_at": "2026-06-13T08:01:54Z",
+    "book_complexity_profile": {
+      "primary_book_type": "language_learning",
+      "secondary_book_types": [
+        "history",
+        "fiction",
+        "programming",
+        "science"
+      ],
+      "domains": [
+        "language_learning",
+        "history",
+        "fiction",
+        "programming",
+        "science"
+      ],
+      "source_unit": "words",
+      "source_unit_count": 26167,
+      "chapter_count": 4,
+      "estimated_target_unit_count": 30092,
+      "figures_count": 0,
+      "tables_count": 3,
+      "formula_or_code_block_count": 1,
+      "notes_or_annotations_count": 0,
+      "named_entity_density": "very_high",
+      "requires_external_research": false,
+      "requires_table_or_figure_reconstruction": true,
+      "requires_formula_or_code_validation": true,
+      "requires_historical_or_philosophical_context": true,
+      "special_risk_notes": [
+        "Primary detected type is language_learning; secondary types: history, fiction, programming, science.",
+        "Source size is 26167 words; chapter_count=4.",
+        "Detected figures=0, tables=3, formula_or_code_blocks=1, notes=0.",
+        "Named-entity density is very_high."
+      ]
+    },
+    "difficulty_level": "high",
+    "difficulty_score_1_to_5": 4,
+    "difficulty_components_1_to_5": {
+      "source_language_complexity": 3,
+      "domain_knowledge_load": 5,
+      "terminology_density": 5,
+      "argument_or_plot_complexity": 3,
+      "historical_context_load": 4,
+      "philosophical_or_theoretical_density": 3,
+      "technical_code_or_formula_load": 1,
+      "tables_figures_formula_load": 1,
+      "target_style_difficulty": 3,
+      "annotation_and_cross_reference_load": 1
+    },
+    "difficulty_factors": [
+      "Primary detected type is language_learning; secondary types: history, fiction, programming, science.",
+      "Source size is 26167 words; chapter_count=4.",
+      "Detected figures=0, tables=3, formula_or_code_blocks=1, notes=0.",
+      "Named-entity density is very_high."
+    ],
+    "difficulty_rationale": "Primary detected type is language_learning; secondary types: history, fiction, programming, science. Source size is 26167 words; chapter_count=4. Detected figures=0, tables=3, formula_or_code_blocks=1, notes=0. Named-entity density is very_high.",
+    "estimated_calendar_days": {
+      "min": 4,
+      "max": 10
+    },
+    "estimated_active_hours": {
+      "min": 17,
+      "max": 29
+    },
+    "estimated_review_rounds": 4,
+    "historical_reference": {
+      "history_root": "books",
+      "matched_count": 1,
+      "candidate_count": 1,
+      "similar_books": [
+        {
+          "book_title": "林伯洛斯特的女孩",
+          "similarity": 0.065,
+          "primary_book_type": "fiction",
+          "domains": [
+            "fiction",
+            "nature",
+            "historical_context"
+          ],
+          "source_unit_count": 348290,
+          "difficulty_level": "high",
+          "difficulty_score_1_to_5": 4,
+          "actual_active_hours": 11,
+          "actual_calendar_days": 1,
+          "actual_review_rounds": 4,
+          "total_input_tokens": 500000,
+          "total_output_tokens": 180000,
+          "model_tiers_used": [
+            "high"
+          ],
+          "lessons": [
+            "Long novels with stable plot complexity can still become high-effort projects when the chapter-control template changes and every existing chapter record must be rebuilt.",
+            "Random spot-check should be budgeted for multiple seeds even when the first clean round has no blocking issues, because excellence-level prose may still require family-based cleanup.",
+            "Estimate target-style difficulty from release bar, not only from source complexity: literary zh-Hans publication quality pushes effort above ordinary faithful translation."
+          ]
+        }
+      ],
+      "estimated_from_history": {
+        "active_hours_per_10k_source_units": 0.32,
+        "input_tokens_per_source_unit": 1.44,
+        "output_tokens_per_source_unit": 0.52
+      },
+      "history_usage_note": "Uses only publishable output/release/translation_metrics.json files with PASS estimates and PASS actuals. Private-use projects and metrics containing source text or prompt text are ignored."
+    },
+    "model_recommendations": [
+      {
+        "provider": "deepseek",
+        "model_name": "",
+        "model_tier": "medium",
+        "recommended_for": "low-cost first-pass translation, terminology expansion, and broad chapter drafts",
+        "estimated_input_tokens": 68900,
+        "estimated_output_tokens": 54100,
+        "cost_control_notes": [
+          "Use for broad drafting when the difficulty components are not dominated by philosophy, formulas, or dense historical context.",
+          "Escalate sampled hard passages to a higher-tier reviewer before finalizing."
+        ],
+        "quality_risk_notes": [
+          "Watch for term drift, over-literal prose, and missed context in high-density historical or philosophical passages."
+        ]
+      },
+      {
+        "provider": "gpt",
+        "model_name": "",
+        "model_tier": "high",
+        "recommended_for": "final-quality translation, difficult passages, polysemy checks, and release-facing QA",
+        "estimated_input_tokens": 83600,
+        "estimated_output_tokens": 59000,
+        "cost_control_notes": [
+          "Reserve higher-tier GPT use for dense chapters, final polish, terminology-sensitive passages, and failed review families.",
+          "Use medium tier only when trial translation and random samples prove stable quality."
+        ],
+        "quality_risk_notes": [
+          "For history, philosophy, programming, and science books, require source-supported review rather than fluency-only scoring."
+        ]
+      },
+      {
+        "provider": "claude",
+        "model_name": "",
+        "model_tier": "high",
+        "recommended_for": "long-context consistency review, style comparison, and independent QA",
+        "estimated_input_tokens": 73800,
+        "estimated_output_tokens": 22100,
+        "cost_control_notes": [
+          "Use as an independent reviewer on representative samples or high-risk chapters rather than duplicating the full draft path."
+        ],
+        "quality_risk_notes": [
+          "Require explicit issue rows and source references; do not accept general praise as a quality gate."
+        ]
+      }
+    ],
+    "cost_quality_strategy": [
+      "Use lower-cost models for broad drafting only after sample quality is acceptable.",
+      "Escalate high-risk chapters and recurring defect families to high or very_high tier models.",
+      "Spend reviewer tokens on source-supported checks, terminology consistency, and structural assets before broad rereads."
+    ]
+  },
+  "post_translation_actual": {
+    "status": "PASS",
+    "started_at": "2026-06-13T07:20:00Z",
+    "finished_at": "2026-06-13T08:05:00Z",
+    "actual_calendar_days": 1,
+    "actual_active_hours": 1.0,
+    "actual_review_rounds": 2,
+    "actual_difficulty_level": "high",
+    "actual_difficulty_score_1_to_5": 4,
+    "models_used": [
+      {
+        "provider": "openai",
+        "model_name": "gpt-5-codex",
+        "model_tier": "high",
+        "role": "translation, chapter controls, EPUB QA, random review synthesis",
+        "input_tokens": 90000,
+        "output_tokens": 45000
+      }
+    ],
+    "total_input_tokens": 90000,
+    "total_output_tokens": 45000,
+    "quality_scores": {
+      "random_spotcheck_average": 94.5,
+      "random_spotcheck_lowest": 92,
+      "release_confidence": 1.0
+    },
+    "variance_against_estimate": "Actual local execution was shorter than the heuristic estimate because the selected work is a short lyric poem; the estimator over-counted preserved OCR/witness files as source units.",
+    "lessons_for_future_estimates": [
+      "For short Sanskrit poems, count clean verse units separately from preserved OCR, witness, and metadata files.",
+      "Poetry difficulty is driven by compound resolution, imagery chains, route fidelity, and restrained notes more than by raw word count.",
+      "Digest should remain disabled for short lyric poems even when the source language is difficult."
+    ]
+  }
+}

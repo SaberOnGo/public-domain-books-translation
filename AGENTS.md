@@ -40,15 +40,15 @@ This file is for AI agents working from a downloaded copy of this repository.
 - Treat this as a global multilingual public-domain book translation project, not as an English-to-Chinese-only project.
 - 本项目是全球多语言公版书翻译项目，不是只面向英文到中文的项目。
 
-- Do not treat `en-zh-Hans` as the default translation direction. It is only one currently available language-pair template.
-- 不要把 `en-zh-Hans` 当作默认翻译方向。它只是当前已有的一个语言方向模板。
+- Do not treat `English-to-Simplified-Chinese` as the default translation direction. It is only one currently available language-pair template.
+- 不要把 `English-to-Simplified-Chinese` 当作默认翻译方向。它只是当前已有的一个语言方向模板。
 
 - For every new book project, use `books/scripts/create_book_project.py` to create the project under `books/{target}/{number}_{target_language_title}_{target_language_author}/`, where `{target}` is the output language tag such as `zh-Hans`, `en`, `ja`, or `es`, and `{number}` is the next integer in that target-language directory. The directory name after the numeric prefix must be readable in the target language: for Simplified Chinese output, use Simplified Chinese title and author; for Japanese output, use Japanese title and author; for English output, use English title and author. The script must copy `template/epub_pipeline/common` first, then overlay the matching language-pair template. All book-specific output must stay under that numbered project directory.
 - 制作每一本新书时，必须使用 `books/scripts/create_book_project.py` 在 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下创建工程；其中 `{target}` 是输出语言标签，例如 `zh-Hans`、`en`、`ja`、`es`，`{number}` 是该目标语言目录内自动递增的下一个整数。数字前缀后的目录名必须使用目标语言可读书名和作者名：目标语言是简体中文时用简体中文书名和作者名，目标语言是日语时用日语书名和作者名，目标语言是英语时用英语书名和作者名。脚本必须先复制 `template/epub_pipeline/common`，再覆盖复制匹配的语言方向模板。所有具体书籍产物只能写入这个带编号的书籍工程目录。
 - Shared build dependencies are installed once under `books/` (`books/package.json`, `books/package-lock.json`, ignored `books/node_modules/`). Do not create per-book `node_modules/` directories unless a book records a justified private-toolchain exception.
 - 构建依赖统一安装在 `books/`（`books/package.json`、`books/package-lock.json`、被忽略的 `books/node_modules/`）。不要为每本书重复创建 `node_modules/`；除非某本书记录了确有必要的私有工具链例外。
-- Target-language quality rules live under `template/epub_pipeline/targets/{target}/`; source-to-target-specific rules live under `template/epub_pipeline/{source-target}/`.
-- 目标语言质量规则放在 `template/epub_pipeline/targets/{target}/`；源语言到目标语言的专用规则放在 `template/epub_pipeline/{source-target}/`。
+- Target-language quality rules live under `template/epub_pipeline/targets/{target}/`; source-to-target-specific rules live under `template/epub_pipeline/{language-pair-template}/`.
+- 目标语言质量规则放在 `template/epub_pipeline/targets/{target}/`；源语言到目标语言的专用规则放在 `template/epub_pipeline/{language-pair-template}/`。
 
 - Never write source text, translations, QA files, EPUB output, or book-specific metadata back into `template/`.
 - 严禁把原文、译文、QA、EPUB 输出或具体书籍 metadata 写回 `template/`。
@@ -56,8 +56,8 @@ This file is for AI agents working from a downloaded copy of this repository.
 - Human-facing important files must include the local language expected by that template's contributors. English may be added in parallel, but important instructions must not be English-only unless English is the target contributor language.
 - 面向人的重要文件必须包含该模板贡献者预期能读懂的本地语言。英文可以并列补充，但除非英语就是该模板贡献者语言，否则重要说明不能只写英文。
 
-- Examples: `en-ja` important files must include Japanese plus optional English; `de-zh-Hant` important files must include Traditional Chinese plus optional English; `fr-en` important files can be English.
-- 示例：`en-ja` 的重要文件必须包含日文，可并列英文；`de-zh-Hant` 的重要文件必须包含繁体中文，可并列英文；`fr-en` 的重要文件可以使用英文。
+- Examples: `English-to-Japanese` important files must include Japanese plus optional English; `German-to-Traditional-Chinese` important files must include Traditional Chinese plus optional English; `French-to-English` important files can be English.
+- 示例：`English-to-Japanese` 的重要文件必须包含日文，可并列英文；`German-to-Traditional-Chinese` 的重要文件必须包含繁体中文，可并列英文；`French-to-English` 的重要文件可以使用英文。
 
 - Important files include prompts, workflow instructions, quality gates, review rubrics, policy notes, contribution instructions, and template README files. Code and purely machine-readable data are exempt.
 - 重要文件包括 prompt、工作流说明、质量门禁、评审规则、政策说明、贡献说明和模板 README。代码和纯机器读取数据除外。
@@ -79,8 +79,8 @@ This file is for AI agents working from a downloaded copy of this repository.
 
 - Raw AI output is not publishable. Use research, trial translation, chapter review, quality gates, EPUB validation, and retrospective records.
 - AI 初稿不能直接发布。必须经过研究、试译、章节审校、质量门禁、EPUB 校验和复盘记录。
-- Do not place language-pair-specific scripts, datasets, or exploratory files in the repository root. Put them under `research/{source-target}/...` or the matching language-pair template.
-- 不要把特定语言方向的脚本、数据集或探索文件放在仓库根目录。应放到 `research/{source-target}/...` 或对应语言方向模板中。
+- Do not place language-pair-specific scripts, datasets, or exploratory files in the repository root. Put them under `research/{language-pair-template}/...` or the matching language-pair template.
+- 不要把特定语言方向的脚本、数据集或探索文件放在仓库根目录。应放到 `research/{language-pair-template}/...` 或对应语言方向模板中。
 - Scripts and prompts must not hard-code local absolute paths such as Windows drive paths or one contributor's workspace. Resolve paths from the script location, the repository root, or explicit user-provided arguments.
 - 脚本和 prompt 不得写死本机绝对路径，例如 Windows 盘符路径或某个贡献者的工作目录。路径应基于脚本位置、仓库根目录或用户显式传入的参数解析。
 
@@ -114,7 +114,7 @@ This file is for AI agents working from a downloaded copy of this repository.
 - `skills/translation-quality-defect-families/SKILL.md` when translating, reviewing, fixing, or retrospectively summarizing recurring translation-quality problems
 - `skills/print-compatible-book-layout/SKILL.md` when designing or reviewing book/page layout, body typography, titles, subtitles, heading hierarchy, notes, tables, figures, EPUB navigation labels, or print-compatible layout
 - `template/epub_pipeline/common/references/translation_effort_metrics.md` and `npm run metrics:evaluate` when estimating a book's translation difficulty, complexity, time, token budget, or model tier before full translation, and when recording actual post-translation effort for GitHub-readable release references
-- Matching language-pair template files under `template/epub_pipeline/{source-target}/`
+- Matching language-pair template files under `template/epub_pipeline/{language-pair-template}/`
 
 ## Output Discipline / 输出要求
 

@@ -10,14 +10,14 @@ Create new projects through the shared script so the numeric prefix is assigned 
 
 ```powershell
 cd books
-npm run new:book -- "天文学大成_托勒密" --source-target grc-zh-Hans
+npm run new:book -- "天文学大成_托勒密" --source-target Ancient-Greek-to-Simplified-Chinese
 ```
 
 新书必须通过共享脚本创建，这样数字前缀才会按目标语言目录自动递增：
 
 ```powershell
 cd books
-npm run new:book -- "天文学大成_托勒密" --source-target grc-zh-Hans
+npm run new:book -- "天文学大成_托勒密" --source-target Ancient-Greek-to-Simplified-Chinese
 ```
 
 The result is `books/{target}/{number}_{target_language_title}_{target_language_author}/`, for example `books/zh-Hans/12_天文学大成_托勒密/`. Use the target-language title and author after the numeric prefix. Do not manually choose the number unless you are repairing a documented migration.

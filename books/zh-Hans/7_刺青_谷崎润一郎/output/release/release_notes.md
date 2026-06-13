@@ -175,7 +175,7 @@ size_bytes: 158822
 
 ## Release Reason / 发布原因
 
-Complete ja-zh-Hans template trial run for Tanizaki Junichiro's Shisei after stratified random spot-check closure.
+Complete Japanese-to-Simplified-Chinese template trial run for Tanizaki Junichiro's Shisei after stratified random spot-check closure.
 
 ## Changes / 修改内容
 

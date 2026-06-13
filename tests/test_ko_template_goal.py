@@ -11,7 +11,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 class KoreanTemplateGoalTests(unittest.TestCase):
     def test_ko_language_template_has_required_goal_files(self) -> None:
-        template_root = REPO_ROOT / "template" / "epub_pipeline" / "ko-zh-Hans"
+        template_root = REPO_ROOT / "template" / "epub_pipeline" / "Korean-to-Simplified-Chinese"
         required_files = [
             "AGENTS.md",
             "SKILL.md",
@@ -72,7 +72,7 @@ class KoreanTemplateGoalTests(unittest.TestCase):
                 str(REPO_ROOT / "books" / "scripts" / "create_book_project.py"),
                 "sangnoksu_template_smoke_delete_me",
                 "--source-target",
-                "ko-zh-Hans",
+                "Korean-to-Simplified-Chinese",
                 "--dry-run",
             ],
             cwd=REPO_ROOT,
@@ -89,7 +89,7 @@ class KoreanTemplateGoalTests(unittest.TestCase):
             REPO_ROOT
             / "template"
             / "epub_pipeline"
-            / "ko-zh-Hans"
+            / "Korean-to-Simplified-Chinese"
             / "references"
             / "korean_source_notes.md"
         ).read_text(encoding="utf-8")

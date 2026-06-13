@@ -4,7 +4,7 @@
 
 本目录不是单一语言方向模板，而是一个第三层控制 overlay。
 
-It is not a source-target language-pair template. It is an optional third-layer production-control profile.
+It is not a language-pair template. It is an optional third-layer production-control profile.
 
 适用对象：
 
@@ -19,7 +19,7 @@ Typical examples include classical astronomy, mathematics, optics, mechanics, ge
 制作具体书籍时必须按顺序复制：
 
 1. `template/epub_pipeline/common`
-2. 匹配的语言方向模板，例如 `template/epub_pipeline/en-zh-Hans`、未来的 `grc-zh-Hans`、`la-zh-Hans`、`ar-zh-Hans`
+2. 匹配的语言方向模板，例如 `template/epub_pipeline/English-to-Simplified-Chinese`、未来的 `Ancient-Greek-to-Simplified-Chinese`、`Latin-to-Simplified-Chinese`、`Arabic-to-Simplified-Chinese`
 3. 本目录：`template/epub_pipeline/profiles/classical-science-zh-Hans`
 
 所有具体书籍输出只能写入 `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`，不得写回本目录。

@@ -58,7 +58,7 @@ Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリ�
 
 ## ユーザーが知っておくべき重要フォルダ
 
-- `.\template\epub_pipeline`：現在どの原言語・言語方向テンプレートがあるか確認する場所です。`en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans` などがあります。
+- `.\template\epub_pipeline`：現在どの原言語・言語方向テンプレートがあるか確認する場所です。`English-to-Simplified-Chinese`、`Japanese-to-Simplified-Chinese`、`Ancient-Greek-to-Simplified-Chinese` などがあります。
 - `.\tools\lifebook-launcher`：LifeBook Launcher クライアントのインストール・起動フォルダです。LifeBook プロジェクトを使い、OpenCode をインストールするためにユーザーが知っておくべき場所です。
 - `.\doc\public\user_prompt`：公開スターター prompt の場所です。AI に渡す prompt の詳細を確認したり、手動で調整したりできます。
 - `.\books\zh-Hans`：もっとも重要な完成本の場所です。簡体字中国語への翻訳が完了したら、該当する書籍フォルダの `output\release\` を確認します。公開可能なのは release 成果物です。
@@ -83,7 +83,7 @@ LifeBook Digest は現在、独立した LifeBook 後処理モジュールとし
 - `digest/`：LifeBook Digest の共通後処理モジュール。各書籍は `digest.config.json` で有効化と EPUB 統合を制御します。
 - `template/epub_pipeline/`：正式なワークフローテンプレートとルール。
 - `template/epub_pipeline/common/`：共通 EPUB ワークフロー、スクリプト、出典証拠、権利確認、品質ゲート、ランダム検査、リリース規則。
-- `template/epub_pipeline/{source-target}/`：言語方向ごとの prompt、用語、文体、レビュー規則。
+- `template/epub_pipeline/{language-pair-template}/`：言語方向ごとの prompt、用語、文体、レビュー規則。
 - `template/epub_pipeline/targets/{target}/`：対象言語の品質ルール。
 - `template/epub_pipeline/profiles/{profile-target}/`：特殊な本の種類に対する追加ルール。
 - `template/epub_pipeline/modes/private_use/`：非パブリックドメインの個人利用プロジェクトだけにコピーされる mode overlay です。private-use cover、frontmatter、artifact、gate scripts を含みます。
@@ -91,7 +91,7 @@ LifeBook Digest は現在、独立した LifeBook 後処理モジュールとし
 - `books/`：共有 Node.js ツール依存関係。一度だけインストールします。
 - `doc/public/`：公開ガイド、prompt 説明、候補書籍資料。
 - `doc/project/`：プロジェクトのエンジニアリング文書、AI クライアント説明、Launcher 設計、実装計画。
-- `research/{source-target}/`：言語方向ごとの調査成果物。
+- `research/{language-pair-template}/`：言語方向ごとの調査成果物。
 - `.opencode/` と `opencode.jsonc`：OpenCode 用の薄いアダプター。ワークフロー規則ではありません。
 - `tools/lifebook-launcher/`：LifeBook Launcher デスクトップ入口です。開発ソースは `source/` にあります。
 
@@ -101,7 +101,7 @@ LifeBook Digest は現在、独立した LifeBook 後処理モジュールとし
 
 ```powershell
 cd books
-npm run new:book -- {対象言語の書名}_{対象言語の著者名} --source-target {source-target}
+npm run new:book -- {対象言語の書名}_{対象言語の著者名} --source-target {language-pair-template}
 ```
 
 新しい書籍ディレクトリ：
@@ -116,7 +116,7 @@ private-use project は明示的に `private-use` モードで作成します。
 
 ```powershell
 cd books
-npm run new:book -- {対象言語の書名}_{対象言語の著者名} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "個人学習用のみ。再配布なし。商用利用なし。"
+npm run new:book -- {対象言語の書名}_{対象言語の著者名} --source-target {language-pair-template} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "個人学習用のみ。再配布なし。商用利用なし。"
 ```
 
 private mode は翻訳、レビュー、EPUB 検証、層化ランダム抜き取り検査の品質基準を下げません。ただし権利境界、読者に見える文言、artifact の意味を変えます。private cover の下部は `个人学习版`、private frontmatter は `参考LifeBook书坊 个人自制` を使い、パブリックドメイン説明を削除し、個人利用のみ、再配布なし、商用利用なし、リスクは個人が負うことを明記します。private artifact は `output/private_artifacts/` に書き込み、公開 release ではありません。

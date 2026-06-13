@@ -70,7 +70,7 @@ opencode.jsonc
 OpenCode 中可以使用：
 
 ```text
-/new-book <book_id_slug> --source-target <source-target> [SOURCE_URL]
+/new-book <book_id_slug> --source-target <language-pair-template> [SOURCE_URL]
 /run-gates <books/{target}/{number}_{book_id_slug}>
 /random-spotcheck <books/{target}/{number}_{book_id_slug}>
 ```

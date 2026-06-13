@@ -1,0 +1,4 @@
+type,source_term,target_term,category,definition,note_text,display_policy,exception_reason,forbidden_body_renderings,first_occurrence
+proper_name,,,,,"正文使用通行中文译名；俄文原名只在必要译注或术语表中出现。",target_only,,,
+rank_or_title,,,,,"军阶、官职、尊称和阶层称谓必须保持一致；关系变化需在注释或术语表说明。",target_only,,,
+place_name,,,,,"地名优先使用通行中文译名或稳定音译；不得每章临时变换。",target_only,,,

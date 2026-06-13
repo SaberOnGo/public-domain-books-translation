@@ -11,7 +11,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 class LiteraryChineseTemplateGoalTests(unittest.TestCase):
     def test_lzh_language_template_has_required_goal_files(self) -> None:
-        template_root = REPO_ROOT / "template" / "epub_pipeline" / "lzh-zh-Hans"
+        template_root = REPO_ROOT / "template" / "epub_pipeline" / "Literary-Chinese-to-Simplified-Chinese"
         required_files = [
             "AGENTS.md",
             "SKILL.md",
@@ -102,7 +102,7 @@ class LiteraryChineseTemplateGoalTests(unittest.TestCase):
                 str(REPO_ROOT / "books" / "scripts" / "create_book_project.py"),
                 "zhanguoce_template_smoke_delete_me",
                 "--source-target",
-                "lzh-zh-Hans",
+                "Literary-Chinese-to-Simplified-Chinese",
                 "--profile",
                 "classical-history-zh-Hans",
                 "--dry-run",
@@ -121,7 +121,7 @@ class LiteraryChineseTemplateGoalTests(unittest.TestCase):
             REPO_ROOT
             / "template"
             / "epub_pipeline"
-            / "lzh-zh-Hans"
+            / "Literary-Chinese-to-Simplified-Chinese"
             / "references"
             / "classical_chinese_source_notes.md"
         ).read_text(encoding="utf-8")
@@ -153,7 +153,7 @@ class LiteraryChineseTemplateGoalTests(unittest.TestCase):
             REPO_ROOT
             / "template"
             / "epub_pipeline"
-            / "lzh-zh-Hans"
+            / "Literary-Chinese-to-Simplified-Chinese"
             / "references"
             / "classical_chinese_parallel_text_policy.md"
         ).read_text(encoding="utf-8")

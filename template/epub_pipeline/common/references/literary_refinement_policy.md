@@ -6,7 +6,7 @@ This file is language-neutral. It defines how a book moves from a technically va
 
 ## Scope / 适用范围
 
-Use this policy for any source-target direction, for example French to English, Japanese to Spanish, Chinese to English, English to Spanish, German to Traditional Chinese, Arabic to Indonesian, or English to Simplified Chinese.
+Use this policy for any source-to-target direction, for example French to English, Japanese to Spanish, Chinese to English, English to Spanish, German to Traditional Chinese, Arabic to Indonesian, or English to Simplified Chinese.
 
 本策略适用于任何源语言到目标语言方向，例如法语到英语、日语到西班牙语、中文到英语、英语到西班牙语、德语到繁体中文、阿拉伯语到印尼语、英文到简体中文等。
 
@@ -108,8 +108,8 @@ Reusable lessons must be copied back into the appropriate layer:
 - `template/epub_pipeline/targets/{target}/`: target-language typography, punctuation, readability, review rubrics, and local-language style standards.
 - `template/epub_pipeline/targets/{target}/`：目标语言排版、标点、可读性、审校规则和本地语言文体标准。
 
-- `template/epub_pipeline/{source-target}/`: source-language interference, source-to-target title handling, culture-specific terms, prompts, and workflow warnings.
-- `template/epub_pipeline/{source-target}/`：源语言干扰、源到目标语言标题处理、文化专名、prompt 和流程警告。
+- `template/epub_pipeline/{language-pair-template}/`: source-language interference, source-to-target title handling, culture-specific terms, prompts, and workflow warnings.
+- `template/epub_pipeline/{language-pair-template}/`：源语言干扰、源到目标语言标题处理、文化专名、prompt 和流程警告。
 
 - `skills/translation-quality-defect-families/SKILL.md`: reusable translation-quality defect-family lessons, including how the family was found, classified, audited, fixed, and rechecked. Merge with existing entries when possible instead of appending duplicates.
 - `skills/translation-quality-defect-families/SKILL.md`：可复用的译文质量问题族经验，包括如何发现、归纳、审计、修复和复查。已有同族条目时应合并改进，不盲目重复追加。

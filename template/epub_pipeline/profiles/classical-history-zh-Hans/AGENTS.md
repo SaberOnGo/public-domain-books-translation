@@ -15,8 +15,8 @@ This file is for AI agents using the `classical-history-zh-Hans` profile overlay
 
 ## Mandatory Rules / 强制规则
 
-- Overlay order must be `common -> {source-target} -> profiles/classical-history-zh-Hans`.
-- 覆盖顺序必须是 `common -> {source-target} -> profiles/classical-history-zh-Hans`。
+- Overlay order must be `common -> {language-pair-template} -> profiles/classical-history-zh-Hans`.
+- 覆盖顺序必须是 `common -> {language-pair-template} -> profiles/classical-history-zh-Hans`。
 - Do not write book-specific source text, translations, QA files, EPUB output, or metadata into this profile directory.
 - 不得把具体书籍原文、译文、QA、EPUB 输出或 metadata 写入本 profile 目录。
 - Before batch translation, create historical context, named-entity lock, chronology notes, and state-relations records.

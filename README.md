@@ -58,7 +58,7 @@ The launcher does not store API keys and does not include OpenCode binaries in t
 
 ## Important Folders For Users
 
-- `.\template\epub_pipeline`: check which source-language and source-to-target templates currently exist. Language-pair folders such as `en-zh-Hans`, `ja-zh-Hans`, and `grc-zh-Hans` live here.
+- `.\template\epub_pipeline`: check which source-language and source-to-target templates currently exist. Language-pair folders such as `English-to-Simplified-Chinese`, `Japanese-to-Simplified-Chinese`, and `Ancient-Greek-to-Simplified-Chinese` live here.
 - `.\tools\lifebook-launcher`: LifeBook Launcher client install and launch folder. Users need this path to use the LifeBook project and install OpenCode.
 - `.\doc\public\user_prompt`: public starter prompts. Read or adjust these when the prompt given to an AI client needs review or manual refinement.
 - `.\books\zh-Hans`: the most important output area for Simplified Chinese books. After translation succeeds, open the matching book folder and check `output\release\`; only release artifacts count as publishable results.
@@ -83,7 +83,7 @@ LifeBook Digest is currently implemented as an independent LifeBook post-process
 - `digest/`: reusable LifeBook Digest post-processing module; each book controls enablement and EPUB merge behavior through `digest.config.json`.
 - `template/epub_pipeline/`: authoritative workflow templates and policies.
 - `template/epub_pipeline/common/`: shared EPUB workflow, scripts, source evidence, rights checks, quality gates, random spot checks, and release rules.
-- `template/epub_pipeline/{source-target}/`: language-pair rules, prompts, glossary guidance, and review rubrics.
+- `template/epub_pipeline/{language-pair-template}/`: language-pair rules, prompts, glossary guidance, and review rubrics.
 - `template/epub_pipeline/targets/{target}/`: target-language quality rules.
 - `template/epub_pipeline/profiles/{profile-target}/`: optional overlays for special book types.
 - `template/epub_pipeline/modes/private_use/`: private-use overlay copied only for non-public-domain personal-use projects. It contains private cover, frontmatter, artifact, and gate scripts.
@@ -91,7 +91,7 @@ LifeBook Digest is currently implemented as an independent LifeBook post-process
 - `books/`: shared Node.js tooling; install dependencies once here.
 - `doc/public/`: public instructions, prompt guides, and candidate-book notes.
 - `doc/project/`: project engineering docs, AI-client notes, launcher design, and implementation plans.
-- `research/{source-target}/`: language-pair-specific research artifacts.
+- `research/{language-pair-template}/`: language-pair-specific research artifacts.
 - `.opencode/` and `opencode.jsonc`: thin OpenCode adapter only, not workflow rules.
 - `tools/lifebook-launcher/`: LifeBook Launcher desktop entry; development source lives in `source/`.
 
@@ -101,7 +101,7 @@ Use the project creation script instead of copying folders manually:
 
 ```powershell
 cd books
-npm run new:book -- "{target_language_title}_{target_language_author}" --source-target {source-target}
+npm run new:book -- "{target_language_title}_{target_language_author}" --source-target {language-pair-template}
 ```
 
 The script creates:
@@ -116,7 +116,7 @@ Private-use projects must be created explicitly:
 
 ```powershell
 cd books
-npm run new:book -- "{target_language_title}_{target_language_author}" --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "Personal study only; no redistribution; no commercial use."
+npm run new:book -- "{target_language_title}_{target_language_author}" --source-target {language-pair-template} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "Personal study only; no redistribution; no commercial use."
 ```
 
 Private mode keeps the translation and QA quality bar, but changes rights, reader-facing wording, and artifact semantics. Private covers use `个人学习版`; private frontmatter uses `参考LifeBook书坊 个人自制`, removes public-domain notices, and states personal-use/no-redistribution/no-commercial-use plus personal risk responsibility. Private artifacts are written under `output/private_artifacts/` and are personal-use outputs, not public releases.

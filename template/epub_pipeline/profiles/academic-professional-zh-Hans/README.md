@@ -4,7 +4,7 @@
 
 本目录不是单一语言方向模板，而是一个第三层控制 overlay。它服务于学术专著、论文型书籍和现代专业书，目标是在保持专业准确性的同时，让译文读得顺、有趣、不费劲。
 
-It is not a source-target language-pair template. It is an optional third-layer profile for academic and professional books translated into Simplified Chinese.
+It is not a language-pair template. It is an optional third-layer profile for academic and professional books translated into Simplified Chinese.
 
 ## 适用对象
 
@@ -26,7 +26,7 @@ It is not a source-target language-pair template. It is an optional third-layer 
 
 ```text
 template/epub_pipeline/common
-template/epub_pipeline/{source-target}
+template/epub_pipeline/{language-pair-template}
 template/epub_pipeline/profiles/academic-professional-zh-Hans
 books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/
 ```

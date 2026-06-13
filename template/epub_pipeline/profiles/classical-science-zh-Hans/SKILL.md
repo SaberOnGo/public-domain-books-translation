@@ -21,7 +21,7 @@ Use this profile for classical scientific or technical works where terminology, 
 具体书籍工程必须先由 `common` 和语言方向模板创建，再叠加本 profile。
 
 ```text
-common -> {source-target} -> profiles/classical-science-zh-Hans -> books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/
+common -> {language-pair-template} -> profiles/classical-science-zh-Hans -> books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/
 ```
 
 ## 执行步骤 / Workflow

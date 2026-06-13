@@ -58,7 +58,7 @@ Launcher 不會保存 API Key，也不會把 OpenCode 本體放進本倉庫。Op
 
 ## 使用者需要知道的重要目錄
 
-- `.\template\epub_pipeline`：查看目前有哪些源語言/語言方向模板。`en-zh-Hans`、`ja-zh-Hans`、`grc-zh-Hans` 等目錄都在這裡。
+- `.\template\epub_pipeline`：查看目前有哪些源語言/語言方向模板。`English-to-Simplified-Chinese`、`Japanese-to-Simplified-Chinese`、`Ancient-Greek-to-Simplified-Chinese` 等目錄都在這裡。
 - `.\tools\lifebook-launcher`：LifeBook Launcher 用戶端安裝啟動目錄。使用者需要知道這個位置，以使用 LifeBook 專案和安裝 OpenCode。
 - `.\doc\public\user_prompt`：公共啟動 prompt 目錄。若想了解 prompt 細節，或手動調整給 AI 的 prompt，可以看這裡。
 - `.\books\zh-Hans`：最重要的成書目錄。翻譯成簡體中文成功後，到對應書籍目錄裡找 `output\release\`；只有 release 目錄裡的成品才算可發布結果。
@@ -83,7 +83,7 @@ LifeBook Digest 目前實作為獨立的 LifeBook 後處理模組。致謝與第
 - `digest/`：LifeBook Digest 通用後處理模組；由具體書籍的 `digest.config.json` 控制是否啟用、是否合併進 EPUB。
 - `template/epub_pipeline/`：權威流程模板與規則。
 - `template/epub_pipeline/common/`：通用 EPUB 流程、腳本、來源證據、版權核查、品質門禁、隨機抽檢和發布規則。
-- `template/epub_pipeline/{source-target}/`：具體語言方向的 prompt、術語、文風和審校規則。
+- `template/epub_pipeline/{language-pair-template}/`：具體語言方向的 prompt、術語、文風和審校規則。
 - `template/epub_pipeline/targets/{target}/`：目標語言品質規則。
 - `template/epub_pipeline/profiles/{profile-target}/`：特殊書籍類型的附加規則。
 - `template/epub_pipeline/modes/private_use/`：只複製到非公版個人自用專案的模式覆蓋層，包含私人封面、首頁/前置頁、私人產物和門禁腳本。
@@ -91,7 +91,7 @@ LifeBook Digest 目前實作為獨立的 LifeBook 後處理模組。致謝與第
 - `books/`：共享 Node.js 工具依賴，統一安裝一次。
 - `doc/public/`：公開說明、prompt 使用文件和候選書資料。
 - `doc/project/`：專案工程文件、AI 用戶端說明、Launcher 設計和實施計畫。
-- `research/{source-target}/`：特定語言方向調研產物。
+- `research/{language-pair-template}/`：特定語言方向調研產物。
 - `.opencode/` 與 `opencode.jsonc`：OpenCode 薄適配層，不是流程規則源。
 - `tools/lifebook-launcher/`：LifeBook Launcher 桌面啟動器入口；`source/` 內是開發原始碼。
 
@@ -101,7 +101,7 @@ LifeBook Digest 目前實作為獨立的 LifeBook 後處理模組。致謝與第
 
 ```powershell
 cd books
-npm run new:book -- {目標語言書名}_{目標語言作者名} --source-target {source-target}
+npm run new:book -- {目標語言書名}_{目標語言作者名} --source-target {language-pair-template}
 ```
 
 新書目錄格式：
@@ -116,7 +116,7 @@ books/{target}/{number}_{目標語言書名}_{目標語言作者名}/
 
 ```powershell
 cd books
-npm run new:book -- {目標語言書名}_{目標語言作者名} --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "僅供個人學習自用；不傳播；不用於商業。"
+npm run new:book -- {目標語言書名}_{目標語言作者名} --source-target {language-pair-template} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "僅供個人學習自用；不傳播；不用於商業。"
 ```
 
 私人模式不降低翻譯、審校、EPUB 校驗、分層隨機抽檢要求，但會改變權利、讀者可見措辭和產物語義。私人封面底部使用 `個人學習版`；私人首頁/前置頁使用 `參考LifeBook書坊 個人自製`，去掉所有公版說明，並寫明僅供個人自用、不傳播、不商業使用、風險由個人承擔。私人產物寫入 `output/private_artifacts/`，不是公開 release。

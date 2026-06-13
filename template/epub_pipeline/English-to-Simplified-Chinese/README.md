@@ -1,0 +1,127 @@
+# 英文到简体中文 EPUB 公版书翻译制作模板 / English to Simplified Chinese EPUB Translation Pipeline
+
+## 目标 / Goal
+
+给 AI 这个语言模板目录 `TEMPLATE_ROOT`、共享模板目录 `COMMON_TEMPLATE_ROOT`、目标工程目录 `PROJECT_ROOT` 和原书来源 `SOURCE_URL` 或私人本地书源，AI 应能自动完成：
+
+1. 下载/读取公版或授权英文原文；若是非公版私人自用模式，则读取用户提供的本地书源。
+2. 核查来源、版权风险与使用边界。
+3. 清洗、分章。
+4. 完成通用翻译研究、本书专项翻译研究、预翻译试译。
+5. 生成术语表、文体画像、翻译规则。
+6. 分章翻译、每章节译后控制、审校、意象词审计、章节门禁。翻译阶段先让译文成为自然中文书，再由后续节点校准忠实、术语和出版规则。
+7. 预制作阶段 1：封面、书籍信息、作者信息、字体、排版、标题、metadata 等规格。
+8. 预制作阶段 2：先生成样章 EPUB，检查通过后再制作全书。
+9. 生成 `output/book.epub`。
+10. 通过 EPUB 校验。
+11. 第一版全书 EPUB 后强制执行分层随机抽检模块，抽样正文段落、表格、图片、公式/证明块、图注和注释。
+12. 派生 2 个独立 Agent 做严格评审并评分。
+13. 根据评审和分层随机抽检结果回退到任意前置阶段返工；返工后必须定点关闭旧问题并使用新 seed 复抽。
+14. 随机抽检闭环通过后，公版或授权项目生成 `output/release/book_vX.X.X.epub` 和中英文 `release_note_vX.X.X.md`；`private_use` 项目生成 `output/private_artifacts/{title}_private_vX.X.X.epub` 和私人产物记录。
+15. 最终输出 EPUB。
+16. 全阶段复审，总结经验教训，必要时递增模板版本。
+
+目标不是“能翻出来”，而是产出优秀、可读、有中文生命力、EPUB 制作质量合格的正本书。
+
+英文到简体中文的文学精修规则见 `references/english_to_chinese_literary_refinement.md`。如果某一本书发现系统性标题、段落、术语、译注、排版或文学精修问题，目标文档应放在该书工程的 `goal/` 目录下；可复用经验再分别回填到 common、zh-Hans 目标语言框架和 English-to-Simplified-Chinese 语言方向模板。
+
+Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `npm install`，再进入具体书籍目录运行 `npm run lint:publication`、`npm run build:epub`、`npm run check:epub`。本模板的 `package.json` 只提供本书脚本，依赖统一来自共享的 `books/node_modules/`，脚本必须向上查找共享依赖，不能假定书籍目录直接位于 `books/` 下。
+
+## 唯一必须输入 / Required Inputs
+
+- `TEMPLATE_ROOT`：语言方向模板目录，即 `template/epub_pipeline/English-to-Simplified-Chinese`。
+- `COMMON_TEMPLATE_ROOT`：共享 EPUB 流水线目录，即 `template/epub_pipeline/common`。
+- `PROJECT_ROOT`：复制模板后的具体书籍工程目录；如未提供，AI 必须用 `books/scripts/create_book_project.py` 自动创建。
+- `SOURCE_URL`：公开或授权来源 URL，例如 Project Gutenberg 页面、原文文本链接或授权来源记录。
+- `LOCAL_SOURCE_FILE`：可选，仅用于 `publication_mode=private_use` 的用户本地书源文件。
+
+## 模板保护 / Template Protection
+
+严禁直接在模板原目录中制作具体书籍。执行任何书籍项目前，AI 必须先把 `template/epub_pipeline/common` 与 `template/epub_pipeline/English-to-Simplified-Chinese` 合并复制到独立书籍工程目录，例如：
+
+`books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`
+
+复制时若同名文件冲突，以语言方向模板为准。之后所有抓取、研究、翻译、QA、EPUB 输出都只能写入这个新目录。
+
+如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须是定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地书源并声明个人自用、不传播、不商业使用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，并最后叠加 `template/epub_pipeline/modes/private_use/` 覆盖层。
+
+## 人类可选干预点 / Optional Human Checkpoints
+
+原则上 AI 自动执行。复制到书籍工程后的 `state/human_feedback_control.md` 的 `human_required` 决定是否必须停下等人类检查。
+
+默认：`human_required=false`，AI 自动执行。
+
+建议人类可选查看：
+
+- `metadata/book_specific_translation_research.md`：本书专项翻译研究。
+- `qa/pretranslation/pretranslation_report.md`：预翻译试译报告。
+- `qa/chapter_controls/{NNN_slug}.control.md`：某章译后控制。
+- `preproduction/stage1/production_spec.md`：全书制作规格。
+- `preproduction/stage2_sample/sample_book.epub`：样章 EPUB。
+- `reviews/random_spotcheck/round_XXX/`：分层随机抽检样本、证据、评审、修复和闭环记录。
+- `output/release/`：公版或授权项目的带版本号 EPUB、release note、release state 和发布索引。
+- `output/private_artifacts/`：`private_use` 项目的本地私人产物、private artifact notes、private artifact state 和索引。
+- `reviews/scorecards/final_quality_score.md`：最终质量评分。
+
+如果无人干预，AI 只有在报告明确 `PASS` 时才可继续；若 `FAIL`，必须按回溯规则自行修正，不能跳过。
+
+## 新版执行顺序 / Execution Order
+
+1. `prompts/00_orchestrator_zh_en.md`
+2. `prompts/01_ingest_clean_zh_en.md`
+3. `prompts/02_split_zh_en.md`
+4. `prompts/03_global_translation_research_zh_en.md`
+5. `prompts/04_book_specific_research_zh_en.md`
+6. `prompts/05_pretranslation_trials_zh_en.md`
+7. `prompts/06_glossary_style_zh_en.md`
+8. `prompts/07_translate_chapters_zh_en.md`
+9. `prompts/08a_chapter_post_translation_control_zh_en.md`
+10. `prompts/08_review_fidelity_zh_en.md`
+11. `prompts/09_review_readability_imagery_zh_en.md`
+12. `prompts/10_review_terminology_zh_en.md`
+13. `prompts/11_chapter_quality_gate_zh_en.md`
+14. `prompts/13_preproduction_stage1_spec_zh_en.md`
+15. `prompts/14_preproduction_stage2_sample_zh_en.md`
+16. `prompts/15_full_book_production_zh_en.md`
+17. `prompts/16a_stratified_random_spotcheck.md`
+18. `prompts/16_independent_review_agents_zh_en.md`
+19. `prompts/17_revision_routing_zh_en.md`
+20. `prompts/18a_release_versioning.md`
+21. `prompts/18_final_output_zh_en.md`
+22. `prompts/19_retrospective_template_update_zh_en.md`
+
+## 硬门禁 / Hard Gates
+
+- 公开项目没有版权/公版/授权来源核查，不得翻译；私人自用项目没有本地书源文件和 `metadata/private_use_declaration.md`，不得翻译。
+- 未复制模板到独立书籍工程目录，不得开始抓取原文。
+- 没有本书专项翻译研究，不得预翻译。
+- 预翻译未 `PASS`，不得批量分章翻译。
+- 分章翻译 prompt 必须瘦身，只输出译文；不得在同一次翻译调用里塞入 release、EPUB、lint、QA 文件结构或版本化产物规则，也不得把 QA 报告混入译文正文。
+- 每章译后必须立即只针对该章执行“每章译后，全量检查并修复节点”，生成 `qa/chapter_controls/{NNN_slug}.control.md`。该节点必须覆盖当前章正文、注释、图表/公式/表格/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目，也不得扩大成全书章节检查。
+- 每章译后 control 最近一轮不是全章零问题 PASS 时，不得进入下一章翻译、章节审校或 `chapters/final/`；更严格项目/profile 规则仍优先。发现并修复问题的轮次只能记为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS；必须在同一 control 文件追加新的整章复查。只有最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，流程才可继续。复杂图表/资产问题路由到资产/技术门禁并阻止终稿/构建/release，不让本节点无限循环。
+- 中文独立阅读评分低于 4/5、20 句朗读中明显拗口超过 1 句、或关键句不断气时，即使事实准确也不得进入下一章或终稿。
+- 章节没有意象词审计，不得进入 `chapters/final/`。
+- 章节没有质量门禁 `PASS`，不得进入 `chapters/final/`。
+- 未完成预制作阶段 1，不得制作样章。
+- 样章未 `PASS`，不得制作全书 EPUB。
+- EPUB 校验有 fatal/error，不得进入最终输出。
+- 第一版全书 EPUB 后未完成分层随机抽检，不得进入最终输出。
+- 表格、图片、公式、图注或注释实际存在时，不得只抽正文段落后宣布抽检通过。
+- `npm run review:random-validate:pass` 未通过，不得标记 `DONE`。
+- 公版或授权项目未创建 `output/release/book_vX.X.X.epub`，或 `output/release/release_state.json.latest_status` 不是 `PASS`，不得标记 `DONE`。
+- `private_use` 项目未创建 `output/private_artifacts/{title}_private_vX.X.X.epub`，或 `output/private_artifacts/private_artifact_state.json.latest_status` 不是 `PASS`，不得标记 `DONE`。
+- 未完成双 Agent 独立评审，不得宣布完成。
+- 每轮精校后未完成双 Agent 分层随机抽检，不得宣布精校完成。
+- 随机抽检中 `80` 只是硬失败线；任一 Agent 平均分 < 80、最低分 < 80、任一单项 < 80，或指出读不懂、事实误解、英文句法硬搬、无依据润饰、术语/专名/译注/表格/图片/公式错误，必须回退精校或更早阶段。最终 release/private artifact 默认还要求每个 Agent 平均分 >= 92、最低分 >= 88，且逐样本评分完整；80 多分的“可读但略硬/偏密/解释化”不能当作优秀。
+- 评审未通过，必须回退返工。
+- 未完成复盘和经验沉淀，不得标记 `DONE`。
+- 已发现系统性精修问题但没有书籍专属 `goal/` 目标文档，不得标记 `DONE`。
+- 已发现可复用经验但没有回填模板，不得标记 `DONE`。
+
+## 随机抽检同类问题全书审计 / Book-Wide Similar-Issue Audit
+
+随机抽检一旦发现任何需要修复或可能系统性复现的问题，包括但不限于 P0/P1/P2、单项 <80、读者不可理解、事实/术语/图表/公式/注释错误，或本模板硬门禁失败，主执行 AI 不得只修被抽中的样本，也不得等到第二轮才全书检查。必须先把发现归纳为问题族，再对整本读者可见书稿执行全书同类问题审计，覆盖 `chapters/final/`、frontmatter、metadata、nav、表格、图片、公式、图注、注释和生成 EPUB 中相应 XHTML；修复所有确认命中，记录合理例外，并在该轮 `fix_log.md` 与 `closure_check.md` 中关闭该问题族后，才能使用新 seed 复抽。
+
+若该轮发现译文质量问题族，还必须在 `fix_log.md` 填写 `translation_quality_skill_backfill: "UPDATED"` 或 `"MERGED"`、`translation_quality_skill_backfill_path: "skills/translation-quality-defect-families/SKILL.md"` 和回填摘要，并在 `closure_check.md` 填写 `translation_quality_skill_backfill_verified: true`；若仅有非译文质量问题，必须填写 `NOT_APPLICABLE` 和具体理由。
+
+If a random sample exposes any issue that needs correction or may recur systemically, treat it as a possible systemic defect family immediately in the current round. Audit the whole reader-facing book for similar cases, fix all confirmed matches, document justified exceptions, and close the family in the same round before a new-seed resample.

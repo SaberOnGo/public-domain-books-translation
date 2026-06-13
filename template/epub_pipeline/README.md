@@ -7,7 +7,7 @@ This directory separates shared EPUB production infrastructure from language-pai
 - `common/`: language-neutral EPUB workflow contracts, source and rights templates, state files, preproduction templates, post-EPUB stratified random spot-check module, versioned release module, scripts, and build/check helpers.
 - `common/assets/`: default directories for EPUB figures, images, styles, and table resources that must be copied into each book project.
 - `targets/{target}/`: target-language quality frameworks, typography expectations, punctuation rules, and reader-experience standards.
-- `{source-target}/`: language-pair-specific translation prompts, glossary/style guidance, target-language metadata examples, source-language interference rules, and review scorecards.
+- `{language-pair-template}/`: language-pair-specific translation prompts, glossary/style guidance, target-language metadata examples, source-language interference rules, and review scorecards.
 - `profiles/{profile-target}/`: optional book-type production-control overlays for special risk classes, such as classical scientific texts with mathematics, astronomy, diagrams, tables, and strict terminology consistency requirements.
 - `modes/private_use/`: mode overlay copied only for non-public-domain personal-use projects. It separates private-use cover, frontmatter, artifact, and gate scripts from public publication rules.
 
@@ -23,13 +23,13 @@ Example:
 
 ```powershell
 cd books
-npm run new:book -- "天文学大成_托勒密" --source-target grc-zh-Hans
+npm run new:book -- "天文学大成_托勒密" --source-target Ancient-Greek-to-Simplified-Chinese
 ```
 
 If the book belongs to a special profile, overlay the matching `profiles/{profile-target}/` template after the language-pair template. Private-use projects then overlay `modes/private_use/` last. For example, a Greek-to-Simplified-Chinese edition of a classical astronomy text should use:
 
 1. `template/epub_pipeline/common`
-2. `template/epub_pipeline/{source-target}` such as `grc-zh-Hans` when available
+2. `template/epub_pipeline/{language-pair-template}` such as `Ancient-Greek-to-Simplified-Chinese` when available
 3. `template/epub_pipeline/profiles/classical-science-zh-Hans`
 
 For non-public-domain private-use projects, append:
@@ -48,7 +48,7 @@ Private-use projects must be created with:
 
 ```powershell
 cd books
-npm run new:book -- "{target_language_title}_{target_language_author}" --source-target {source-target} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "Personal study only; no redistribution; no commercial use."
+npm run new:book -- "{target_language_title}_{target_language_author}" --source-target {language-pair-template} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "Personal study only; no redistribution; no commercial use."
 ```
 
 The script writes private projects under `books/private/{target}/{number}_{target_language_title}_{target_language_author}/` and overlays `template/epub_pipeline/modes/private_use/` after the common, language-pair, and profile layers. That tree is ignored by Git. Scripts, templates, and configuration may be published to GitHub, but private source text, translations, QA files, EPUB output, private artifacts, and book-specific metadata under `books/private/` must not be published.
@@ -81,14 +81,14 @@ After the random spot-check gate is closed, public-domain and licensed book proj
 
 ## Naming
 
-Language-pair directories use BCP 47-style direction names:
+Language-pair directories use readable English direction names:
 
-- `en-zh-Hans`: English to Simplified Chinese.
-- `grc-zh-Hans`: Ancient Greek to Simplified Chinese.
-- `ja-zh-Hans`: Japanese to Simplified Chinese.
-- `fr-en`: French to English.
-- `ja-es`: Japanese to Spanish.
-- `zh-Hant-de`: Traditional Chinese to German.
+- `English-to-Simplified-Chinese`: English to Simplified Chinese.
+- `Ancient-Greek-to-Simplified-Chinese`: Ancient Greek to Simplified Chinese.
+- `Japanese-to-Simplified-Chinese`: Japanese to Simplified Chinese.
+- `French-to-English`: French to English.
+- `Japanese-to-Spanish`: Japanese to Spanish.
+- `Traditional-Chinese-to-German`: Traditional Chinese to German.
 
 Use `common/` for workflow pieces that should be shared by every language pair.
 
@@ -104,9 +104,9 @@ English can be included in parallel as a bridge language for precision and inter
 
 Examples:
 
-- `en-ja`: important prompts and review instructions should include Japanese, optionally paired with English.
-- `fr-en`: important prompts and review instructions should include English.
-- `de-zh-Hant`: important prompts and review instructions should include Traditional Chinese, optionally paired with English.
+- `English-to-Japanese`: important prompts and review instructions should include Japanese, optionally paired with English.
+- `French-to-English`: important prompts and review instructions should include English.
+- `German-to-Traditional-Chinese`: important prompts and review instructions should include Traditional Chinese, optionally paired with English.
 
 Shared repository-level documentation should include Chinese when it is intended for project-owner review. Bilingual Chinese-English wording is acceptable when exact terminology matters.
 
@@ -116,4 +116,4 @@ Each language-pair template and each reusable profile should include public `AGE
 
 `AGENTS.md` should state mandatory behavior for the template or profile. `SKILL.md` should state when and how to run the workflow.
 
-These files must follow the same language rule: local contributor language plus optional English as the bridge language. For example, `en-ja/AGENTS.md` and `en-ja/SKILL.md` should include Japanese, optionally paired with English.
+These files must follow the same language rule: local contributor language plus optional English as the bridge language. For example, `English-to-Japanese/AGENTS.md` and `English-to-Japanese/SKILL.md` should include Japanese, optionally paired with English.

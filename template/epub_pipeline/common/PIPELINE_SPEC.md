@@ -21,7 +21,7 @@
 - 复制完成后，后续 `PROJECT_ROOT` 指向独立书籍工程目录。
 - AI 只能写入 `PROJECT_ROOT` 内文件。
 - 例外：`books/package.json`、`books/package-lock.json` 和被 Git 忽略的 `books/node_modules/` 是所有书籍共享的构建工具目录，不属于任何单本书的原文、译文、QA 或 EPUB 输出。
-- 如果检测到当前目录仍在 `template/epub_pipeline/common`、某个 `template/epub_pipeline/{source-target}` 语言模板或 `template/epub_pipeline/profiles/{profile-target}` 控制模板内，必须停止并先复制模板到书籍工程。
+- 如果检测到当前目录仍在 `template/epub_pipeline/common`、某个 `template/epub_pipeline/{language-pair-template}` 语言模板或 `template/epub_pipeline/profiles/{profile-target}` 控制模板内，必须停止并先复制模板到书籍工程。
 
 ## 3. 状态机 / State Machine
 

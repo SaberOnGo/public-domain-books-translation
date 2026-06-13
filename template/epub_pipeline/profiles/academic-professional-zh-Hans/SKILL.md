@@ -17,7 +17,7 @@ Use this profile for professional books where precision and readability must bot
 ## Overlay Order
 
 ```text
-common -> {source-target} -> profiles/academic-professional-zh-Hans -> books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/
+common -> {language-pair-template} -> profiles/academic-professional-zh-Hans -> books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/
 ```
 
 For private-use projects, overlay `modes/private_use` last.
