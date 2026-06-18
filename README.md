@@ -27,6 +27,7 @@ Minimal prompt for an AI client:
 ```text
 Book I want translated: {title, author optional, and source URL if known}
 Target language: {for example Spanish, English, Japanese, or Simplified Chinese}
+[Important proper-noun translation format for names, places, terms, rare names, and hard-to-read transliterations] setting = 3
 
 Automatically choose the correct translation prompt:
 - If the matching source-language template already exists, execute doc/public/user_prompt/book_translation_existing_template.md.
@@ -38,6 +39,8 @@ After the first EPUB, run stratified random spot-checking and defect-family clos
 If LifeBook Digest is not explicitly requested, decide automatically: generate it after EPUB output for long novels, specialist books, and philosophy books; skip short stories, natural-science books, and other categories.
 When Digest should be generated, create `digest.config.json` in the book project root with `enabled=true` and `merge_into_epub=true`, then run from the repository root: `python -m digest.lifebook_digest --book-root books/{target}/{number}_{target_language_title}_{target_language_author}`. The output remains a standard EPUB.
 ```
+
+The proper-noun format setting is optional; the default is `3`. Values: `1` translate directly into the target language; `2` keep the source form untranslated; `3` first body occurrence as `translation (source)`, then translation; `4` first body occurrence as `translation (source)`, then source form; `5` first body occurrence as `translation (source)` plus an approved note marker, then translation.
 
 If a first EPUB already exists and higher quality is needed, do not ask the AI to "just polish it." Use the two post-EPUB prompts in the how-to-use guide: **Prompt B: Full-chapter recheck and repair** when chapter quality closure is uncertain, then **Prompt C: Stratified random spot-check and defect-family closure** before release.
 

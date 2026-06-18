@@ -27,6 +27,7 @@ LifeBook 書坊是一套多語言公版書翻譯與 EPUB 製作流程。它不�
 ```text
 我要翻譯的書：{書名、作者（可選）；如果已有可靠來源 URL，也可以貼上}
 目標語言：{例如 繁體中文、英文、日文、西班牙文}
+[重點專有名詞(人名、地名、術語、罕見名詞、音譯後體驗很差的名字等) 的翻譯格式] 設定 = 3
 
 請自動選擇正確的翻譯 prompt：
 - 如已有對應源語言模板，執行 doc/public/user_prompt/book_translation_existing_template.md。
@@ -38,6 +39,8 @@ LifeBook 書坊是一套多語言公版書翻譯與 EPUB 製作流程。它不�
 未聲明是否啟用 LifeBook Digest 時，請自動判斷；長篇小說、專業書籍、哲學書在 EPUB 輸出後生成 Digest，短篇小說、自然科學類和其他類型不生成。
 如需生成 Digest，請在書籍工程根目錄寫入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），並在倉庫根目錄執行：`python -m digest.lifebook_digest --book-root books/{target}/{number}_{目標語言書名}_{目標語言作者名}`。輸出仍然是標準 EPUB。
 ```
+
+專有名詞翻譯格式設定可省略，預設值為 `3`。取值含義：`1` 直接翻譯成目標語言；`2` 保留原文不翻譯；`3` 第一次正文出現寫 `譯名（原文）`，後續用譯名；`4` 第一次正文出現寫 `譯名（原文）`，後續用原文；`5` 第一次正文出現寫 `譯名（原文）` 並使用合規註號，後續用譯名。
 
 如果已經生成第一版 EPUB，但想繼續提高品質，請不要只寫「幫我精修」。使用 how-to-use 文件中的兩個後期 prompt：需要時先執行 **Prompt B：章節全量複檢與修復**，再執行 **Prompt C：分層隨機抽檢與問題族追殺**。
 

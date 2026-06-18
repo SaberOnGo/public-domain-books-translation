@@ -24,6 +24,7 @@ Paste this into the AI client, replacing the `{...}` placeholders:
 ```text
 Book I want translated: {title, author optional; include a reliable source link if one is already available}
 Target language: {for example Simplified Chinese}
+[Important proper-noun translation format for names, places, terms, rare names, and hard-to-read transliterations] setting = 3
 
 Automatically choose the correct translation prompt:
 - If the matching source-language template already exists, execute doc/public/user_prompt/book_translation_existing_template.md.
@@ -34,6 +35,8 @@ During translation, run the per-chapter post-translation full check and fix gate
 After the first EPUB, run stratified random spot-checking and defect-family closure. If any sample exposes a defect, do not fix only that sample. Classify the defect family in that same round, audit the whole book for similar cases with `rg`, glossary rows, title maps, sample manifests, and small-context source comparison, fix confirmed matches, document exceptions, and run a new-seed round. Translation-quality defect families must use `skills/translation-quality-defect-families/SKILL.md`.
 ```
 
+The proper-noun format setting is optional; the default is `3`. Values: `1` translate directly into the target language; `2` keep the source form untranslated; `3` first body occurrence as `translation (source)`, then translation; `4` first body occurrence as `translation (source)`, then source form; `5` first body occurrence as `translation (source)` plus an approved note marker, then translation.
+
 ## Personal-Use Book Translation Prompt
 
 If a local source file is already available and the translation is only for personal study, with no redistribution and no commercial use, use this prompt:
@@ -41,6 +44,7 @@ If a local source file is already available and the translation is only for pers
 ```text
 Book I want translated: {title, local folder/path: XXX}
 Target language: {for example Simplified Chinese}
+[Important proper-noun translation format for names, places, terms, rare names, and hard-to-read transliterations] setting = 3
 
 Automatically choose the correct translation prompt:
 - If the matching source-language template already exists, execute doc/public/user_prompt/book_translation_private_existing_template.md.

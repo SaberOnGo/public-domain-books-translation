@@ -24,6 +24,7 @@
 ```text
 我要翻译的书：{书名、作者（可选）；如果您已经有可靠来源链接，也可以贴上}
 目标语言：{例如 简体中文}
+[重点专有名词(人名、地名、术语、罕见名词、音译后体验很差的名字等) 的翻译格式] 设置 = 3
 
 请自动选择正确的翻译 prompt：
 - 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
@@ -36,6 +37,8 @@
 如需生成 Digest，请在书籍工程根目录写入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/{target}/{number}_{目标语言书名}_{目标语言作者名}`。输出仍然是标准 EPUB。
 ```
 
+专有名词翻译格式设置可省略，默认值为 `3`。取值含义：`1` 直接翻译成目标语言；`2` 保留原文不翻译；`3` 第一次正文出现写 `译名（原文）`，后续用译名；`4` 第一次正文出现写 `译名（原文）`，后续用原文；`5` 第一次正文出现写 `译名（原文）` 并使用合规注号，后续用译名。
+
 ## 个人自用书翻译 prompt
 
 如果这是您自己已有的本地书源，只供个人学习自用，不传播、不商业使用，可以使用下面这段：
@@ -43,6 +46,7 @@
 ```text
 我要翻译的书：{书名、本地目录: XXX }
 目标语言： {例如 简体中文}
+[重点专有名词(人名、地名、术语、罕见名词、音译后体验很差的名字等) 的翻译格式] 设置 = 3
 
 请自动选择正确的翻译 prompt：
 - 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
