@@ -82,12 +82,19 @@
 - `metadata/style_profile.md`：文体画像。
 - `metadata/reference_witness_policy.md`：可选 profile 文件。记录第二语言参考译本的版权状态、允许用途、禁止用途和差异校读边界。
 
+### Glossary
+
+- `glossary/terms.csv`：术语、概念、制度词、技术词和高风险表达的机器可读术语表。
+- `glossary/proper_nouns.csv`：用户可编辑的重点专有名词译表。必备列为 `source_name,target_name,category,display_policy,first_rendering,subsequent_rendering,note_required,repeat_original_allowed_when,notes`。用户未显式设置时，重点专有名词默认使用策略 `3`：第一次正文自然出现写作 `译名（原文）`，后续用译名。
+
 ### Research
 
 - `references/translation_research_universal.md`：由目标语言模板或语言方向模板提供的翻译研究规则。
 - `references/quality_standard.md`：由目标语言模板或语言方向模板提供的质量标准。
 - `references/chapter_title_policy.md`：通用章节标题、目录短题名和副标题策略。
 - `references/literary_refinement_policy.md`：通用文学精修、书籍目标和模板经验回填策略。
+- `references/proper_noun_display_policy.md`：重点专有名词显示策略，定义用户 prompt 设置值 `1` 到 `5`、默认策略 `3`、正文首次出现规则和 `glossary/proper_nouns.csv`。
+- `references/note_marker_policy.md`：脚注、尾注、译注和编辑注的注号硬规则；只允许 `[1]`、`(1)`、`（1）` 或 `注1` 体系。
 - `skills/translation-quality-defect-families/SKILL.md`：仓库级译文质量问题族 skill。发现忠实度、中文顺读、术语、标题/小标题、注释、图表文字接口、源语句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释或加戏等可复现质量问题时，必须用于归纳、全书同类审计、修复和经验回填。
 - `references/epub_assets_figures_tables.md`：通用 EPUB 图片、图表、表格、资源目录、XHTML 转换和 OPF manifest 规则。
 - `references/stratified_random_spotcheck.md`：第一版 EPUB 后强制执行的分层随机抽检、修复闭环和退出置信度规则。
@@ -203,6 +210,8 @@ node scripts/asset_manifest_check.js --write-report
 - 不得把本机绝对路径、Windows 盘符路径、`file://` 或包含个人工作区名称的仓库绝对路径写入可提交的 metadata、QA、reviews、release、private artifact、JSON 报告或 Markdown 证据。随机抽检、发布状态和校验报告中的路径必须序列化为书籍工程相对路径或仓库相对路径。
 - 不得把旧纸书目录式长标题链直接塞入 EPUB 导航；长标题必须按 `references/chapter_title_policy.md` 拆分为短目录题名、页面主标题和可选副标题。
 - 不得把 AI 或译者概括出的章节说明当成读者可见标题。若源文某章只有编号、罗马数字或简单题名，EPUB 页面标题通常也只应使用对应编号或题名；解释性说明应放入 `title_note`、制作说明或 QA 记录。
+- 不得把专有名词的“首次出现”原文括注放进标题、副标题或 EPUB 导航题名；标题中的出现不计入正文首次出现。重点专有名词必须按 `glossary/proper_nouns.csv` 和 `references/proper_noun_display_policy.md` 执行。
+- 注号只能使用 `[1]`、`(1)`、`（1）` 或 `注1` 体系；不得出现带圈数字、孤立小字“注”、裸 `译注：` 标签或尾随裸数字注号。
 - 不得让 Markdown 图片引用、XHTML `img src`、CSS `url(...)` 指向不存在的文件、本机绝对路径、`file://` 或未经许可的远程热链接。
 - 若存在 OPF 文件，所有 EPUB 内使用的图片、CSS、字体等资源必须登记在 OPF manifest 中。
 - 技术性表格应优先生成 XHTML `<table>`；不得把可结构化的数值表只做成图片。
@@ -221,6 +230,8 @@ node scripts/asset_manifest_check.js --write-report
 - 每章翻译后必须立即经过 `qa/chapter_controls/{NNN_slug}.control.md` 所记录的“每章译后，全量检查并修复节点”。该节点只检查当前章，不检查全书其他章节。
 - 该节点必须全章检查该章是否符合模板要求，包括但不限于该章对 metadata/nav/目录的影响、正文、注释、图表/公式/表格/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释。不得只检查用户点名项目。
 - 该节点必须按 `glossary/terms.csv.forbidden_body_renderings` 逐项扫描正文。若出现正文禁用写法、无授权原词括注、裸露源语词或误导性泛译，必须修复并追加同节点复查。
+- 该节点必须检查 `glossary/proper_nouns.csv`：重点人名、地名、术语、罕见名词和音译体验很差的名字必须按用户设置值 `1` 到 `5` 呈现；用户未设置时默认 `3`。若选择 `5`，第一次正文出现必须同时有 `译名（原文）` 和合规注号。
+- 该节点必须检查注号格式；全角 `（1）` 是 `(1)` 的中文排版等价形式，但带圈数字、裸 `注` 标签、裸 `译注：` 和尾随裸数字不得进入终稿。
 - 未完成每章译后全量检查，或最近一轮不是 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 的零问题 PASS，或未满足更严格项目/profile 规则时，不得进入下一章翻译、后续审校或 `chapters/final/`。任何评分、主观印象或“已经修过”都不能抵消 P0/P1/P2、读者难以理解、事实/术语/当前章文字接口错误、中文润色不足、为了通俗而损害专业质量，或模板硬门禁失败。
 - 图表、表格、公式和图片在本节点只做当前章文字接口检查与资产分流。复杂重绘、OCR、裁剪、数值校验、公式排版、资源路径或 manifest 问题应写入资产/技术门禁记录；这类问题阻止终稿、构建和 release，但不让当前章译后文字门禁无限循环。
 - 每次未通过都必须记录问题点、修复摘要和追加复查轮次；不得覆盖旧失败记录。

@@ -189,6 +189,44 @@ function detectBodySceneSeparator(text, file) {
   });
 }
 
+function detectDisallowedNoteMarkers(text, file) {
+  const normalizedFile = file.split(path.sep).join('/');
+  if (!normalizedFile.startsWith('chapters/final/') && !normalizedFile.startsWith('frontmatter/')) return [];
+  const issues = [];
+  const plainText = text.replace(/<[^>]+>/g, '');
+  const patterns = [
+    {
+      regex: /[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳⓵⓶⓷⓸⓹⓺⓻⓼⓽⓾❶❷❸❹❺❻❼❽❾❿㊟]/g,
+      sample: 'Circled note markers are not allowed. Use [1], (1), （1）, or 注1.',
+    },
+    {
+      regex: /(?:译注|脚注|尾注|附注)\s*[:：]/g,
+      sample: 'Inline note labels must use a numbered marker, not a raw 译注/脚注 label.',
+    },
+    {
+      regex: /(?:^|[^\p{L}\p{N}_])注(?![\p{L}\p{N}_])/gu,
+      sample: 'A raw 注 label is not an approved note marker. Use 注1, [1], (1), or （1）.',
+    },
+    {
+      regex: /[。！？；，、]\s*\d{1,3}(?=\s|$)/g,
+      sample: 'Bare trailing note digits are not allowed. Use [1], (1), （1）, or 注1.',
+    },
+  ];
+  for (const { regex, sample } of patterns) {
+    let match;
+    regex.lastIndex = 0;
+    while ((match = regex.exec(plainText)) && issues.length < 20) {
+      issues.push({
+        file,
+        line: lineNumberAt(plainText, match.index),
+        rule: 'disallowed_note_marker',
+        sample,
+      });
+    }
+  }
+  return issues;
+}
+
 const files = scanRoots.flatMap((dir) => walk(dir));
 const report = {
   projectRoot: '.',
@@ -206,6 +244,7 @@ const report = {
     sourceTermBeforeTranslation: 0,
     bodyOriginalTermGloss: 0,
     bodySceneSeparator: 0,
+    disallowedNoteMarker: 0,
   },
   issues: [],
   warnings: [],
@@ -229,6 +268,7 @@ for (const file of files) {
   const sourceTermBeforeTranslation = target === 'zh-Hans' ? detectSourceTermBeforeTranslation(text, rel) : [];
   const bodyOriginalTermGloss = detectBodyOriginalTermGloss(text, rel);
   const bodySceneSeparator = detectBodySceneSeparator(text, rel);
+  const disallowedNoteMarker = detectDisallowedNoteMarkers(text, rel);
 
   report.totals.asciiSemicolon += asciiSemi;
   report.totals.zhSemicolon += zhSemi;
@@ -240,6 +280,7 @@ for (const file of files) {
   report.totals.sourceTermBeforeTranslation += sourceTermBeforeTranslation.length;
   report.totals.bodyOriginalTermGloss += bodyOriginalTermGloss.length;
   report.totals.bodySceneSeparator += bodySceneSeparator.length;
+  report.totals.disallowedNoteMarker += disallowedNoteMarker.length;
 
   if (asciiSemi) report.issues.push(...collectMatches(text, /;/g, rel, 'ascii_semicolon'));
   if (target === 'zh-Hans' && zhSemi > maxZhSemicolons) {
@@ -259,6 +300,7 @@ for (const file of files) {
   report.issues.push(...sourceTermBeforeTranslation);
   report.issues.push(...bodyOriginalTermGloss);
   report.issues.push(...bodySceneSeparator);
+  report.issues.push(...disallowedNoteMarker);
   if (strictSpaces && repeatedSpaces) {
     report.issues.push(...collectMatches(text, /[^\n][ \t]{2,}[^\n]/g, rel, 'repeated_space'));
   } else if (repeatedSpaces) {

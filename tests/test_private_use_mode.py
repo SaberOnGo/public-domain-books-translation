@@ -89,6 +89,8 @@ def write_minimal_template(repo_root: Path) -> None:
         "epub_assets_figures_tables.md",
         "quality_gate_framework.md",
         "release_versioning.md",
+        "proper_noun_display_policy.md",
+        "note_marker_policy.md",
     ]:
         (common / "references" / name).write_text(f"# {name}\n", encoding="utf-8")
     (mode / "README.md").write_text("# Private use mode\n", encoding="utf-8")
@@ -158,6 +160,8 @@ def write_production_spec(book_root: Path) -> None:
                 "template/epub_pipeline/common/references/book_info_frontmatter_policy.md",
                 "template/epub_pipeline/common/references/epub_assets_figures_tables.md",
                 "template/epub_pipeline/common/references/quality_gate_framework.md",
+                "template/epub_pipeline/common/references/proper_noun_display_policy.md",
+                "template/epub_pipeline/common/references/note_marker_policy.md",
                 "template/epub_pipeline/modes/private_use/preproduction/stage1/_TEMPLATE.private_use_production_spec.md",
             ]
         )
@@ -413,6 +417,8 @@ class PrivateUseModeTests(unittest.TestCase):
                         "template/epub_pipeline/common/references/book_info_frontmatter_policy.md",
                         "template/epub_pipeline/common/references/epub_assets_figures_tables.md",
                         "template/epub_pipeline/common/references/quality_gate_framework.md",
+                        "template/epub_pipeline/common/references/proper_noun_display_policy.md",
+                        "template/epub_pipeline/common/references/note_marker_policy.md",
                     ]
                 )
                 + "\n",

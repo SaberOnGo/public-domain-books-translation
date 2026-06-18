@@ -9,7 +9,7 @@ AI 必须自动决定：
 - 下载哪个文本版本。
 - 如何清洗和分章。
 - 如何命名章节文件。
-- 如何生成元数据、术语表、文体画像。
+- 如何生成元数据、术语表、重点专有名词译表、文体画像。
 - 如何选择预翻译样本。
 - 如何在每章译后立即执行全量检查与修复节点，并在未通过时阻止进入下一章翻译或进入终稿。
 - 如何在失败时回溯到正确阶段。
@@ -48,6 +48,7 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 - 启用语言模板要求时的 `qa/textual/textual_uncertainty_log.md`
 - `qa/pretranslation/pretranslation_report.md`
 - `glossary/terms.csv`
+- `glossary/proper_nouns.csv`
 - `metadata/style_profile.md`
 - 启用 profile 时的 `metadata/reference_witness_policy.md`
 - 启用 profile 时的 `qa/technical/terminology_lock_report.md`
@@ -61,6 +62,8 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 
 - 每章写入 `chapters/translated/{NNN_slug}.md` 后，AI 必须立即只针对该章执行“每章译后，全量检查并修复节点”，并写入 `qa/chapter_controls/{NNN_slug}.control.md`。
 - 该节点必须检查该章是否符合模板要求，包括但不限于该章对 metadata/nav/目录/章节标题的影响、正文、注释、图表/公式/表格/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语、注释密度、事实和数值。不得只检查用户点名项目，也不得扩大成全书门禁。
+- 该节点必须按 `glossary/proper_nouns.csv` 检查重点专有名词（人名、地名、术语、罕见名词、音译后体验很差的名字等）的显示策略。用户未设置时默认使用策略 `3`：第一次正文自然出现 `译名（原文）`，后续用译名；标题、副标题和目录题名不计入正文首次出现。
+- 该节点必须按 `references/note_marker_policy.md` 检查注号。允许 `[1]`、`(1)`、全角 `（1）` 和 `注1`；不得使用带圈数字、裸 `注` 标签、裸 `译注：` 或尾随裸数字。
 - 该节点必须全章检查，而不是只抽样检查。抽样朗读或抽样段落只能作为辅助证据，不能替代全章核查。
 - 若发现 P0/P1/P2、读者不可理解、事实/术语/文字接口错误、模板硬门禁失败、目标语言翻译腔、读起来费劲、中文润色不足、为了通俗而损害专业度、专业术语解释不足，或任何其他翻译/润色问题，必须修复；但发现并修复问题的这一轮只能记录为 `FIXED_RECHECK_REQUIRED`，不得直接 `PASS`。
 - 必须追加一次新的整章复查。只有最近一轮同时记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，才允许继续；若 profile/项目规则更严格，按更严格规则。分数不能抵消 P0/P1/P2、读者难以理解、事实/术语/文字接口错误、模板硬门禁失败或明显目标语言翻译腔。

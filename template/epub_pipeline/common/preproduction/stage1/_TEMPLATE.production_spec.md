@@ -105,6 +105,16 @@ python scripts/check_cover_output_assets.py --write-report
 python scripts/check_reader_facing_policy.py --write-report
 ```
 
+制作规格必须显式覆盖以下通用规则文件：
+
+- `template/epub_pipeline/common/preproduction/stage1/_TEMPLATE.production_spec.md`
+- `template/epub_pipeline/common/references/cover_design_policy.md`
+- `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
+- `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
+- `template/epub_pipeline/common/references/quality_gate_framework.md`
+- `template/epub_pipeline/common/references/proper_noun_display_policy.md`
+- `template/epub_pipeline/common/references/note_marker_policy.md`
+
 输出必须保存为 `output/publication_lint.json`。
 资源检查输出必须保存为 `output/asset_manifest_check.json`。
 本机绝对路径门禁输出必须保存为 `output/local_absolute_path_check.json`。

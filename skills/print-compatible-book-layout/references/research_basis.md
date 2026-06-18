@@ -32,8 +32,8 @@ This file records the compact evidence basis for `print-compatible-book-layout`.
   未来纸书兼容是结构问题：标题层级、注释、表格、图片、图注和后置页必须在没有链接或脚本时仍然成立。
 - Chinese long-form reading usually benefits from stable paragraph texture: first-line indent, comfortable line height, and controlled paragraph spacing.
   中文长文通常需要稳定的段落肌理：段首缩进、舒适行距和受控段间距。
-- Traditional visible note markers such as `[1]`, `(1)`, superscript numbers, or circled numbers are safer for print-compatible books than invisible or popup-only notes.
-  对纸书兼容项目来说，`[1]`、`(1)`、上标数字或带圈数字等传统可见注号，比隐藏式或纯弹窗注释更安全。
+- Project-approved visible note markers such as `[1]`, `(1)`, fullwidth `（1）`, and `注1` are safer for print-compatible books than invisible or popup-only notes.
+  对纸书兼容项目来说，`[1]`、`(1)`、全角 `（1）` 和 `注1` 等项目批准的可见注号，比隐藏式或纯弹窗注释更安全。
 - Vertical writing needs a separate policy and real testing; CSS support, punctuation orientation, Latin text, numbers, notes, tables, and reader support can all affect usability.
   竖排需要独立策略和真实测试；CSS 支持、标点方向、西文、数字、注释、表格和阅读器支持都会影响可用性。
 - Typography systems rely on hierarchy and consistency; do not solve layout by ad hoc font-size changes.

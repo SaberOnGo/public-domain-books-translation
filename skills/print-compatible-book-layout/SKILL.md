@@ -25,6 +25,8 @@ Use this skill to design LifeBook EPUB pages that read well on screen and can la
   设计标题或标题层级前，读取 `template/epub_pipeline/common/references/chapter_title_policy.md`。
 - Read `template/epub_pipeline/common/references/book_info_frontmatter_policy.md` before editing frontmatter or book-info pages.
   编辑前置页或书籍信息页前，读取 `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`。
+- Read `template/epub_pipeline/common/references/note_marker_policy.md` before inserting, reviewing, or fixing note markers.
+  插入、审查或修复注号前，读取 `template/epub_pipeline/common/references/note_marker_policy.md`。
 - Read `template/epub_pipeline/common/references/epub_assets_figures_tables.md` before changing figure, table, image, or CSS resource layout.
   修改图、表、图片或 CSS 资源排版前，读取 `template/epub_pipeline/common/references/epub_assets_figures_tables.md`。
 - For Simplified Chinese output, read `template/epub_pipeline/targets/zh-Hans/quality_framework/references/title_punctuation_and_heading_style.md`.
@@ -62,7 +64,7 @@ layout_plan:
     max_visible_levels: 3
     nav_uses_short_titles: true
   notes:
-    marker_style: "[1] | (1) | superscript_number | circled_number | custom"
+    marker_style: "[1] | (1) | （1） | 注1"
     numbering_scope: "per_chapter | whole_book"
     placement: "chapter_end | book_end | footnote_style"
     vertical_policy: "tested | not_applicable | separate_build_required"
@@ -137,10 +139,12 @@ layout_plan:
 
 ### Traditional notes and markers / 传统注记与注号
 
-- Prefer traditional visible note markers such as `[1]`, `(1)`, superscript numbers, or circled numbers when future print publication matters.
-  未来考虑纸书出版时，优先使用传统可见注号，如 `[1]`、`(1)`、上标数字或带圈数字。
-- Choose one marker family per book or per clearly defined section; do not mix `[1]`, `(1)`, `①`, and symbolic footnotes casually.
-  每本书或每个明确定义的部分只选一种注号体系；不要随意混用 `[1]`、`(1)`、`①` 和符号脚注。
+- Use only project-approved visible note markers: `[1]`, `(1)`, fullwidth `（1）`, or `注1`. In Chinese body text, fullwidth `（1）` is allowed as the natural typography equivalent of `(1)`.
+  只使用项目批准的可见注号：`[1]`、`(1)`、全角 `（1）` 或 `注1`。中文正文中，全角 `（1）` 作为 `(1)` 的自然排版等价形式允许使用。
+- Choose one marker family per book or per clearly defined section; do not mix `[1]`, `(1)`, `（1）`, and `注1` casually.
+  每本书或每个明确定义的部分只选一种注号体系；不要随意混用 `[1]`、`(1)`、`（1）` 和 `注1`。
+- Do not use circled numbers, superscript-only note numbers, raw tiny `注` labels, raw `译注：` labels, or bare trailing note digits.
+  不得使用带圈数字、纯上标数字注号、孤立小字“注”、裸 `译注：` 标签或尾随裸数字。
 - Define numbering scope before production: restart per chapter, restart per part, or number through the whole book.
   制作前先定义编号范围：每章重排、每篇重排，或全书连续编号。
 - Use EPUB internal links only on the visible note marker; the marker must still be meaningful when printed.
@@ -166,8 +170,8 @@ layout_plan:
   如需竖排 EPUB，必须记录独立 `vertical_policy` 并实测阅读器；不同阅读器支持差异较大。
 - Use CSS such as `writing-mode: vertical-rl` and `text-orientation` only after checking punctuation, Latin text, numbers, note markers, tables, and figures.
   只有检查标点、西文、数字、注号、表格和图像后，才使用 `writing-mode: vertical-rl`、`text-orientation` 等 CSS。
-- Avoid bracket-heavy note markers like `[123]` in vertical body text if they rotate or disturb rhythm; prefer a tested compact marker such as an upright number, circled number, or project-approved form.
-  竖排正文中，如果 `[123]` 这类方括号注号旋转或破坏节奏，应改用实测可读的紧凑形式，如直立数字、带圈数字或项目批准形式。
+- Avoid bracket-heavy note markers like `[123]` in vertical body text if they rotate or disturb rhythm; use a tested project-approved form such as `（123）` or `注123` instead.
+  竖排正文中，如果 `[123]` 这类方括号注号旋转或破坏节奏，应改用实测可读的项目批准形式，例如 `（123）` 或 `注123`。
 - Keep horizontal alphanumerics, formulae, URLs, code, and wide tables out of vertical body flow when possible; move them to notes, tables, figures, or horizontal blocks.
   尽量不要把横排西文数字、公式、URL、代码和宽表硬塞进竖排正文；可移至注释、表格、图像或横排块。
 - Build vertical PDF/print separately when necessary; do not force one EPUB CSS file to satisfy both horizontal and vertical editions without testing.

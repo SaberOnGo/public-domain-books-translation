@@ -24,6 +24,8 @@ REQUIRED_SPEC_TOKENS = [
     "template/epub_pipeline/common/references/book_info_frontmatter_policy.md",
     "template/epub_pipeline/common/references/epub_assets_figures_tables.md",
     "template/epub_pipeline/common/references/quality_gate_framework.md",
+    "template/epub_pipeline/common/references/proper_noun_display_policy.md",
+    "template/epub_pipeline/common/references/note_marker_policy.md",
 ]
 
 REQUIRED_PACKAGE_SCRIPTS = [
@@ -49,11 +51,29 @@ REQUIRED_GLOSSARY_COLUMNS = {
     "forbidden_body_renderings",
 }
 
+REQUIRED_PROPER_NOUN_COLUMNS = {
+    "source_name",
+    "target_name",
+    "category",
+    "display_policy",
+    "first_rendering",
+    "subsequent_rendering",
+    "note_required",
+    "repeat_original_allowed_when",
+    "notes",
+}
+
+PROPER_NOUN_DISPLAY_POLICIES = {"1", "2", "3", "4", "5"}
+
 TERM_TYPES_REQUIRING_DISPLAY_POLICY = {
     "historical_term",
     "technical_term",
     "industry_term",
     "symbol",
+    "proper_noun",
+    "person_name",
+    "place_name",
+    "work_title",
 }
 
 REQUIRED_LOCAL_REFERENCES = [
@@ -62,6 +82,8 @@ REQUIRED_LOCAL_REFERENCES = [
     "references/epub_assets_figures_tables.md",
     "references/quality_gate_framework.md",
     "references/release_versioning.md",
+    "references/proper_noun_display_policy.md",
+    "references/note_marker_policy.md",
 ]
 
 PRIVATE_USE_SPEC_TOKEN = "template/epub_pipeline/modes/private_use/preproduction/stage1/_TEMPLATE.private_use_production_spec.md"
@@ -507,6 +529,100 @@ def split_forbidden_renderings(value: str) -> list[str]:
     return [item.strip() for item in re.split(r"[|；;]", value or "") if item.strip()]
 
 
+def truthy(value: str) -> bool:
+    return value.strip().lower() in {"true", "yes", "1", "y"}
+
+
+def check_proper_noun_display_policy(book_root: Path, issues: list[dict]) -> None:
+    proper_nouns_path = book_root / "glossary" / "proper_nouns.csv"
+    if not proper_nouns_path.exists():
+        return
+    try:
+        with proper_nouns_path.open("r", encoding="utf-8-sig", newline="") as handle:
+            reader = csv.DictReader(handle)
+            fieldnames = set(reader.fieldnames or [])
+            missing = sorted(REQUIRED_PROPER_NOUN_COLUMNS - fieldnames)
+            if missing:
+                add_issue(
+                    issues,
+                    "proper_nouns_missing_columns",
+                    f"glossary/proper_nouns.csv must include columns for proper-noun display policy: {', '.join(missing)}.",
+                    rel(book_root, proper_nouns_path),
+                )
+                return
+            rows = list(reader)
+    except csv.Error as exc:
+        add_issue(issues, "proper_nouns_csv_invalid", f"Could not parse glossary/proper_nouns.csv: {exc}", rel(book_root, proper_nouns_path))
+        return
+
+    for index, row in enumerate(rows, start=2):
+        source_name = (row.get("source_name") or "").strip()
+        target_name = (row.get("target_name") or "").strip()
+        display_policy = (row.get("display_policy") or "").strip()
+        first_rendering = (row.get("first_rendering") or "").strip()
+        subsequent_rendering = (row.get("subsequent_rendering") or "").strip()
+        note_required = (row.get("note_required") or "").strip()
+        if not source_name and not target_name and not display_policy:
+            continue
+        if display_policy and display_policy not in PROPER_NOUN_DISPLAY_POLICIES:
+            add_issue(
+                issues,
+                "proper_noun_invalid_display_policy",
+                f"Proper noun row {index} has display_policy={display_policy!r}; allowed values are 1, 2, 3, 4, and 5.",
+                rel(book_root, proper_nouns_path),
+            )
+        if display_policy == "1" and not target_name:
+            add_issue(
+                issues,
+                "proper_noun_target_required",
+                f"Proper noun row {index} uses policy 1, so target_name is required.",
+                rel(book_root, proper_nouns_path),
+            )
+        if display_policy == "2" and not source_name:
+            add_issue(
+                issues,
+                "proper_noun_source_required",
+                f"Proper noun row {index} uses policy 2, so source_name is required.",
+                rel(book_root, proper_nouns_path),
+            )
+        if display_policy in {"3", "4", "5"}:
+            if not source_name or not target_name:
+                add_issue(
+                    issues,
+                    "proper_noun_source_and_target_required",
+                    f"Proper noun row {index} uses first-mention mixed rendering, so both source_name and target_name are required.",
+                    rel(book_root, proper_nouns_path),
+                )
+            if first_rendering and source_name and target_name and (source_name not in first_rendering or target_name not in first_rendering):
+                add_issue(
+                    issues,
+                    "proper_noun_first_rendering_missing_source_or_target",
+                    f"Proper noun row {index} first_rendering must include both target_name and source_name, for example target（source）.",
+                    rel(book_root, proper_nouns_path),
+                )
+        if display_policy == "4" and subsequent_rendering and source_name and source_name not in subsequent_rendering:
+            add_issue(
+                issues,
+                "proper_noun_policy_4_subsequent_must_use_source",
+                f"Proper noun row {index} uses policy 4, so subsequent_rendering should use the source name.",
+                rel(book_root, proper_nouns_path),
+            )
+        if display_policy in {"3", "5"} and subsequent_rendering and target_name and target_name not in subsequent_rendering:
+            add_issue(
+                issues,
+                "proper_noun_target_subsequent_required",
+                f"Proper noun row {index} uses policy {display_policy}, so subsequent_rendering should use the target name.",
+                rel(book_root, proper_nouns_path),
+            )
+        if display_policy == "5" and not truthy(note_required):
+            add_issue(
+                issues,
+                "proper_noun_policy_5_requires_note",
+                f"Proper noun row {index} uses policy 5, so note_required must be true.",
+                rel(book_root, proper_nouns_path),
+            )
+
+
 def check_glossary_schema_and_forbidden_renderings(book_root: Path, issues: list[dict]) -> None:
     glossary_path = book_root / "glossary" / "terms.csv"
     if not glossary_path.exists():
@@ -640,6 +756,7 @@ def main() -> None:
         check_private_use_overlay_files(book_root, state_data, issues)
         check_package_scripts(book_root, state_data, issues)
         check_glossary_schema_and_forbidden_renderings(book_root, issues)
+        check_proper_noun_display_policy(book_root, issues)
     check_translation_coverage_gate(book_root, issues, write_report=args.write_report)
     check_chapter_quality_artifacts(book_root, issues)
 

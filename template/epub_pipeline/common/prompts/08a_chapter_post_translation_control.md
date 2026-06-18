@@ -20,6 +20,8 @@ Check at least:
 - polysemous or context-dependent source words after downstream context has been translated;
 - whether plain-language revision has damaged specialist terms, concepts, evidence chains, or the professional level of the book;
 - terminology, source-term display, forbidden body renderings, and note density;
+- important proper-noun display against `glossary/proper_nouns.csv`, including the user's setting value and the default strategy `3` when unset;
+- note marker format against `references/note_marker_policy.md`;
 - title/nav/TOC/metadata effects;
 - notes, captions, alt text, figure/table/formula/image text interfaces;
 - reader-visible production traces, naked source text, URLs, prompts, QA notes, TODO/FIXME, code fences, and stale template text.
@@ -34,6 +36,8 @@ Check at least:
 - 后文已译出后，回看复查多义词或依赖上下文判义的源语结构；
 - 通俗化是否损害了专业术语、概念层级、证据链或本书应有的专业水准；
 - 术语、原词呈现、正文禁用写法和注释密度；
+- 重点专有名词是否符合 `glossary/proper_nouns.csv`、用户设置值，以及未设置时默认策略 `3`；
+- 注号格式是否符合 `references/note_marker_policy.md`；
 - 标题、nav、TOC、metadata 影响；
 - 注释、图注、alt text、图表/表格/公式/图片文字接口；
 - 读者可见生产痕迹、裸源语/外文、URL、prompt、QA 记录、TODO/FIXME、代码块和陈旧模板文本。

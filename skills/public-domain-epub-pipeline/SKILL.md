@@ -26,6 +26,8 @@ Use this skill when an AI agent is asked to create a book project, add or update
    - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
    - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
    - `template/epub_pipeline/common/references/quality_gate_framework.md`
+   - `template/epub_pipeline/common/references/proper_noun_display_policy.md`
+   - `template/epub_pipeline/common/references/note_marker_policy.md`
    - `template/epub_pipeline/common/references/release_versioning.md`
    涉及 EPUB 制作、封面、书籍信息页/前置页、资产、质量门禁、随机评审或发布时，编辑或构建前必须读取适用的 common policy 文件：
    - `template/epub_pipeline/common/README.md`
@@ -34,6 +36,8 @@ Use this skill when an AI agent is asked to create a book project, add or update
    - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
    - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
    - `template/epub_pipeline/common/references/quality_gate_framework.md`
+   - `template/epub_pipeline/common/references/proper_noun_display_policy.md`
+   - `template/epub_pipeline/common/references/note_marker_policy.md`
    - `template/epub_pipeline/common/references/release_versioning.md`
 6. Select the matching language-pair template, for example `French-to-English`, `Japanese-to-Spanish`, `English-to-Simplified-Chinese`, or `Traditional-Chinese-to-German`.
    选择匹配的语言方向模板，例如 `French-to-English`、`Japanese-to-Spanish`、`English-to-Simplified-Chinese` 或 `Traditional-Chinese-to-German`。
@@ -59,8 +63,8 @@ Use this skill when an AI agent is asked to create a book project, add or update
     当前执行者必须生成新的随机抽检轮次。之前 Agent、之前 release 或之前 private artifact 已经 PASS 的历史轮次不得计入本次执行。用户可以指定任意 `>=1` 的当前运行连续 PASS 轮次要求；未指定时，默认强校验要求同一 `review_run_id` 下最新连续 2 轮 PASS。
 15. After random spot-check closure, run the versioned release module from `references/release_versioning.md` and `prompts/18a_release_versioning.md`. Create `output/release/book_vX.X.X.epub`, `release_note_vX.X.X.md`, `release_state.json`, and `release_index.md`; `output/book.epub` alone is not enough for `DONE`.
     随机抽检闭环通过后，必须执行 `references/release_versioning.md` 和 `prompts/18a_release_versioning.md` 定义的版本化发布模块。必须创建 `output/release/book_vX.X.X.epub`、`release_note_vX.X.X.md`、`release_state.json` 和 `release_index.md`；只有 `output/book.epub` 不能标记 `DONE`。
-16. For translated titles, title occurrences do not count as first body occurrences for terminology notes. Chapter titles, subtitles, and navigation titles must follow target-language title style; source names or parenthetical original names belong at the first natural body occurrence, in notes, or in the glossary.
-    对译文标题而言，标题中的出现不计入术语译注的“正文首次出现”。章节标题、副标题和目录题名必须按目标语言标题习惯处理；原文名或括注原名应放在正文第一次自然出现处、译注或术语表中。
+16. For translated titles and important proper nouns, title occurrences do not count as first body occurrences. Chapter titles, subtitles, and navigation titles must follow target-language title style; source names or parenthetical original names belong at the first natural body occurrence, in notes, or in `glossary/proper_nouns.csv`. If the user does not specify a proper-noun display setting, use policy `3`: first natural body occurrence `target（source）`, later target. Note markers are a separate hard rule: only `[1]`, `(1)`, fullwidth `（1）`, or `注1` marker families are allowed.
+    对译文标题和重点专有名词而言，标题中的出现不计入“正文首次出现”。章节标题、副标题和目录题名必须按目标语言标题习惯处理；原文名或括注原名应放在正文第一次自然出现处、注释或 `glossary/proper_nouns.csv` 中。用户未指定专名显示设置时，使用策略 `3`：第一次正文自然出现 `译名（原文）`，后续用译名。注号是独立硬规则：只能使用 `[1]`、`(1)`、全角 `（1）` 或 `注1` 体系。
 17. If a specific book has systematic refinement issues, place its goal under `books/{target}/{number}_{book_id_slug}/goal/`, then backfill reusable lessons into common, target-language, or language-pair templates.
     如果某本书有系统性精修问题，目标文档应放在 `books/{target}/{number}_{book_id_slug}/goal/`，再把可复用经验回填到 common、目标语言或语言方向模板。
 18. Put language-pair-specific scripts, datasets, and exploratory research under `research/{language-pair-template}/...` or the matching language-pair template, not in the repository root.

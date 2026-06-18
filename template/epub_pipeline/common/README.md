@@ -10,9 +10,10 @@ This directory contains shared workflow files for all language-pair templates.
 - `automation_contract.md`: automation and template-protection rules.
 - `metadata/rights_checklist.md`, `metadata/source_evidence.md`, and `metadata/private_use_declaration.md`: source, rights, public-domain/licensed publication, and private-use evidence templates.
 - `preproduction/`: shared EPUB preproduction templates.
-- `references/`: language-neutral title, literary refinement, quality gate, EPUB asset, benchmark, and stratified random spot-check policies.
+- `references/`: language-neutral title, literary refinement, proper-noun display, note marker, quality gate, EPUB asset, benchmark, and stratified random spot-check policies.
 - `assets/`: default EPUB resource directories for figures, images, styles, and table resources.
 - `source/tables/`: source CSV/TSV tables used to generate reader-facing XHTML tables.
+- `glossary/proper_nouns.csv`: user-editable proper-noun display register.
 - `scripts/`: reusable chapter splitting, Markdown normalization, publication lint, refinement-check, stratified random sampling, and random-gate validation helpers.
 - `package.json`: book-local npm script template only; shared dependencies are installed once under `books/`.
 - `state/`: initial pipeline state and human-feedback control files.
@@ -92,7 +93,7 @@ python scripts/check_private_reader_facing_policy.py --write-report
 
 `npm run preflight:template` 会先运行本机绝对路径门禁。该门禁会拒绝在书籍生产产物、公共 prompt 示例和可复用模板文档中出现 Windows 盘符路径、个人 home 目录路径和 file URL 等贡献者本机路径；应改用仓库相对路径、脚本相对路径，或由用户显式传入的参数。
 
-These checks are common because template drift, unnumbered book paths, encoding damage, legacy print tables of contents, repeated spacing, missing image resources, missing output cover assets, reader-facing production notes, unmanifested SVG/PNG/CSS files, and path portability problems can affect any language.
+These checks are common because template drift, unnumbered book paths, encoding damage, legacy print tables of contents, repeated spacing, missing image resources, missing output cover assets, reader-facing production notes, disallowed note markers, unmanifested SVG/PNG/CSS files, and path portability problems can affect any language.
 
 这些检查属于通用层，因为模板漂移、未编号书籍路径、编码污染、旧纸书页码目录、连续空格、图片资源丢失、output 封面资产缺失、读者可见制作说明、SVG/PNG/CSS 未登记到 OPF manifest、路径可移植性问题可能影响任何语言方向。
 
@@ -145,7 +146,13 @@ For expert-level translation quality and context-dependent word choice, the chap
 
 专家级译文质量与上下文依赖选义必须使用 `skills/expert-translation-quality/SKILL.md`。翻译阶段必须先主动处理局部上下文已能判清的多义词；后文才判清的多义词或语法结构，必须在后文译出后回看复查。章节 control 必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_translation_stage_review: "PASS"`、`polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`。
 
-Terminology must not clutter the body with source terms by default. Use the target-language term in the body, and move source terms, definitions, and translation rationale to chapter notes, endnotes, or the glossary with a clear note marker. Body parenthetical source terms are allowed only when omitting the source term would confuse readers, the source term itself is being discussed, or competing translations must be disclosed immediately; record the reason.
+Terminology and important proper nouns must not clutter the body with source terms by default. Use the target-language term in the body unless `references/proper_noun_display_policy.md` and the book's `glossary/proper_nouns.csv` specify another user-selected strategy. If the user does not specify a setting, the default for important proper nouns is `3`: first natural body occurrence uses `译名（原文）`, later uses the translation. Titles, subtitles, and EPUB navigation labels do not count as first body occurrences. Source forms may appear later only when the passage discusses spelling, transliteration, source-language form, or translation disputes, and the reason must be recorded.
+
+术语和重点专有名词不得默认用原文挤占正文。除非 `references/proper_noun_display_policy.md` 和本书 `glossary/proper_nouns.csv` 指定用户选择的其他策略，正文应使用目标语译名。用户未设置时，重点专有名词默认采用策略 `3`：第一次正文自然出现写作 `译名（原文）`，后续使用译名。标题、副标题和 EPUB 目录题名不计入正文首次出现。后文只有在讨论拼写、转写、原文形式或译名分歧时才可再次显示原文，并必须记录理由。
+
+Footnote, endnote, translator-note, and editorial-note markers must follow `references/note_marker_policy.md`. Allowed marker families are `[1]`, `(1)`, fullwidth `（1）`, and `注1`; fullwidth `（1）` is equivalent to `(1)` and is usually more natural in Chinese body text. Circled numbers, raw tiny `注` labels, raw `译注：` labels, and bare trailing note digits are hard publication-lint failures.
+
+脚注、尾注、译注和编辑注的注号必须遵守 `references/note_marker_policy.md`。允许的注号体系为 `[1]`、`(1)`、全角 `（1）` 和 `注1`；全角 `（1）` 与 `(1)` 等价，在中文正文中通常更自然。带圈数字、孤立小字“注”、裸 `译注：` 标签和尾随裸数字都是出版 lint 硬失败。
 
 术语呈现不得默认用原词挤占正文。正文使用目标语译名或准确意译；原词、定义和译名理由放入本章译注、章末注或术语表，并用清楚注号指向。只有不保留原词会让读者误解、原词本身正在被讨论，或译名分歧必须当场交代时，才允许正文括注原词；必须记录理由。
 
