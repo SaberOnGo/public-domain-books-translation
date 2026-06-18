@@ -36,12 +36,15 @@ return_to_stage: "07_translate_chapters"
 - [ ] 正文可读性：自然、通俗、可朗读；无大段长句、不断气句、机械直译、英文句法硬搬、学术腔堆叠、AI 味或省字式提纲化。
 - [ ] 润色与节奏：长句已拆解或重组；连接关系符合中文；论文型内容也能让普通读者明白。
 - [ ] 术语与专名：术语、专名、历史制度、身份称谓、变量名、数字、时间、地名一致且准确。
+- [ ] 重点专名译表：已读取 `glossary/proper_nouns.csv`；非空行均有 `display_policy`；本章按用户设置或默认策略 `3` 处理首次正文出现和后续出现。
+- [ ] 专名原文例外：首次出现后若再次显示原文，仅限讨论原文拼写、转写、音译差异、源语形式或学界译名分歧，并已记录理由。
 - [ ] 术语控制级别：已读取 `glossary/terms.csv.term_control`；`locked` 已硬锁，`preferred` 已按上下文自然处理，`avoid` 未进入正文，`note_only` 未压进正文。
 - [ ] 原词处理：普通名词、历史术语、制度名、身份称谓、专业术语和文化负载词正文默认用中文译名或准确意译；不存在无必要的 `中文译名（source term）`。
 - [ ] 原词注释：必要原词、定义和译名理由已放入本章译注、章末注或术语表；正文注号如 `[1]` / `（1）` 与注释对应。
 - [ ] 正文括注例外：若正文保留 `中文译名（source term）`，已记录不可替代原因，且不是批量使用。
 - [ ] 术语表禁用写法扫描：已按 `glossary/terms.csv.forbidden_body_renderings` 逐项扫描正文；未发现禁用写法、裸露源语词、误导性泛译或未授权正文括注。
-- [ ] 注释：译注/脚注/尾注清楚不过密；标记不与正文黏连；关键背景足以帮助读者理解。
+- [ ] 注号格式：译注/脚注/尾注/编辑注只使用 `[1]`、`(1)` / `（1）`、`注1` 三类体系；无带圈数字、小圆圈“注”、裸 `译注：` 或句末裸数字。
+- [ ] 注释：译注/脚注/尾注清楚不过密；标记不与正文黏连；关键背景足以帮助读者理解。策略 `5` 的重点专名首次正文出现同时有 `译名（原文）` 和合规注号。
 - [ ] 图表/表格/公式/图片文字接口：本章正文引用、编号、图题、表题、alt text、变量说明、单位和读图/读表说明为清楚中文；复杂资产问题已路由，不在本节点无限循环。
 - [ ] asset route：若有重绘、裁剪、OCR、数值复核、公式排版、资源路径或 manifest 问题，已写入 `qa/assets/{NNN_slug}.asset_followup.md` 或 `qa/technical/{NNN_slug}.diagram_table_audit.md`，并阻止进入终稿/构建。
 - [ ] 样式与 EPUB 可见内容：无乱码、异常空格、旧纸书页码目录、可见分隔符、内部工作说明、模板说明或 AI 痕迹。
@@ -59,7 +62,9 @@ After each translated chapter is produced, the AI must create and read this chap
 - 20 句朗读测试中明显拗口不超过 1 句，且关键句没有不断气问题。
 - 不存在读者不可理解、明显拗口、学术味过重、大段长句、不断气句、机械直译或英文句法硬搬。
 - 不存在严重误译、漏译、术语/专名/数字/事实错误。
+- 不存在违反 `glossary/proper_nouns.csv` 的重点专名首次正文出现、后续出现、策略 `5` 注号或重复原文例外。
 - 不存在无必要的正文 `中文译名（source term）`；必要原词已移入译注、章末注或术语表，正文注号清楚。
+- 不存在带圈数字、小圆圈“注”、裸 `译注：` 或句末裸数字；注号只使用 `[1]`、`(1)` / `（1）`、`注1`。
 - 不存在 `glossary/terms.csv.forbidden_body_renderings` 中列出的正文禁用写法。
 - 当前章图表、公式、表格、图片的文字接口不存在 reader-facing 错误；复杂资产问题已路由到资产/技术门禁。
 - 最近一轮全量检查覆盖了本模板列出的所有范围。
@@ -105,6 +110,18 @@ asset_route_status: "none"
 | source_term | target_term | term_control | display_policy | forbidden_body_renderings_checked | findings | status |
 | --- | --- | --- | --- | --- | --- | --- |
 |  |  |  |  |  |  |  |
+
+重点专名呈现审计：
+
+| source_name | target_name | display_policy | first_rendering_checked | subsequent_rendering_checked | note_marker_checked | repeat_original_exception | status |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |
+
+注号格式审计：
+
+| marker_family | disallowed_markers_found | orphan_markers_or_notes | findings | status |
+| --- | --- | --- | --- | --- |
+|  |  |  |  |  |
 
 图表/资产分流：
 

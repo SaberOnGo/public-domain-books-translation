@@ -67,14 +67,20 @@ This file is for AI agents using the `English-to-Simplified-Chinese` template.
 - Old English printed tables of contents often use `--` to chain several topics into one chapter title. Do not mechanically translate those chains into multiple Chinese em dashes; create a short navigation title, a readable display title, and an optional subtitle when needed.
 - 英文旧纸书目录常用 `--` 把多个主题连成一个章节标题。不得机械翻成一串中文破折号；必要时应设计短目录题名、页面主标题和可选副标题。
 
-- Names in chapter titles, subtitles, and EPUB navigation labels must use Chinese translated names only. A title occurrence does not count as the first body occurrence for a name. Do not put English original names or parenthetical English names in titles; place them at the first natural body occurrence, in a note, or in the glossary.
-- 章节标题、副标题和 EPUB 目录题名中的人名只使用中文译名。标题中的出现不计入该人名的“正文首次出现”。不得把英文原名或英文括注放进标题；英文原名应放在正文第一次自然出现处、译注或术语表中。
+- Important proper nouns must follow `glossary/proper_nouns.csv` and `references/proper_noun_display_policy.md`. If the user does not set a value, use policy `3`: first natural body occurrence as translated name plus source in parentheses, then translated name. Title occurrences do not count as first body occurrences.
+- 重点专有名词必须遵守 `glossary/proper_nouns.csv` 和 `references/proper_noun_display_policy.md`。用户未设置时使用策略 `3`：第一次正文自然出现写译名加原文括注，后续使用译名。标题中的出现不计入正文首次出现。
+
+- Names in chapter titles, subtitles, and EPUB navigation labels must use Chinese translated names only. Do not put English original names or parenthetical English names in titles; place them at the first natural body occurrence, in a note, or in the glossary according to the proper-noun register.
+- 章节标题、副标题和 EPUB 目录题名中的人名只使用中文译名。不得把英文原名或英文括注放进标题；英文原名应按重点专名译表放在正文第一次自然出现处、译注或术语表中。
 
 - Common nouns, object names, clothing names, material names, and action terms must be translated into Chinese without original source terms in parentheses. The first-body-mention English rule applies to transliterated names, not to ordinary nouns that can be translated accurately.
 - 普通名词、器物名、衣物名、材料名和动作名必须译成中文，正文不得附加原文词括注。正文首次出现保留英文原名的规则只适用于音译人名，不适用于能准确翻译的普通名词。
 
 - Historical terms, institutional names, status titles, technical terms, and culture-loaded terms must not default to `Chinese term (source term)` in body text. Prefer a readable Chinese term in the body and put the source term, definition, and translation rationale in a chapter note, endnote, or glossary entry with a note marker such as `[1]`. Body parenthetical source terms are rare exceptions and require a recorded reason.
 - 历史术语、制度名、身份称谓、专业术语和文化负载词不得默认写成正文里的 `中文译名（source term）`。正文优先使用可读的中文译名，原词、定义和译名理由放入本章译注、章末注或术语表，并用 `[1]` 等注号指向。正文括注原词只能作为少量例外，且必须记录理由。
+
+- Note markers must use only `[1]`, `(1)` / `（1）`, or `注1`. Proper-noun source parentheses such as `尼禄（Nero）` are not note markers; policy `5` adds a separate approved marker such as `尼禄（Nero）[1]`.
+- 注号只能使用 `[1]`、`(1)` / `（1）`、`注1`。`尼禄（Nero）` 这类专名原文括注不是注号；策略 `5` 才在其后另加合规注号，例如 `尼禄（Nero）[1]`。
 
 - Delete printed-book separators such as `* * * * *`, `*****`, `----`, or `---` from body text. Do not replace them with another visible separator.
 - 删除旧纸书正文分隔符，例如 `* * * * *`、`*****`、`----` 或 `---`。不得替换成另一种可见分隔符。
@@ -84,6 +90,7 @@ This file is for AI agents using the `English-to-Simplified-Chinese` template.
 - `metadata/book_specific_translation_research.md`
 - `metadata/style_profile.md`
 - `glossary/terms.csv`
+- `glossary/proper_nouns.csv`
 - `qa/pretranslation/pretranslation_report.md`
 - `qa/chapter_controls/{NNN_slug}.control.md`
 - `qa/gates/{NNN_slug}.gate.md`

@@ -71,11 +71,17 @@ Use this skill after `books/scripts/create_book_project.py` has copied `template
 - 区分术语控制级别：`locked` 必须固定，`preferred` 可按上下文自然变体，`avoid` 禁用，`note_only` 只放译注/术语表，不压进正文。
 - Do not mechanically convert English printed-TOC title chains using `--` into Chinese `——` chains. When needed, split them into a short navigation title, display title, and subtitle.
 - 不得把英文纸书目录式 `--` 标题链机械转换成中文 `——` 链。必要时必须拆成短目录题名、页面主标题和副标题。
-- Names in chapter titles, subtitles, and navigation titles must use Chinese translated names only. Title occurrences do not count as first body occurrences; keep the English original name at the first natural body occurrence, in a note, or in the glossary.
-- 章节标题、副标题和目录题名中的人名只使用中文译名。标题中的出现不计入“正文首次出现”；英文原名应放在正文第一次自然出现处、译注或术语表中。
+- Important proper nouns must follow `glossary/proper_nouns.csv` and `references/proper_noun_display_policy.md`. If the user does not set a value, use policy `3`: first natural body occurrence as translated name plus source in parentheses, then translated name. Title occurrences do not count as first body occurrences.
+- 重点专有名词必须遵守 `glossary/proper_nouns.csv` 和 `references/proper_noun_display_policy.md`。用户未设置时使用策略 `3`：第一次正文自然出现写译名加原文括注，后续使用译名。标题中的出现不计入正文首次出现。
+
+- Names in chapter titles, subtitles, and navigation titles must use Chinese translated names only. Keep English original names out of titles; place them according to the proper-noun register at the first natural body occurrence, in a note, or in the glossary.
+- 章节标题、副标题和目录题名中的人名只使用中文译名。标题不得放英文原名；英文原名应按重点专名译表放在正文第一次自然出现处、译注或术语表中。
 
 - Historical terms, institutional names, status titles, technical terms, and culture-loaded terms must not default to `Chinese term (source term)` in the body. Use a readable Chinese term first; move source terms, definitions, and translation rationale to chapter notes, endnotes, or glossary entries with note markers such as `[1]`. Body parenthetical source terms are rare exceptions and must record why a note was not enough.
 - 历史术语、制度名、身份称谓、专业术语和文化负载词不得默认写成正文里的 `中文译名（source term）`。正文优先使用可读中文译名；原词、定义和译名理由放入本章译注、章末注或术语表，并用 `[1]` 等注号指向。正文括注原词只能作为少量例外，且必须记录为什么不能只用译注。
+
+- Note markers must use only `[1]`, `(1)` / `（1）`, or `注1`. Proper-noun source parentheses such as `尼禄（Nero）` are not note markers; policy `5` adds a separate approved marker such as `尼禄（Nero）[1]`.
+- 注号只能使用 `[1]`、`(1)` / `（1）`、`注1`。`尼禄（Nero）` 这类专名原文括注不是注号；策略 `5` 才在其后另加合规注号，例如 `尼禄（Nero）[1]`。
 
 ## Required Gates / 必要门禁
 

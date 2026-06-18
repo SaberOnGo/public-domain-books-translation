@@ -64,6 +64,8 @@ REQUIRED_PROPER_NOUN_COLUMNS = {
 }
 
 PROPER_NOUN_DISPLAY_POLICIES = {"1", "2", "3", "4", "5"}
+BOOLEAN_CSV_VALUES = {"true", "false", "yes", "no", "1", "0", "y", "n"}
+APPROVED_NOTE_MARKER_RE = re.compile(r"(?:\[\d{1,3}\]|\(\d{1,3}\)|（\d{1,3}）|注\d{1,3})")
 
 TERM_TYPES_REQUIRING_DISPLAY_POLICY = {
     "historical_term",
@@ -533,6 +535,10 @@ def truthy(value: str) -> bool:
     return value.strip().lower() in {"true", "yes", "1", "y"}
 
 
+def valid_boolean_csv_value(value: str) -> bool:
+    return not value.strip() or value.strip().lower() in BOOLEAN_CSV_VALUES
+
+
 def check_proper_noun_display_policy(book_root: Path, issues: list[dict]) -> None:
     proper_nouns_path = book_root / "glossary" / "proper_nouns.csv"
     if not proper_nouns_path.exists():
@@ -562,13 +568,27 @@ def check_proper_noun_display_policy(book_root: Path, issues: list[dict]) -> Non
         first_rendering = (row.get("first_rendering") or "").strip()
         subsequent_rendering = (row.get("subsequent_rendering") or "").strip()
         note_required = (row.get("note_required") or "").strip()
-        if not source_name and not target_name and not display_policy:
+        if not any([source_name, target_name, display_policy, first_rendering, subsequent_rendering, note_required]):
             continue
+        if not display_policy:
+            add_issue(
+                issues,
+                "proper_noun_missing_display_policy",
+                f"Proper noun row {index} is non-empty, so display_policy must be one of 1, 2, 3, 4, and 5.",
+                rel(book_root, proper_nouns_path),
+            )
         if display_policy and display_policy not in PROPER_NOUN_DISPLAY_POLICIES:
             add_issue(
                 issues,
                 "proper_noun_invalid_display_policy",
                 f"Proper noun row {index} has display_policy={display_policy!r}; allowed values are 1, 2, 3, 4, and 5.",
+                rel(book_root, proper_nouns_path),
+            )
+        if not valid_boolean_csv_value(note_required):
+            add_issue(
+                issues,
+                "proper_noun_invalid_note_required",
+                f"Proper noun row {index} has note_required={note_required!r}; use true/false, yes/no, 1/0, or leave it blank.",
                 rel(book_root, proper_nouns_path),
             )
         if display_policy == "1" and not target_name:
@@ -619,6 +639,13 @@ def check_proper_noun_display_policy(book_root: Path, issues: list[dict]) -> Non
                 issues,
                 "proper_noun_policy_5_requires_note",
                 f"Proper noun row {index} uses policy 5, so note_required must be true.",
+                rel(book_root, proper_nouns_path),
+            )
+        if display_policy == "5" and first_rendering and not APPROVED_NOTE_MARKER_RE.search(first_rendering):
+            add_issue(
+                issues,
+                "proper_noun_policy_5_first_rendering_missing_note_marker",
+                f"Proper noun row {index} uses policy 5, so first_rendering must include an approved note marker such as [1], (1), fullwidth parenthesized 1, or note-prefix 1.",
                 rel(book_root, proper_nouns_path),
             )
 

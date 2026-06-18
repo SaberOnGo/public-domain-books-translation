@@ -196,7 +196,7 @@ function detectDisallowedNoteMarkers(text, file) {
   const plainText = text.replace(/<[^>]+>/g, '');
   const patterns = [
     {
-      regex: /[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳⓵⓶⓷⓸⓹⓺⓻⓼⓽⓾❶❷❸❹❺❻❼❽❾❿㊟]/g,
+      regex: /[\u2460-\u2473\u24eb-\u24ff\u2776-\u277f\u3250-\u325f\u329f\u32b1-\u32bf]/g,
       sample: 'Circled note markers are not allowed. Use [1], (1), （1）, or 注1.',
     },
     {
@@ -208,7 +208,7 @@ function detectDisallowedNoteMarkers(text, file) {
       sample: 'A raw 注 label is not an approved note marker. Use 注1, [1], (1), or （1）.',
     },
     {
-      regex: /[。！？；，、]\s*\d{1,3}(?=\s|$)/g,
+      regex: /[。！？；，、]\s*[\d０-９]{1,3}(?=\s|$)/g,
       sample: 'Bare trailing note digits are not allowed. Use [1], (1), （1）, or 注1.',
     },
   ];

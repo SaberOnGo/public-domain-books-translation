@@ -9,8 +9,9 @@
 ## 任务 / Tasks
 
 1. 生成/更新 `glossary/terms.csv`。
-2. 生成/更新 `glossary/style_guide.md`。
-3. 根据预翻译结果修订 `metadata/style_profile.md`。
+2. 生成/更新 `glossary/proper_nouns.csv`。
+3. 生成/更新 `glossary/style_guide.md`。
+4. 根据预翻译结果修订 `metadata/style_profile.md`。
 
 ## `glossary/terms.csv` 必含类型
 
@@ -38,6 +39,32 @@
 
 正文默认 `body_chinese_only` 或 `note_on_first_use`。不得把历史术语和专业术语批量写成 `中文译名（source term）`；需要解释时，优先使用正文注号加本章译注/章末注/术语表。
 
+## 重点专有名词译表 / Important Proper-Noun Register
+
+重点专有名词使用独立文件：
+
+```text
+glossary/proper_nouns.csv
+```
+
+必备列必须与 `references/proper_noun_display_policy.md` 一致：
+
+```csv
+source_name,target_name,category,display_policy,first_rendering,subsequent_rendering,note_required,repeat_original_allowed_when,notes
+```
+
+用户可在 prompt 中显式设置：
+
+```text
+[重点专有名词(人名、地名、术语、罕见名词、音译后体验很差的名字等) 的翻译格式] 设置 = 3
+```
+
+允许值为 `1` 到 `5`；用户未设置时默认 `3`：第一次正文自然出现写 `译名（原文）`，后续基本使用译名。标题、副标题和 EPUB 目录题名不计入正文首次出现，且不得放英文原名或英文括注。若后文正在讨论原文拼写、转写、音译差异或学界译名分歧，可再次出现原文，并把理由写入 `repeat_original_allowed_when`。
+
+只把确实需要原文接口的重点名词写入本表，例如人名、地名、王朝、机构、罕见术语、文化负载词，或音译后体验很差、单独汉译会影响阅读的名字。能自然翻译的普通词不要塞入本表。
+
+策略 `5` 是专名原文括注加注号的组合：例如 `尼禄（Nero）[1]`、`尼禄（Nero）（1）` 或 `尼禄（Nero）注1`。专名括注和注释是两个不同功能；注号格式必须遵守 `references/note_marker_policy.md`。
+
 术语表不得把所有词都硬锁。除人名、地名、符号和核心专名外，默认使用 `preferred`，让翻译阶段可以优先写出自然中文。若某个 `preferred` 术语在句中会导致拗口、重复或关系不清，允许在不改变概念的前提下改用自然变体，并在术语审校中判断是否需要回收。
 
 盎格鲁-撒克逊制度身份词示例：`thegn` / `thane` 不得默认音译为“塞恩”，也不宜泛译为“支持者”。政治史、土地和军事义务语境中，应按本书上下文选择“王室领主”“领主近臣”“盎格鲁-撒克逊领主”等，并在术语说明中写明原文、又作形式和含义。`witenagemot` 正文用“贤人会议”，原词放术语说明。
@@ -53,8 +80,10 @@
 - 术语表不能只是空模板。
 - 象征词、历史称谓、技术词必须先入表。
 - 高风险术语必须填写 `term_control`，不得默认全部硬锁为 `locked`。
+- 重点专有名词必须写入 `glossary/proper_nouns.csv`，并填写 `display_policy`；默认值为 `3`，不得留空。
 - 历史术语、制度名、身份称谓、专业术语和文化负载词不得默认在正文使用 `中文译名（source term）`。凡使用正文括注原词，必须有 `exception_reason`。
 - 高风险历史术语必须填写 `display_policy`、`note_text` 和 `forbidden_body_renderings`；否则不得进入批量翻译。
+- 注号只能使用 `[1]`、`(1)` / `（1）`、`注1` 三类体系；不得使用带圈数字、小圆圈“注”、裸 `译注：` 或裸尾随数字。
 - 如果预翻译报告是 `FAIL`，不得执行本步骤。
 
 ## 状态 / State

@@ -115,6 +115,43 @@ class ProperNounAndNotePolicyTests(unittest.TestCase):
                             path.rmdir()
                     book_root.rmdir()
 
+    def test_workflow_gate_requires_display_policy_for_nonblank_proper_noun_row(self) -> None:
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT / "books" / "zh-Hans") as tmp:
+            book_root = Path(tmp).rename(Path(tmp).with_name(f"999_test_proper_noun_policy_{Path(tmp).name}"))
+            try:
+                make_minimal_book(book_root)
+                proper_nouns = book_root / "glossary" / "proper_nouns.csv"
+                proper_nouns.parent.mkdir(parents=True, exist_ok=True)
+                proper_nouns.write_text(
+                    "\n".join(
+                        [
+                            "source_name,target_name,category,display_policy,first_rendering,subsequent_rendering,note_required,repeat_original_allowed_when,notes",
+                            "Nero,尼禄,historical_person,,尼禄（Nero）,尼禄,false,,missing display policy",
+                        ]
+                    )
+                    + "\n",
+                    encoding="utf-8",
+                )
+
+                result = subprocess.run(
+                    [sys.executable, str(WORKFLOW_GATE), "--book-root", str(book_root)],
+                    text=True,
+                    encoding="utf-8",
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("proper_noun_missing_display_policy", result.stdout + result.stderr)
+            finally:
+                if book_root.exists():
+                    for path in sorted(book_root.rglob("*"), reverse=True):
+                        if path.is_file():
+                            path.unlink()
+                        else:
+                            path.rmdir()
+                    book_root.rmdir()
+
     def test_publication_lint_rejects_disallowed_note_markers(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             book_root = Path(tmp)
@@ -122,6 +159,28 @@ class ProperNounAndNotePolicyTests(unittest.TestCase):
             chapter.parent.mkdir(parents=True, exist_ok=True)
             chapter.write_text(
                 "# 第一章\n\n这一句用了不允许的小圆圈注号①。\n\n这一句用了不允许的裸注标签注。\n",
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                ["node", str(PUBLICATION_LINT), "--target=zh-Hans"],
+                cwd=book_root,
+                text=True,
+                encoding="utf-8",
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("disallowed_note_marker", result.stdout + result.stderr)
+
+    def test_publication_lint_rejects_later_circled_and_fullwidth_bare_note_digits(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            book_root = Path(tmp)
+            chapter = book_root / "chapters" / "final" / "001.md"
+            chapter.parent.mkdir(parents=True, exist_ok=True)
+            chapter.write_text(
+                "# 第一章\n\n这一句用了不允许的后续带圈注号㉑。\n\n这一句用了不允许的全角裸数字。１\n",
                 encoding="utf-8",
             )
 
@@ -186,6 +245,80 @@ class ProperNounAndNotePolicyTests(unittest.TestCase):
 
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn("proper_noun_policy_5_requires_note", result.stdout + result.stderr)
+            finally:
+                if book_root.exists():
+                    for path in sorted(book_root.rglob("*"), reverse=True):
+                        if path.is_file():
+                            path.unlink()
+                        else:
+                            path.rmdir()
+                    book_root.rmdir()
+
+    def test_workflow_gate_rejects_policy_five_without_note_marker_in_first_rendering(self) -> None:
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT / "books" / "zh-Hans") as tmp:
+            book_root = Path(tmp).rename(Path(tmp).with_name(f"999_test_proper_noun_policy_{Path(tmp).name}"))
+            try:
+                make_minimal_book(book_root)
+                proper_nouns = book_root / "glossary" / "proper_nouns.csv"
+                proper_nouns.parent.mkdir(parents=True, exist_ok=True)
+                proper_nouns.write_text(
+                    "\n".join(
+                        [
+                            "source_name,target_name,category,display_policy,first_rendering,subsequent_rendering,note_required,repeat_original_allowed_when,notes",
+                            "Nero,尼禄,historical_person,5,尼禄（Nero）,尼禄,true,,missing first-rendering marker",
+                        ]
+                    )
+                    + "\n",
+                    encoding="utf-8",
+                )
+
+                result = subprocess.run(
+                    [sys.executable, str(WORKFLOW_GATE), "--book-root", str(book_root)],
+                    text=True,
+                    encoding="utf-8",
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("proper_noun_policy_5_first_rendering_missing_note_marker", result.stdout + result.stderr)
+            finally:
+                if book_root.exists():
+                    for path in sorted(book_root.rglob("*"), reverse=True):
+                        if path.is_file():
+                            path.unlink()
+                        else:
+                            path.rmdir()
+                    book_root.rmdir()
+
+    def test_workflow_gate_rejects_invalid_note_required_value(self) -> None:
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT / "books" / "zh-Hans") as tmp:
+            book_root = Path(tmp).rename(Path(tmp).with_name(f"999_test_proper_noun_policy_{Path(tmp).name}"))
+            try:
+                make_minimal_book(book_root)
+                proper_nouns = book_root / "glossary" / "proper_nouns.csv"
+                proper_nouns.parent.mkdir(parents=True, exist_ok=True)
+                proper_nouns.write_text(
+                    "\n".join(
+                        [
+                            "source_name,target_name,category,display_policy,first_rendering,subsequent_rendering,note_required,repeat_original_allowed_when,notes",
+                            "Nero,尼禄,historical_person,3,尼禄（Nero）,尼禄,maybe,,invalid boolean",
+                        ]
+                    )
+                    + "\n",
+                    encoding="utf-8",
+                )
+
+                result = subprocess.run(
+                    [sys.executable, str(WORKFLOW_GATE), "--book-root", str(book_root)],
+                    text=True,
+                    encoding="utf-8",
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("proper_noun_invalid_note_required", result.stdout + result.stderr)
             finally:
                 if book_root.exists():
                     for path in sorted(book_root.rglob("*"), reverse=True):
