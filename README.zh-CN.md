@@ -22,6 +22,8 @@ LifeBook 书坊是一个多语言公版书翻译与 EPUB 制作流程。它不�
 - [English guide](./doc/public/how-to-use-prompts.en.md)
 - [日本語ガイド](./doc/public/how-to-use-prompts.ja.md)
 
+双语 EPUB 输出：英译简中项目默认同时生成单简体中文 EPUB 和中英双语对照 EPUB。其他语言方向如需双语版，在 prompt 中加：`请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB。`
+
 给 AI 客户端的最小提示：
 
 ```text
@@ -34,7 +36,6 @@ LifeBook 书坊是一个多语言公版书翻译与 EPUB 制作流程。它不�
 - 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
-如果源语言是英语、目标语言是简体中文，请默认输出 `edition_type: bilingual_parallel`，同时生成单简体中文 EPUB 和中英双语对照 EPUB。其他语言方向只有我明确要求时才输出双语对照版；需要时我会写：`请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB。`
 翻译执行时必须逐章执行“每章译后全量检查并修复”：发现任何问题时，先修复该章，但该轮不能 PASS，必须追加新一轮整章复查，直到最新一轮零问题 PASS。
 第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”：抽检发现任何问题，不得只修被抽中的样本；必须在当轮归纳问题族、全书同类审计、修复确认命中、记录例外，并用新 seed 追加一轮。译文质量问题族必须使用 `skills/translation-quality-defect-families/SKILL.md`。
 未声明是否启用 LifeBook Digest 时，请自动判断；长篇小说、专业书籍、哲学书在 EPUB 输出后生成 Digest，短篇小说、自然科学类和其他类型不生成。
