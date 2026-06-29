@@ -34,6 +34,7 @@ LifeBook 書坊是一套多語言公版書翻譯與 EPUB 製作流程。它不�
 - 如無對應源語言模板，執行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版權或來源無法確認，不要讓我填寫技術欄位。請自動查找可靠公版來源，自動建立專案，完成翻譯、審校、EPUB 建置、分層隨機抽檢和 release。
+如果源語言是英語、目標語言是簡體中文，請預設輸出單簡體中文 EPUB 和中英雙語對照 EPUB；其他語言方向如需雙語對照版，請在 prompt 中加：`请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB。`
 翻譯執行時必須逐章執行「每章譯後全量檢查並修復」：發現任何問題時，先修復該章，但該輪不能 PASS，必須追加新一輪整章複查，直到最新一輪零問題 PASS。
 第一版 EPUB 後必須執行「分層隨機抽檢與問題族追殺」：抽檢發現任何問題，不得只修被抽中的樣本；必須在當輪歸納問題族、全書同類審計、修復確認命中、記錄例外，並用新 seed 追加一輪。譯文品質問題族必須使用 `skills/translation-quality-defect-families/SKILL.md`。
 未聲明是否啟用 LifeBook Digest 時，請自動判斷；長篇小說、專業書籍、哲學書在 EPUB 輸出後生成 Digest，短篇小說、自然科學類和其他類型不生成。

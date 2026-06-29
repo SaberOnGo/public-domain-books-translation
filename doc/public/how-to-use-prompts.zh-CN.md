@@ -34,7 +34,7 @@
 - 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
-如果源语言是英语、目标语言是简体中文，请默认输出 `edition_type: bilingual_parallel`，同时生成单简体中文 EPUB 和中英双语对照 EPUB。其他语言方向只有我明确要求时才输出双语对照版。
+如果源语言是英语、目标语言是简体中文，请默认输出 `edition_type: bilingual_parallel`，同时生成单简体中文 EPUB 和中英双语对照 EPUB。其他语言方向只有我明确要求时才输出双语对照版；需要时直接写：`请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB。`
 翻译执行时必须逐章执行“每章译后全量检查并修复”：每章都要对照整章原文和整章译文检查忠实度、中文顺读、术语、标题/小标题、注释、图表文字接口、源语句法残留、过硬过直句、过度解释或加戏等问题；发现问题后先修复，但该轮不能 PASS，必须追加新一轮整章复查，直到最新一轮零问题 PASS。
 第一版 EPUB 生成后必须执行“分层随机抽检与问题族追杀”：抽检发现任何问题，不得只修被抽样本，必须在当轮归纳为问题族，用 `rg`、术语表、标题表、抽样 manifest 和小上下文原文对照做全书同类审计，修复确认命中，记录例外，再用新 seed 追加一轮。译文质量问题族必须使用 `skills/translation-quality-defect-families/SKILL.md` 做经验沉淀。
 未声明是否启用 LifeBook Digest 时，请自动判断；长篇小说、专业书籍、哲学书在 EPUB 输出后生成 Digest，短篇小说、自然科学类和其他类型不生成。
@@ -58,7 +58,7 @@
 
 这是我个人自用的,不传播,不用于商业,使用我给出的本地的书源。
 请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
-如果源语言是英语、目标语言是简体中文，请默认输出 `edition_type: bilingual_parallel`，同时生成单简体中文 EPUB 和中英双语对照 EPUB 作为私人产物。其他语言方向只有我明确要求时才输出双语对照版。
+如果源语言是英语、目标语言是简体中文，请默认输出 `edition_type: bilingual_parallel`，同时生成单简体中文 EPUB 和中英双语对照 EPUB 作为私人产物。其他语言方向只有我明确要求时才输出双语对照版；需要时直接写：`请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB。`
 翻译执行时必须逐章执行“每章译后全量检查并修复”；第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”。发现译文质量问题族时，先在本书闭环，再把可复用经验合并进 `skills/translation-quality-defect-families/SKILL.md`。
 未声明是否启用 LifeBook Digest 时，请自动判断；长篇小说、专业书籍、哲学书在 EPUB 输出后生成 Digest，短篇小说、自然科学类和其他类型不生成。
 如需生成 Digest，请在书籍工程根目录写入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}`。输出仍然是本地标准 EPUB，不发布到 GitHub。

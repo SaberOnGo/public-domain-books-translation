@@ -34,7 +34,7 @@
 - 如無對應源語言模板，執行 doc/public/user_prompt/book_translation_new_template.md。
 
 除非版權或來源無法確認，不要讓我填寫技術欄位。請自動查找可靠公版來源，自動建立專案，完成翻譯、審校、EPUB 建置、分層隨機抽檢和 release。
-如果源語言是英語、目標語言是簡體中文，請預設輸出 `edition_type: bilingual_parallel`，同時生成單簡體中文 EPUB 和中英雙語對照 EPUB。其他語言方向只有我明確要求時才輸出雙語對照版。
+如果源語言是英語、目標語言是簡體中文，請預設輸出 `edition_type: bilingual_parallel`，同時生成單簡體中文 EPUB 和中英雙語對照 EPUB。其他語言方向只有我明確要求時才輸出雙語對照版；需要時直接寫：`请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB。`
 翻譯執行時必須逐章執行「每章譯後全量檢查並修復」：每章都要對照整章原文和整章譯文檢查忠實度、中文順讀、術語、標題/小標題、註釋、圖表文字介面、源語句法殘留、過硬過直句、過度解釋或加戲等問題；發現問題後先修復，但該輪不能 PASS，必須追加新一輪整章複查，直到最新一輪零問題 PASS。
 第一版 EPUB 生成後必須執行「分層隨機抽檢與問題族追殺」：抽檢發現問題時，不得只修被抽樣本，必須在當輪歸納為問題族，用 `rg`、術語表、標題表、抽樣 manifest 和小上下文原文對照做全書同類審計，修復確認命中，記錄例外，再用新 seed 追加一輪。譯文品質問題族必須使用 `skills/translation-quality-defect-families/SKILL.md` 做經驗沉澱。
 ```
@@ -56,7 +56,7 @@
 
 這是我個人自用的，不傳播，不用於商業，使用我給出的本地書源。
 請自動建立專案，嚴格完成整個模板規定的系統翻譯流程，不允許有任何遺漏。
-如果源語言是英語、目標語言是簡體中文，請預設輸出 `edition_type: bilingual_parallel`，同時生成單簡體中文 EPUB 和中英雙語對照 EPUB 作為私人產物。其他語言方向只有我明確要求時才輸出雙語對照版。
+如果源語言是英語、目標語言是簡體中文，請預設輸出 `edition_type: bilingual_parallel`，同時生成單簡體中文 EPUB 和中英雙語對照 EPUB 作為私人產物。其他語言方向只有我明確要求時才輸出雙語對照版；需要時直接寫：`请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB。`
 翻譯執行時必須逐章執行「每章譯後全量檢查並修復」；第一版 EPUB 後必須執行「分層隨機抽檢與問題族追殺」。發現譯文品質問題族時，先在本書閉環，再把可復用經驗合併進 `skills/translation-quality-defect-families/SKILL.md`。
 ```
 
