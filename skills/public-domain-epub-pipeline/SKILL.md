@@ -25,6 +25,7 @@ Use this skill when an AI agent is asked to create a book project, add or update
    - `template/epub_pipeline/common/references/cover_design_policy.md`
    - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
    - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
+   - `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
    - `template/epub_pipeline/common/references/quality_gate_framework.md`
    - `template/epub_pipeline/common/references/proper_noun_display_policy.md`
    - `template/epub_pipeline/common/references/note_marker_policy.md`
@@ -35,6 +36,7 @@ Use this skill when an AI agent is asked to create a book project, add or update
    - `template/epub_pipeline/common/references/cover_design_policy.md`
    - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
    - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
+   - `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
    - `template/epub_pipeline/common/references/quality_gate_framework.md`
    - `template/epub_pipeline/common/references/proper_noun_display_policy.md`
    - `template/epub_pipeline/common/references/note_marker_policy.md`

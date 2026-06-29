@@ -29,6 +29,8 @@ Use this skill to design LifeBook EPUB pages that read well on screen and can la
   插入、审查或修复注号前，读取 `template/epub_pipeline/common/references/note_marker_policy.md`。
 - Read `template/epub_pipeline/common/references/epub_assets_figures_tables.md` before changing figure, table, image, or CSS resource layout.
   修改图、表、图片或 CSS 资源排版前，读取 `template/epub_pipeline/common/references/epub_assets_figures_tables.md`。
+- Read `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md` before designing or reviewing bilingual parallel EPUB layout.
+  设计或审查双语对照 EPUB 排版前，读取 `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`。
 - For Simplified Chinese output, read `template/epub_pipeline/targets/zh-Hans/quality_framework/references/title_punctuation_and_heading_style.md`.
   输出简体中文时，读取 `template/epub_pipeline/targets/zh-Hans/quality_framework/references/title_punctuation_and_heading_style.md`。
 - Read `references/research_basis.md` only when revising this skill or when a decision needs external justification.

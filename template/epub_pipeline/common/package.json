@@ -22,9 +22,11 @@
     "release:draft": "npm run preflight:template && npm run cover:check && npm run reader:check && npm run metrics:init && node scripts/run_python.js scripts/create_release.py --status DRAFT",
     "release:create": "npm run preflight:template && npm run cover:check && npm run reader:check && npm run metrics:validate:actual && npm run review:random-validate:pass && node scripts/run_python.js scripts/create_release.py --status PASS --require-pass",
     "fix:publication": "node scripts/publication_lint.js --fix --write-report",
-    "build:epub": "npm run preflight:template && npm run lint:publication && npm run lint:assets && npm run cover:check && node scripts/build_epub.js && npm run reader:check",
+    "build:bilingual": "node scripts/run_python.js scripts/build_bilingual_epub.py",
+    "build:epub": "npm run preflight:template && npm run lint:publication && npm run lint:assets && npm run cover:check && node scripts/build_epub.js && npm run build:bilingual && npm run reader:check",
     "check:epub": "node scripts/run_epubcheck.js",
-    "reader:check": "node scripts/run_python.js scripts/check_reader_facing_policy.py --write-report"
+    "check:bilingual": "node scripts/run_python.js scripts/check_bilingual_parallel.py --write-report",
+    "reader:check": "node scripts/run_python.js scripts/check_reader_facing_policy.py --write-report && npm run check:bilingual"
   },
   "description": "Book-local npm scripts. Shared Node dependencies are installed once under books/node_modules and are resolved by walking up from the project root.",
   "license": "UNLICENSED"

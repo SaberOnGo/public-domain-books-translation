@@ -1,8 +1,8 @@
 # EPUB 版本发布规则 / EPUB Release Versioning
 
-EPUB 成书应按软件发布方式管理。`output/book.epub` 是当前构建产物；公版或授权项目的正式或候选交付物必须写入 `output/release/`，并带版本号、发布说明和校验证据。`publication_mode=private_use` 项目必须改用 `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md`，把本地私人产物写入 `output/private_artifacts/`。
+EPUB 成书应按软件发布方式管理。`output/book.epub` 是当前单目标语构建产物；公版或授权项目的正式或候选交付物必须写入 `output/release/`，并带版本号、发布说明和校验证据。`edition_type: bilingual_parallel` 项目还必须把双语对照构建产物写入 `output/book_bilingual_parallel.epub`，并在 release 中保留对应版本化产物。是否输出双语对照版与 `publication_mode` 解耦；`publication_mode=private_use` 项目不创建公开 release，但同样可以按 `output_editions` 生成单目标语和双语对照 EPUB，并改用 `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md` 把本地私人产物写入 `output/private_artifacts/`。
 
-EPUB books should be managed like software releases. `output/book.epub` is the current build artifact; public-domain or licensed release or candidate artifacts must be written under `output/release/` with a version, release note, and validation evidence. `publication_mode=private_use` projects must instead follow `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md` and write local private artifacts under `output/private_artifacts/`.
+EPUB books should be managed like software releases. `output/book.epub` is the current target-only build artifact. Public-domain or licensed release or candidate artifacts must be written under `output/release/` with a version, release note, and validation evidence. `edition_type: bilingual_parallel` projects must also write the bilingual parallel build artifact to `output/book_bilingual_parallel.epub` and preserve a matching versioned release artifact. Bilingual output is independent from `publication_mode`; `publication_mode=private_use` projects do not create public releases, but they can still generate both target-only and bilingual EPUBs according to `output_editions` and must instead follow `template/epub_pipeline/modes/private_use/references/private_use_artifact_policy.md` to write local private artifacts under `output/private_artifacts/`.
 
 ## 版本号 / Version Number
 
@@ -39,11 +39,15 @@ output/release/
 必须包含：
 
 - `{目标语言书名}_vX.X.X.epub`，例如 `金属巨兽_v0.0.4.epub`
+- 当 `edition_type: bilingual_parallel` 时，还必须包含 `{目标语言书名}_{目标语言简称}{源语言简称}双语_vX.X.X.epub`，例如英译简中为 `林伯洛斯特的女孩_中英双语_v0.0.4.epub`。语言简称顺序必须是目标语言在前、源语言在后；不得把内部枚举名 `_bilingual_parallel` 暴露为读者文件名。
+- 作者名属于书籍工程目录、metadata、book-info 和 release note 记录；release EPUB 文件名默认不包含作者名，避免文件名过长。若同一 release 目录内存在同名书冲突，必须先在书名中加入读者可识别的短区分项，再生成版本文件。
+- Release/private artifact scripts must read `state/pipeline_state.json.output_editions` and copy every enabled EPUB artifact. They must not decide bilingual output from public/private publication mode.
+- release/private artifact 脚本必须读取 `state/pipeline_state.json.output_editions`，并固化每个已启用的 EPUB 产物。不得根据公开/私人发布模式决定是否输出双语版。
 - `release_notes.md`
 - `release_state.json`
 - `release_index.md`
 
-`output/` 根目录可以保留 `book.epub`、`epubcheck.json`、`publication_lint.json` 等当前构建产物，但不得把多个版本 EPUB 平铺在 `output/` 根目录。
+`output/` 根目录可以保留 `book.epub`、`book_bilingual_parallel.epub`、`epubcheck.json`、`publication_lint.json` 等当前构建产物，但不得把多个版本 EPUB 平铺在 `output/` 根目录。
 
 私人自用项目不使用 `output/release/` 表达公开发布，必须使用：
 
@@ -108,9 +112,10 @@ python scripts/create_release.py --status PASS --require-pass
 公版或授权项目：
 
 - 至少存在一个 `output/release/{目标语言书名}_vX.X.X.epub`。
+- 若 `state/pipeline_state.json.edition_type = bilingual_parallel`，还必须存在同版本 `output/release/{目标语言书名}_{目标语言简称}{源语言简称}双语_vX.X.X.epub`，例如 `output/release/林伯洛斯特的女孩_中英双语_v0.0.4.epub`，或 release_state 中记录的等效双语对照 EPUB。
 - `output/release/release_notes.md` 存在，且最新版本条目位于最上方。
 - `release_state.json.latest_status = PASS`。
-- release note 记录抽检、问题族全书同类审计、修复、风险和校验证据。
+- release note 记录抽检、问题族全书同类审计、修复、风险、校验证据；双语对照版还必须记录对齐完整性、源文出版权利和双语 EPUB 校验结果。
 
 私人自用项目：
 

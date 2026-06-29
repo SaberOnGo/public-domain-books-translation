@@ -9,6 +9,8 @@
 - `preproduction/stage1/production_spec.md`
 - `preproduction/stage2_sample/sample_review.md`，结论必须为 PASS。
 - `chapters/final/*.md`
+- `chapters/src/*.md`
+- 双语对照版所需的源文-译文段落对齐映射，若 `state/pipeline_state.json.edition_type = bilingual_parallel`
 - `metadata/book.yaml`
 
 ## 任务 / Tasks
@@ -17,10 +19,19 @@
 2. 运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`。
 3. 确认 `output/publication_lint.json` 中 `targetTitleLatinResidue=0`、`sourceTermBeforeTranslation=0`、`bodyOriginalTermGloss=0`、`bodySceneSeparator=0`、`disallowedNoteMarker=0`；否则不得继续构建或发布。
 4. 生成 `cover.xhtml`、`book-info.xhtml`、`nav.xhtml`、正文 XHTML、CSS、OPF。
-5. 打包 `output/book.epub`。
-6. 保留必要可审计产物，如 `output/cover.jpg`、`output/publication_lint.json`、`output/epubcheck.json`。
-7. 运行 EPUBCheck。
-8. EPUBCheck 通过后，下一步必须进入 `prompts/16a_stratified_random_spotcheck.md`；不得直接进入最终输出或宣布完成。
+5. 打包单简体中文 EPUB：`output/book.epub`。
+6. 若 `state/pipeline_state.json.edition_type = bilingual_parallel`，同时生成中英双语对照 EPUB：`output/book_bilingual_parallel.epub`。
+   - 双语版必须遵守 `references/bilingual_parallel_edition_policy.md`。
+   - 双语版不得把英文源文写入 `chapters/final/`，不得降低单中文 EPUB 的质量。
+   - 双语对齐映射必须写入 `qa/bilingual_parallel/alignment_map.json`。
+   - 运行 `npm run build:bilingual`，由源文段落、目标语成书稿和对齐映射生成独立双语 EPUB。
+   - 双语分块以完整源段落到目标段落映射为边界；英文源语块包含的全部源段落，必须在紧随其后的中文目标语块中有完整译文对应。
+   - 以接近手机一屏为阅读目标：英文源文约 150-230 words，中文目标语约 350-550 字；可以上下浮动，只能在完整对齐边界切块。
+   - 不得逐句交错；不推荐机械逐段交错；不得反复加入 `原文` / `译文` 标签或每章说明。
+   - 中文目标语是主阅读文本，英文源文为辅助对照文本，建议源文略小但不低于目标语 `0.88em`，不得依赖字体族、斜体或颜色作为唯一区分。
+7. 保留必要可审计产物，如 `output/cover.jpg`、`output/publication_lint.json`、`output/epubcheck.json`；双语版还必须运行 `npm run check:bilingual` 并保留 `output/bilingual_parallel_check.json`。
+8. 对所有启用的 EPUB 产物运行 EPUBCheck。
+9. EPUBCheck 通过后，下一步必须进入 `prompts/16a_stratified_random_spotcheck.md`；不得直接进入最终输出或宣布完成。
 
 ## 禁止 / Forbidden
 
@@ -34,12 +45,15 @@
 - 禁止普通名词写成 `source term（中文释义）` 或 `中文词（source term）`；禁止历史术语、制度名、身份称谓和专业术语无必要地写成 `中文译名（source term）`。必要原词应放入译注、章末注或术语表，并由正文注号指向。
 - 禁止带圈数字、小圆圈“注”、裸 `译注：` / `脚注：` / `尾注：` / `附注：` 或句末裸数字；注号只能使用 `[1]`、`(1)` / `（1）`、`注1`。
 - 禁止旧纸书星号或横线分隔符进入最终正文。
+- `edition_type: bilingual_parallel` 时，禁止双语版缺少任一启用产物：单中文 EPUB 和中英双语 EPUB 都必须生成。禁止源语块和目标语块对应不完整，禁止用 `原文` / `译文` 标签、`/` 拼接或逐句交错来代替正式双语版式。
 
 ## 输出 / Output
 
 - `output/book.epub`
+- 若 `edition_type: bilingual_parallel`：`output/book_bilingual_parallel.epub`
 - `output/publication_lint.json`
 - `output/epubcheck.json` 或 `output/epubcheck.log`
+- 若 `edition_type: bilingual_parallel`：双语对齐完整性报告或等效 QA 证据
 - `state/pipeline_state.json.status = EPUB_BUILT`
 
 ## 随机抽检同类问题全书审计 / Book-Wide Similar-Issue Audit

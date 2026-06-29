@@ -45,7 +45,7 @@ def rel_or_abs(book_root: Path, path: Path) -> str:
 def read_json(path: Path) -> dict:
     if not path.exists():
         return {}
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
 def write_json(path: Path, data: dict) -> None:
@@ -79,6 +79,60 @@ def safe_filename_part(value: str) -> str:
     value = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", value)
     value = re.sub(r"\s+", " ", value).strip(" .")
     return value or "book"
+
+
+LANGUAGE_FILENAME_LABELS = {
+    "en": "英",
+    "en-us": "英",
+    "en-gb": "英",
+    "zh": "中",
+    "zh-hans": "中",
+    "zh-cn": "中",
+    "zh-sg": "中",
+    "zh-hant": "繁中",
+    "zh-tw": "繁中",
+    "zh-hk": "繁中",
+    "ja": "日",
+    "jp": "日",
+    "es": "西",
+    "fr": "法",
+    "de": "德",
+    "it": "意",
+    "ru": "俄",
+    "ko": "韩",
+    "kr": "韩",
+    "ar": "阿",
+    "id": "印尼",
+    "grc": "古希",
+    "lzh": "古汉",
+    "sa": "梵",
+}
+
+
+def language_filename_label(value: str) -> str:
+    normalized = value.strip().lower().replace("_", "-")
+    if not normalized:
+        return ""
+    if normalized in LANGUAGE_FILENAME_LABELS:
+        return LANGUAGE_FILENAME_LABELS[normalized]
+    primary = normalized.split("-", 1)[0]
+    if primary in LANGUAGE_FILENAME_LABELS:
+        return LANGUAGE_FILENAME_LABELS[primary]
+    return safe_filename_part(value)
+
+
+def edition_release_suffix(edition: dict, state: dict) -> str:
+    edition_type = edition.get("edition_type") or "target_only"
+    if edition_type != "bilingual_parallel":
+        return edition.get("suffix") or ""
+    target = language_filename_label(str(state.get("target_language") or ""))
+    source = language_filename_label(str(state.get("source_language") or ""))
+    if target and source:
+        return f"_{target}{source}双语"
+    configured = edition.get("suffix") or ""
+    if configured and configured != "_bilingual_parallel":
+        return configured
+    return "_双语"
 
 
 def parse_version(version: str) -> tuple[int, int, int]:
@@ -206,6 +260,39 @@ def clean_note_text(value: str) -> str:
     return value.replace("^", "")
 
 
+def enabled_output_editions(book_root: Path, fallback_source_epub: Path) -> tuple[list[dict], dict]:
+    state = read_json(book_root / "state" / "pipeline_state.json")
+    configured = state.get("output_editions") if isinstance(state, dict) else None
+    editions: list[dict] = []
+    if isinstance(configured, list):
+        for item in configured:
+            if not isinstance(item, dict) or item.get("enabled") is not True:
+                continue
+            artifact = item.get("artifact") or "output/book.epub"
+            source = (book_root / artifact).resolve() if not Path(artifact).is_absolute() else Path(artifact).resolve()
+            editions.append(
+                {
+                    "edition_type": item.get("edition_type") or "target_only",
+                    "source": source,
+                    "source_label": rel_or_abs(book_root, source),
+                    "suffix": item.get("release_artifact_suffix") or "",
+                }
+            )
+    if not editions:
+        editions.append(
+            {
+                "edition_type": "target_only",
+                "source": fallback_source_epub,
+                "source_label": rel_or_abs(book_root, fallback_source_epub),
+                "suffix": "",
+            }
+        )
+    for edition in editions:
+        if not edition["source"].exists():
+            raise SystemExit(f"enabled EPUB artifact does not exist: {edition['source']}")
+    return editions, state
+
+
 def append_release_index(path: Path, version: str, epub_name: str, note_name: str, status: str, created_at: str) -> None:
     if not path.exists():
         path.write_text(
@@ -234,8 +321,6 @@ def main() -> None:
     args = parse_args()
     book_root = resolve_book_root(args.book_root)
     source_epub = (book_root / args.source_epub).resolve() if not Path(args.source_epub).is_absolute() else Path(args.source_epub).resolve()
-    if not source_epub.exists():
-        raise SystemExit(f"source EPUB does not exist: {source_epub}")
 
     release_dir = (book_root / args.release_dir).resolve() if not Path(args.release_dir).is_absolute() else Path(args.release_dir).resolve()
     state_path = release_dir / "release_state.json"
@@ -252,19 +337,28 @@ def main() -> None:
 
     release_dir.mkdir(parents=True, exist_ok=True)
     release_title = safe_filename_part(read_book_title(book_root))
-    epub_name = f"{release_title}_{version}.epub"
+    editions, pipeline_state = enabled_output_editions(book_root, source_epub)
     note_name = "release_notes.md"
-    target_epub = release_dir / epub_name
     release_note = release_dir / note_name
-    if not args.overwrite and target_epub.exists():
-        raise SystemExit(
-            f"release EPUB already exists for {version}; create the next patch version or pass --overwrite deliberately"
-        )
-    shutil.copy2(source_epub, target_epub)
-
     created_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    size_bytes = target_epub.stat().st_size
-    digest = sha256(target_epub)
+    release_artifacts: list[dict] = []
+    for edition in editions:
+        epub_name = f"{release_title}{edition_release_suffix(edition, pipeline_state)}_{version}.epub"
+        target_epub = release_dir / epub_name
+        if not args.overwrite and target_epub.exists():
+            raise SystemExit(
+                f"release EPUB already exists for {version}: {epub_name}; create the next patch version or pass --overwrite deliberately"
+            )
+        shutil.copy2(edition["source"], target_epub)
+        release_artifacts.append(
+            {
+                "edition_type": edition["edition_type"],
+                "source_epub": edition["source_label"],
+                "epub": epub_name,
+                "sha256": sha256(target_epub),
+                "size_bytes": target_epub.stat().st_size,
+            }
+        )
 
     reason = clean_note_text(
         args.reason
@@ -282,9 +376,8 @@ def main() -> None:
         f"sub_version: {sub_version}",
         f"patch_version: {patch_version}",
         f"created_at: {created_at}",
-        f"epub: {epub_name}",
-        f"sha256: {digest}",
-        f"size_bytes: {size_bytes}",
+        "epubs:",
+        *[f"- {item['edition_type']}: `{item['epub']}` sha256=`{item['sha256']}` size_bytes=`{item['size_bytes']}`" for item in release_artifacts],
         "",
         "## Release Reason / 发布原因",
         "",
@@ -304,7 +397,7 @@ def main() -> None:
         "",
         "## QA And Evidence / QA 与证据",
         "",
-        f"- source_epub: `{rel_or_abs(book_root, source_epub)}`",
+        *[f"- source_epub_{item['edition_type']}: `{item['source_epub']}`" for item in release_artifacts],
         f"- random_spotcheck_round: `{summary.get('random_spotcheck_round') or 'MISSING'}`",
         f"- random_spotcheck_validation: `{summary.get('random_spotcheck_validation') or 'MISSING'}`",
         f"- random_spotcheck_status: `{summary.get('random_spotcheck_status') or 'MISSING'}`",
@@ -344,18 +437,21 @@ def main() -> None:
         "main_version": main_version,
         "sub_version": sub_version,
         "patch_version": patch_version,
-        "latest_epub": epub_name,
+        "latest_epub": release_artifacts[0]["epub"],
+        "latest_epubs": release_artifacts,
         "latest_release_note": note_name,
         "latest_status": args.status,
         "latest_created_at": created_at,
-        "latest_sha256": digest,
-        "latest_size_bytes": size_bytes,
+        "latest_sha256": release_artifacts[0]["sha256"],
+        "latest_size_bytes": release_artifacts[0]["size_bytes"],
         "gate_summary": summary,
     }
     write_json(state_path, new_state)
-    append_release_index(release_dir / "release_index.md", version, epub_name, note_name, args.status, created_at)
+    for item in release_artifacts:
+        append_release_index(release_dir / "release_index.md", version, item["epub"], note_name, args.status, created_at)
 
-    print(f"created {rel_or_abs(book_root, target_epub)}")
+    for item in release_artifacts:
+        print(f"created {rel_or_abs(book_root, release_dir / item['epub'])}")
     print(f"updated {rel_or_abs(book_root, release_note)}")
     print(f"version={version}")
 

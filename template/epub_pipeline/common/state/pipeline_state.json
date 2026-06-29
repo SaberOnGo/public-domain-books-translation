@@ -4,6 +4,34 @@
   "common_template_root": "",
   "project_root": "",
   "source_url": "",
+  "source_language": "",
+  "target_language": "",
+  "edition_type": "target_only",
+  "output_editions": [
+    {
+      "edition_type": "target_only",
+      "enabled": true,
+      "artifact": "output/book.epub",
+      "release_artifact_suffix": ""
+    }
+  ],
+  "bilingual_parallel": {
+    "enabled": false,
+    "order": "source_then_target",
+    "alignment_unit": "closed_source_target_paragraph_mapping",
+    "source_visibility": "full_text",
+    "target_visibility": "full_text",
+    "source_block_recommended_words": "150-230",
+    "target_block_recommended_chars": "350-550",
+    "target_block_soft_min_chars": 150,
+    "target_block_soft_max_chars": 900,
+    "source_font_scale": "0.92em",
+    "source_font_scale_min": "0.88em",
+    "target_only_must_not_regress": true,
+    "alignment_map": "qa/bilingual_parallel/alignment_map.json",
+    "check_report": "output/bilingual_parallel_check.json",
+    "policy": "references/bilingual_parallel_edition_policy.md"
+  },
   "status": "INIT",
   "chapters_total": 0,
   "chapters_translated": 0,
@@ -28,6 +56,9 @@
     "independent_review_status": "",
     "revision_route_status": "",
     "final_output_status": "",
+    "target_only_epub_status": "",
+    "bilingual_parallel_epub_status": "",
+    "bilingual_alignment_status": "",
     "release_status": "",
     "release_state": "output/release/release_state.json",
     "retrospective_status": ""

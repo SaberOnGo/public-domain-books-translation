@@ -24,9 +24,17 @@ Do not use private EPUB artifacts as GitHub release assets. Do not commit them.
 ## Required Files / 必备文件
 
 - `{target_title}_private_vX.X.X.epub`
+- If `state/pipeline_state.json.output_editions` enables multiple editions, one versioned private EPUB per enabled edition, for example `{target_title}_private_vX.X.X.epub` and `{target_title}_private_{target_language_short}{source_language_short}双语_vX.X.X.epub`. Do not expose the internal enum name `_bilingual_parallel` in reader-facing artifact filenames.
+- 如果 `state/pipeline_state.json.output_editions` 启用多个版本，每个启用版本都必须有一个带版本号的私人 EPUB，例如 `{目标语言书名}_private_vX.X.X.epub` 和 `{目标语言书名}_private_{目标语言简称}{源语言简称}双语_vX.X.X.epub`。读者可见产物文件名不得暴露内部枚举名 `_bilingual_parallel`。
 - `private_artifact_notes.md`
 - `private_artifact_state.json`
 - `private_artifact_index.md`
+
+## Edition Independence / 输出版本独立性
+
+Private-use mode controls rights, storage, and publication boundaries. It does not decide whether the book outputs only the target-language EPUB or both target-language and bilingual parallel EPUBs. For `English-to-Simplified-Chinese`, the default `edition_type: bilingual_parallel` applies in private-use projects as well; the resulting EPUBs remain local private artifacts and must not be published to GitHub.
+
+私人自用模式只控制版权边界、存放位置和是否能公开发布；它不决定一本书只输出目标语言 EPUB，还是同时输出目标语言 EPUB 和双语对照 EPUB。对 `English-to-Simplified-Chinese`，默认 `edition_type: bilingual_parallel` 同样适用于私人自用项目；生成的 EPUB 仍然只是本地私人产物，不得发布到 GitHub。
 
 ## Random Spot-Check Evidence / 随机抽检证据
 

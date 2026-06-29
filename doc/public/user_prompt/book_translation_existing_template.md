@@ -21,7 +21,7 @@
 除此之外，源语言、可靠公版/授权来源 URL 或私人本地书源模式、语言方向模板、目标语言标签、目录名、是否需要 profile、建书目录编号，都必须由你自动判断、自动记录。不要要求用户补充这些技术字段，除非版权状态、来源权利无法确认，或用户请求非公版私人自用但没有提供本地书源文件。
 
 任务目标：
-严格依据当前仓库规则创建并完成这本书的 EPUB 翻译项目。公开项目最终必须生成 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/output/release/` 下 latest_status=PASS 的可发布 EPUB。私人自用项目必须位于被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，其版本化 EPUB 只是个人自用产物，不得发布到 GitHub。`output/book.epub` 不能单独作为完成依据。
+严格依据当前仓库规则创建并完成这本书的 EPUB 翻译项目。公开项目最终必须生成 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/output/release/` 下 latest_status=PASS 的可发布 EPUB。若源语言为英语、目标语言为简体中文，默认设置 `state/pipeline_state.json.edition_type = bilingual_parallel`，并同时生成单简体中文 EPUB 和中英双语对照 EPUB；这不是英译中作为仓库默认方向，而是该语言方向的默认输出版本。其他语言方向只有用户明确写明“请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB”时，才输出双语对照版。私人自用项目必须位于被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，其版本化 EPUB 只是个人自用产物，不得发布到 GitHub。`output/book.epub` 不能单独作为完成依据。
 
 执行规则：
 
@@ -36,6 +36,7 @@
    - `template/epub_pipeline/common/references/cover_design_policy.md`
    - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
    - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
+   - `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
    - `template/epub_pipeline/common/prompts/08a_chapter_post_translation_control.md`
    - `template/epub_pipeline/common/prompts/16a_stratified_random_spotcheck.md`
    - `skills/translation-quality-defect-families/SKILL.md`
@@ -63,7 +64,7 @@
     - `qa/samples/sample_test_report.md`，且结论为 PASS
 13. 必须完成分章翻译和每章译后全量检查闭环。每章写入 `chapters/translated/{chapter}.md` 后，必须立即执行当前章全量检查并修复：对照整章原文和整章译文，覆盖忠实度、漏译误译、目标语言顺读、文学性、可读性和吸引力、教学/解释节奏、术语稳定、专名/案例/标题一致性、标题/小标题、注释、图表/公式/表格/图片文字接口、源语言句法残留、过硬过直句、过度解释、无依据加戏、读者可见 AI/制作痕迹、乱码/异常空格和旧纸书残留。只要发现任何问题，先修复该章，但该轮只能记录为 `FIXED_RECHECK_REQUIRED`，不能 PASS；必须追加新一轮整章复查。只有最新一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，才可进入下一章、`chapters/final/` 或章节 gate。不同章节可以并行，但每章必须独立闭环。
 14. 若任一章节检查、审校或修订发现可复现译文质量问题族，例如短句切断、比喻自撞、排比标点拖拽、代词指代不清、源语言句法残留、术语漂移、标题超载、过度解释或加戏，必须使用 `skills/translation-quality-defect-families/SKILL.md`：在本书记录发现方式、归纳、低 token 同类审计、修复、例外和复查；先用 `rg`、术语表、禁用写法、标题表、章节控制记录和小上下文原文对照收集候选，只把候选片段交给 agent 复核；书内闭环后只把可复用经验合并进该 skill，不盲目重复追加。
-15. 必须完成 `preproduction/stage1/production_spec.md`、样章检查、全书 EPUB 构建。
+15. 必须完成 `preproduction/stage1/production_spec.md`、样章检查、全书 EPUB 构建。若 `edition_type: bilingual_parallel`，生产规格必须记录双语对照版策略：源语块在前、目标语块在后；以完整源段落到目标段落映射为切块边界；接近手机一屏但不切断对应关系；不得逐句交错；不得反复加入 `原文` / `译文` 标签；不得把源文写入 `chapters/final/`；不得降低单目标语 EPUB 质量。
 16. 构建和发布前必须清理或重建 staging 输出，避免旧 XHTML、链接或资产污染新门禁。
 17. 必须运行并通过：
     - `npm run build:epub`
@@ -81,12 +82,13 @@
     - 译文质量问题族必须先用低 token 方法审计：`rg`、`glossary/terms.csv`、`forbidden_body_renderings`、标题映射、章节控制记录、抽样 manifest 和小上下文原文对照；只把候选片段交给 agent 复核。
     - 修复后必须在本轮 `fix_log.md` 和 `closure_check.md` 记录问题族、检索式/审计方法、命中数、修复位置、合理例外和复查结果，重建 EPUB，并用新 seed 追加下一轮抽检。
     - 只有最近连续 N 个新 seed 抽检轮均 PASS（N 最小为 1，默认 2，高质量译本可选 3），所有已发现问题族关闭，且 `npm run review:random-validate:pass` 或等价 `--require-pass` 校验通过，才可退出抽检。
-19. 抽检和修复完成后必须重新生成 EPUB。公版或授权项目运行 `npm run release:create` 或等价 release 脚本，把可发布 EPUB 输出到 `output/release/`；私人自用项目运行 `npm run private:artifact:create` 或等价 private artifact 脚本，把本地私人产物输出到 `output/private_artifacts/`，不得生成或发布公开 release。
+19. 抽检和修复完成后必须重新生成 EPUB。公版或授权项目运行 `npm run release:create` 或等价 release 脚本，把可发布 EPUB 输出到 `output/release/`；若 `edition_type: bilingual_parallel`，release 必须同时包含单目标语 EPUB 和双语对照 EPUB，并记录对齐完整性、源文出版权利和双语 EPUB 校验结果。私人自用项目运行 `npm run private:artifact:create` 或等价 private artifact 脚本，把本地私人产物输出到 `output/private_artifacts/`，不得生成或发布公开 release。
 20. 公版或授权项目的 `output/release/release_state.json.latest_status` 必须为 `PASS`；私人自用项目的 `output/private_artifacts/private_artifact_state.json.latest_status` 必须为 `PASS`。
 21. 若执行中发现模板存在可复用缺陷、缺漏或歧义，必须先在本书 QA/retrospective 中记录证据，修复当前书，再把可复用规则以最小必要改动回填到正确模板层级，并重新验证建书脚本和模板引用没有破坏。
 22. 最终不得提交未验证完成声明。最终报告必须包含：
     - 书籍项目路径
     - release EPUB 路径，或私人自用项目的 private artifact 路径
+    - 若 `edition_type: bilingual_parallel`，同时报告单目标语 EPUB 和双语对照 EPUB 路径
     - source URL 或本地来源证据
     - 验证命令与结果
     - 抽检轮次与最终 validation_report

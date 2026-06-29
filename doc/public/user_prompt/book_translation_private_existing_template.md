@@ -33,6 +33,7 @@
    - `template/epub_pipeline/common/metadata/source_evidence.md`
    - `template/epub_pipeline/common/metadata/private_use_declaration.md`
    - `template/epub_pipeline/common/references/quality_gate_framework.md`
+   - `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
    - `template/epub_pipeline/common/references/stratified_random_spotcheck.md`
    - `template/epub_pipeline/common/references/release_versioning.md`
    - `template/epub_pipeline/common/references/cover_design_policy.md`
@@ -63,6 +64,7 @@ npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-targ
    - `metadata/source_evidence.md`，source type 使用 `user_provided_local_file`
    - `metadata/rights_checklist.md`，decision 使用 `PRIVATE_USE_PASS` 或 `FAIL`
    - `state/pipeline_state.json.publication_mode = private_use`
+   - 若源语言为英语、目标语言为简体中文，`state/pipeline_state.json.edition_type = bilingual_parallel`，且 `output_editions` 同时启用单简体中文 EPUB 和中英双语对照 EPUB
 9. 不得自动查找非公版全文，不得使用盗版站、来源不明 EPUB、现代受版权保护译本或用户没有本地访问权的材料。
 10. 如果用户没有提供本地文件，必须停止；不能用本 prompt 继续。
 11. 私人自用模式只改变权利和目录边界，不降低质量要求。仍必须完成研究、试译、分章翻译、章节审校、质量门禁、EPUB 构建、EPUBCheck、读者可见内容检查、分层随机抽检和版本化私人产物。
@@ -70,18 +72,18 @@ npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-targ
 13. 若任一章节检查、审校、抽检或修订发现可复现译文质量问题族，必须使用 `skills/translation-quality-defect-families/SKILL.md`：先在本私人工程记录发现方式、归纳、低 token 同类审计、修复、例外和复查；用 `rg`、术语表、禁用写法、标题表、章节控制记录和小上下文原文对照收集候选，只把候选片段交给 agent 复核；书内闭环后只把可复用且不暴露私人内容的通用经验合并进该 skill。
 14. 私人自用封面底部只写 `个人学习版`，不得放 `仅供个人自用，不传播，不商业使用` 这类长声明；私人首页/前置页不得写公版说明，制作标识必须使用 `参考LifeBook书坊 个人自制`，并写明 `仅供个人自用，不传播，不商业使用`、风险由个人承担、LifeBook书坊仅发布 LifeBook 翻译发布系统且不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
 15. 第一版全书 EPUB 后必须执行分层随机抽检与问题族追杀。任一样本或任一 Agent 发现 P0/P1/P2、单项 <80、读者读不懂、忠实度偏移、事实/术语/专名/标题/译注/图表/公式错误、源语言句法硬搬、无依据润饰、过度解释或加戏，必须在当轮归纳为问题族，对整本读者可见书稿执行全书同类审计，修复全部确认命中，记录合理例外，重建 EPUB，并用新 seed 追加下一轮；不得只修被抽中的样本。只有最近连续 N 个新 seed 抽检轮均 PASS（N 最小 1，默认 2，高质量译本可选 3），所有问题族关闭，且 `npm run review:random-validate:pass` 通过，才可退出抽检。
-16. 抽检和修复完成后必须重新生成 EPUB，并运行：
+16. 抽检和修复完成后必须重新生成 EPUB。若 `edition_type: bilingual_parallel`，必须同时生成 `output/book.epub` 和 `output/book_bilingual_parallel.epub`；版权/私人自用边界不影响是否生成双语对照版，只影响产物不能公开发布。然后运行：
 
 ```powershell
 npm run private:artifact:create
 ```
 
-17. 私人 EPUB 产物必须位于 `output/private_artifacts/`，不是公开 release，不得提交或发布到 GitHub。
+17. 私人 EPUB 产物必须位于 `output/private_artifacts/`，不是公开 release，不得提交或发布到 GitHub。若 `edition_type: bilingual_parallel`，私人产物目录必须同时包含单目标语版本和双语对照版本的版本化 EPUB。
 18. 最终报告必须包含：
     - 私人工程路径 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`
     - 本地书源文件名和 SHA256，不要暴露不必要的本机绝对路径
     - `metadata/private_use_declaration.md` 路径
-    - 私人 EPUB 产物路径
+    - 私人 EPUB 产物路径；若 `edition_type: bilingual_parallel`，同时报告单目标语 EPUB 和双语对照 EPUB 路径
     - 验证命令与结果
     - 分层随机抽检轮次与最终 validation_report
     - 修复摘要

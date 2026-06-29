@@ -290,10 +290,84 @@ def write_project_gitignore(project_root: Path, publication_mode: str) -> None:
     (project_root / ".gitignore").write_text(content, encoding="utf-8")
 
 
+LANGUAGE_TAGS = {
+    "English": "en",
+    "Simplified-Chinese": "zh-Hans",
+    "Traditional-Chinese": "zh-Hant",
+    "Japanese": "ja",
+    "Spanish": "es",
+    "French": "fr",
+    "German": "de",
+    "Italian": "it",
+    "Russian": "ru",
+    "Korean": "ko",
+    "Ancient-Greek": "grc",
+    "Literary-Chinese": "lzh",
+    "Sanskrit": "sa",
+}
+
+
+def infer_language_tags(source_target: str, target: str) -> tuple[str, str]:
+    source_name = source_target.split("-to-", 1)[0] if "-to-" in source_target else ""
+    target_name = source_target.split("-to-", 1)[1] if "-to-" in source_target else ""
+    source_language = LANGUAGE_TAGS.get(source_name, source_name)
+    target_language = target or LANGUAGE_TAGS.get(target_name, target_name)
+    return source_language, target_language
+
+
+def apply_default_edition_plan(data: dict, source_target: str, target: str) -> None:
+    source_language, target_language = infer_language_tags(source_target, target)
+    data["source_language"] = source_language
+    data["target_language"] = target_language
+
+    is_default_bilingual = source_target == "English-to-Simplified-Chinese" and target_language == "zh-Hans"
+    if not is_default_bilingual:
+        data.setdefault("edition_type", "target_only")
+        return
+
+    data["edition_type"] = "bilingual_parallel"
+    data["output_editions"] = [
+        {
+            "edition_type": "target_only",
+            "enabled": True,
+            "artifact": "output/book.epub",
+            "release_artifact_suffix": "",
+        },
+        {
+            "edition_type": "bilingual_parallel",
+            "enabled": True,
+            "artifact": "output/book_bilingual_parallel.epub",
+            "release_artifact_suffix": "_中英双语",
+        },
+    ]
+    data["bilingual_parallel"] = {
+        "enabled": True,
+        "order": "source_then_target",
+        "alignment_unit": "closed_source_target_paragraph_mapping",
+        "source_visibility": "full_text",
+        "target_visibility": "full_text",
+        "default_for": {
+            "source_language": "en",
+            "target_language": "zh-Hans",
+        },
+        "source_block_recommended_words": "150-230",
+        "target_block_recommended_chars": "350-550",
+        "target_block_soft_min_chars": 150,
+        "target_block_soft_max_chars": 900,
+        "source_font_scale": "0.92em",
+        "source_font_scale_min": "0.88em",
+        "target_only_must_not_regress": True,
+        "alignment_map": "qa/bilingual_parallel/alignment_map.json",
+        "check_report": "output/bilingual_parallel_check.json",
+        "policy": "references/bilingual_parallel_edition_policy.md",
+    }
+
+
 def update_state(
     project_root: Path,
     repo_root: Path,
     source_target: str,
+    target: str,
     source_url: str,
     publication_mode: str,
     private_use_record: dict[str, str | bool] | None,
@@ -306,6 +380,7 @@ def update_state(
     data["template_root"] = f"template/epub_pipeline/{source_target}"
     data["common_template_root"] = "template/epub_pipeline/common"
     data["publication_mode"] = "private_use" if publication_mode == "private-use" else "public_domain"
+    apply_default_edition_plan(data, source_target, target)
     if source_url:
         data["source_url"] = source_url
     if private_use_record is not None:
@@ -369,7 +444,7 @@ def main() -> None:
     write_project_gitignore(project_root, args.mode)
     if private_use_record is not None:
         write_private_use_declaration(project_root, private_use_record)
-    update_state(project_root, repo_root, source_target, args.source_url, args.mode, private_use_record)
+    update_state(project_root, repo_root, source_target, target, args.source_url, args.mode, private_use_record)
 
 
 if __name__ == "__main__":

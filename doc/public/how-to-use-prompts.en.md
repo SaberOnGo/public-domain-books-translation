@@ -2,7 +2,7 @@
 
 This guide is for people who want to use an AI client to make a translated public-domain book. No programming experience is required. The usual workflow is to open the project, paste a short request, and check the book files the AI creates.
 
-## Three Things To Understand First
+## Four Things To Understand First
 
 1. **A normal user only needs three items.**
    Tell the AI which book should be translated, the target language, and the rule for choosing the correct translation prompt automatically. The full wording for that rule is in the [Easiest Starter Prompt](#easiest-starter-prompt). The AI should handle the reliable source, source language, template, project folder, release, and validation commands.
@@ -12,6 +12,9 @@ This guide is for people who want to use an AI client to make a translated publi
 
 3. **Only treat the release or private artifact result as finished.**
    The AI will handle source checks, rights checks, translation, review, EPUB build, spot-check, and release. For public-domain or licensed projects, check `output/release/`; for personal-use projects, check `output/private_artifacts/`.
+
+4. **English to Simplified Chinese projects produce two EPUB editions by default.**
+   If the source language is English and the target language is Simplified Chinese, the AI should produce both the target-only Simplified Chinese EPUB and the English-Chinese bilingual parallel EPUB. This is independent from public or private-use mode. For other language pairs, add this sentence only when you want a bilingual parallel edition: `请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB。`
 
 ## Easiest Starter Prompt
 
@@ -31,6 +34,7 @@ Automatically choose the correct translation prompt:
 - If the matching source-language template does not exist yet, execute doc/public/user_prompt/book_translation_new_template.md.
 
 Do not ask me to fill technical fields unless rights or source evidence cannot be confirmed. Automatically find a reliable public-domain source, create the book project, complete translation, review, EPUB build, stratified random spot-check, and release.
+If the source language is English and the target language is Simplified Chinese, default to `edition_type: bilingual_parallel` and produce both the target-only Simplified Chinese EPUB and the English-Chinese bilingual parallel EPUB. For other language pairs, produce a bilingual parallel EPUB only when I explicitly request it.
 During translation, run the per-chapter post-translation full check and fix gate for every chapter. Compare the whole source chapter and whole translated chapter for fidelity, target-language readability, terminology, titles/subtitles, notes, figure/table/formula text interfaces, source-syntax residue, stiff literal prose, over-explanation, and invented additions. If any issue is found, fix it, but that round cannot PASS; append a new full-chapter recheck until the latest round is a zero-issue PASS.
 After the first EPUB, run stratified random spot-checking and defect-family closure. If any sample exposes a defect, do not fix only that sample. Classify the defect family in that same round, audit the whole book for similar cases with `rg`, glossary rows, title maps, sample manifests, and small-context source comparison, fix confirmed matches, document exceptions, and run a new-seed round. Translation-quality defect families must use `skills/translation-quality-defect-families/SKILL.md`.
 ```
@@ -52,6 +56,7 @@ Automatically choose the correct translation prompt:
 
 This is for my personal use only. It will not be redistributed and will not be used commercially. Use the local source I provided.
 Automatically create the project and strictly complete the full systematic translation workflow required by the templates, with no omissions.
+If the source language is English and the target language is Simplified Chinese, default to `edition_type: bilingual_parallel` and produce both the target-only Simplified Chinese EPUB and the English-Chinese bilingual parallel EPUB as private artifacts. For other language pairs, produce a bilingual parallel EPUB only when I explicitly request it.
 During translation, run the per-chapter post-translation full check and fix gate for every chapter. After the first EPUB, run stratified random spot-checking and defect-family closure. Translation-quality defect families must first be closed inside the book project, then reusable lessons must be merged into `skills/translation-quality-defect-families/SKILL.md`.
 ```
 

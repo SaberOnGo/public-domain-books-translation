@@ -10,7 +10,7 @@ This directory contains shared workflow files for all language-pair templates.
 - `automation_contract.md`: automation and template-protection rules.
 - `metadata/rights_checklist.md`, `metadata/source_evidence.md`, and `metadata/private_use_declaration.md`: source, rights, public-domain/licensed publication, and private-use evidence templates.
 - `preproduction/`: shared EPUB preproduction templates.
-- `references/`: language-neutral title, literary refinement, proper-noun display, note marker, quality gate, EPUB asset, benchmark, and stratified random spot-check policies.
+- `references/`: language-neutral title, literary refinement, proper-noun display, note marker, bilingual parallel edition, quality gate, EPUB asset, benchmark, and stratified random spot-check policies.
 - `assets/`: default EPUB resource directories for figures, images, styles, and table resources.
 - `source/tables/`: source CSV/TSV tables used to generate reader-facing XHTML tables.
 - `glossary/proper_nouns.csv`: user-editable proper-noun display register.
@@ -25,7 +25,15 @@ This directory contains shared workflow files for all language-pair templates.
 
 目标语言质量框架放在 `template/epub_pipeline/targets/{target}/`。源语言到目标语言的专用模板只应在确实需要不同翻译、排版或评审规则时覆盖或扩展 common 文件。
 
+双语对照版规则见 `references/bilingual_parallel_edition_policy.md`。`edition_type: bilingual_parallel` 是正式输出版本，不是源语残留或 lint 例外。对 `English-to-Simplified-Chinese` 项目，默认同时输出单简体中文 EPUB 和中英双语对照 EPUB；这个决定与 `publication_mode` 解耦，公版、授权和 `private_use` 都适用。其他语言方向只有用户明确写明“请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB”时才启用。双语版必须由源文、目标语成书稿和对齐映射生成，不得把源文块写入 `chapters/final/`，也不得降低单目标语 EPUB 的质量门禁。
+
 Target-language quality frameworks live under `template/epub_pipeline/targets/{target}/`. Source-to-target-specific templates should override or extend common files only when the direction needs different translation, typography, or review rules.
+
+The bilingual parallel edition rules live in `references/bilingual_parallel_edition_policy.md`. `edition_type: bilingual_parallel` is a first-class output edition, not source-language residue or a lint exception. For `English-to-Simplified-Chinese` projects, the default is to produce both the target-only Simplified Chinese EPUB and the English-Chinese bilingual parallel EPUB; this is independent from `publication_mode` and applies to public-domain, licensed, and `private_use` projects. Other language directions enable it only when the user explicitly asks for `edition_type: bilingual_parallel`. The bilingual edition must be generated from source text, the finished target-language manuscript, and an alignment map; it must not write source blocks into `chapters/final/` or weaken target-only EPUB gates.
+
+`npm run build:bilingual` 只按 `state/pipeline_state.json` 的输出版本状态工作：双语版未启用时直接跳过，启用时根据 `qa/bilingual_parallel/alignment_map.json` 生成 `output/book_bilingual_parallel.epub`。`npm run check:bilingual` 是后续结构门禁，检查启用产物、对齐映射、双语 XHTML 和语言 metadata。二者都不得从 `publication_mode` 推断是否输出双语版。
+
+`npm run build:bilingual` is driven only by output-edition state in `state/pipeline_state.json`: it skips when the bilingual edition is disabled, and builds `output/book_bilingual_parallel.epub` from `qa/bilingual_parallel/alignment_map.json` when enabled. `npm run check:bilingual` is the follow-up structural gate for enabled artifacts, alignment, bilingual XHTML, and language metadata. Neither script may infer bilingual output from `publication_mode`.
 
 ## Shared Tooling / 共享工具
 

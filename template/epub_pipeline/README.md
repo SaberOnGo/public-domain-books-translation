@@ -38,6 +38,20 @@ For non-public-domain private-use projects, append:
 
 All source text, translations, QA files, and EPUB output belong in the book project, never in `template/`.
 
+### Bilingual Parallel Editions / 双语对照版
+
+`edition_type: bilingual_parallel` is a first-class reader edition, not a lint exception or source-language residue. `English-to-Simplified-Chinese` projects default to both `output/book.epub` and `output/book_bilingual_parallel.epub`; this is independent from `publication_mode` and does not make English-to-Simplified-Chinese the repository's default translation direction.
+
+`edition_type: bilingual_parallel` 是正式读者版本，不是 lint 例外，也不是源语残留。`English-to-Simplified-Chinese` 项目默认同时输出 `output/book.epub` 和 `output/book_bilingual_parallel.epub`；这与 `publication_mode` 解耦，也不代表仓库把英译简中作为默认翻译方向。
+
+Other language pairs produce a bilingual parallel EPUB only when the user explicitly requests: `请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB。`
+
+其他语言方向只有用户明确要求时才输出双语对照 EPUB：`请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB。`
+
+Read `common/references/bilingual_parallel_edition_policy.md` before changing bilingual layout, production specs, quality gates, or release behavior.
+
+修改双语排版、制作规格、质量门禁或 release 行为前，必须读取 `common/references/bilingual_parallel_edition_policy.md`。
+
 ### Private-Use Projects / 私人自用工程
 
 Public-domain or licensed projects use the normal publishable tree above. A non-public-domain book may be translated only as a strictly private-use project when the user provides a local source file and explicitly declares personal study only, no redistribution, and no commercial use.

@@ -68,6 +68,20 @@ human_required: false
 
 - 若必须使用 `霞鹜文楷/LXGW WenKai` 等字体，必须先做字体子集化，并记录体积和授权。
 
+## 输出版本 / Output Editions
+
+- `edition_type`：`target_only` 或 `bilingual_parallel`。
+- `English-to-Simplified-Chinese` 项目默认使用 `edition_type: bilingual_parallel`，必须同时生成单简体中文 EPUB 和中英双语对照 EPUB；这与 `publication_mode` 解耦，公版、授权和 `private_use` 都适用。
+- 其他语言方向只有用户明确写明“请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB”时，才生成双语对照版。
+- `target_only` 成书稿仍以 `chapters/final/` 为准；双语版不得把源文块写入 `chapters/final/`，不得降低单目标语 EPUB 的章节门禁、publication lint、随机抽检和 release 要求。
+- 双语版必须遵守 `references/bilingual_parallel_edition_policy.md`，由源文、目标语成书稿和对齐映射生成。
+- 双语对齐映射默认写入 `qa/bilingual_parallel/alignment_map.json`；双语版启用后必须运行 `npm run build:bilingual` 生成独立双语 EPUB，并通过 `npm run check:bilingual`。这两个脚本只读取输出版本状态，不得按 `publication_mode` 判断。
+- 双语分块以完整源段落到目标段落映射为边界：源语块包含的全部源段落，必须在紧随其后的目标语块中有完整目标语对应；不得因为接近一屏大小而截断一个源段落的多段译文。
+- 双语版阅读块建议接近手机一屏：英文源文约 150-230 words，简体中文目标语约 350-550 字；可以上下浮动，以便在自然段落边界闭合。
+- 双语版默认顺序为源语言块在前、目标语言块在后；不得逐句交错，不推荐机械逐段交错。
+- 双语版不得反复加入 `原文` / `译文` 标签，不得在每章开头加“原文在前，译文在后”之类说明。
+- 目标语言是主阅读文本，保持正常正文字号和节奏；源语言为辅助对照文本，建议 `0.92em`，不得低于 `0.88em`，不得依赖字体族、斜体或颜色作为唯一区分。
+
 ## 标题与正文 / Headings and Body
 
 - 手机窄屏下标题不得过大。
@@ -111,6 +125,7 @@ python scripts/check_reader_facing_policy.py --write-report
 - `template/epub_pipeline/common/references/cover_design_policy.md`
 - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
 - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
+- `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
 - `template/epub_pipeline/common/references/quality_gate_framework.md`
 - `template/epub_pipeline/common/references/proper_noun_display_policy.md`
 - `template/epub_pipeline/common/references/note_marker_policy.md`
