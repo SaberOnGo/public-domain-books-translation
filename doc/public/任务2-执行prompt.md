@@ -265,3 +265,5 @@ output/book.epub 不能单独作为完成依据。
 并参考:"\doc\public\translation_quality_evaluation_framework.md", 生成一个不限于特定书的质量评估skill文档。
 保存在:"\doc\public\qa_evaluation"(以后该文档用于执行对不同译本的质量评估),该skill需要带版本号
 可以网上搜索相关理论及研究。
+-------------------------------------------------------------
+
