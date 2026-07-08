@@ -70,6 +70,7 @@ node scripts/publication_lint.js --target={target-language} --write-report
 node scripts/asset_manifest_check.js --write-report
 python scripts/check_cover_output_assets.py --write-report
 python scripts/check_reader_facing_policy.py --write-report
+python scripts/check_literary_style_gate.py --write-report
 ```
 
 在构建最终 EPUB 前必须运行：
@@ -81,6 +82,7 @@ node scripts/publication_lint.js --target={target-language} --write-report
 node scripts/asset_manifest_check.js --write-report
 python scripts/check_cover_output_assets.py --write-report
 python scripts/check_reader_facing_policy.py --write-report
+python scripts/check_literary_style_gate.py --write-report
 ```
 
 Private-use projects must additionally run the private-use gates copied from `modes/private_use/`:
@@ -106,6 +108,8 @@ These checks are common because template drift, unnumbered book paths, encoding 
 这些检查属于通用层，因为模板漂移、未编号书籍路径、编码污染、旧纸书页码目录、连续空格、图片资源丢失、output 封面资产缺失、读者可见制作说明、SVG/PNG/CSS 未登记到 OPF manifest、路径可移植性问题可能影响任何语言方向。
 
 `check_reader_facing_policy.py` 会拦截进入读者版 EPUB 的生产痕迹，例如章节开头的 `译文说明` / `章节控制说明`、书籍信息页里的项目宣传语、制作日志、QA/prompt 记录，以及同一前置页内反复出现的版权/权利说明。
+
+`check_literary_style_gate.py` 是目标语文学顺读门禁。普通扫描只收集“直译腔、解释腔、平硬句、抽象名词链、源语句法残留”等候选；正式 `release:create` 必须运行 `literary:validate`，要求 `qa/literary_style/literary_style_review.md` 明确 PASS。原作者序言、导言、开篇和首章属于高影响区域：这部分如果不顺口、怪、平、硬或像说明原意，读者会在最早几页流失，因此最终发布时不得带着未关闭的文学性债务通过。
 
 ## Figures, Images, and Tables / 图表、图片与表格
 
@@ -262,7 +266,7 @@ See `references/stratified_random_spotcheck.md` and `prompts/16a_stratified_rand
 npm run release:create
 ```
 
-`PASS` release creation requires the latest random spot-check validation to come from `npm run review:random-validate:pass`; a structural-only validation, missing output cover assets, or `DRAFT` release is not enough for `DONE`.
+`PASS` release creation requires the latest random spot-check validation to come from `npm run review:random-validate:pass` and a completed `npm run literary:validate`; a structural-only validation, missing output cover assets, missing literary smoothness review, or `DRAFT` release is not enough for `DONE`.
 
 `output/book.epub` 只是当前构建产物。随机抽检闭环通过后，公版和授权发布项目必须在 `output/release/` 下创建带版本号的发布产物。发布脚本必须先运行模板流程门禁和封面 output 资产门禁：
 
@@ -270,7 +274,7 @@ npm run release:create
 npm run release:create
 ```
 
-正式 `PASS` release 要求最近一次随机抽检校验来自 `npm run review:random-validate:pass`；只做结构校验、缺少 output 封面资产或只生成 `DRAFT` release，不能作为 `DONE` 依据。
+正式 `PASS` release 要求最近一次随机抽检校验来自 `npm run review:random-validate:pass`，且 `npm run literary:validate` 通过；只做结构校验、缺少 output 封面资产、缺少文学顺读复审或只生成 `DRAFT` release，不能作为 `DONE` 依据。原作者序言、导言、开篇和首章必须作为高影响区域完成复审。
 
 Release artifacts are named with the target-language title plus version, for example `金属巨兽_v0.0.4.epub`, with `v0.0.1` as the default first version. Every release also needs the cumulative `release_notes.md`, `release_state.json`, and `release_index.md`. New release-note entries are inserted at the top of `release_notes.md`, like software changelogs. See `references/release_versioning.md` and `prompts/18a_release_versioning.md`.
 

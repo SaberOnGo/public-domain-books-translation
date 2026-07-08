@@ -38,6 +38,9 @@ Every book project must review:
 - Sentence quality: fidelity, target-language fluency, cadence, and whether key sentences carry the force of the source.
 - 句子质量：忠实度、目标语言流畅度、节奏，以及关键句是否保留原文力量。
 
+- High-impact openings: author/source prefaces, introductions, openings, first chapters, and first major argumentative or narrative turns. These sections must receive stricter target-language review because they decide whether readers trust the translation.
+- 高影响开篇：原作者/原书序言、导言、开篇、首章，以及第一处重要论述或叙事转折。这些位置必须接受更严格的目标语复审，因为它们直接决定读者是否信任并继续阅读。
+
 - Typography and punctuation: target-language punctuation, abnormal spacing, legacy print artifacts, notes, appendices, lists, tables, and emphasis.
 - 排版和标点：目标语言标点、异常空格、旧纸书遗留物、注释、附录、列表、表格和强调形式。
 
@@ -79,6 +82,10 @@ For each high-risk chapter, create or update:
 The refinement record must explain what changed and why. It should distinguish source-faithfulness corrections from target-language polish and EPUB-format fixes.
 
 精修记录必须说明修改了什么、为什么修改。应区分忠实度修正、目标语言润色和 EPUB 格式修复。
+
+Author/source prefaces, introductions, openings, and first chapters are high-risk by default even when no random sample has hit them yet. If these parts read stiff, literal, flat, awkward, or explanatory, the book should return to editorial refinement before final release. Do not treat this as a cosmetic preference: a weak opening is a reader-facing publication defect.
+
+原作者/原书序言、导言、开篇和首章即使尚未被随机抽中，也默认属于高风险章节。如果这些部分读起来不顺口、怪、直译感重、平、硬或解释腔明显，本书应回到编辑精修后再发布。不要把这当作审美偏好；开篇弱是读者可见的出版缺陷。
 
 Before marking a chapter refined, compare the first and last body blocks against the source segmentation. Remove duplicated headings, running-title residue, or the next chapter/book title if those fragments entered the translated body by mistake.
 
@@ -146,6 +153,9 @@ The post-generation review must include:
 - Stratified random spot checks after the first full-book EPUB and after every refinement pass: at least two agents, deterministic random samples across reader-facing audit units, preserved seed, round manifest, samples, figure/table/formula evidence, agent reviews, fix log, and closure check.
 - 第一版全书 EPUB 生成后，以及每轮精校后必须做分层随机抽检：至少两个 Agent，使用确定性随机样本覆盖读者可见审计单元，并保留 seed、轮次 manifest、样本、图片/表格/公式证据、Agent 评审、修复记录和闭环检查。
 
+- Literary smoothness validation with `npm run literary:validate`: target-language-first review, read-aloud check, zero unresolved style debt, and explicit review of author/source prefaces, introductions, openings, and first chapters.
+- 使用 `npm run literary:validate` 做文学顺读校验：先只看目标语复审，进行朗读测试，未关闭文学债务为 0，并明确复审原作者/原书序言、导言、开篇和首章。
+
 - If a random sample reveals a defect, treat it as a possible book-wide pattern: classify the defect family, audit the whole reader-facing book for similar issues, fix all confirmed matches, document exceptions, and preserve that systemic closure under the same round's fix log and closure check.
 - 如果随机样本暴露问题，必须把它当作可能的全书模式处理：归纳问题族，审计整本读者可见书稿是否存在同类问题，修复所有确认命中，记录合理例外，并把这个系统性闭环保存在同一轮的修复记录和闭环检查中。
 
@@ -178,3 +188,6 @@ A book must not be marked `DONE` if:
 
 - post-EPUB stratified random spot checks are missing, omit existing table/figure/formula/caption/note strata, reuse an earlier seed after rework, lack single-issue or book-wide similar-issue fix closure, or fail `npm run review:random-validate:pass`.
 - EPUB 后分层随机抽检缺失、遗漏实际存在的表格/图片/公式/图注/注释层、返工后复用旧 seed、缺少单点问题或全书同类问题修复闭环，或未通过 `npm run review:random-validate:pass`。
+
+- final release lacks a PASS `qa/literary_style/literary_style_review.md`, or the review leaves any unresolved stiff, literal, flat, awkward, or explanatory prose debt, especially in author/source prefaces, introductions, openings, or first chapters.
+- 最终发布缺少 PASS 的 `qa/literary_style/literary_style_review.md`，或复审仍留下不顺口、直译感、平硬句、怪句、解释腔等未关闭债务，尤其发生在原作者/原书序言、导言、开篇或首章。

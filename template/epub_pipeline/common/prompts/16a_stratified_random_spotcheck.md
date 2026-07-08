@@ -103,6 +103,8 @@ npm run review:random-validate:pass
 
 每个样本必须逐项评分并判断是否返工。不得只写总评；评审文件必须为每个 `unit_id` 保留独立评分行，并填写 `sample_count`、`reviewed_sample_row_count`、`style_debt_count`。
 
+评审文件还必须填写 `literal_explanatory_style_debt_count`、`high_impact_style_debt_count` 和 `literary_blocking_issue_count`。若样本带有 `risk_tags`，尤其是 `opening_file`、`opening_or_first_chapter`、`author_preface_introduction_or_opening`，必须按高影响区域处理：原作者/原书序言、导言、开篇和首章如果出现不顺口、怪、直译感重、平硬句或解释腔，不能当作 P3 温和建议放过。
+
 必须检查：
 
 - 正文段落：忠实度、目标语言可读性、术语、专名、叙述关系、AI 味。
@@ -113,6 +115,8 @@ npm run review:random-validate:pass
 - 图注/表注/注释：是否与正文和图表一致，是否误导读者。
 
 任一 P0/P1/P2、任一单项 < 80、任一读不懂、任一事实/术语/数值/图表/公式错误，均判为本轮 FAIL。`80` 只是硬失败线，不是优秀线。最终 release/private artifact 默认要求每个 Agent `average_score >= 92`、`lowest_score >= 88`，且每个样本都有逐项评分行。80-87 代表“可读但仍需精修”，88-91 代表“较好但未达最终优秀门槛”。如果样本可读但较硬、偏密、略抽象、解释化、源语句法残留明显或只是在说明原意，应计入 `style_debt` 或对应问题族，不能用 90+ 掩盖。
+
+最终优秀线下，`style_debt_count`、`literal_explanatory_style_debt_count`、`high_impact_style_debt_count` 和 `literary_blocking_issue_count` 必须全部为 0。若仍有任何未关闭文学债务，主执行 AI 应回到文学顺读复审或章节精修，不能把该轮计入最终 PASS。
 
 ## 修复 / Fix
 
@@ -141,6 +145,8 @@ If a sample reveals a defect, treat it as evidence of a possible systemic issue.
 - 若当前执行批次任一问题轮次发现译文质量问题族，`fix_log.md` 证明 skill 已 `UPDATED` 或 `MERGED`，`closure_check.md` 记录 `translation_quality_skill_backfill_verified: true`；若无译文质量问题族，必须有 `NOT_APPLICABLE` 和具体理由。
 - `validation_report.json` 为 `PASS`，且 `release_confidence >= 0.80`。
 - `validation_report.json.excellence_gate_required = true`，且每个 Agent 达到 `average_score >= 92`、`lowest_score >= 88`，每个样本均有逐项评分行。
+- `validation_report.json.excellence_gate_required = true` 时，每个 Agent 的 `style_debt_count`、`literal_explanatory_style_debt_count`、`high_impact_style_debt_count` 和 `literary_blocking_issue_count` 均为 0。
+- 最新 manifest 包含 `priority_sampling_policy`，并且存在原作者/原书序言、导言、开篇、首章等高影响候选时，已有高影响样本进入评审。
 - `reviews/scorecards/random_spotcheck_score.md` 记录本轮 PASS。
 - `npm run review:random-validate:pass` 通过。
 - `validation_report.json.current_run_pass_rounds_required >= 1`，且 `validation_report.json.current_run_pass_rounds_count >= validation_report.json.current_run_pass_rounds_required`；用户未指定时默认要求 2；旧 PASS 轮次不得计入本次执行。

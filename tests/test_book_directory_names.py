@@ -25,11 +25,11 @@ EXPECTED_PUBLIC_ZH_HANS = {
     "16_当代英雄_莱蒙托夫",
     "17_拉萨里略_德_托尔梅斯的一生_佚名",
     "18_云使_迦梨陀娑",
+    "19_约翰生传_詹姆斯_鲍斯威尔",
+    "20_罗马帝国衰亡史_爱德华吉本",
 }
 
-EXPECTED_PRIVATE_ZH_HANS = {
-    "1_对白_罗伯特·麦基",
-}
+EXPECTED_PRIVATE_ZH_HANS = set()
 
 OLD_BOOK_DIR_NAMES = {
     "1_pg20923_a_negro_explorer_at_the_north_pole",

@@ -182,6 +182,10 @@
 - 每个独立评审 Agent 的 `lowest_score >= 88`。
 - 每个抽中样本都有逐项评分行；只写总评无效。
 - `blocking_issue_count = 0`，`open_p0_p1_p2_count = 0`。
+- `style_debt_count = 0`，`literal_explanatory_style_debt_count = 0`，`high_impact_style_debt_count = 0`。
+- `qa/literary_style/literary_style_review.md` 必须 PASS；目标语独立阅读 5/5，朗读拗口句 0，未关闭文学性债务 0。
+
+原作者序言、导言、开篇和首章是高影响区域。这里的“文学性不强、语言不顺口、怪、直译感重、句子平硬、解释腔明显”不应被当成普通 P3 建议；它会直接影响读者是否继续读下去。最终发布前，这些位置必须逐段做目标语独立复审，并在润色后回到原文校准，避免为了顺而加戏或改错语气。
 
 分数解释：
 

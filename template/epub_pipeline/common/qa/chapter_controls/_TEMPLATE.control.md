@@ -11,6 +11,8 @@ score:
 - omissions_mistranslations_additions / 漏译误译擅自增译：
 - target_language_readability / 目标语可读性：
 - target_language_polish_naturalness / 目标语成稿润色与自然流畅度：
+- high_impact_opening_section / 原作者序言、导言、开篇或首章：
+- literal_explanatory_style_debt / 直译腔、解释腔、平硬句债务：
 - expert_translation_quality / 专家级译文质量：
 - polysemy_translation_stage_handling / 翻译阶段多义词主动处理：
 - polysemy_context_backcheck / 多义词上下文回看：
@@ -41,6 +43,11 @@ score:
 - scope: "FULL_CHAPTER"
 - expert_translation_skill_used:
 - expert_translation_skill_path: "skills/expert-translation-quality/SKILL.md"
+- high_impact_opening_section:
+- target_only_reading_score:
+- read_aloud_sentence_count:
+- read_aloud_awkward_sentence_count:
+- literal_explanatory_style_debt_count:
 - expert_level_review_status:
 - polysemy_translation_stage_review:
 - polysemy_context_review:
@@ -59,6 +66,10 @@ score:
 latest_round_status:
 allow_next_chapter:
 expert_translation_skill_used:
+high_impact_opening_section:
+target_only_reading_score:
+read_aloud_awkward_sentence_count:
+literal_explanatory_style_debt_count:
 expert_level_review_status:
 polysemy_translation_stage_review:
 polysemy_context_review:
@@ -71,3 +82,7 @@ polysemy_unresolved_count:
 > Expert/polysemy rule: a PASS round must also record `expert_translation_skill_used: true`, `expert_level_review_status: "PASS"`, `polysemy_translation_stage_review: "PASS"`, `polysemy_context_review: "PASS"`, and `polysemy_unresolved_count: 0`. If locally decidable polysemy was deferred to review, or downstream context changes an earlier word choice, the fix round is `FIXED_RECHECK_REQUIRED`; only the next full-chapter recheck can PASS.
 >
 > 专家级/多义词规则：PASS 轮还必须记录 `expert_translation_skill_used: true`、`expert_level_review_status: "PASS"`、`polysemy_translation_stage_review: "PASS"`、`polysemy_context_review: "PASS"` 和 `polysemy_unresolved_count: 0`。如果局部上下文已能判清的多义词被推给审校，或后文语境改变了前文选义，修复轮只能记为 `FIXED_RECHECK_REQUIRED`；只有下一轮整章复查可 PASS。
+>
+> Opening rule: author/source prefaces, introductions, openings, and first chapters must set `high_impact_opening_section: true` and close `literal_explanatory_style_debt_count: 0`. These sections cannot PASS with stiff, literal, flat, awkward, or explanatory prose because they decide whether readers keep reading.
+>
+> 开篇规则：原作者/原书序言、导言、开篇和首章必须记录 `high_impact_opening_section: true`，并关闭 `literal_explanatory_style_debt_count: 0`。这些位置不允许带着不顺口、直译感、平硬句、怪句或解释腔 PASS，因为它们决定读者是否继续读下去。

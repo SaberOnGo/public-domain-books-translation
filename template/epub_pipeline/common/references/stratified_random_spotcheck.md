@@ -157,6 +157,10 @@ reviews/random_spotcheck/round_XXX/validation_report.json
 其中必须满足 `release_confidence >= target_confidence`。
 启用 `review:random-validate:pass` 时，`80` 只作为出版硬失败线：每个 Agent 评审文件中 `average_score >= 80`、`lowest_score >= 80`、`blocking_issue_count = 0`，且闭环文件中 `open_p0_p1_p2_count = 0`。最终 release/private artifact 默认还必须满足优秀出版线：每个 Agent `average_score >= 92`、`lowest_score >= 88`，并且评审文件必须为每个抽中样本保留逐项评分行。只写总评、缺少逐样本表格、或只有“可读但略硬/偏密/解释化/抽象腔”的 80 多分结果，不能作为最终优秀 PASS。
 
+当前抽样 manifest 还必须记录高影响区域优先抽样：原作者/原书序言、导言、开篇、首章和第一批章节文件会写入 `risk_tags`，并在 `strata.*.high_impact_candidate_count` / `high_impact_sample_count` 中体现。最终 `review:random-validate:pass` 要求存在高影响候选时必须有样本进入评审。出版社或项目自加的书籍信息页不应混入 `chapters/final/`；本规则针对原书内容的开篇部分。
+
+最终优秀线下，Agent 评审文件还必须写明并关闭文学顺读债务：`style_debt_count: 0`、`literal_explanatory_style_debt_count: 0`、`high_impact_style_debt_count: 0`、`literary_blocking_issue_count: 0`。只要还有不顺口、怪、直译感重、平硬、解释腔、像说明原意而不是中文书的样本，不能用高分或 P3 建议放过；应返工或归入译文质量问题族。
+
 若维护者只需要诊断硬下限，可显式运行 `--skip-excellence-gate` 或 `npm run review:random-validate:hard-minimum`；该结果不得替代正式 `review:random-validate:pass` 的最终发布证据。
 
 如果同一 `review_run_id` 下任何较早轮次发现过问题，`review:random-validate:pass` 还会回看这些问题轮次的 `fix_log.md` 与 `closure_check.md`。问题轮次必须填写机器可读字段：`defect_family_count`、`translation_quality_defect_family_count`、`translation_quality_skill_backfill`、`translation_quality_skill_backfill_path`、`translation_quality_skill_backfill_summary` 或不适用理由，以及 `translation_quality_skill_backfill_verified`。只要发现译文质量问题族，`translation_quality_skill_backfill` 必须是 `UPDATED` 或 `MERGED`，路径必须是 `skills/translation-quality-defect-families/SKILL.md`；否则最终 PASS 校验失败。若本轮没有译文质量问题族，必须填 `NOT_APPLICABLE` 并说明原因。
@@ -239,6 +243,8 @@ If a single fix has a 75% chance of success, that is only an iteration-efficienc
 - `validation_report.json` 记录 `release_confidence >= 0.80`，且 `status=PASS`。
 - `validation_report.json` 记录 `current_review_run_id`、`current_run_pass_rounds_required >= 1`，且 `current_run_pass_rounds_count >= current_run_pass_rounds_required`；用户未指定时默认要求 2。
 - `validation_report.json.excellence_gate_required = true`，并记录每个 Agent `average_score >= 92`、`lowest_score >= 88`，以及 `agent_review_checks.*.all_samples_scored = true`。
+- `validation_report.json.excellence_gate_required = true` 时，每个 Agent 还必须记录 `style_debt_count = 0`、`literal_explanatory_style_debt_count = 0`、`high_impact_style_debt_count = 0` 和 `literary_blocking_issue_count = 0`。
+- `random_sample_manifest.json` 必须包含 `priority_sampling_policy`，并在存在高影响候选时记录非零 `high_impact_sample_count`。
 - 至少 2 个 Agent 的样本、评审文件存在。
 - `reviews/random_spotcheck/round_XXX/fixes/fix_log.md` 为 `PASS`。
 - `reviews/random_spotcheck/round_XXX/verification/closure_check.md` 为 `PASS`。

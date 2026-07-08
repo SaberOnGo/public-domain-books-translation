@@ -13,7 +13,12 @@ LOCAL_ABSOLUTE_PATH = re.compile(r"(?:[A-Za-z]:[\\/]|\\\\|file://)", re.IGNORECA
 MIN_REVIEW_SCORE = 80
 EXCELLENT_AVERAGE_SCORE = 92
 EXCELLENT_LOWEST_SCORE = 88
+MAX_EXCELLENT_STYLE_DEBT = 0
+SUPPORTED_SCHEMA_VERSIONS = {"2.0", "2.1"}
 SKILL_BACKFILL_PATH = "skills/translation-quality-defect-families/SKILL.md"
+SKILL_BACKFILL_NOTES_RE = re.compile(
+    r"skills/translation-quality-defect-families/notes/[A-Za-z0-9._-]+\.md"
+)
 SKILL_BACKFILL_STATUSES = {"UPDATED", "MERGED", "NOT_APPLICABLE"}
 
 
@@ -139,6 +144,14 @@ def read_bool_field(path: Path, field: str) -> bool | None:
     return None
 
 
+def is_valid_skill_backfill_path(value: str | None) -> bool:
+    if value == SKILL_BACKFILL_PATH:
+        return True
+    if value and SKILL_BACKFILL_NOTES_RE.fullmatch(value):
+        return True
+    return False
+
+
 def expected_agent_sample_count(manifest: dict, agent_name: str) -> int:
     sample_set = manifest.get("sample_sets", {}).get(agent_name, {})
     if not isinstance(sample_set, dict):
@@ -236,12 +249,18 @@ def review_file_has_issue(review_path: Path) -> bool:
     average_score = read_number_field(review_path, "average_score")
     lowest_score = read_number_field(review_path, "lowest_score")
     blocking_count = read_number_field(review_path, "blocking_issue_count")
+    style_debt_count = read_number_field(review_path, "style_debt_count")
+    literary_blocking_count = read_number_field(review_path, "literary_blocking_issue_count")
     polysemy_context_count = read_number_field(review_path, "polysemy_context_issue_count")
     if average_score is not None and average_score < MIN_REVIEW_SCORE:
         return True
     if lowest_score is not None and lowest_score < MIN_REVIEW_SCORE:
         return True
     if blocking_count is not None and blocking_count > 0:
+        return True
+    if style_debt_count is not None and style_debt_count > 0:
+        return True
+    if literary_blocking_count is not None and literary_blocking_count > 0:
         return True
     if polysemy_context_count is not None and polysemy_context_count > 0:
         return True
@@ -305,9 +324,10 @@ def validate_issue_round_skill_backfill(book_root: Path, round_dir: Path) -> lis
                 "translation-quality defect families require translation-quality skill backfill "
                 f"UPDATED or MERGED: {relative_to_book(book_root, fix_log)}"
             )
-        if backfill_path != SKILL_BACKFILL_PATH:
+        if not is_valid_skill_backfill_path(backfill_path):
             errors.append(
-                f"translation_quality_skill_backfill_path must be {SKILL_BACKFILL_PATH}: "
+                "translation_quality_skill_backfill_path must be "
+                f"{SKILL_BACKFILL_PATH} or a skill notes/*.md file: "
                 f"{relative_to_book(book_root, fix_log)}"
             )
         if not backfill_summary or len(backfill_summary) < 20:
@@ -386,8 +406,16 @@ def validate_round_artifacts(
     manifest = json.loads(manifest_text)
     if LOCAL_ABSOLUTE_PATH.search(manifest_text):
         errors.append(f"manifest contains a local absolute path: {relative_to_book(book_root, manifest_path)}")
-    if manifest.get("schema_version") != "2.0":
-        errors.append("manifest schema_version must be 2.0")
+    schema_version = str(manifest.get("schema_version", ""))
+    if schema_version not in SUPPORTED_SCHEMA_VERSIONS:
+        errors.append(f"manifest schema_version must be one of {sorted(SUPPORTED_SCHEMA_VERSIONS)}")
+    if require_excellence_gate:
+        priority_policy = manifest.get("priority_sampling_policy")
+        if not isinstance(priority_policy, dict) or not priority_policy:
+            errors.append(
+                "manifest missing priority_sampling_policy; regenerate samples with the current sampler so "
+                "author/source prefaces, introductions, openings, and first chapters are weighted"
+            )
     if manifest.get("agents", 0) < 2:
         errors.append("at least two independent agents are required")
 
@@ -399,10 +427,17 @@ def validate_round_artifacts(
             continue
         candidate_count = int(info.get("candidate_count", 0))
         sample_count = int(info.get("sample_count", 0))
+        high_impact_candidate_count = int(info.get("high_impact_candidate_count", 0))
+        high_impact_sample_count = int(info.get("high_impact_sample_count", 0))
         confidence = stratum_confidence(info)
         confidence_by_stratum[stratum] = round(confidence, 6)
         if candidate_count > 0 and sample_count <= 0:
             errors.append(f"stratum has candidates but no samples: {stratum}")
+        if require_excellence_gate and high_impact_candidate_count > 0 and high_impact_sample_count <= 0:
+            errors.append(
+                "high-impact author/source preface, introduction, opening, or first-chapter candidates "
+                f"exist but none were sampled in stratum: {stratum}"
+            )
         if candidate_count > sample_count and confidence < target_confidence:
             errors.append(f"stratum confidence below target: {stratum}={confidence}")
 
@@ -428,10 +463,27 @@ def validate_round_artifacts(
         review_path = round_dir / "reviews" / f"{agent_name}_review.md"
         expected_count = expected_agent_sample_count(manifest, agent_name)
         reviewed_count = len(scored_reviewed_unit_ids(review_path, agent_unit_ids(manifest, agent_name)))
+        style_debt_count = read_number_field(review_path, "style_debt_count")
+        literal_explanatory_style_debt_count = read_number_field(
+            review_path,
+            "literal_explanatory_style_debt_count",
+        )
+        high_impact_style_debt_count = read_number_field(review_path, "high_impact_style_debt_count")
+        literary_blocking_count = read_number_field(review_path, "literary_blocking_issue_count")
         agent_review_checks[agent_name] = {
             "expected_sample_count": expected_count,
             "scored_sample_row_count": reviewed_count,
             "all_samples_scored": reviewed_count >= expected_count if expected_count else True,
+            "style_debt_count": style_debt_count if style_debt_count is not None else -1,
+            "literal_explanatory_style_debt_count": (
+                literal_explanatory_style_debt_count
+                if literal_explanatory_style_debt_count is not None
+                else -1
+            ),
+            "high_impact_style_debt_count": (
+                high_impact_style_debt_count if high_impact_style_debt_count is not None else -1
+            ),
+            "literary_blocking_issue_count": literary_blocking_count if literary_blocking_count is not None else -1,
         }
         if not review_path.exists():
             errors.append(f"missing agent review file: {relative_to_book(book_root, review_path)}")
@@ -452,6 +504,21 @@ def validate_round_artifacts(
                 )
             if blocking_count is None or blocking_count != 0:
                 errors.append(f"agent blocking_issue_count must be 0: {relative_to_book(book_root, review_path)}")
+            if style_debt_count is None:
+                errors.append(f"agent style_debt_count is missing: {relative_to_book(book_root, review_path)}")
+            if literal_explanatory_style_debt_count is None:
+                errors.append(
+                    "agent literal_explanatory_style_debt_count is missing: "
+                    f"{relative_to_book(book_root, review_path)}"
+                )
+            if high_impact_style_debt_count is None:
+                errors.append(
+                    f"agent high_impact_style_debt_count is missing: {relative_to_book(book_root, review_path)}"
+                )
+            if literary_blocking_count is None:
+                errors.append(
+                    f"agent literary_blocking_issue_count is missing: {relative_to_book(book_root, review_path)}"
+                )
             if polysemy_context_count is None:
                 errors.append(f"agent polysemy_context_issue_count is missing: {relative_to_book(book_root, review_path)}")
             elif polysemy_context_count != 0:
@@ -471,6 +538,31 @@ def validate_round_artifacts(
                     errors.append(
                         "agent lowest_score below final-artifact excellence threshold "
                         f"{excellent_lowest_score}: {relative_to_book(book_root, review_path)}"
+                    )
+                if style_debt_count is None or style_debt_count > MAX_EXCELLENT_STYLE_DEBT:
+                    errors.append(
+                        "agent style_debt_count must be 0 for final-artifact excellence; repeated "
+                        "stiff, literal, flat, awkward, or explanatory prose must be fixed or classified "
+                        f"as a defect family: {relative_to_book(book_root, review_path)}"
+                    )
+                if (
+                    literal_explanatory_style_debt_count is None
+                    or literal_explanatory_style_debt_count > MAX_EXCELLENT_STYLE_DEBT
+                ):
+                    errors.append(
+                        "agent literal_explanatory_style_debt_count must be 0 for final-artifact excellence: "
+                        f"{relative_to_book(book_root, review_path)}"
+                    )
+                if high_impact_style_debt_count is None or high_impact_style_debt_count > MAX_EXCELLENT_STYLE_DEBT:
+                    errors.append(
+                        "agent high_impact_style_debt_count must be 0; author/source prefaces, introductions, "
+                        "openings, and first chapters cannot pass with unresolved literary style debt: "
+                        f"{relative_to_book(book_root, review_path)}"
+                    )
+                if literary_blocking_count is None or literary_blocking_count != 0:
+                    errors.append(
+                        "agent literary_blocking_issue_count must be 0 for final-artifact excellence: "
+                        f"{relative_to_book(book_root, review_path)}"
                     )
 
     fix_log = round_dir / "fixes" / "fix_log.md"
@@ -588,6 +680,7 @@ def main() -> None:
         "excellence_gate_required": require_excellence_gate,
         "excellent_average_score_required": args.excellent_average_score if require_excellence_gate else 0,
         "excellent_lowest_score_required": args.excellent_lowest_score if require_excellence_gate else 0,
+        "excellent_style_debt_allowed": MAX_EXCELLENT_STYLE_DEBT if require_excellence_gate else None,
         "agent_review_checks": agent_review_checks,
         "current_review_run_id": current_run_id,
         "current_run_issue_rounds_requiring_skill_backfill": current_run_issue_rounds,

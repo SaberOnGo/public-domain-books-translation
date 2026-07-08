@@ -72,9 +72,11 @@ def write_minimal_template(repo_root: Path) -> None:
                     "reader:check": "python scripts/check_reader_facing_policy.py",
                     "lint:publication": "node scripts/publication_lint.js",
                     "lint:assets": "node scripts/asset_manifest_check.js",
+                    "literary:scan": "python scripts/check_literary_style_gate.py --write-report",
+                    "literary:validate": "python scripts/check_literary_style_gate.py --write-report --require-review-pass",
                     "build:epub": "npm run preflight:template && npm run lint:publication && npm run lint:assets && npm run cover:check && npm run reader:check",
-                    "release:draft": "npm run preflight:template && npm run cover:check && npm run reader:check && python scripts/create_release.py --status DRAFT",
-                    "release:create": "npm run preflight:template && npm run cover:check && npm run reader:check && python scripts/create_release.py --status PASS --require-pass",
+                    "release:draft": "npm run preflight:template && npm run cover:check && npm run reader:check && npm run literary:scan && python scripts/create_release.py --status DRAFT",
+                    "release:create": "npm run preflight:template && npm run cover:check && npm run reader:check && npm run literary:validate && python scripts/create_release.py --status PASS --require-pass",
                 }
             },
             ensure_ascii=False,

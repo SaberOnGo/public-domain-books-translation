@@ -21,6 +21,12 @@ XHTML_NS = "{http://www.w3.org/1999/xhtml}"
 MIN_REVIEW_SCORE = 80
 EXCELLENT_AVERAGE_SCORE = 92
 EXCELLENT_LOWEST_SCORE = 88
+MANIFEST_SCHEMA_VERSION = "2.1"
+HIGH_IMPACT_TEXT_RE = re.compile(
+    r"(preface|introduction|advertisement|prologue|foreword|author|"
+    r"序言|前言|作者序|原序|凡例|导言|引言|绪论|开篇|首章|第一章)",
+    flags=re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True)
@@ -33,6 +39,7 @@ class AuditUnit:
     text: str
     asset_path: str = ""
     evidence_path: str = ""
+    risk_tags: tuple[str, ...] = ()
 
 
 def parse_args() -> argparse.Namespace:
@@ -558,18 +565,40 @@ def units_from_xhtml_file(book_root: Path, path: Path) -> list[AuditUnit]:
     return out
 
 
+def high_impact_tags(path: Path, file_index: int, unit: AuditUnit) -> tuple[str, ...]:
+    tags: list[str] = []
+    file_text = f"{path.stem} {unit.heading}"
+    if file_index == 0:
+        tags.append("opening_file")
+    if file_index <= 1:
+        tags.append("opening_or_first_chapter")
+    if HIGH_IMPACT_TEXT_RE.search(file_text):
+        tags.append("author_preface_introduction_or_opening")
+    return tuple(dict.fromkeys(tags))
+
+
+def with_risk_tags(unit: AuditUnit, tags: tuple[str, ...]) -> AuditUnit:
+    if not tags:
+        return unit
+    payload = asdict(unit)
+    payload["risk_tags"] = tags
+    return AuditUnit(**payload)
+
+
 def collect_units(book_root: Path, source_dir: Path) -> list[AuditUnit]:
     if not source_dir.exists():
         raise SystemExit(f"source directory does not exist: {source_dir}")
     units: list[AuditUnit] = []
-    for path in sorted(source_dir.rglob("*")):
-        if not path.is_file():
-            continue
+    reader_files = [path for path in sorted(source_dir.rglob("*")) if path.is_file() and path.suffix.lower() in {".md", ".xhtml", ".html"}]
+    for file_index, path in enumerate(reader_files):
         suffix = path.suffix.lower()
         if suffix == ".md":
-            units.extend(units_from_file(book_root, path))
+            file_units = units_from_file(book_root, path)
         elif suffix in {".xhtml", ".html"}:
-            units.extend(units_from_xhtml_file(book_root, path))
+            file_units = units_from_xhtml_file(book_root, path)
+        else:
+            file_units = []
+        units.extend(with_risk_tags(unit, high_impact_tags(path, file_index, unit)) for unit in file_units)
     return units
 
 
@@ -605,15 +634,32 @@ def choose_samples(
         dedicated_audit_required = bool(stratum_policy.get("dedicated_audit_required_after_consecutive_blockers", 0))
         full_scan = bool(full_threshold and count <= full_threshold)
         sample_count = count if full_scan else min(count, min_per_round)
-        shuffled = candidates[:]
-        rng.shuffle(shuffled)
-        chosen[stratum] = shuffled[:sample_count]
+        priority_candidates = [unit for unit in candidates if unit.risk_tags]
+        regular_candidates = [unit for unit in candidates if not unit.risk_tags]
+        rng.shuffle(priority_candidates)
+        rng.shuffle(regular_candidates)
+        if priority_candidates and sample_count:
+            if stratum == "paragraph":
+                priority_target = max(1, math.ceil(sample_count * 0.25))
+            else:
+                priority_target = min(5, sample_count)
+            priority_target = min(priority_target, len(priority_candidates), sample_count)
+            selected_priority = priority_candidates[:priority_target]
+            remaining_pool = priority_candidates[priority_target:] + regular_candidates
+            rng.shuffle(remaining_pool)
+            chosen[stratum] = selected_priority + remaining_pool[: max(0, sample_count - len(selected_priority))]
+        else:
+            shuffled = candidates[:]
+            rng.shuffle(shuffled)
+            chosen[stratum] = shuffled[:sample_count]
 
         planned_total = min(count, sample_count * max(1, rounds_planned))
         confidence = 1.0 if planned_total >= count else 1 - ((1 - defect_rate) ** planned_total)
         summary[stratum] = {
             "candidate_count": count,
             "sample_count": sample_count,
+            "high_impact_candidate_count": len(priority_candidates),
+            "high_impact_sample_count": sum(1 for unit in chosen[stratum] if unit.risk_tags),
             "full_scan": full_scan,
             "blocking_issue_seen_in_previous_round": bool(stratum_policy.get("blocking_issue_seen_in_previous_round", 0)),
             "dedicated_audit_required_after_consecutive_blockers": dedicated_audit_required,
@@ -730,6 +776,8 @@ def write_agent_samples(round_dir: Path, root_output_dir: Path, agent_name: str,
                 detail.append(f"- asset_path: `{sample.asset_path}`")
             if sample.evidence_path:
                 detail.append(f"- evidence_path: `{sample.evidence_path}`")
+            if sample.risk_tags:
+                detail.append(f"- risk_tags: `{', '.join(sample.risk_tags)}`")
             detail.extend(
                 [
                     "",
@@ -764,6 +812,9 @@ def write_review_templates(round_dir: Path, agent_sets: dict[str, dict[str, list
                 "blocking_issue_count: 0",
                 "reviewed_sample_row_count: 0",
                 "style_debt_count: 0",
+                "literal_explanatory_style_debt_count: 0",
+                "high_impact_style_debt_count: 0",
+                "literary_blocking_issue_count: 0",
                 "polysemy_context_issue_count: 0",
                 f"publication_min_score: {MIN_REVIEW_SCORE}",
                 f"excellent_average_score_required: {EXCELLENT_AVERAGE_SCORE}",
@@ -779,6 +830,7 @@ def write_review_templates(round_dir: Path, agent_sets: dict[str, dict[str, list
                 "本文件必须由独立评审 Agent 填写；每个样本必须有独立评分行。DRAFT、只写总评、缺少逐样本表格，均不得作为通过依据。",
                 "",
                 f"`{MIN_REVIEW_SCORE}` 是硬失败线，不是优秀线。最终 release/private artifact 默认还要求 `average_score >= {EXCELLENT_AVERAGE_SCORE}` 且 `lowest_score >= {EXCELLENT_LOWEST_SCORE}`；可读但略硬、偏密、解释化、抽象腔或翻译腔应压低单项分并计入润色债务。",
+                "最终优秀线下，`style_debt_count`、`literal_explanatory_style_debt_count`、`high_impact_style_debt_count` 和 `literary_blocking_issue_count` 必须为 0；序言、作者前言、导言、首章或开篇样本出现直译腔、解释腔、平硬句时应判为返工，而不是 P3 温和建议。",
                 "若发现多义词、习语、语法关系或术语定义被后文线索推翻，应把 `polysemy_context_issue_count` 计入，并在 Findings 中记录可复查的 `unit_id` 与理由。",
             ],
         )
@@ -873,7 +925,7 @@ def main() -> None:
     write_review_templates(round_dir, agent_sets)
 
     manifest = {
-        "schema_version": "2.0",
+        "schema_version": MANIFEST_SCHEMA_VERSION,
         "round_id": round_id,
         "generated_at": generated_at,
         "review_run_id": run_state["review_run_id"],
@@ -893,6 +945,12 @@ def main() -> None:
         "defect_rate": args.defect_rate,
         "release_confidence": release_confidence_from_summary(strata_summary),
         "release_confidence_model": "min_h(1 - (1 - defect_rate) ** planned_samples_h); full-scan strata count as 1.0",
+        "priority_sampling_policy": {
+            "high_impact_rule": "Author/source prefaces, introductions, openings, and first chapter/opening files are sampled first because they decide reader trust.",
+            "zh_note": "原作者序言、导言、开篇和首章属于读者第一印象，高风险段落优先进入抽检；出版社/项目自加前置页不在 chapters/final 抽样范围内。",
+            "paragraph_priority_min_share": 0.25,
+            "non_text_priority_min_per_stratum": 5,
+        },
         "required_total_samples_per_stratum_for_target": required_total,
         "strata": strata_summary,
         "sample_sets": {

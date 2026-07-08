@@ -48,6 +48,41 @@ def read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
+def read_text_field(path: Path, field: str) -> str | None:
+    if not path.exists():
+        return None
+    text = path.read_text(encoding="utf-8", errors="replace")
+    matches = re.findall(rf"(?im)^\s*{re.escape(field)}\s*:\s*(.*?)\s*$", text)
+    if not matches:
+        return None
+    value = matches[-1].strip()
+    if value.startswith(("'", '"')) and len(value) >= 2:
+        value = value.strip("'\"")
+    return value.split("#", 1)[0].strip()
+
+
+def read_number_field(path: Path, field: str) -> float | None:
+    value = read_text_field(path, field)
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except ValueError:
+        return None
+
+
+def read_bool_field(path: Path, field: str) -> bool | None:
+    value = read_text_field(path, field)
+    if value is None:
+        return None
+    lowered = value.lower()
+    if lowered == "true":
+        return True
+    if lowered == "false":
+        return False
+    return None
+
+
 def write_json(path: Path, data: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
@@ -181,6 +216,7 @@ def gate_summary(book_root: Path) -> dict:
     lint = read_json(book_root / "output" / "publication_lint.json")
     metrics_path = book_root / "output" / "release" / "translation_metrics.json"
     metrics = read_json(metrics_path)
+    literary_review_path = book_root / "qa" / "literary_style" / "literary_style_review.md"
     epubcheck_checker = epubcheck.get("checker", {}) if isinstance(epubcheck, dict) else {}
     lint_issues = lint.get("issues", []) if isinstance(lint, dict) else []
     estimate = metrics.get("pretranslation_estimate", {}) if isinstance(metrics, dict) else {}
@@ -211,6 +247,30 @@ def gate_summary(book_root: Path) -> dict:
         "translation_metrics_actual_active_hours": actual.get("actual_active_hours") if isinstance(actual, dict) else None,
         "translation_metrics_total_input_tokens": actual.get("total_input_tokens") if isinstance(actual, dict) else None,
         "translation_metrics_total_output_tokens": actual.get("total_output_tokens") if isinstance(actual, dict) else None,
+        "literary_style_review_path": "qa/literary_style/literary_style_review.md" if literary_review_path.exists() else "",
+        "literary_style_status": read_text_field(literary_review_path, "status") or "",
+        "literary_target_only_reading_score": read_number_field(literary_review_path, "target_only_reading_score"),
+        "literary_read_aloud_awkward_sentence_count": read_number_field(
+            literary_review_path,
+            "read_aloud_awkward_sentence_count",
+        ),
+        "literary_unresolved_style_debt_count": read_number_field(literary_review_path, "unresolved_style_debt_count"),
+        "literary_literal_explanatory_style_debt_count": read_number_field(
+            literary_review_path,
+            "literal_explanatory_style_debt_count",
+        ),
+        "literary_high_impact_sections_reviewed": read_bool_field(
+            literary_review_path,
+            "high_impact_sections_reviewed",
+        ),
+        "literary_author_preface_and_first_chapter_reviewed": read_bool_field(
+            literary_review_path,
+            "author_preface_and_first_chapter_reviewed",
+        ),
+        "literary_source_fidelity_backcheck_after_polish": read_bool_field(
+            literary_review_path,
+            "source_fidelity_backcheck_after_polish",
+        ),
     }
 
 
@@ -245,6 +305,24 @@ def require_pass_gates(summary: dict) -> None:
         errors.append("translation metrics pretranslation estimate is not PASS")
     if summary.get("translation_metrics_actual_status") != "PASS":
         errors.append("translation metrics post-translation actuals are not PASS")
+    if not summary.get("literary_style_review_path"):
+        errors.append("qa/literary_style/literary_style_review.md is missing")
+    if summary.get("literary_style_status") != "PASS":
+        errors.append("literary style review status is not PASS")
+    if summary.get("literary_target_only_reading_score") != 5:
+        errors.append("literary target-only reading score must be 5 for PASS release")
+    if summary.get("literary_read_aloud_awkward_sentence_count") != 0:
+        errors.append("literary read-aloud awkward sentence count must be 0 for PASS release")
+    if summary.get("literary_unresolved_style_debt_count") != 0:
+        errors.append("literary unresolved style debt count must be 0 for PASS release")
+    if summary.get("literary_literal_explanatory_style_debt_count") != 0:
+        errors.append("literary literal/explanatory style debt count must be 0 for PASS release")
+    if summary.get("literary_high_impact_sections_reviewed") is not True:
+        errors.append("high-impact openings/prefaces/first chapters were not reviewed")
+    if summary.get("literary_author_preface_and_first_chapter_reviewed") is not True:
+        errors.append("author/source preface and first chapter review is not complete")
+    if summary.get("literary_source_fidelity_backcheck_after_polish") is not True:
+        errors.append("source fidelity back-check after literary polish is not complete")
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
@@ -419,6 +497,14 @@ def main() -> None:
         f"- translation_metrics_actual_difficulty_level: `{summary.get('translation_metrics_actual_difficulty_level') or 'MISSING'}`",
         f"- translation_metrics_actual_active_hours: `{summary.get('translation_metrics_actual_active_hours') if summary.get('translation_metrics_actual_active_hours') is not None else 'MISSING'}`",
         f"- translation_metrics_total_tokens: `{(summary.get('translation_metrics_total_input_tokens') or 0) + (summary.get('translation_metrics_total_output_tokens') or 0)}`",
+        f"- literary_style_review: `{summary.get('literary_style_review_path') or 'MISSING'}`",
+        f"- literary_style_status: `{summary.get('literary_style_status') or 'MISSING'}`",
+        f"- literary_target_only_reading_score: `{summary.get('literary_target_only_reading_score') if summary.get('literary_target_only_reading_score') is not None else 'MISSING'}`",
+        f"- literary_read_aloud_awkward_sentence_count: `{summary.get('literary_read_aloud_awkward_sentence_count') if summary.get('literary_read_aloud_awkward_sentence_count') is not None else 'MISSING'}`",
+        f"- literary_unresolved_style_debt_count: `{summary.get('literary_unresolved_style_debt_count') if summary.get('literary_unresolved_style_debt_count') is not None else 'MISSING'}`",
+        f"- literary_literal_explanatory_style_debt_count: `{summary.get('literary_literal_explanatory_style_debt_count') if summary.get('literary_literal_explanatory_style_debt_count') is not None else 'MISSING'}`",
+        f"- literary_high_impact_sections_reviewed: `{summary.get('literary_high_impact_sections_reviewed')}`",
+        f"- literary_author_preface_and_first_chapter_reviewed: `{summary.get('literary_author_preface_and_first_chapter_reviewed')}`",
         "",
         "## Risks / 风险",
         "",

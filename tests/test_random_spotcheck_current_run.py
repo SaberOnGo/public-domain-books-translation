@@ -33,7 +33,7 @@ def write_pass_round(
         (round_dir / subdir).mkdir(parents=True, exist_ok=True)
 
     manifest = {
-        "schema_version": "2.0",
+        "schema_version": "2.1",
         "round_id": round_id,
         "seed": f"seed-{round_number}",
         "book_root": ".",
@@ -44,17 +44,24 @@ def write_pass_round(
         "target_confidence": 0.80,
         "defect_rate": 0.10,
         "release_confidence": 1.0,
+        "priority_sampling_policy": {
+            "high_impact_rule": "Author/source prefaces, introductions, openings, and first chapter/opening files are sampled first.",
+            "paragraph_priority_min_share": 0.25,
+            "non_text_priority_min_per_stratum": 5,
+        },
         "strata": {
             "paragraph": {
                 "candidate_count": 2,
                 "sample_count": 2,
+                "high_impact_candidate_count": 1,
+                "high_impact_sample_count": 1,
                 "full_scan": True,
                 "estimated_confidence_after_planned_rounds": 1.0,
             },
-            "table": {"candidate_count": 0, "sample_count": 0, "full_scan": False},
-            "figure": {"candidate_count": 0, "sample_count": 0, "full_scan": False},
-            "formula": {"candidate_count": 0, "sample_count": 0, "full_scan": False},
-            "caption_note": {"candidate_count": 0, "sample_count": 0, "full_scan": False},
+            "table": {"candidate_count": 0, "sample_count": 0, "high_impact_candidate_count": 0, "high_impact_sample_count": 0, "full_scan": False},
+            "figure": {"candidate_count": 0, "sample_count": 0, "high_impact_candidate_count": 0, "high_impact_sample_count": 0, "full_scan": False},
+            "formula": {"candidate_count": 0, "sample_count": 0, "high_impact_candidate_count": 0, "high_impact_sample_count": 0, "full_scan": False},
+            "caption_note": {"candidate_count": 0, "sample_count": 0, "high_impact_candidate_count": 0, "high_impact_sample_count": 0, "full_scan": False},
         },
         "sample_sets": {
             "agent_a": {"paragraph": [{"id": "chapter::paragraph::0001"}]},
@@ -81,6 +88,10 @@ def write_pass_round(
                     f"average_score: {average_score}",
                     f"lowest_score: {lowest_score}",
                     f"blocking_issue_count: {blocking_issue_count}",
+                    "style_debt_count: 0",
+                    "literal_explanatory_style_debt_count: 0",
+                    "high_impact_style_debt_count: 0",
+                    "literary_blocking_issue_count: 0",
                     "polysemy_context_issue_count: 0",
                     "",
                     "| unit_id | score | issue_level | notes |",

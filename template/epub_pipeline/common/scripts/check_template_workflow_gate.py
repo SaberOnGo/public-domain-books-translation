@@ -36,6 +36,8 @@ REQUIRED_PACKAGE_SCRIPTS = [
     "reader:check",
     "lint:publication",
     "lint:assets",
+    "literary:scan",
+    "literary:validate",
     "build:epub",
     "release:draft",
     "release:create",
@@ -318,6 +320,20 @@ def check_package_scripts(book_root: Path, state_data: dict, issues: list[dict])
             for required in ["preflight:template", "cover:check", "reader:check"]:
                 if required not in command:
                     add_issue(issues, "release_script_missing_gate", f"{release_name} must run {required}.", rel(book_root, package_path))
+        if "literary:scan" not in scripts.get("release:draft", ""):
+            add_issue(
+                issues,
+                "release_draft_missing_literary_scan",
+                "release:draft must run literary:scan so candidate literary debt is visible before human review.",
+                rel(book_root, package_path),
+            )
+        if "literary:validate" not in scripts.get("release:create", ""):
+            add_issue(
+                issues,
+                "release_create_missing_literary_validate",
+                "release:create must run literary:validate so final publication cannot bypass target-language literary smoothness review.",
+                rel(book_root, package_path),
+            )
 
 
 def pass_marker_found(text: str, marker_names: tuple[str, ...]) -> bool:

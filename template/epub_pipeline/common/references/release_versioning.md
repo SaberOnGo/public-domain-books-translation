@@ -99,7 +99,9 @@ python scripts/create_release.py --status DRAFT
 python scripts/create_release.py --status PASS --require-pass
 ```
 
-`PASS` release 必须满足随机抽检闭环、所有已发现问题族的全书同类问题审计与关闭记录、当前执行批次问题轮次的译文质量 skill backfill 字段校验、`validation_report.json.require_pass = true`、`release_confidence >= 0.80`、EPUBCheck fatal/error 为 0、publication lint 无未解决问题，以及其他最终门禁。`DRAFT` release 可以用于人工核查或候选版本，但不得作为 `DONE` 的依据。
+`PASS` release 必须满足文学顺读复审、随机抽检闭环、所有已发现问题族的全书同类问题审计与关闭记录、当前执行批次问题轮次的译文质量 skill backfill 字段校验、`validation_report.json.require_pass = true`、`release_confidence >= 0.80`、EPUBCheck fatal/error 为 0、publication lint 无未解决问题，以及其他最终门禁。`DRAFT` release 可以用于人工核查或候选版本，但不得作为 `DONE` 的依据。
+
+文学顺读复审由 `npm run literary:validate` 执行，要求 `qa/literary_style/literary_style_review.md` 明确 PASS。原作者/原书序言、导言、开篇和首章必须作为高影响区域复审；这些部分不得带着未关闭的直译腔、解释腔、平硬句、怪句或朗读拗口问题进入正式 PASS release。
 
 `PASS` release 还必须来自当前执行批次的新随机抽检证据：`validation_report.json` 必须包含 `current_review_run_id`，且必须满足 `current_run_pass_rounds_required >= 1`、`current_run_pass_rounds_count >= current_run_pass_rounds_required`。用户可以指定任意 `>=1` 的当前运行连续 PASS 轮次要求；未指定时默认 2。旧 Agent、旧 release 之前已经 PASS 的轮次不得计入本次 release；release 脚本必须拒绝缺少这些字段的旧报告。
 
@@ -116,6 +118,7 @@ python scripts/create_release.py --status PASS --require-pass
 - `output/release/release_notes.md` 存在，且最新版本条目位于最上方。
 - `release_state.json.latest_status = PASS`。
 - release note 记录抽检、问题族全书同类审计、修复、风险、校验证据；双语对照版还必须记录对齐完整性、源文出版权利和双语 EPUB 校验结果。
+- `qa/literary_style/literary_style_review.md` 记录最终文学顺读复审 PASS，且高影响开篇区域已关闭文学债务。
 
 私人自用项目：
 
