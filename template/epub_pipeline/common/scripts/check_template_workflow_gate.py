@@ -769,8 +769,21 @@ def check_chapter_quality_artifacts(book_root: Path, issues: list[dict]) -> None
                 )
 
 
+def declared_min_char_ratio(book_root: Path) -> float | None:
+    package = book_root / "package.json"
+    if not package.exists():
+        return None
+    try:
+        command = json.loads(package.read_text(encoding="utf-8")).get("scripts", {}).get("check:translation-coverage", "")
+    except json.JSONDecodeError:
+        return None
+    match = re.search(r"--min-char-ratio\s+([0-9]+(?:\.[0-9]+)?)", command)
+    return float(match.group(1)) if match else None
+
+
 def check_translation_coverage_gate(book_root: Path, issues: list[dict], *, write_report: bool = False) -> None:
-    report = check_coverage(book_root)
+    configured_ratio = declared_min_char_ratio(book_root)
+    report = check_coverage(book_root, min_char_ratio=configured_ratio) if configured_ratio is not None else check_coverage(book_root)
     if write_report:
         out = book_root / "output" / "translation_coverage.json"
         out.parent.mkdir(parents=True, exist_ok=True)

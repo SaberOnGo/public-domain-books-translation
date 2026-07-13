@@ -242,7 +242,7 @@ with zipfile.ZipFile(out, "w") as zf:
 `;
   const result = spawnSync(process.execPath, [path.join(__dirname, 'run_python.js'), '-c', code], { encoding: 'utf8' });
   if (result.status !== 0) {
-    process.stderr.write(result.stderr || result.stdout);
+    process.stderr.write(String(result.stderr || result.stdout || result.error || 'EPUB ZIP subprocess failed without diagnostic output.'));
     process.exit(result.status || 1);
   }
 }

@@ -171,6 +171,27 @@ class TranslationCoverageGateTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("paragraph_block_coverage_low", result.stdout + result.stderr)
 
+    def test_workflow_gate_uses_book_declared_character_coverage_threshold(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            book_root = Path(tmp)
+            write_chapter(book_root, "chapters/src/001_chapter.md", ["# Chapter", "x" * 1000])
+            write_chapter(book_root, "chapters/translated/001_chapter.md", ["# 章节", "译" * 300])
+            write_pass_control(book_root, "001_chapter")
+            (book_root / "package.json").write_text(
+                json.dumps({"scripts": {"check:translation-coverage": "python scripts/check_translation_coverage.py --write-report --min-char-ratio 0.28"}}),
+                encoding="utf-8",
+            )
+            state = book_root / "state" / "pipeline_state.json"
+            state.parent.mkdir(parents=True, exist_ok=True)
+            state.write_text(json.dumps({"project_root": ".", "common_template_root": "template/epub_pipeline/common"}), encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(WORKFLOW_GATE), "--book-root", str(book_root), "--chapter-controls-only"],
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_common_package_exposes_translation_coverage_gate_in_preflight(self) -> None:
         package = json.loads(COMMON_PACKAGE.read_text(encoding="utf-8"))
         scripts = package["scripts"]

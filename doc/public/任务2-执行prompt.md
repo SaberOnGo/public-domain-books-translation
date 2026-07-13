@@ -297,7 +297,7 @@ template/epub_pipeline/common/references/quality_gate_framework.md、目标语�
 重点：“文学性不强，语言在人类看来不顺口，怪怪的。直译感较重，部分句子平、硬、解释腔明显。”
 从序言开始检查。
 ----------------------------------------------------------
-本书项目：\books\zh-Hans\19_约翰生传_詹姆斯_鲍斯威尔
+本书项目：\books\zh-Hans\20_罗马帝国衰亡史_爱德华吉本
 连续无问题抽检轮数 N：4
 请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、
 template/epub_pipeline/common/README.md、

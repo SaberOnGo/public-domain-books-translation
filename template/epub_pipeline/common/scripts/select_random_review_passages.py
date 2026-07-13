@@ -345,7 +345,7 @@ def is_formula(block: str) -> bool:
 def is_caption_or_note(block: str) -> bool:
     stripped = normalize(block)
     return bool(
-        re.match(r"^(\[\^[^\]]+\]:|图\s*\d+|表\s*\d+|Figure\s+\d+|Table\s+\d+|注[:：])", stripped, re.IGNORECASE)
+        re.match(r"^(\[\^[^\]]+\]:|图\s*\d+|表\s*\d+|Figure\s+\d+|Table\s+\d+|注[:：]|（(?:注|补注|原注|回注))", stripped, re.IGNORECASE)
     )
 
 

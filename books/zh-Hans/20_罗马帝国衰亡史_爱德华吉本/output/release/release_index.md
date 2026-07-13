@@ -7,3 +7,4 @@
 | v0.0.3 | PASS | `罗马帝国衰亡史_v0.0.3.epub` | `release_notes.md` | 2026-06-29T15:10:44Z |
 | v0.0.4 | PASS | `罗马帝国衰亡史_v0.0.4.epub` | `release_notes.md` | 2026-06-29T15:37:48Z |
 | v0.0.5 | DRAFT | `罗马帝国衰亡史_v0.0.5.epub` | `release_notes.md` | 2026-07-07T04:08:23Z |
+| v0.0.6 | PASS | `罗马帝国衰亡史_v0.0.6.epub` | `release_notes.md` | 2026-07-12T12:13:20Z |

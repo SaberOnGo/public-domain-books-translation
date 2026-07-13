@@ -1,23 +1,32 @@
 {
-  "current_version": "v0.0.1",
+  "current_version": "v0.0.2",
   "main_version": 0,
   "sub_version": 0,
-  "patch_version": 1,
-  "latest_epub": "约翰生传_v0.0.1.epub",
+  "patch_version": 2,
+  "latest_epub": "约翰生传_v0.0.2.epub",
+  "latest_epubs": [
+    {
+      "edition_type": "target_only",
+      "source_epub": "output/book.epub",
+      "epub": "约翰生传_v0.0.2.epub",
+      "sha256": "e842376666c751ed0153ce2bd796179893661dbbfd7eab1c005e6309c12d0344",
+      "size_bytes": 4047735
+    }
+  ],
   "latest_release_note": "release_notes.md",
   "latest_status": "PASS",
-  "latest_created_at": "2026-07-07T04:06:11Z",
-  "latest_sha256": "65c96e5a7ca2ef4ef9064245122c8a22cd35bf16d3cda2a860c6de1c8220b3c8",
-  "latest_size_bytes": 4042019,
+  "latest_created_at": "2026-07-08T20:46:31Z",
+  "latest_sha256": "e842376666c751ed0153ce2bd796179893661dbbfd7eab1c005e6309c12d0344",
+  "latest_size_bytes": 4047735,
   "gate_summary": {
-    "random_spotcheck_round": "reviews/random_spotcheck/round_046",
-    "random_spotcheck_validation": "reviews/random_spotcheck/round_046/validation_report.json",
-    "release_confidence": 1.0,
+    "random_spotcheck_round": "reviews/random_spotcheck/round_075",
+    "random_spotcheck_validation": "reviews/random_spotcheck/round_075/validation_report.json",
+    "release_confidence": 0.999782,
     "random_spotcheck_status": "PASS",
     "random_spotcheck_require_pass": true,
     "current_review_run_id": "1ca0b4c37e4ca1e49358a3fc",
-    "current_run_pass_rounds_required": 2,
-    "current_run_pass_rounds_count": 2,
+    "current_run_pass_rounds_required": 4,
+    "current_run_pass_rounds_count": 4,
     "epubcheck_path": "output/epubcheck.json",
     "epubcheck_fatal": 0,
     "epubcheck_error": 0,
@@ -33,6 +42,15 @@
     "translation_metrics_actual_difficulty_level": "very_high",
     "translation_metrics_actual_active_hours": 27,
     "translation_metrics_total_input_tokens": 18000000,
-    "translation_metrics_total_output_tokens": 9377464
+    "translation_metrics_total_output_tokens": 9377464,
+    "literary_style_review_path": "qa/literary_style/literary_style_review.md",
+    "literary_style_status": "PASS",
+    "literary_target_only_reading_score": 5.0,
+    "literary_read_aloud_awkward_sentence_count": 0.0,
+    "literary_unresolved_style_debt_count": 0.0,
+    "literary_literal_explanatory_style_debt_count": 0.0,
+    "literary_high_impact_sections_reviewed": true,
+    "literary_author_preface_and_first_chapter_reviewed": true,
+    "literary_source_fidelity_backcheck_after_polish": true
   }
 }

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import importlib.util
 import subprocess
 import sys
 import tempfile
@@ -12,6 +13,15 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SELECTOR = REPO_ROOT / "template" / "epub_pipeline" / "common" / "scripts" / "select_random_review_passages.py"
 VALIDATOR = REPO_ROOT / "template" / "epub_pipeline" / "common" / "scripts" / "validate_random_spotcheck.py"
+
+
+def load_selector_module():
+    spec = importlib.util.spec_from_file_location("spotcheck_selector", SELECTOR)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def write_pass_round(
@@ -113,6 +123,13 @@ def write_pass_round(
 
 
 class RandomSpotcheckCurrentRunTests(unittest.TestCase):
+    def test_sampler_classifies_chinese_parenthesized_notes_as_caption_notes(self) -> None:
+        selector = load_selector_module()
+
+        self.assertTrue(selector.is_caption_or_note("（注42）（回注）这是供读者查核的注释。"))
+        self.assertTrue(selector.is_caption_or_note("（补注3.1）补充说明。"))
+        self.assertTrue(selector.is_caption_or_note("（原注7）原书注释。"))
+
     def run_validator(self, book_root: Path, min_rounds: int | None = None) -> subprocess.CompletedProcess[str]:
         command = [
             sys.executable,
