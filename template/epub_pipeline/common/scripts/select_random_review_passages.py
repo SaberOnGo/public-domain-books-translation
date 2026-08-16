@@ -358,6 +358,24 @@ def image_refs(block: str) -> list[tuple[str, str]]:
     return refs
 
 
+def image_stratum(alt: str, ref: str, caption: str = "") -> str:
+    """Classify image-backed reader units before the generic figure fallback.
+
+    This project stores tables and equations as raster assets.  Their source
+    filenames are therefore stronger structural evidence than a stale or
+    overly generic alt string (for example, a ``tblu`` asset labelled as a
+    figure).  Keep explicit table/formula words as a secondary signal so the
+    same classifier also works for books that use descriptive asset names.
+    """
+    combined = normalize(f"{alt} {caption}")
+    ref_name = unquote(ref.split("#", 1)[0].split("?", 1)[0]).rsplit("/", 1)[-1].lower()
+    if "tbl" in ref_name or re.search(r"(?:^|\s)(?:表|table)\s*\d", combined, re.IGNORECASE):
+        return "table"
+    if "eqnu" in ref_name or re.search(r"(?:公式|formula|equation|proof)", combined, re.IGNORECASE):
+        return "formula"
+    return "figure"
+
+
 def resolve_asset(book_root: Path, chapter_path: Path, ref: str) -> Path | None:
     if re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*:", ref):
         return None
@@ -392,14 +410,15 @@ def units_from_file(book_root: Path, path: Path) -> list[AuditUnit]:
         refs = image_refs(block)
         if refs:
             for alt, ref in refs:
-                counters["figure"] += 1
+                stratum = image_stratum(alt, ref)
+                counters[stratum] += 1
                 out.append(
                     AuditUnit(
-                        id=unit_id(path, "figure", counters["figure"]),
-                        stratum="figure",
+                        id=unit_id(path, stratum, counters[stratum]),
+                        stratum=stratum,
                         file=rel,
                         heading=heading,
-                        ordinal=counters["figure"],
+                        ordinal=counters[stratum],
                         text=normalize(block),
                         asset_path=ref,
                     )
@@ -491,16 +510,20 @@ def units_from_xhtml_file(book_root: Path, path: Path) -> list[AuditUnit]:
         if name == "figure":
             img = next((child for child in element.iter() if tag_name(child) == "img"), None)
             caption = next((child for child in element.iter() if tag_name(child) == "figcaption"), None)
-            counters["figure"] += 1
+            alt = img.attrib.get("alt", "") if img is not None else ""
+            asset_path = img.attrib.get("src", "") if img is not None else ""
+            caption_text = element_text(caption) if caption is not None else ""
+            stratum = image_stratum(alt, asset_path, caption_text)
+            counters[stratum] += 1
             out.append(
                 AuditUnit(
-                    id=unit_id(path, "figure", counters["figure"]),
-                    stratum="figure",
+                    id=unit_id(path, stratum, counters[stratum]),
+                    stratum=stratum,
                     file=rel,
                     heading=heading,
-                    ordinal=counters["figure"],
+                    ordinal=counters[stratum],
                     text=element_text(element),
-                    asset_path=img.attrib.get("src", "") if img is not None else "",
+                    asset_path=asset_path,
                 )
             )
             if caption is not None:
@@ -698,25 +721,37 @@ def write_text(path: Path, lines: list[str]) -> None:
     path.write_text("\n".join(lines), encoding="utf-8", newline="\n")
 
 
-def copy_figure_evidence(book_root: Path, round_dir: Path, unit: AuditUnit) -> AuditUnit:
+def copy_asset_evidence(book_root: Path, round_dir: Path, unit: AuditUnit) -> AuditUnit:
     source = resolve_asset(book_root, book_root / unit.file, unit.asset_path)
     if not source:
         return unit
-    target = round_dir / "evidence" / "figures" / f"{safe_id(unit.id)}{source.suffix}"
+    target = round_dir / "evidence" / f"{unit.stratum}s" / f"{safe_id(unit.id)}{source.suffix}"
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, target)
     return AuditUnit(**{**asdict(unit), "evidence_path": target.relative_to(book_root).as_posix() if target.is_relative_to(book_root) else str(target)})
 
 
 def write_evidence(book_root: Path, round_dir: Path, unit: AuditUnit) -> AuditUnit:
-    if unit.stratum == "figure":
-        return copy_figure_evidence(book_root, round_dir, unit)
-    if unit.stratum in {"table", "formula"}:
-        evidence_dir = round_dir / "evidence" / f"{unit.stratum}s"
-        suffix = ".md"
-        target = evidence_dir / f"{safe_id(unit.id)}{suffix}"
-        write_text(target, [f"# {unit.id}", "", f"- file: `{unit.file}`", f"- heading: `{unit.heading or '(none)'}`", "", unit.text])
-        return AuditUnit(**{**asdict(unit), "evidence_path": target.relative_to(book_root).as_posix() if target.is_relative_to(book_root) else str(target)})
+    if unit.stratum in {"figure", "table", "formula"}:
+        enriched = copy_asset_evidence(book_root, round_dir, unit)
+        if unit.stratum in {"table", "formula"}:
+            evidence_dir = round_dir / "evidence" / f"{unit.stratum}s"
+            target = evidence_dir / f"{safe_id(unit.id)}.md"
+            write_text(
+                target,
+                [
+                    f"# {unit.id}",
+                    "",
+                    f"- file: `{unit.file}`",
+                    f"- heading: `{unit.heading or '(none)'}`",
+                    f"- asset_path: `{unit.asset_path}`",
+                    f"- image_evidence_path: `{enriched.evidence_path or '(missing)'}`",
+                    "",
+                    unit.text,
+                ],
+            )
+            return AuditUnit(**{**asdict(enriched), "evidence_path": target.relative_to(book_root).as_posix()})
+        return enriched
     return unit
 
 

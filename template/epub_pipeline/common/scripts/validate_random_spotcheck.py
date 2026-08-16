@@ -9,7 +9,10 @@ from pathlib import Path
 
 DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
 STRATA = ("paragraph", "table", "figure", "formula", "caption_note")
-LOCAL_ABSOLUTE_PATH = re.compile(r"(?:[A-Za-z]:[\\/]|\\\\|file://)", re.IGNORECASE)
+# Keep legitimate reader-facing URLs such as ``https://...`` out of the
+# local-path gate. The preceding boundary prevents the old pattern from
+# matching the ``s:/`` suffix inside ``https://``.
+LOCAL_ABSOLUTE_PATH = re.compile(r"(?<![A-Za-z0-9_])(?:[A-Za-z]:[\\/]|\\\\|file://)", re.IGNORECASE)
 MIN_REVIEW_SCORE = 80
 EXCELLENT_AVERAGE_SCORE = 92
 EXCELLENT_LOWEST_SCORE = 88

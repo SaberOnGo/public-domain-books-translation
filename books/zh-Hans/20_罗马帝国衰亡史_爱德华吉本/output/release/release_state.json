@@ -1,30 +1,37 @@
 {
-  "current_version": "v0.0.6",
+  "current_version": "v0.0.15",
   "main_version": 0,
   "sub_version": 0,
-  "patch_version": 6,
-  "latest_epub": "罗马帝国衰亡史_v0.0.6.epub",
+  "patch_version": 15,
+  "latest_epub": "罗马帝国衰亡史_v0.0.15.epub",
   "latest_epubs": [
     {
       "edition_type": "target_only",
       "source_epub": "output/book.epub",
-      "epub": "罗马帝国衰亡史_v0.0.6.epub",
-      "sha256": "12ae6d33eac94f0bfd199c03c88b747687db491b17130e047eaf8382604a5850",
-      "size_bytes": 4512147
+      "epub": "罗马帝国衰亡史_v0.0.15.epub",
+      "sha256": "12efd682e9bdc578d7a4028de877de72f1d4d361395b77d26357051902067c4d",
+      "size_bytes": 4539543
+    },
+    {
+      "edition_type": "bilingual_parallel",
+      "source_epub": "output/book_bilingual_parallel.epub",
+      "epub": "罗马帝国衰亡史_中英双语_v0.0.15.epub",
+      "sha256": "ba53409017bf7276c48bdd86ed28b99fba53af54f4fc7f4809e4488f18e6f33e",
+      "size_bytes": 9385764
     }
   ],
   "latest_release_note": "release_notes.md",
   "latest_status": "PASS",
-  "latest_created_at": "2026-07-12T12:13:20Z",
-  "latest_sha256": "12ae6d33eac94f0bfd199c03c88b747687db491b17130e047eaf8382604a5850",
-  "latest_size_bytes": 4512147,
+  "latest_created_at": "2026-08-16T02:36:44Z",
+  "latest_sha256": "12efd682e9bdc578d7a4028de877de72f1d4d361395b77d26357051902067c4d",
+  "latest_size_bytes": 4539543,
   "gate_summary": {
-    "random_spotcheck_round": "reviews/random_spotcheck/round_410",
-    "random_spotcheck_validation": "reviews/random_spotcheck/round_410/validation_report.json",
-    "release_confidence": 0.999782,
+    "random_spotcheck_round": "reviews/random_spotcheck/round_460",
+    "random_spotcheck_validation": "reviews/random_spotcheck/round_460/validation_report.json",
+    "release_confidence": 1.0,
     "random_spotcheck_status": "PASS",
     "random_spotcheck_require_pass": true,
-    "current_review_run_id": "39bccb51b90c45b320462061",
+    "current_review_run_id": "c76817db3a4db850cda1b424",
     "current_run_pass_rounds_required": 4,
     "current_run_pass_rounds_count": 4,
     "epubcheck_path": "output/epubcheck.json",

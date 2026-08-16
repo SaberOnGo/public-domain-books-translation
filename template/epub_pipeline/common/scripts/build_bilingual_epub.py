@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import html
 import json
 import re
@@ -96,11 +97,29 @@ def alignment_map_path(book_root: Path, state: dict) -> Path:
     return book_root / str(bilingual.get("alignment_map") or DEFAULT_ALIGNMENT_MAP)
 
 
-def first_heading(path: Path) -> str:
+def load_reader_titles(book_root: Path) -> dict[str, str]:
+    path = book_root / "references" / "reader_facing_titles.json"
     if not path.exists():
-        return path.stem
+        return {}
+    data = read_json(path)
+    if not isinstance(data, dict):
+        raise SystemExit(f"Reader-facing titles must be a JSON object: {path}")
+    return {str(key).replace("\\", "/"): str(value).strip() for key, value in data.items() if str(value).strip()}
+
+
+def reader_title(path: Path, book_root: Path, reader_titles: dict[str, str]) -> str:
+    key = path.resolve().relative_to(book_root.resolve()).as_posix()
+    override = reader_titles.get(key)
+    if override:
+        return override
     match = re.search(r"^#\s+(.+?)\s*$", read_text(path), flags=re.MULTILINE)
-    return match.group(1).strip() if match else path.stem
+    if match and match.group(1).strip():
+        return match.group(1).strip()
+    raise SystemExit(f"Missing reader-facing Markdown title and override: {key}")
+
+
+def has_markdown_heading(path: Path) -> bool:
+    return bool(re.search(r"^#\s+(.+?)\s*$", read_text(path), flags=re.MULTILINE))
 
 
 def frontmatter_rank(path: Path) -> tuple[int, str]:
@@ -204,6 +223,12 @@ def collect_paragraphs(root: Path, prefix: str) -> dict[str, Paragraph]:
 
 def inline_markdown(text: str) -> str:
     escaped = html.escape(" ".join(part.strip() for part in text.split("\n") if part.strip()), quote=True)
+    escaped = re.sub(
+        r"(^|[^\w])\[(\d+)\](?!\w)",
+        r'\1<sup class="note-ref">[\2]</sup>',
+        escaped,
+        flags=re.ASCII,
+    )
     return re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
 
 
@@ -216,6 +241,9 @@ def markdown_body(path: Path) -> str:
         if heading:
             level = min(len(heading.group(1)), 3)
             out.append(f"<h{level}>{inline_markdown(heading.group(2))}</h{level}>")
+            continue
+        if re.match(r"^</?(h[1-6]|section|p|aside|div|span|blockquote|ol|ul|li|dl|dt|dd|sup|sub|a|em|strong|br)\b", block):
+            out.append(block.strip())
             continue
         out.append(f"<p>{inline_markdown(block)}</p>")
     return "\n".join(out)
@@ -244,13 +272,54 @@ def resolve_texts(unit: dict, field: str, paragraph_map: dict[str, Paragraph], u
     return resolved
 
 
-def load_alignment_units(path: Path) -> list[dict]:
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def validate_alignment_provenance(data: dict, book_root: Path, required: bool) -> None:
+    provenance = data.get("provenance")
+    if not isinstance(provenance, dict):
+        if required:
+            raise SystemExit("Alignment map lacks required input-file provenance hashes.")
+        return
+    groups = (
+        ("source_file_sha256", provenance.get("source_file_sha256")),
+        ("target_file_sha256", provenance.get("target_file_sha256")),
+    )
+    for name, entries in groups:
+        if not isinstance(entries, dict) or not entries:
+            raise SystemExit(f"Alignment provenance {name} must be a non-empty object.")
+        for relative_path, expected in entries.items():
+            input_path = book_root / str(relative_path)
+            if not input_path.is_file():
+                raise SystemExit(f"Alignment input is missing: {relative_path}")
+            actual = sha256_file(input_path)
+            if actual != expected:
+                raise SystemExit(f"Alignment input changed; regenerate map: {relative_path}")
+    note_path = book_root / "qa" / "notes" / "note_reflow_final.json"
+    if sha256_file(note_path) != provenance.get("note_mapping_sha256"):
+        raise SystemExit("Note reflow mapping changed; regenerate bilingual alignment map.")
+    generator_path = book_root / "scripts" / "generate_bilingual_alignment.py"
+    if sha256_file(generator_path) != provenance.get("generator_sha256"):
+        raise SystemExit("Alignment generator changed; regenerate bilingual alignment map.")
+
+
+def load_alignment_units(path: Path, book_root: Path, state: dict) -> list[dict]:
     if not path.exists():
         raise SystemExit(f"Missing bilingual alignment map: {path}")
     data = read_json(path)
+    bilingual = state.get("bilingual_parallel") if isinstance(state.get("bilingual_parallel"), dict) else {}
+    require_provenance = bilingual.get("require_alignment_input_hashes") is True
     if isinstance(data, list):
+        if require_provenance:
+            raise SystemExit("Alignment map list format lacks required input-file provenance hashes.")
         units = data
     else:
+        validate_alignment_provenance(data, book_root, require_provenance)
         units = data.get("alignment_units")
     if not isinstance(units, list) or not units:
         raise SystemExit("Alignment map must contain a non-empty alignment_units list.")
@@ -261,7 +330,14 @@ def load_alignment_units(path: Path) -> list[dict]:
 
 
 def render_paragraphs(paragraphs: list[str]) -> str:
-    return "\n".join(f"<p>{inline_markdown(text)}</p>" for text in paragraphs)
+    rendered: list[str] = []
+    for text in paragraphs:
+        stripped = text.strip()
+        if re.match(r"^</?(h[1-6]|section|p|aside|div|span|blockquote|ol|ul|li|dl|dt|dd|sup|sub|a|em|strong|br)\b", stripped):
+            rendered.append(stripped)
+        else:
+            rendered.append(f"<p>{inline_markdown(text)}</p>")
+    return "\n".join(rendered)
 
 
 def group_units(units: list[dict]) -> dict[str, list[dict]]:
@@ -297,11 +373,21 @@ def write_css(work_dir: Path) -> None:
             "body{line-height:1.72;margin:0;padding:1.2em;overflow-wrap:break-word}"
             "p{margin:0 0 .7em;text-indent:2em}"
             "h1{font-size:1.55em;line-height:1.25}h2{font-size:1.2em}h3{font-size:1.05em}"
-            ".bitext-unit{margin:0 0 1.15em}"
-            ".bitext-source{font-size:.92em;line-height:1.5;color:#555;margin:0 0 .35em;text-indent:0}"
-            ".bitext-source p{text-indent:0;margin:0 0 .55em}"
-            ".bitext-target{font-size:1em;line-height:1.72;color:inherit;margin:0}"
-            ".bitext-target p{margin:0 0 .7em;text-indent:2em}"
+            ".bitext-unit{margin:0 0 1em}"
+            ".bitext-source{display:block!important;visibility:visible!important;font-size:.92em;line-height:1.55;margin:0 0 .24em;text-indent:0}"
+            ".bitext-source p{text-indent:0;margin:0}"
+            ".bitext-target{display:block!important;visibility:visible!important;font-size:1em;line-height:1.72;color:inherit;margin:0}"
+            ".bitext-target p{margin:0;text-indent:2em}"
+            ".bitext-section-heading{font-size:1.12em;line-height:1.35;margin:.25em 0 .6em;text-indent:0}"
+            ".note-ref{font-size:.58em;line-height:0;vertical-align:super;white-space:nowrap}"
+            ".chapter-notes{margin-top:2.2em;border-top:1px solid #999;padding-top:.8em}"
+            ".chapter-notes>h2{font-size:1.15em;line-height:1.35;margin:0 0 .9em}"
+            ".bitext-note-unit{margin:0 0 .8em}"
+            ".chapter-notes .bitext-source{font-size:.86em;line-height:1.5;margin-bottom:.18em}"
+            ".chapter-notes .bitext-target{font-size:.9em;line-height:1.55}"
+            ".chapter-notes p.endnote{text-indent:0;margin:0}"
+            ".note-gap{display:none!important}"
+            ".endnote-label{font-size:.9em;font-weight:600;margin-right:.25em}"
         ),
     )
 
@@ -401,7 +487,8 @@ def main() -> None:
     source_language = normalize_lang(str(state.get("source_language") or ""), "en")
     metadata = parse_yaml(book_root / "metadata" / "book.yaml")
     target_language = normalize_lang(str(state.get("target_language") or metadata.get("language") or ""), "zh-Hans")
-    alignment_units = load_alignment_units(alignment_map_path(book_root, state))
+    reader_titles = load_reader_titles(book_root)
+    alignment_units = load_alignment_units(alignment_map_path(book_root, state), book_root, state)
     source_paragraphs = collect_paragraphs(book_root / "chapters" / "src", "s")
     target_paragraphs = collect_paragraphs(book_root / "chapters" / "final", "t")
 
@@ -423,8 +510,10 @@ def main() -> None:
     for frontmatter in sorted((book_root / "frontmatter").glob("*.md"), key=frontmatter_rank):
         doc_index += 1
         href = f"{slug(frontmatter.stem)}.xhtml"
-        title_text = first_heading(frontmatter)
+        title_text = reader_title(frontmatter, book_root, reader_titles)
         body = markdown_body(frontmatter)
+        if not has_markdown_heading(frontmatter):
+            body = f"<h1>{html.escape(title_text)}</h1>\n{body}"
         write_text(work_dir / "EPUB" / href, xhtml_doc(title_text, body, target_language))
         manifest_items.append(f'\n    <item id="doc{doc_index}" href="{href}" media-type="application/xhtml+xml" />')
         spine_items.append(f'\n    <itemref idref="doc{doc_index}" />')
@@ -434,9 +523,11 @@ def main() -> None:
         doc_index += 1
         key_path = Path(group_key)
         href = f"bilingual_{slug(key_path.stem if key_path.suffix else group_key)}.xhtml"
-        title_text = first_heading(book_root / group_key) if (book_root / group_key).exists() else key_path.stem or "正文"
+        title_text = reader_title(book_root / group_key, book_root, reader_titles)
         sections: list[str] = [f"<h1>{html.escape(title_text)}</h1>"]
-        for index, unit in enumerate(group, start=1):
+        body_units = [unit for unit in group if str(unit.get("unit_type") or "body") != "note"]
+        note_units = [unit for unit in group if str(unit.get("unit_type") or "body") == "note"]
+        for index, unit in enumerate(body_units, start=1):
             unit_id = str(unit.get("id") or f"u{index:04d}")
             source_texts = resolve_texts(unit, "source_paragraphs", source_paragraphs, unit_id)
             target_texts = resolve_texts(unit, "target_paragraphs", target_paragraphs, unit_id)
@@ -450,6 +541,24 @@ def main() -> None:
                 "</div>\n"
                 "</section>"
             )
+        if note_units:
+            note_sections: list[str] = ['<section class="chapter-notes" epub:type="footnotes">', "<h2>\u672c\u7ae0\u6ce8\u91ca</h2>"]
+            for index, unit in enumerate(note_units, start=1):
+                unit_id = str(unit.get("id") or f"note-{index:04d}")
+                source_texts = resolve_texts(unit, "source_paragraphs", source_paragraphs, unit_id)
+                target_texts = resolve_texts(unit, "target_paragraphs", target_paragraphs, unit_id)
+                note_sections.append(
+                    f'<div class="bitext-unit bitext-note-unit" data-align-id="{html.escape(unit_id, quote=True)}">\n'
+                    f'<div class="bitext-source" xml:lang="{source_language}" lang="{source_language}">\n'
+                    f"{render_paragraphs(source_texts)}\n"
+                    "</div>\n"
+                    f'<div class="bitext-target" xml:lang="{target_language}" lang="{target_language}">\n'
+                    f"{render_paragraphs(target_texts)}\n"
+                    "</div>\n"
+                    "</div>"
+                )
+            note_sections.append("</section>")
+            sections.append("\n".join(note_sections))
         write_text(work_dir / "EPUB" / href, xhtml_doc(title_text, "\n".join(sections), target_language))
         manifest_items.append(f'\n    <item id="doc{doc_index}" href="{href}" media-type="application/xhtml+xml" />')
         spine_items.append(f'\n    <itemref idref="doc{doc_index}" />')

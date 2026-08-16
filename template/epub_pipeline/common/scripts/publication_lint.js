@@ -257,7 +257,8 @@ for (const file of files) {
   const text = fix ? normalized : original;
   const rel = path.relative(projectRoot, file);
 
-  const asciiSemi = (text.match(/;/g) || []).length;
+  const asciiSemicolonText = text.replace(/&(?:#\d+|#x[0-9a-f]+|[a-z]+);/gi, '');
+  const asciiSemi = (asciiSemicolonText.match(/;/g) || []).length;
   const zhSemi = (text.match(/；/g) || []).length;
   const cjkSpaces = (text.match(new RegExp(`[${cjk}][ \\t]{2,}[${cjk}]`, 'g')) || []).length;
   const checkRepeatedSpaces = /\.(md|xhtml|opf)$/i.test(file);
@@ -282,7 +283,7 @@ for (const file of files) {
   report.totals.bodySceneSeparator += bodySceneSeparator.length;
   report.totals.disallowedNoteMarker += disallowedNoteMarker.length;
 
-  if (asciiSemi) report.issues.push(...collectMatches(text, /;/g, rel, 'ascii_semicolon'));
+  if (asciiSemi) report.issues.push(...collectMatches(asciiSemicolonText, /;/g, rel, 'ascii_semicolon'));
   if (target === 'zh-Hans' && zhSemi > maxZhSemicolons) {
     report.issues.push({
       file: rel,

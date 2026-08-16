@@ -47,7 +47,9 @@ function escapeHtml(text) {
 }
 
 function inline(text) {
-  return escapeHtml(text).replace(/`([^`]+)`/g, '<code>$1</code>');
+  return escapeHtml(text)
+    .replace(/(^|[^\w])\[(\d+)\](?!\w)/g, '$1<sup class="note-ref">[$2]</sup>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
 }
 
 function parseMarkdownTable(lines, start) {
@@ -60,22 +62,29 @@ function parseMarkdownTable(lines, start) {
     i += 1;
   }
   if (rows.length < 2 || !rows[1].every((cell) => /^:?-{3,}:?$/.test(cell))) return null;
-  return { rows: [rows[0], ...rows.slice(2)], next: i };
+  let caption = '';
+  let captionIndex = start - 1;
+  while (captionIndex >= 0 && !lines[captionIndex].trim()) captionIndex -= 1;
+  if (captionIndex >= 0 && /^表(?:\s|[:：])/.test(lines[captionIndex].trim())) {
+    caption = lines[captionIndex].trim();
+  }
+  return { rows: [rows[0], ...rows.slice(2)], next: i, caption };
 }
 
-function tableHtml(rows) {
+function tableHtml(rows, caption) {
   const header = rows[0];
   const bodyRows = rows.slice(1);
+  const accessibleCaption = caption || '结构化表格';
   const thead = `<thead><tr>${header.map((cell) => `<th scope="col">${inline(cell)}</th>`).join('')}</tr></thead>`;
   const tbody = bodyRows.map((row) => {
     const padded = [...row, ...Array(Math.max(0, header.length - row.length)).fill('')].slice(0, header.length);
     return `<tr>${padded.map((cell) => `<td>${inline(cell)}</td>`).join('')}</tr>`;
   }).join('');
-  return `<div class="table-wrap" role="region" aria-label="结构化表格"><table><caption>结构化表格</caption>${thead}<tbody>${tbody}</tbody></table></div>`;
+  return `<div class="table-wrap" role="region" aria-label="${escapeHtml(accessibleCaption)}"><table><caption>${inline(accessibleCaption)}</caption>${thead}<tbody>${tbody}</tbody></table></div>`;
 }
 
 function isRawHtmlLine(line) {
-  return /^<\/?(section|p|aside|div|span|blockquote|ol|ul|li|dl|dt|dd|sup|a|em|strong|br)\b[^>]*>/.test(line.trim());
+  return /^<\/?(section|p|aside|div|span|blockquote|ol|ul|li|dl|dt|dd|sup|sub|a|em|strong|br)\b[^>]*>/.test(line.trim());
 }
 
 function slug(file) {
@@ -95,6 +104,29 @@ function frontmatterRank(file) {
     preface: 3,
   };
   return Object.prototype.hasOwnProperty.call(ranks, name) ? ranks[name] : 10;
+}
+
+function loadReaderTitles() {
+  const file = path.join(root, 'references', 'reader_facing_titles.json');
+  if (!fs.existsSync(file)) return {};
+  const parsed = JSON.parse(readText(file));
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    throw new Error(`Reader-facing titles must be a JSON object: ${file}`);
+  }
+  return parsed;
+}
+
+function readerTitle(file, readerTitles) {
+  const key = path.relative(root, file).split(path.sep).join('/');
+  const override = readerTitles[key];
+  if (typeof override === 'string' && override.trim()) return override.trim();
+  const heading = (readText(file).match(/^#\s+(.+)$/m) || [null, ''])[1];
+  if (heading && heading.trim()) return heading.trim();
+  throw new Error(`Missing reader-facing Markdown title and override: ${key}`);
+}
+
+function hasMarkdownHeading(file) {
+  return /^#\s+(.+)$/m.test(readText(file));
 }
 
 function mediaType(file) {
@@ -147,8 +179,9 @@ function markdownToBody(file, imageMap) {
     }
     const table = parseMarkdownTable(lines, i);
     if (table) {
+      if (table.caption && para.join(' ').trim() === table.caption) para = [];
       flush();
-      out.push(tableHtml(table.rows));
+      out.push(tableHtml(table.rows, table.caption));
       i = table.next - 1;
       continue;
     }
@@ -180,10 +213,10 @@ function markdownToBody(file, imageMap) {
   return out.join('\n');
 }
 
-function xhtml(title, body) {
+function xhtml(title, body, language) {
   return `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="zh-CN" lang="zh-CN">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="${escapeHtml(language)}" lang="${escapeHtml(language)}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -226,6 +259,9 @@ function writeContainer() {
 
 function writeCss() {
   writeText(path.join(workDir, 'EPUB', 'styles', 'book.css'), `body{line-height:1.72;margin:0;padding:1.2em;overflow-wrap:break-word}p{margin:0 0 .7em;text-indent:2em}h1{font-size:1.55em;line-height:1.25}h2{font-size:1.2em}h3{font-size:1.05em}img{max-width:100%;height:auto}figure{margin:1.2em 0;text-align:center;break-inside:avoid}figcaption{font-size:.88em;line-height:1.45}code{font-family:monospace;overflow-wrap:anywhere}.list-item{text-indent:0;margin-left:1.5em}.parallel-passage{margin:0 0 1.15em}.source-text{color:#4c3828}.modern-text{color:#1f1f1f}aside{font-size:.88em;line-height:1.55;margin:.25em 0 .75em 2em;color:#4b4b4b}.table-wrap{display:block;width:100%;max-width:100%;margin:.8em 0 1.2em;overflow:visible}table{border-collapse:collapse;width:100%;max-width:100%;table-layout:fixed;font-size:.74em;line-height:1.34;page-break-inside:auto;break-inside:auto}caption{font-size:.9em;line-height:1.35;margin:0 0 .35em;text-align:left}th,td{border:1px solid #777;padding:.22em .28em;vertical-align:top;white-space:normal;overflow-wrap:anywhere;word-break:break-word}th{font-weight:600;background:#f2f2f2}tr{page-break-inside:avoid;break-inside:avoid}`);
+  const cssPath = path.join(workDir, 'EPUB', 'styles', 'book.css');
+  const css = readText(cssPath);
+  writeText(cssPath, `${css}.note-ref{font-size:.58em;line-height:0;vertical-align:super;white-space:nowrap}.chapter-notes{margin-top:2.2em;border-top:1px solid #999;padding-top:.8em}.chapter-notes>p.endnote{font-size:.9em;line-height:1.55;text-indent:0;margin:0 0 .65em}.endnote-label{font-size:.9em;font-weight:600;margin-right:.25em}`);
 }
 
 function zipEpub() {
@@ -263,9 +299,10 @@ function main() {
   const description = metadata.description || metadata.subtitle || '';
   const rights = metadata.rights || '';
   const date = metadata.date || '';
-  const language = metadata.language || 'zh-CN';
+  const language = metadata.language || 'zh-Hans';
   const id = metadata.identifier || `urn:uuid:${randomUUID()}`;
   const imageMap = new Map();
+  const readerTitles = loadReaderTitles();
 
   cleanWorkDir();
   writeContainer();
@@ -286,9 +323,11 @@ function main() {
   allDocs.forEach((file, index) => {
     const idref = `doc${index + 1}`;
     const href = `${slug(file)}.xhtml`;
-    const firstHeading = (readText(file).match(/^#\s+(.+)$/m) || [null, path.basename(file, '.md')])[1];
-    const body = markdownToBody(file, imageMap);
-    writeText(path.join(workDir, 'EPUB', href), xhtml(firstHeading, body));
+    const firstHeading = readerTitle(file, readerTitles);
+    const body = hasMarkdownHeading(file)
+      ? markdownToBody(file, imageMap)
+      : `<h1>${escapeHtml(firstHeading)}</h1>\n${markdownToBody(file, imageMap)}`;
+    writeText(path.join(workDir, 'EPUB', href), xhtml(firstHeading, body, language));
     manifestItems.push(`<item id="${idref}" href="${href}" media-type="application/xhtml+xml" />`);
     spine.push(`<itemref idref="${idref}" />`);
     navItems.push(`<li><a href="${href}">${escapeHtml(firstHeading)}</a></li>`);
@@ -306,7 +345,7 @@ function main() {
 
   writeText(path.join(workDir, 'EPUB', 'nav.xhtml'), `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="zh-CN" lang="zh-CN">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="${escapeHtml(language)}" lang="${escapeHtml(language)}">
 <head><meta charset="utf-8" /><title>目录</title><link rel="stylesheet" type="text/css" href="styles/book.css" /></head>
 <body>
 <nav epub:type="toc" id="toc"><h1>目录</h1><ol>${navItems.join('\n')}</ol></nav>

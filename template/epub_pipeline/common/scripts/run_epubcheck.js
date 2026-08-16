@@ -3,9 +3,11 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const root = path.resolve(__dirname, '..');
+const epubArg = process.argv.slice(2).find((arg) => arg.startsWith('--epub='));
+const reportArg = process.argv.slice(2).find((arg) => arg.startsWith('--report='));
 const javaRoot = path.join(root, 'tools', 'zulu17-jre');
-const epub = path.join(root, 'output', 'book.epub');
-const report = path.join(root, 'output', 'epubcheck.json');
+const epub = epubArg ? path.resolve(root, epubArg.slice('--epub='.length)) : path.join(root, 'output', 'book.epub');
+const report = reportArg ? path.resolve(root, reportArg.slice('--report='.length)) : path.join(root, 'output', 'epubcheck.json');
 
 function findSharedNodeModules(start) {
   let dir = start;

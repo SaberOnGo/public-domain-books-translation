@@ -21,14 +21,17 @@
     "review:random-validate": "node scripts/run_python.js scripts/validate_random_spotcheck.py --target-confidence 0.80",
     "review:random-validate:pass": "node scripts/run_python.js scripts/validate_random_spotcheck.py --target-confidence 0.80 --require-pass --min-current-run-pass-rounds 2",
     "review:random-validate:hard-minimum": "node scripts/run_python.js scripts/validate_random_spotcheck.py --target-confidence 0.80 --require-pass --min-current-run-pass-rounds 2 --skip-excellence-gate",
-    "release:draft": "npm run preflight:template && npm run cover:check && npm run reader:check && npm run literary:scan && npm run metrics:init && node scripts/run_python.js scripts/create_release.py --status DRAFT",
-    "release:create": "npm run preflight:template && npm run cover:check && npm run reader:check && npm run literary:validate && npm run metrics:validate:actual && npm run review:random-validate:pass && node scripts/run_python.js scripts/create_release.py --status PASS --require-pass",
+    "release:draft": "npm run preflight:template && npm run cover:check && npm run reader:check && npm run check:bilingual:interleave && npm run literary:scan && npm run metrics:init && node scripts/run_python.js scripts/create_release.py --status DRAFT",
+    "release:create": "npm run preflight:template && npm run cover:check && npm run reader:check && npm run check:bilingual:interleave && npm run literary:validate && npm run metrics:validate:actual && npm run review:random-validate:pass && node scripts/run_python.js scripts/create_release.py --status PASS --require-pass",
     "fix:publication": "node scripts/publication_lint.js --fix --write-report",
+    "clean:staging": "node scripts/clean_staging.js",
+    "prebuild:epub": "npm run clean:staging",
     "build:bilingual": "node scripts/run_python.js scripts/build_bilingual_epub.py",
     "build:epub": "npm run preflight:template && npm run lint:publication && npm run lint:assets && npm run cover:check && node scripts/build_epub.js && npm run build:bilingual && npm run reader:check",
     "check:epub": "node scripts/run_epubcheck.js",
     "check:bilingual": "node scripts/run_python.js scripts/check_bilingual_parallel.py --write-report",
-    "reader:check": "node scripts/run_python.js scripts/check_reader_facing_policy.py --write-report && npm run check:bilingual"
+    "check:bilingual:interleave": "node scripts/run_python.js scripts/check_bilingual_interleave.py --write-report",
+    "reader:check": "node scripts/run_python.js scripts/check_reader_facing_policy.py --write-report && node scripts/run_python.js scripts/check_reader_navigation.py --write-report && npm run check:bilingual && npm run check:bilingual:interleave"
   },
   "description": "Book-local npm scripts. Shared Node dependencies are installed once under books/node_modules and are resolved by walking up from the project root.",
   "license": "UNLICENSED"

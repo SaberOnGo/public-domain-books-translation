@@ -262,11 +262,30 @@ def write_report(root: Path, issues: list[Issue], scope: str) -> None:
     if scope == "repo":
         output_dir = root / "books" / "output"
     output_dir.mkdir(parents=True, exist_ok=True)
+    def localize_snippet(snippet: str) -> str:
+        root_text = str(root.resolve())
+        root_forms = {
+            root_text,
+            root_text.replace("\\", "/"),
+            root_text.replace("/", "\\"),
+        }
+        for form in sorted(root_forms, key=len, reverse=True):
+            snippet = snippet.replace(form, ".")
+        return snippet
+
     report = {
         "status": "FAIL" if issues else "PASS",
         "scope": scope,
         "issue_count": len(issues),
-        "issues": [issue.__dict__ for issue in issues],
+        "issues": [
+            {
+                "path": issue.path,
+                "line": issue.line,
+                "rule": issue.rule,
+                "snippet": localize_snippet(issue.snippet),
+            }
+            for issue in issues
+        ],
     }
     (output_dir / "local_absolute_path_check.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2),

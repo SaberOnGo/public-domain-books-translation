@@ -349,77 +349,85 @@ def visible_bilingual_label_issues(text: str) -> list[str]:
     return sorted(set(issues))
 
 
-def check_bilingual_xhtml(book_root: Path, state: dict, issues: list[dict]) -> tuple[int, int, int]:
+def check_bilingual_xhtml(
+    book_root: Path,
+    state: dict,
+    alignment_units: int,
+    issues: list[dict],
+) -> dict[str, dict[str, int]]:
     bilingual_edition = next(
         (item for item in enabled_editions(state) if item.get("edition_type") == "bilingual_parallel"),
         {},
     )
     artifact = str(bilingual_edition.get("artifact") or "output/book_bilingual_parallel.epub")
-    files = staged_bilingual_xhtml(book_root)
+    staging_files = staged_bilingual_xhtml(book_root)
     epub_path = book_root / artifact
-    if epub_path.exists():
-        for name, text in extract_epub_xhtml(epub_path).items():
-            files[f"{artifact}!/{name}"] = text
-
-    if not files:
-        add_issue(
-            issues,
-            "missing_bilingual_xhtml",
-            artifact,
-            "No bilingual XHTML could be inspected from the EPUB or known staging directories.",
-        )
-        return 0, 0, 0
-
-    total_units = 0
-    total_sources = 0
-    total_targets = 0
-    for path, text in files.items():
-        source_count = count_class(text, "bitext-source")
-        target_count = count_class(text, "bitext-target")
-        unit_count = count_class(text, "bitext-unit")
-        total_units += unit_count
-        total_sources += source_count
-        total_targets += target_count
-
-        if source_count != target_count:
+    epub_files = {
+        f"{artifact}!/{name}": text
+        for name, text in extract_epub_xhtml(epub_path).items()
+    } if epub_path.exists() else {}
+    results: dict[str, dict[str, int]] = {}
+    for kind, files, display_path in (
+        ("staging", staging_files, "output/epub_work_bilingual/EPUB"),
+        ("epub", epub_files, artifact),
+    ):
+        if not files:
             add_issue(
                 issues,
-                "uneven_bilingual_block_count",
-                path,
-                f"bitext-source count ({source_count}) must equal bitext-target count ({target_count}).",
+                f"missing_{kind}_bilingual_xhtml",
+                display_path,
+                f"No bilingual XHTML could be inspected from {kind}.",
             )
-        missing_source_lang = class_elements_missing_lang(text, "bitext-source")
-        missing_target_lang = class_elements_missing_lang(text, "bitext-target")
-        if missing_source_lang:
+            results[kind] = {"units": 0, "sources": 0, "targets": 0}
+            continue
+        totals = {"units": 0, "sources": 0, "targets": 0}
+        for path, text in files.items():
+            source_count = count_class(text, "bitext-source")
+            target_count = count_class(text, "bitext-target")
+            unit_count = count_class(text, "bitext-unit")
+            totals["units"] += unit_count
+            totals["sources"] += source_count
+            totals["targets"] += target_count
+            if source_count != target_count:
+                add_issue(
+                    issues,
+                    "uneven_bilingual_block_count",
+                    path,
+                    f"bitext-source count ({source_count}) must equal bitext-target count ({target_count}).",
+                )
+            for class_name, rule in (("bitext-source", "source"), ("bitext-target", "target")):
+                missing_lang = class_elements_missing_lang(text, class_name)
+                if missing_lang:
+                    add_issue(
+                        issues,
+                        f"{rule}_block_missing_lang",
+                        path,
+                        f"{missing_lang} {class_name} blocks lack lang and xml:lang attributes.",
+                    )
+            for label in visible_bilingual_label_issues(text):
+                add_issue(
+                    issues,
+                    "reader_visible_bilingual_label",
+                    path,
+                    f"Do not add repeated reader-facing bilingual labels or explanations: {label}",
+                )
+        if totals["units"] != alignment_units:
             add_issue(
                 issues,
-                "source_block_missing_lang",
-                path,
-                f"{missing_source_lang} bitext-source blocks lack lang and xml:lang attributes.",
+                f"{kind}_alignment_unit_mismatch",
+                display_path,
+                f"Found {totals['units']} bitext units; alignment map requires exactly {alignment_units}.",
             )
-        if missing_target_lang:
-            add_issue(
-                issues,
-                "target_block_missing_lang",
-                path,
-                f"{missing_target_lang} bitext-target blocks lack lang and xml:lang attributes.",
-            )
-        for label in visible_bilingual_label_issues(text):
-            add_issue(
-                issues,
-                "reader_visible_bilingual_label",
-                path,
-                f"Do not add repeated reader-facing bilingual labels or explanations: {label}",
-            )
-
-    if total_sources == 0 or total_targets == 0:
-        add_issue(
-            issues,
-            "missing_bilingual_blocks",
-            artifact,
-            "Bilingual XHTML must contain bitext-source and bitext-target blocks.",
-        )
-    return total_units, total_sources, total_targets
+        for side in ("sources", "targets"):
+            if totals[side] != totals["units"]:
+                add_issue(
+                    issues,
+                    f"{kind}_{side}_unit_mismatch",
+                    display_path,
+                    f"Found {totals[side]} {side} for {totals['units']} bitext units.",
+                )
+        results[kind] = totals
+    return results
 
 
 def main() -> None:
@@ -436,16 +444,14 @@ def main() -> None:
 
     bilingual_enabled, editions = check_state(book_root, state, issues)
     alignment_units = 0
-    bitext_units = 0
-    bitext_sources = 0
-    bitext_targets = 0
+    artifact_counts: dict[str, dict[str, int]] = {}
     package_languages: list[str] = []
 
     if bilingual_enabled:
         check_artifacts(book_root, editions, issues)
         alignment_units = check_alignment_map(book_root, state, issues)
         package_languages = check_bilingual_package_metadata(book_root, state, issues)
-        bitext_units, bitext_sources, bitext_targets = check_bilingual_xhtml(book_root, state, issues)
+        artifact_counts = check_bilingual_xhtml(book_root, state, alignment_units, issues)
 
     report = {
         "book_root": ".",
@@ -459,9 +465,7 @@ def main() -> None:
             for item in editions
         ],
         "alignment_units": alignment_units,
-        "bitext_units": bitext_units,
-        "bitext_sources": bitext_sources,
-        "bitext_targets": bitext_targets,
+        "artifact_counts": artifact_counts,
         "package_languages": package_languages,
         "issues": issues,
     }
@@ -480,7 +484,8 @@ def main() -> None:
         print(
             "bilingual parallel gate PASS: "
             f"editions={len(editions)} alignment_units={alignment_units} "
-            f"bitext_source_blocks={bitext_sources} bitext_target_blocks={bitext_targets}"
+            f"staging_units={artifact_counts.get('staging', {}).get('units', 0)} "
+            f"epub_units={artifact_counts.get('epub', {}).get('units', 0)}"
         )
     else:
         print("bilingual parallel gate PASS: bilingual edition disabled")
