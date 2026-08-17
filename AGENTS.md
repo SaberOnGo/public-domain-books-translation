@@ -18,6 +18,7 @@ This file is for AI agents working from a downloaded copy of this repository.
   - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
   - `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
   - `template/epub_pipeline/common/references/adaptive_parallel_orchestration.md`
+  - `template/epub_pipeline/common/references/ai_parallel_execution_guidance.md`
   - `template/epub_pipeline/common/references/translation_unit_xliff_policy.md`
   - `template/epub_pipeline/common/references/quality_gate_framework.md`
   - `template/epub_pipeline/common/references/release_versioning.md`
@@ -30,6 +31,7 @@ This file is for AI agents working from a downloaded copy of this repository.
   - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
   - `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
   - `template/epub_pipeline/common/references/adaptive_parallel_orchestration.md`
+  - `template/epub_pipeline/common/references/ai_parallel_execution_guidance.md`
   - `template/epub_pipeline/common/references/translation_unit_xliff_policy.md`
   - `template/epub_pipeline/common/references/quality_gate_framework.md`
   - `template/epub_pipeline/common/references/release_versioning.md`
@@ -95,6 +97,17 @@ This file is for AI agents working from a downloaded copy of this repository.
 
 - If a script, prompt, launcher, or external AI client integration needs an environment variable for the LifeBook repository root, use `LIFEBOOK_HOME` as the only standard variable. Do not introduce parallel repository-root variables.
 - 如果脚本、prompt、启动器或外部 AI 客户端集成需要用环境变量表示 LifeBook 仓库根目录，只能使用统一变量 `LIFEBOOK_HOME`。不要再引入并行的仓库根目录变量。
+
+## AI Parallel Execution / AI 并行执行
+
+- Before dispatching translation or audit workers, read both `template/epub_pipeline/common/references/adaptive_parallel_orchestration.md` and `template/epub_pipeline/common/references/ai_parallel_execution_guidance.md`. LifeBook provides a static plan and evidence contract; it does not implement a runtime task queue, daemon scheduler, worker launcher, or provider API integration.
+- 派生翻译或审计 worker 前，必须同时读取 `template/epub_pipeline/common/references/adaptive_parallel_orchestration.md` 与 `template/epub_pipeline/common/references/ai_parallel_execution_guidance.md`。LifeBook 提供静态计划和证据合同，不实现运行时任务队列、常驻调度器、worker 启动器或厂商 API 集成。
+
+- For a GPT-family coordinator, when the host verifies support, spawned translation and audit workers `SHOULD` use `gpt-5.6-luna` with reasoning effort `max`. This is a strong default, not a casual suggestion. An explicit user instruction overrides it; verified unavailability or another concrete recorded constraint requires an honest fallback record, never a false claim.
+- 对 GPT 系列 coordinator，在宿主确认支持时，派生的翻译和审计 worker `SHOULD` 使用 `gpt-5.6-luna` 与 reasoning effort `max`。这是强默认规则，不是随意建议；用户明确指令可以覆盖。若经验证不可用或存在其他具体且已记录的约束，必须如实记录替代方案，不得虚假声称已采用。
+
+- Quality and safety invariants are `MUST`; throughput optimizations are normally `SHOULD`; optional model diversity and extra review are `MAY`. Skipping a `MAY` must not by itself block release.
+- 质量与安全不变量属于 `MUST`；吞吐优化通常属于 `SHOULD`；模型多样化和额外复核属于 `MAY`。仅因没有采用某项 `MAY`，不得阻塞发布。
 
 ## GitHub Push Commit Rules / GitHub 推送提交规则
 

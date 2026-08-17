@@ -42,9 +42,9 @@ Required fields are provider family, parallel-worker support, advertised maximum
 - coordinator 不计入派生 worker 数。
 - 用户禁止子代理时，任何其他检测结果都必须让位，结果为 0。
 
-For Codex, the adapter may select a locally configured and successfully health-checked worker profile such as `luna_worker`. If that local profile currently resolves to a GPT 5.6 Luna model with maximum reasoning, Codex may use it within the four-worker GPT cap. The exact provider/model remains in the client configuration and run evidence; it is never copied into the common template as a fixed default.
+The active AI executes this finite static plan with the host's verified capabilities; LifeBook does not implement a runtime task queue or worker launcher. Model-selection precedence, including the GPT-family `SHOULD` default and user override, is defined in `ai_parallel_execution_guidance.md`. The actual coordinator/worker models, reasoning levels, and any justified deviation must remain in run evidence.
 
-对 Codex，适配器可以选择本机已配置且健康检查成功的 worker profile，例如 `luna_worker`。若该本地 profile 当前解析为 GPT 5.6 Luna 且使用最高推理等级，Codex 可在 GPT 最多 4 个派生 worker 的范围内使用它。具体 provider/model 留在客户端配置和执行证据中，不得作为固定默认值写入通用模板。
+活动 AI 使用宿主已验证的能力执行这份有限静态计划；LifeBook 不实现运行时任务队列或 worker 启动器。模型选择优先级（包括 GPT 系列的 `SHOULD` 默认规则和用户覆盖规则）见 `ai_parallel_execution_guidance.md`。实际 coordinator/worker 模型、推理等级及任何有理由的偏离必须保留在执行证据中。
 
 ## 4. Workload model / 工作量模型
 

@@ -52,9 +52,13 @@ Read `common/references/bilingual_parallel_edition_policy.md` before changing bi
 
 Read `common/references/adaptive_parallel_orchestration.md` before changing worker concurrency, chapter ownership, audit roles, capability detection, or merge scheduling.
 
+Read `common/references/ai_parallel_execution_guidance.md` before an AI dispatches translation or audit workers. It defines provider-neutral `MUST`/`SHOULD`/`MAY` behavior, the GPT worker-model default, and the boundary that LifeBook does not implement a runtime task queue.
+
 修改双语排版、制作规格、质量门禁或 release 行为前，必须读取 `common/references/bilingual_parallel_edition_policy.md`。
 
 修改 worker 并发、章节所有权、审核角色、能力检测或合并调度前，必须读取 `common/references/adaptive_parallel_orchestration.md`。
+
+AI 派生翻译或审计 worker 前，必须读取 `common/references/ai_parallel_execution_guidance.md`。该文件定义通用的 `MUST`/`SHOULD`/`MAY` 行为、GPT worker 模型默认规则，以及 LifeBook 不实现运行时任务队列的边界。
 
 ### Private-Use Projects / 私人自用工程
 

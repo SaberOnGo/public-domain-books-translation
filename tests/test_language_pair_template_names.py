@@ -97,6 +97,33 @@ class LanguagePairTemplateNameTests(unittest.TestCase):
                 self.assertNotIn("章节译文先写入 `chapters/translated/`", text)
                 self.assertNotIn("- `chapters/translated/{same_filename}.md`", text)
 
+    def test_ai_parallel_execution_guidance_is_referenced_and_provider_neutral(self) -> None:
+        guide_name = "ai_parallel_execution_guidance.md"
+        guide_path = TEMPLATE_ROOT / "common" / "references" / guide_name
+        entry_points = [
+            REPO_ROOT / "AGENTS.md",
+            TEMPLATE_ROOT / "README.md",
+            TEMPLATE_ROOT / "common" / "README.md",
+            TEMPLATE_ROOT / "common" / "references" / "adaptive_parallel_orchestration.md",
+        ]
+
+        self.assertTrue(guide_path.is_file(), f"missing AI execution guide: {guide_path}")
+        guide = guide_path.read_text(encoding="utf-8")
+        for entry_point in entry_points:
+            with self.subTest(entry_point=entry_point.relative_to(REPO_ROOT).as_posix()):
+                self.assertIn(guide_name, entry_point.read_text(encoding="utf-8"))
+
+        self.assertIn("gpt-5.6-luna", guide)
+        self.assertIn("reasoning effort `max`", guide)
+        self.assertIn("SHOULD", guide)
+        self.assertIn("用户明确指令", guide)
+        self.assertIn("does not implement a runtime task queue", guide)
+        self.assertNotIn("luna_worker", guide)
+
+        orchestration = entry_points[-1].read_text(encoding="utf-8")
+        self.assertNotIn("For Codex", orchestration)
+        self.assertNotIn("对 Codex", orchestration)
+
 
 if __name__ == "__main__":
     unittest.main()
