@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "status": "INCOMPLETE",
+  "discovery_engine": "",
+  "discovery_engine_version": "",
+  "language_plugins": [],
+  "source_files": [],
+  "source_corpus_sha256": "",
+  "candidate_count": 0,
+  "manual_candidate_count": 0,
+  "manual_candidates_sha256": "",
+  "manual_review_complete": false,
+  "no_candidate_reason": "",
+  "decided_candidate_count": 0,
+  "unresolved_candidate_count": 0,
+  "occurrence_count": 0,
+  "unresolved_occurrence_count": 0,
+  "candidate_decisions_sha256": "",
+  "proper_nouns_sha256": "",
+  "occurrence_ledger_sha256": "",
+  "manual_review_record_sha256": "",
+  "locked_at": ""
+}

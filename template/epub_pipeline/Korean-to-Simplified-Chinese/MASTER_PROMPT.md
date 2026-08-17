@@ -42,7 +42,7 @@ LOCAL_SOURCE_FILE = {LOCAL_SOURCE_FILE}
 - 分章译文不得直接进入 chapters/final。
 - 每章翻译后必须创建并执行 qa/chapter_controls/{NNN_slug}.control.md。
 - 每章必须完成 fidelity/readability/imagery/terminology/gate 报告。
-- 只有 gate PASS 的章节才可写入 chapters/final。
+- 只有 gate PASS 的 canonical generation 才可由物化脚本投影到 `chapters/final`；任何 agent 不得直接写或手改投影。
 - 全部章节完成后必须进入预制作阶段 1，制定封面、metadata、字体、排版、标题、作者信息、版本说明等规格。
 - 必须先制作样章 EPUB；若 state/human_feedback_control.md 中 human_required=false，则自动检查并继续；若 true，则等待用户。
 - 样章 PASS 后才可制作全书 EPUB。

@@ -649,6 +649,19 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 - Heading/body boundary guard: A title can look acceptable in wording while still swallowing the first body sentence or paragraph, especially after OCR cleanup, chapter splitting, or mechanical title normalization. Treat any `#` heading that is unusually long, contains a full narrative sentence after a part marker, or appears in `nav.xhtml` with body prose as a reader-facing defect family, not a cosmetic Markdown issue. Audit with a cheap heading-length scan such as `^# .{80,}` over `chapters/final`, `chapters/translated`, and generated XHTML, then split the body prose back below the heading and rerun coverage plus EPUB navigation checks.
   标题/正文边界防护：标题文字本身可能看似可接受，却把正文首句或首段吞进标题行；这常发生在 OCR 清理、章节切分或机械规范章题之后。凡 `#` 标题异常过长、在“第几部分/第几节”后直接接叙事句，或在 `nav.xhtml` 中把正文带入目录，都应归为读者可见问题族，不要当作普通 Markdown 外观问题。先用低成本标题长度扫描，如在 `chapters/final`、`chapters/translated` 和生成 XHTML 中查 `^# .{80,}`；确认后把正文拆回标题下方，并重跑覆盖率和 EPUB 导航检查。
 
+### Bilingual Unit Omission and Boundary Drift / 双语单元少译与边界漂移
+
+- Symptom: A complete source paragraph is followed by only one or two translated sentences; part of its translation appears under the next source paragraph; or several source paragraphs/pages are followed by a later target-language batch. Sentence-by-sentence subtitle layout is a separate but related wrong structure.
+  症状：完整源段后只跟一两句译文；本段部分译文漂到下一源段；连续多段/多页源文后才集中出现目标语；逐句字幕式交替也是相关但不同的错误结构。
+- Risk: Readers cannot know which target text corresponds to which source paragraph, omissions are hidden by aggregate chapter coverage, and a structurally valid EPUB can still present semantically false pairs.
+  风险：读者无法确定对应关系，章节总覆盖率会掩盖少译，而结构合法的 EPUB 仍可能显示语义错误配对。
+- Find by: Use persistent ordered unit IDs and run both directions: source-to-target omission and target-to-source addition. Add a neighbor-boundary check against the previous and next source unit. Then inspect the generated bilingual DOM for exactly one direct source child followed by one direct target child per registered unit, with matching hashes and no unregistered reader text.
+  发现方式：按持久有序 unit ID 做双向审计：source-to-target 遗漏、target-to-source 增译，再用前后源 unit 检查邻段串译。生成双语 DOM 中，每个注册 unit 必须恰有一个直接 source child 后接一个直接 target child，hash 匹配且无未注册读者文字。
+- Fix by: Rebuild the affected target template from the complete source unit. Do not pad with invented summary, borrow neighboring translation, cross a source natural-paragraph boundary, or edit derived Markdown. Merge a new chapter patch, invalidate stale audits/artifacts, and regenerate both target-only and bilingual editions from the same target hash.
+  修复方式：依据完整 source unit 重建 target template。不得用无源总结凑长度、借邻段译文、跨源自然段或手改派生 Markdown。合并新章节 patch，使旧审计/产物失效，再从同一 target hash 重建单语版与双语版。
+- Recheck: Run a fresh immutable unit audit and a full-chapter zero-issue round, then verify ordered EPUB manifests. Structural PASS must be reported separately from semantic translation-quality PASS.
+  复查：重新运行 immutable unit audit 和全章零问题轮，再核验 EPUB 有序 manifest。结构 PASS 与语义翻译质量 PASS 必须分开报告。
+
 ## Retrospective Hook / 复盘要求
 
 ### Added Analytical Recap and Coverage-Aware Repair / 加戏性分析总结与覆盖率修复

@@ -25,13 +25,14 @@
    - 双语版不得把英文源文写入 `chapters/final/`，不得降低单中文 EPUB 的质量。
    - 双语对齐映射必须写入 `qa/bilingual_parallel/alignment_map.json`。
    - 运行 `npm run build:bilingual`，由源文段落、目标语成书稿和对齐映射生成独立双语 EPUB。
-   - 双语分块以完整源段落到目标段落映射为边界；英文源语块包含的全部源段落，必须在紧随其后的中文目标语块中有完整译文对应。
-   - 以接近手机一屏为阅读目标：英文源文约 150-230 words，中文目标语约 350-550 字；可以上下浮动，只能在完整对齐边界切块。
-   - 不得逐句交错；不推荐机械逐段交错；不得反复加入 `原文` / `译文` 标签或每章说明。
+   - 双语可见单元严格来自 canonical alignment manifest：一个完整英文短段后必须立即跟随该段完整中文译文。不得跨越两个源自然段；过长自然段只能按完整句群在段内拆成多个短段。
+   - 不以页面、屏幕高度或固定字数聚合多个自然段。页面和视口是渲染结果，不是翻译/对齐边界。
+   - 不得逐句交错；不得连续出现多个英文单元后再集中出现中文；不得反复加入 `原文` / `译文` 标签或每章说明。
    - 中文目标语是主阅读文本，英文源文为辅助对照文本，建议源文略小但不低于目标语 `0.88em`，不得依赖字体族、斜体或颜色作为唯一区分。
-7. 保留必要可审计产物，如 `output/cover.jpg`、`output/publication_lint.json`、`output/epubcheck.json`；双语版还必须运行 `npm run check:bilingual` 并保留 `output/bilingual_parallel_check.json`。
-8. 对所有启用的 EPUB 产物运行 EPUBCheck。
-9. EPUBCheck 通过后，下一步必须进入 `prompts/16a_stratified_random_spotcheck.md`；不得直接进入最终输出或宣布完成。
+7. 构建前运行 `translation:prebuild`，验证 canonical units、不可变语义审计并从同一 target hash 清洁生成 `chapters/translated` 与 `chapters/final`。保留 `output/translation_unit_manifest.json` 和 `output/translation_unit_artifact_check.json`。
+8. 对所有启用的 EPUB 产物运行 EPUBCheck；每份报告必须绑定对应 EPUB 的当前 SHA-256，旧报告或只检查单中文版不得通过。
+9. 普通构建只执行全书 DOM/文本/有序 unit manifest、目录、可见性静态检查和 EPUBCheck，不启动真实阅读器、不截图。真实阅读器 smoke 只在最终发布候选尝试；机器未安装受支持阅读器时记录 `SKIPPED_UNAVAILABLE`、允许发布并在交付说明披露。
+10. EPUBCheck 通过后，下一步必须进入 `prompts/16a_stratified_random_spotcheck.md`；不得直接进入最终输出或宣布完成。
 
 ## 禁止 / Forbidden
 
@@ -45,7 +46,7 @@
 - 禁止普通名词写成 `source term（中文释义）` 或 `中文词（source term）`；禁止历史术语、制度名、身份称谓和专业术语无必要地写成 `中文译名（source term）`。必要原词应放入译注、章末注或术语表，并由正文注号指向。
 - 禁止带圈数字、小圆圈“注”、裸 `译注：` / `脚注：` / `尾注：` / `附注：` 或句末裸数字；注号只能使用 `[1]`、`(1)` / `（1）`、`注1`。
 - 禁止旧纸书星号或横线分隔符进入最终正文。
-- `edition_type: bilingual_parallel` 时，禁止双语版缺少任一启用产物：单中文 EPUB 和中英双语 EPUB 都必须生成。禁止源语块和目标语块对应不完整，禁止用 `原文` / `译文` 标签、`/` 拼接或逐句交错来代替正式双语版式。
+- `edition_type: bilingual_parallel` 时，禁止双语版缺少任一启用产物：单中文 EPUB 和中英双语 EPUB 都必须生成。禁止源语块和目标语块对应不完整，禁止用 `原文` / `译文` 标签、`/` 拼接、逐句交错或“多段英文后集中中文”来代替正式双语版式。
 
 ## 输出 / Output
 

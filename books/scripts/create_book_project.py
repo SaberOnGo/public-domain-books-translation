@@ -207,7 +207,21 @@ def merge_package_json(src: Path, dst: Path) -> None:
     if isinstance(base_scripts, dict) or isinstance(overlay_scripts, dict):
         scripts = dict(base_scripts) if isinstance(base_scripts, dict) else {}
         if isinstance(overlay_scripts, dict):
-            scripts.update(overlay_scripts)
+            canonical_markers = {
+                "preflight:template": "translation:contract:validate",
+                "build:epub": "translation:prebuild",
+                "release:create": "translation:artifact:release-validate",
+                "check:epub": "--all-enabled",
+                "reader:check": "reader:static-check",
+            }
+            for key, value in overlay_scripts.items():
+                base_value = str(scripts.get(key) or "")
+                overlay_value = str(value or "")
+                marker = canonical_markers.get(key)
+                private_override = "private:" in overlay_value or "build:private" in overlay_value
+                if marker and marker in base_value and marker not in overlay_value and not private_override:
+                    continue
+                scripts[key] = value
         merged["scripts"] = scripts
     for key, value in overlay.items():
         if key == "scripts":
@@ -343,17 +357,17 @@ def apply_default_edition_plan(data: dict, source_target: str, target: str) -> N
     data["bilingual_parallel"] = {
         "enabled": True,
         "order": "source_then_target",
-        "alignment_unit": "closed_source_target_paragraph_mapping",
+        "alignment_unit": "one_source_natural_paragraph_or_complete_sentence_group",
         "source_visibility": "full_text",
         "target_visibility": "full_text",
         "default_for": {
             "source_language": "en",
             "target_language": "zh-Hans",
         },
-        "source_block_recommended_words": "150-230",
-        "target_block_recommended_chars": "350-550",
-        "target_block_soft_min_chars": 150,
-        "target_block_soft_max_chars": 900,
+        "source_short_paragraph_advisory_words": "60-160",
+        "size_is_risk_signal_only": True,
+        "must_not_cross_source_natural_paragraph": True,
+        "target_must_be_complete": True,
         "source_font_scale": "0.92em",
         "source_font_scale_min": "0.88em",
         "target_only_must_not_regress": True,

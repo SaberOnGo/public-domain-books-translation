@@ -397,7 +397,8 @@ def check_chapter_control_closure(
         if translated_chapter is not None:
             detail = (
                 "Every chapters/translated chapter must immediately close the per-chapter post-translation "
-                "full-check gate before the next chapter may be translated."
+                "full-check gate before that chapter may be promoted downstream; independent chapter owners "
+                "may continue under an authorized adaptive plan."
             )
         add_issue(issues, "missing_chapter_post_translation_control", detail, rel(book_root, control))
         return

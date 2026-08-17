@@ -45,7 +45,7 @@ Use this skill before translating full chapters. Do not begin batch translation 
 
 ## Quality Gate
 
-A chapter can move to `chapters/final/` only if:
+A chapter can become eligible for deterministic materialization into `chapters/final/` only if the canonical generation satisfies all of the following. Reviewers never move or directly edit projection files:
 
 - No major meaning errors.
 - No missing paragraph.

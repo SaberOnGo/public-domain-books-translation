@@ -40,7 +40,7 @@
 8. 每章翻译后立即只针对该章执行“每章译后，全量检查并修复节点”，生成 `qa/chapter_controls/{chapter}.control.md`。该节点必须覆盖该章对 metadata/nav/目录的影响、正文、注释、图表/公式/表格/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目，也不得扩大成全书章节检查。
 9. 每章生成 `qa/imagery/{chapter}.imagery.md` 和 `qa/gates/{chapter}.gate.md`。`qa/chapter_controls/{chapter}.control.md` 和 `qa/gates/{chapter}.gate.md` 均 PASS 后，才可写入 `chapters/final/`。
 
-每章译后全量检查若未通过，必须修复并追加同节点整章复查，直到最近一轮同时记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true`；若书籍/profile 有更严格规则，按更严格规则。任何评分、主观印象或“已经修过”都不能抵消 P0/P1/P2、读者难以理解、事实/术语/当前章文字接口错误、模板硬门禁失败、中文润色不足，或为了通俗而损害专业质量。中文独立阅读评分低于 4/5、20 句朗读中明显拗口超过 1 句、或关键句不断气时，即使事实准确也不得通过。未通过章节不得进入下一章翻译或后续审校。图表、表格、公式和图片的复杂资产问题应路由到资产/技术门禁，阻止终稿/构建/release，但不让当前章译后文字门禁无限循环。
+每章译后全量检查若未通过，必须修复并追加同节点整章复查，直到最近一轮同时记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true`；若书籍/profile 有更严格规则，按更严格规则。任何评分、主观印象或“已经修过”都不能抵消 P0/P1/P2、读者难以理解、事实/术语/当前章文字接口错误、模板硬门禁失败、中文润色不足，或为了通俗而损害专业质量。中文独立阅读评分低于 4/5、20 句朗读中明显拗口超过 1 句、或关键句不断气时，即使事实准确也不得通过。未通过章节不得进入后续审校或终稿；全书合同锁定后，其他独立 owner 的章节可按自适应计划继续。图表、表格、公式和图片的复杂资产问题应路由到资产/技术门禁，阻止终稿/构建/release，但不让当前章译后文字门禁无限循环。
 
 若发现可复现的译文质量问题族，必须使用 `skills/translation-quality-defect-families/SKILL.md`。问题族包括但不限于忠实度偏移、中文不顺、术语漂移、标题/小标题超载、注释误导、图表文字接口错误、英文句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释和加戏。先在书籍工程记录证据并用 `rg`、术语表、禁用正文写法、标题映射和小上下文原文对照审计同类；书内闭环后，只把可复用的发现、归纳、修复和复查方法合并回填到该 skill。
 

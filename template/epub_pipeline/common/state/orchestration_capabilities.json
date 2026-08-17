@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "supports_parallel_workers": false,
+  "provider_family": "unknown",
+  "advertised_max_spawned_workers": 0,
+  "user_max_spawned_workers": 0,
+  "rate_limit_max_spawned_workers": 0,
+  "budget_max_spawned_workers": 0,
+  "quality_max_spawned_workers": 0,
+  "user_allows_subagents": false,
+  "worker_profile": "",
+  "verified_at": "",
+  "valid_until": "",
+  "selection_source": "template_safe_default"
+}

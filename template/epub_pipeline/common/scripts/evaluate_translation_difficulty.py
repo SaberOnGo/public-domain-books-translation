@@ -527,6 +527,14 @@ def build_assessment(book_root: Path, extra_source_dirs: list[str], history_root
         "special_risk_notes": rationale_parts,
     }
     history = build_historical_reference(book_root, profile, history_root or find_books_root(book_root))
+    weighted_source_unit_estimate = round(
+        source_unit_count
+        * (0.80 + overall * 0.10)
+        + figures_count * 120
+        + tables_count * 100
+        + formula_or_code_count * 80
+        + notes_count * 12
+    )
     return {
         "schema_version": "1.0.0",
         "assessment_status": "PASS",
@@ -553,6 +561,16 @@ def build_assessment(book_root: Path, extra_source_dirs: list[str], history_root
         "estimated_calendar_days": {"min": calendar_min, "max": calendar_max},
         "estimated_active_hours": {"min": active_min, "max": active_max},
         "estimated_review_rounds": review_rounds,
+        "parallelization_profile": {
+            "planning_basis": "weighted_source_units_and_chapters_not_page_count",
+            "weighted_source_unit_estimate": weighted_source_unit_estimate,
+            "chapter_count": chapter_count,
+            "named_entity_density": entity_label,
+            "figures_tables_formula_count": figures_count + tables_count + formula_or_code_count,
+            "capability_declaration_required": True,
+            "unknown_capability_spawned_worker_count": 0,
+            "next_command": "npm run translation:orchestration:plan",
+        },
         "historical_reference": history,
         "model_recommendations": recommendations,
         "cost_quality_strategy": [
@@ -565,6 +583,7 @@ def build_assessment(book_root: Path, extra_source_dirs: list[str], history_root
 
 def render_assessment_md(data: dict[str, Any]) -> str:
     profile = data["book_complexity_profile"]
+    parallel = data["parallelization_profile"]
     components = data["difficulty_components_1_to_5"]
     recs = data["model_recommendations"]
     history = data.get("historical_reference", {})
@@ -605,6 +624,13 @@ def render_assessment_md(data: dict[str, Any]) -> str:
             f"- notes_or_annotations_count: {profile['notes_or_annotations_count']}",
             f"- named_entity_density: {profile['named_entity_density']}",
             "",
+            "## Parallelization Planning / 并行规划",
+            "",
+            f"- planning_basis: {parallel['planning_basis']}",
+            f"- weighted_source_unit_estimate: {parallel['weighted_source_unit_estimate']}",
+            f"- capability_declaration_required: {parallel['capability_declaration_required']}",
+            f"- next_command: {parallel['next_command']}",
+            "",
             "## Component Scores / 分项评分",
             "",
             *[f"- {key}: {value}/5" for key, value in components.items()],
@@ -632,6 +658,7 @@ def render_assessment_md(data: dict[str, Any]) -> str:
 
 def render_assessment_md_localized(data: dict[str, Any]) -> str:
     profile = data["book_complexity_profile"]
+    parallel = data["parallelization_profile"]
     components = data["difficulty_components_1_to_5"]
     recs = data["model_recommendations"]
     history = data.get("historical_reference", {})
@@ -706,6 +733,14 @@ def render_assessment_md_localized(data: dict[str, Any]) -> str:
             f"- 公式或代码块数量（formula_or_code_block_count）：{profile['formula_or_code_block_count']}",
             f"- 注释数量（notes_or_annotations_count）：{profile['notes_or_annotations_count']}",
             f"- 专名密度（named_entity_density）：{zh_term(profile['named_entity_density'], density_zh)}",
+            "",
+            "## 并行规划输入",
+            "",
+            f"- 加权原文工作量估计（weighted_source_unit_estimate）：{parallel['weighted_source_unit_estimate']}",
+            f"- 规划依据（planning_basis）：{parallel['planning_basis']}；页数不是唯一依据。",
+            f"- 客户端能力声明必需（capability_declaration_required）：{str(parallel['capability_declaration_required']).lower()}",
+            f"- 下一步命令（next_command）：`{parallel['next_command']}`",
+            "- 未获得可靠客户端能力、用户上限、速率或预算声明时，默认派生 worker 数为 0。",
             "",
             "## 分项评分",
             "",
@@ -801,6 +836,7 @@ def merge_metrics(book_root: Path, assessment: dict[str, Any], release_dir: Path
         "estimated_calendar_days": assessment["estimated_calendar_days"],
         "estimated_active_hours": assessment["estimated_active_hours"],
         "estimated_review_rounds": assessment["estimated_review_rounds"],
+        "parallelization_profile": assessment["parallelization_profile"],
         "historical_reference": assessment["historical_reference"],
         "model_recommendations": assessment["model_recommendations"],
         "cost_quality_strategy": assessment["cost_quality_strategy"],

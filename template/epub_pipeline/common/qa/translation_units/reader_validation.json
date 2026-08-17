@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "status": "INCOMPLETE",
+  "canonical_manifest_sha256": "",
+  "artifacts": [],
+  "viewports": [],
+  "computed_style_checks": [],
+  "navigation_checks": [],
+  "required_screenshot_fields": ["path", "sha256", "location", "viewport"],
+  "required_locations": ["toc_jump", "chapter_start", "ordinary_body", "bilingual_interleave"],
+  "screenshots": [],
+  "validated_at": "",
+  "validator": ""
+}

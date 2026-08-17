@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -76,6 +77,23 @@ TEXT_FILENAMES = {
 def directory_names(root: Path) -> set[str]:
     if not root.exists():
         return set()
+    git_root = REPO_ROOT / ".git"
+    if git_root.exists():
+        result = subprocess.run(
+            ["git", "-c", "core.quotepath=false", "ls-files", "--", root.relative_to(REPO_ROOT).as_posix()],
+            cwd=REPO_ROOT,
+            text=True,
+            encoding="utf-8",
+            capture_output=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            prefix = root.relative_to(REPO_ROOT).as_posix().rstrip("/") + "/"
+            return {
+                line[len(prefix) :].split("/", 1)[0]
+                for line in result.stdout.splitlines()
+                if line.startswith(prefix) and "/" in line[len(prefix) :]
+            }
     return {
         path.name
         for path in root.iterdir()

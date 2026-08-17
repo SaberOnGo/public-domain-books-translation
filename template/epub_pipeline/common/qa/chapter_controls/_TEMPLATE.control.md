@@ -75,9 +75,9 @@ polysemy_translation_stage_review:
 polysemy_context_review:
 polysemy_unresolved_count:
 
-> Mandatory rule: every round must inspect the whole current chapter. If a round finds any issue and applies any fix, that round must be `FIXED_RECHECK_REQUIRED`, not `PASS`; append a new full-chapter recheck. Only a latest round with `scope: "FULL_CHAPTER"`, `issues_found: 0`, `fixes_applied: 0`, `unresolved_blocking_issues: 0`, `latest_round_status: "PASS"`, and `allow_next_chapter: true` may unlock the next chapter.
+> Mandatory rule: every round must inspect the whole current chapter. If a round finds any issue and applies any fix, that round must be `FIXED_RECHECK_REQUIRED`, not `PASS`; append a new full-chapter recheck. Only a latest round with `scope: "FULL_CHAPTER"`, `issues_found: 0`, `fixes_applied: 0`, `unresolved_blocking_issues: 0`, `latest_round_status: "PASS"`, and `allow_next_chapter: true` may promote this chapter. Under an adaptive plan, other independently owned chapters may continue.
 >
-> 强制规则：每一轮都必须检查当前整章。若某轮发现任何问题并应用任何修复，该轮只能记为 `FIXED_RECHECK_REQUIRED`，不得记为 `PASS`；必须追加新的整章复查。只有最近一轮同时满足 `scope: "FULL_CHAPTER"`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: "PASS"`、`allow_next_chapter: true`，才允许进入下一章。
+> 强制规则：每一轮都必须检查当前整章。若某轮发现任何问题并应用任何修复，该轮只能记为 `FIXED_RECHECK_REQUIRED`，不得记为 `PASS`；必须追加新的整章复查。只有最近一轮同时满足 `scope: "FULL_CHAPTER"`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: "PASS"`、`allow_next_chapter: true`，才允许当前章进入下游；自适应计划中的其他独立 owner 章节可继续。
 >
 > Expert/polysemy rule: a PASS round must also record `expert_translation_skill_used: true`, `expert_level_review_status: "PASS"`, `polysemy_translation_stage_review: "PASS"`, `polysemy_context_review: "PASS"`, and `polysemy_unresolved_count: 0`. If locally decidable polysemy was deferred to review, or downstream context changes an earlier word choice, the fix round is `FIXED_RECHECK_REQUIRED`; only the next full-chapter recheck can PASS.
 >

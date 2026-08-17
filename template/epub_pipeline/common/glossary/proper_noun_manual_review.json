@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "status": "INCOMPLETE",
+  "reviewer": "",
+  "reviewed_at": "",
+  "source_corpus_sha256": "",
+  "reviewed_files": [],
+  "candidate_table_sha256": "",
+  "manual_candidates_sha256": "",
+  "proper_nouns_sha256": "",
+  "occurrence_ledger_sha256": "",
+  "unresolved_candidates": 0,
+  "unresolved_occurrences": 0,
+  "review_summary": ""
+}

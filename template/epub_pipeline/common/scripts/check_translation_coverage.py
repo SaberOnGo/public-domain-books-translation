@@ -322,6 +322,41 @@ def check_pair(
             target_metrics,
         )
 
+    source_table_images = count_table_images(source_text)
+    target_table_images = count_table_images(target_text)
+    replaced_table_images = max(0, source_table_images - target_table_images)
+    if replaced_table_images and target_metrics.tables < replaced_table_images:
+        add_issue(
+            issues,
+            "table_coverage_low",
+            target_rel,
+            f"Target has {target_metrics.tables} structured tables for {replaced_table_images} replaced raster table assets; source structural units may have been lost.",
+            source_metrics,
+            target_metrics,
+        )
+
+    source_non_table_images = max(0, source_metrics.images - source_table_images)
+    target_non_table_images = max(0, target_metrics.images - target_table_images)
+    if source_non_table_images and target_non_table_images < source_non_table_images:
+        add_issue(
+            issues,
+            "image_coverage_low",
+            target_rel,
+            f"Target has {target_non_table_images}/{source_non_table_images} non-table images; source structural units may have been lost.",
+            source_metrics,
+            target_metrics,
+        )
+
+    if source_metrics.formulas and target_metrics.formulas < source_metrics.formulas:
+        add_issue(
+            issues,
+            "formula_coverage_low",
+            target_rel,
+            f"Target has {target_metrics.formulas}/{source_metrics.formulas} formulas; source structural units may have been lost.",
+            source_metrics,
+            target_metrics,
+        )
+
 
 def check_note_scopes(
     *,
@@ -380,6 +415,15 @@ def check_note_scopes(
                 source_metrics,
                 target_metrics,
             )
+        if source_metrics.note_defs and ratio(target_metrics.note_defs, source_metrics.note_defs) < min_note_coverage_ratio:
+            add_issue(
+                issues,
+                "note_definition_coverage_low",
+                target_rel,
+                f"Logical chapter {scope} has {target_metrics.note_defs}/{source_metrics.note_defs} unique note definitions; minimum ratio is {min_note_coverage_ratio}.",
+                source_metrics,
+                target_metrics,
+            )
         if target_metrics.note_refs > target_metrics.note_defs:
             add_issue(
                 issues,
@@ -389,42 +433,6 @@ def check_note_scopes(
                 source_metrics,
                 target_metrics,
             )
-
-    source_table_images = count_table_images(source_text)
-    target_table_images = count_table_images(target_text)
-    replaced_table_images = max(0, source_table_images - target_table_images)
-    if replaced_table_images and target_metrics.tables < replaced_table_images:
-        add_issue(
-            issues,
-            "table_coverage_low",
-            target_rel,
-            f"Target has {target_metrics.tables} structured tables for {replaced_table_images} replaced raster table assets; source structural units may have been lost.",
-            source_metrics,
-            target_metrics,
-        )
-
-    source_non_table_images = max(0, source_metrics.images - source_table_images)
-    target_non_table_images = max(0, target_metrics.images - target_table_images)
-    if source_non_table_images and target_non_table_images < source_non_table_images:
-        add_issue(
-            issues,
-            "image_coverage_low",
-            target_rel,
-            f"Target has {target_non_table_images}/{source_non_table_images} non-table images; source structural units may have been lost.",
-            source_metrics,
-            target_metrics,
-        )
-
-    if source_metrics.formulas and target_metrics.formulas < source_metrics.formulas:
-        add_issue(
-            issues,
-            "formula_coverage_low",
-            target_rel,
-            f"Target has {target_metrics.formulas}/{source_metrics.formulas} formulas; source structural units may have been lost.",
-            source_metrics,
-            target_metrics,
-        )
-
 
 def check_coverage(
     book_root: Path,

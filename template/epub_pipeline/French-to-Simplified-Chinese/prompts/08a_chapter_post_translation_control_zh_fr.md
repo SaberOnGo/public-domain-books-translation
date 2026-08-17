@@ -1,6 +1,6 @@
 # 08a 每章译后全量控制
 
-每章译入 `chapters/translated/` 后立即停止翻译下一章，只针对当前章执行完整质量门禁。
+每个 canonical 章节 patch 合并后，立即只针对当前章执行完整质量门禁。失败章不得进入下游；合同锁定后，其他独立 owner 的章节可按自适应计划继续。
 
 必须对照整章原文逐段检查，并在 `qa/chapter_controls/{chapter}.control.md` 中留下可复核证据：
 

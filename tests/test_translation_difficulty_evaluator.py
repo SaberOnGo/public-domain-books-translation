@@ -99,6 +99,11 @@ class TranslationDifficultyEvaluatorTests(unittest.TestCase):
             self.assertGreaterEqual(assessment["difficulty_components_1_to_5"]["historical_context_load"], 3)
             self.assertGreaterEqual(assessment["difficulty_components_1_to_5"]["philosophical_or_theoretical_density"], 3)
             self.assertGreaterEqual(assessment["overall_difficulty_score_1_to_5"], 3)
+            parallel = assessment["parallelization_profile"]
+            self.assertGreater(parallel["weighted_source_unit_estimate"], 0)
+            self.assertEqual(assessment["book_complexity_profile"]["chapter_count"], parallel["chapter_count"])
+            self.assertEqual("npm run translation:orchestration:plan", parallel["next_command"])
+            self.assertIn("not_page_count", parallel["planning_basis"])
             providers = {item["provider"] for item in assessment["model_recommendations"]}
             self.assertEqual({"deepseek", "gpt", "claude"}, providers)
             assessment_md = (book_root / "output" / "release" / "translation_difficulty_assessment.md").read_text(encoding="utf-8")

@@ -85,7 +85,11 @@
 ### Glossary
 
 - `glossary/terms.csv`：术语、概念、制度词、技术词和高风险表达的机器可读术语表。
-- `glossary/proper_nouns.csv`：用户可编辑的重点专有名词译表。必备列为 `source_name,target_name,category,display_policy,first_rendering,subsequent_rendering,note_required,repeat_original_allowed_when,notes`。用户未显式设置时，重点专有名词默认使用策略 `3`：第一次正文自然出现写作 `译名（原文）`，后续用译名。
+- `glossary/proper_nouns.csv`：翻译前锁定的实体注册表，以 `entity_id` 为主键，并包含原文形式、中文释义、显示策略、首次出现规则和同名消歧。用户未显式设置时默认策略 `3`，并记录 `selection_source=default`；默认不得绕过全书候选发现、逐项裁决和 occurrence ledger。
+- `translation_units/`：唯一权威 source-target store。章节并行写 worker-owned patch，唯一合并器执行 CAS 原子合并；`chapters/translated` 与 `chapters/final` 只由同一 canonical target 投影。
+- `state/orchestration_capabilities.json`：活动客户端根据实时能力和用户授权写入的并行能力声明；模板默认未知且禁用。
+- `state/orchestration_runtime.json`：代表性 pilot 的语义首过率、返工、冲突、限流和结构/专名违规状态。
+- `qa/orchestration/work_plan.json`：基于加权工作量、客户端/用户/速率/预算/质量上限生成的 producer、audit consumer 和章节连续分包计划。
 
 ### Research
 
@@ -94,6 +98,8 @@
 - `references/chapter_title_policy.md`：通用章节标题、目录短题名和副标题策略。
 - `references/literary_refinement_policy.md`：通用文学精修、书籍目标和模板经验回填策略。
 - `references/proper_noun_display_policy.md`：重点专有名词显示策略，定义用户 prompt 设置值 `1` 到 `5`、默认策略 `3`、正文首次出现规则和 `glossary/proper_nouns.csv`。
+- `references/translation_unit_xliff_policy.md`：persistent unit、章节 patch/CAS、CSV-only entity rendering、不可变审计、XLIFF 2.1 可选交换和产物 hash 证据规则。
+- `references/adaptive_parallel_orchestration.md`：方案 B 的翻译 producer、独立 audit consumer、唯一 merger、自适应并发和客户端能力声明规则。
 - `references/note_marker_policy.md`：脚注、尾注、译注和编辑注的注号硬规则；只允许 `[1]`、`(1)`、`（1）` 或 `注1` 体系。
 - `skills/translation-quality-defect-families/SKILL.md`：仓库级译文质量问题族 skill。发现忠实度、中文顺读、术语、标题/小标题、注释、图表文字接口、源语句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释或加戏等可复现质量问题时，必须用于归纳、全书同类审计、修复和经验回填。
 - `references/epub_assets_figures_tables.md`：通用 EPUB 图片、图表、表格、资源目录、XHTML 转换和 OPF manifest 规则。
@@ -228,11 +234,14 @@ node scripts/asset_manifest_check.js --write-report
 ## 7. 新增硬门禁 / New Hard Gates
 
 - 每章翻译后必须立即经过 `qa/chapter_controls/{NNN_slug}.control.md` 所记录的“每章译后，全量检查并修复节点”。该节点只检查当前章，不检查全书其他章节。
+- 长书可在预生产全部锁定后运行 `npm run translation:orchestration:plan`。规划不能只看 PDF 页数，必须使用加权 canonical 工作量和章节数，并受客户端、用户、速率、预算、质量上限共同约束。GPT 最多派生 4 个 worker，非 GPT 最多 8 个，能力未知或用户未授权时为 0。首轮最多 2 个，只有结构/专名违规为 0、语义首过率至少 90%、返工率不超过 10%、patch 冲突率不超过 1% 才可扩容。
+- 章节由单一 producer 独占；audit consumer 必须与该章 producer 身份不同；coordinator 是唯一 canonical merger。不同章节 patch 使用 `base_chapter_digest` 可从同一全书 base 依次合并，同章陈旧 patch 必须失败。审计证据按章失效与密封，不能因无关章节变更全部作废。
 - 该节点必须全章检查该章是否符合模板要求，包括但不限于该章对 metadata/nav/目录的影响、正文、注释、图表/公式/表格/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释。不得只检查用户点名项目。
 - 该节点必须按 `glossary/terms.csv.forbidden_body_renderings` 逐项扫描正文。若出现正文禁用写法、无授权原词括注、裸露源语词或误导性泛译，必须修复并追加同节点复查。
 - 该节点必须检查 `glossary/proper_nouns.csv`：重点人名、地名、术语、罕见名词和音译体验很差的名字必须按用户设置值 `1` 到 `5` 呈现；用户未设置时默认 `3`。若选择 `5`，第一次正文出现必须同时有 `译名（原文）` 和合规注号。
 - 该节点必须检查注号格式；全角 `（1）` 是 `(1)` 的中文排版等价形式，但带圈数字、裸 `注` 标签、裸 `译注：` 和尾随裸数字不得进入终稿。
-- 未完成每章译后全量检查，或最近一轮不是 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 的零问题 PASS，或未满足更严格项目/profile 规则时，不得进入下一章翻译、后续审校或 `chapters/final/`。任何评分、主观印象或“已经修过”都不能抵消 P0/P1/P2、读者难以理解、事实/术语/当前章文字接口错误、中文润色不足、为了通俗而损害专业质量，或模板硬门禁失败。
+- 未完成每章译后全量检查，或最近一轮不是 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 的零问题 PASS，或未满足更严格项目/profile 规则时，该章不得进入后续审校或 `chapters/final/`。这不是全书串行锁：合同锁定后，其他独立 owner 的章节可按自适应计划继续翻译和审计。`allow_next_chapter` 仅作为旧流程兼容字段表达当前章可下游流转。任何评分、主观印象或“已经修过”都不能抵消 P0/P1/P2、读者难以理解、事实/术语/当前章文字接口错误、中文润色不足、为了通俗而损害专业质量，或模板硬门禁失败。
+- A failed or just-fixed chapter may not enter downstream review or `chapters/final/`; after book-level locks, other independently owned chapters may continue under the adaptive plan. `allow_next_chapter` is retained only as a legacy chapter-promotion field and must not be interpreted as a global producer stop.
 - 图表、表格、公式和图片在本节点只做当前章文字接口检查与资产分流。复杂重绘、OCR、裁剪、数值校验、公式排版、资源路径或 manifest 问题应写入资产/技术门禁记录；这类问题阻止终稿、构建和 release，但不让当前章译后文字门禁无限循环。
 - 每次未通过都必须记录问题点、修复摘要和追加复查轮次；不得覆盖旧失败记录。
 - 若每章译后全量检查发现可复现的译文质量问题族，必须使用 `skills/translation-quality-defect-families/SKILL.md`，在书籍工程记录即时证据，先用低 token 方法审计同类，再把可复用经验合并回填到该 skill。

@@ -11,9 +11,12 @@ This directory contains shared workflow files for all language-pair templates.
 - `metadata/rights_checklist.md`, `metadata/source_evidence.md`, and `metadata/private_use_declaration.md`: source, rights, public-domain/licensed publication, and private-use evidence templates.
 - `preproduction/`: shared EPUB preproduction templates.
 - `references/`: language-neutral title, literary refinement, proper-noun display, note marker, bilingual parallel edition, quality gate, EPUB asset, benchmark, and stratified random spot-check policies.
+- `references/adaptive_parallel_orchestration.md`: provider-neutral Scheme B planning for translation producers, independent audit consumers, one merger, weighted workload, client capability declarations, and quality-driven scaling.
 - `assets/`: default EPUB resource directories for figures, images, styles, and table resources.
 - `source/tables/`: source CSV/TSV tables used to generate reader-facing XHTML tables.
 - `glossary/proper_nouns.csv`: user-editable proper-noun display register.
+- `glossary/proper_noun_candidates.csv`, `proper_noun_occurrences.csv`, and `proper_noun_discovery_manifest.json`: whole-source candidate decisions, entity occurrence ledger, and hash-bound discovery evidence that must be locked before translation.
+- `translation_units/`: the authoritative persistent source-target unit store, immutable generations, worker-owned chapter patches, optional XLIFF exchange, and deterministic projections.
 - `scripts/`: reusable chapter splitting, Markdown normalization, publication lint, refinement-check, stratified random sampling, and random-gate validation helpers.
 - `package.json`: book-local npm script template only; shared dependencies are installed once under `books/`.
 - `state/`: initial pipeline state and human-feedback control files.
@@ -34,6 +37,14 @@ The bilingual parallel edition rules live in `references/bilingual_parallel_edit
 `npm run build:bilingual` 只按 `state/pipeline_state.json` 的输出版本状态工作：双语版未启用时直接跳过，启用时根据 `qa/bilingual_parallel/alignment_map.json` 生成 `output/book_bilingual_parallel.epub`。`npm run check:bilingual` 是后续结构门禁，检查启用产物、对齐映射、双语 XHTML 和语言 metadata。二者都不得从 `publication_mode` 推断是否输出双语版。
 
 `npm run build:bilingual` is driven only by output-edition state in `state/pipeline_state.json`: it skips when the bilingual edition is disabled, and builds `output/book_bilingual_parallel.epub` from `qa/bilingual_parallel/alignment_map.json` when enabled. `npm run check:bilingual` is the follow-up structural gate for enabled artifacts, alignment, bilingual XHTML, and language metadata. Neither script may infer bilingual output from `publication_mode`.
+
+长书并行规则见 `references/adaptive_parallel_orchestration.md`。先运行 `npm run metrics:evaluate` 获取加权工作量输入，锁定合同、专名、出现账本和术语并初始化 canonical units 后，再由活动客户端写入带 UTC `verified_at`/`valid_until` 的实时能力声明，运行 `npm run translation:orchestration:plan`。能力未知、未验证、已过期或用户未授权时默认不派生 worker；GPT 家族最多 4 个，非 GPT 最多 8 个，且必须保留独立审核者和唯一合并器。
+
+Long-book parallelism is governed by `references/adaptive_parallel_orchestration.md`. Run `npm run metrics:evaluate` for weighted workload inputs; after the contract, names, occurrence ledger, terminology, and canonical units are locked, the active client writes a live-verified capability record with UTC `verified_at`/`valid_until` and runs `npm run translation:orchestration:plan`. Unknown, unverified, expired, or unauthorized capability spawns no workers. GPT-family clients stop at four workers and non-GPT clients at eight, with independent auditors and one merger.
+
+新架构中，双语版的唯一权威输入是 persistent canonical units：一个完整源语短段后立即跟随该短段完整目标语译段；不得逐句交错、跨源自然段、按页面/视口聚合，或连续多段源文后集中目标语。`chapters/translated` 与 `chapters/final` 由同一 target hash 清洁投影，禁止分别翻译或手改。专名先完成全书 discovery、逐项裁决、`entity_id`/occurrence ledger 和 CSV 锁定；译者只写 `{{pn:entity_id}}`，渲染器只读锁定 CSV。
+
+In the canonical architecture, bilingual output is strictly one complete source short paragraph immediately followed by its complete target paragraph. Units never cross source natural-paragraph boundaries and are not page/viewport chunks. `chapters/translated` and `chapters/final` are clean projections of identical target hashes. Full-source proper-noun discovery, entity decisions, occurrence ledger, and CSV lock precede translation; translators use only `{{pn:entity_id}}` markers.
 
 ## Shared Tooling / 共享工具
 
@@ -109,6 +120,8 @@ These checks are common because template drift, unnumbered book paths, encoding 
 
 `check_reader_facing_policy.py` 会拦截进入读者版 EPUB 的生产痕迹，例如章节开头的 `译文说明` / `章节控制说明`、书籍信息页里的项目宣传语、制作日志、QA/prompt 记录，以及同一前置页内反复出现的版权/权利说明。
 
+这里的 `reader:check` / `reader:static-check` 是快速的读者可见文件、目录与结构静态检查，不会启动桌面阅读器，也不要求截图。真实阅读器只在最终 release/private-artifact 候选时按 `if_available` 策略尝试轻量 smoke；机器无受支持阅读器时记录 `SKIPPED_UNAVAILABLE`、允许发布并在最终交付说明披露。静态全书门禁与 EPUBCheck 始终必跑。
+
 `check_literary_style_gate.py` 是目标语文学顺读门禁。普通扫描只收集“直译腔、解释腔、平硬句、抽象名词链、源语句法残留”等候选；正式 `release:create` 必须运行 `literary:validate`，要求 `qa/literary_style/literary_style_review.md` 明确 PASS。原作者序言、导言、开篇和首章属于高影响区域：这部分如果不顺口、怪、平、硬或像说明原意，读者会在最早几页流失，因此最终发布时不得带着未关闭的文学性债务通过。
 
 ## Figures, Images, and Tables / 图表、图片与表格
@@ -146,9 +159,9 @@ The report is written to `qa/refinement/refinement_check.json`. It separates rea
 
 ## Per-Chapter Full Check Gate / 每章译后全量检查门禁
 
-After each chapter is translated into `chapters/translated/{NNN_slug}.md`, the workflow must immediately run a full check and fix node for that chapter only before translating the next chapter or promoting the chapter. The result belongs in `qa/chapter_controls/{NNN_slug}.control.md`.
+After each canonical chapter patch is merged, the workflow must immediately run a full check and fix node for that chapter before promoting it. After book-level locks, other independently owned chapters may continue under the adaptive plan. The result belongs in `qa/chapter_controls/{NNN_slug}.control.md`.
 
-每章译入 `chapters/translated/{NNN_slug}.md` 后，必须立即只针对该章执行“每章译后，全量检查并修复节点”，并在进入下一章翻译或送入终稿前完成。结果写入 `qa/chapter_controls/{NNN_slug}.control.md`。
+每个 canonical 章节 patch 合并后，必须立即只针对该章执行“每章译后，全量检查并修复节点”，并在该章进入下游或终稿前完成。全书合同锁定后，其他独立 owner 的章节可按自适应计划继续。结果写入 `qa/chapter_controls/{NNN_slug}.control.md`。
 
 This gate must check the whole chapter and its reader-facing production context, including but not limited to fidelity, target-language readability, teaching/explanatory rhythm when applicable, terminology, case/name/title consistency, titles/subtitles, notes, figure/table/formula text interfaces, source-language syntax residue, stiff or overly literal sentences, over-explanation, invented additions, metadata impact, nav/title/TOC implications, body text, figures, formulas, tables, images, styles, reader-visible wording, readability, plain-language clarity, and polish. It is not enough to check only items named by the user.
 
@@ -172,9 +185,9 @@ Footnote, endnote, translator-note, and editorial-note markers must follow `refe
 
 `glossary/terms.csv` 必须包含 `display_policy`、`exception_reason`、`forbidden_body_renderings` 等术语呈现字段。历史术语、制度名、身份称谓、专业术语和文化负载词等高风险术语，必须在分章翻译前列出正文禁用写法。若终稿正文仍出现术语表列出的禁用写法，`preflight:template` 可以拒绝继续。
 
-If any round finds any issue that requires a fix, including fidelity, terminology, reader confusion, text-interface errors, target-language awkwardness, weak polish, or over-simplification that damages specialist quality, fix the chapter but mark that round as `FIXED_RECHECK_REQUIRED`. It cannot be the PASS round. Append a new full-chapter recheck in the same control file. The workflow may continue only when the latest round records `scope: FULL_CHAPTER`, `issues_found: 0`, `fixes_applied: 0`, `unresolved_blocking_issues: 0`, `latest_round_status: PASS`, and `allow_next_chapter: true`. A failed or just-fixed chapter may not enter the next chapter translation, `chapters/final/`, or proceed as if the chapter were complete.
+If any round finds any issue that requires a fix, including fidelity, terminology, reader confusion, text-interface errors, target-language awkwardness, weak polish, or over-simplification that damages specialist quality, fix the chapter but mark that round as `FIXED_RECHECK_REQUIRED`. It cannot be the PASS round. Append a new full-chapter recheck in the immutable audit run. After preproduction locks, other independently owned chapters may continue in parallel, but the failed or just-fixed chapter may not enter final projection/build/release or be counted complete until its latest full-chapter round records exact ordered unit coverage, current digest, zero issues/fixes/unresolved blockers, and PASS.
 
-若任一轮发现需要修复的问题，包括忠实度、术语、读者理解、文字接口、目标语翻译腔、润色不足，或为了通俗而损害专业质量，都必须先修复该章；但该轮只能记为 `FIXED_RECHECK_REQUIRED`，不能作为 PASS 轮。必须在同一 control 文件追加新一轮整章复查。只有最近一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，流程才可继续。失败或刚修复的章节不得进入下一章翻译、`chapters/final/`，流程也不得把该章当作完成。
+若任一轮发现需要修复的问题，包括忠实度、术语、读者理解、文字接口、目标语翻译腔、润色不足，或为了通俗而损害专业质量，都必须先修复该章；但该轮只能记为 `FIXED_RECHECK_REQUIRED`，不能作为 PASS 轮。必须在不可变 audit run 中追加新一轮整章复查。只有最近一轮绑定精确有序 unit、当前 chapter digest，并记录零问题、零修复、零未解阻塞和 PASS 时，该章流程才可继续。失败或刚修复的章节不得进入 `chapters/final/`，也不得计为完成；但其他独立 owner 的章节可继续。`allow_next_chapter` 只是兼容旧流程的当前章放行字段。
 
 If a chapter check exposes a recurring translation-quality defect family, use `skills/translation-quality-defect-families/SKILL.md`. Examples include short-sentence fragmentation, metaphor collision, enumerative punctuation drag, unclear pronoun reference, source-syntax residue, terminology drift, title overload, over-explanation, and invented motive. Record immediate evidence in the book project, audit similar cases with low-token methods first, and backfill only reusable lessons into the skill.
 

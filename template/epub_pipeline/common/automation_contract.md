@@ -11,7 +11,8 @@ AI 必须自动决定：
 - 如何命名章节文件。
 - 如何生成元数据、术语表、重点专有名词译表、文体画像。
 - 如何选择预翻译样本。
-- 如何在每章译后立即执行全量检查与修复节点，并在未通过时阻止进入下一章翻译或进入终稿。
+- 如何在每章译后立即执行全量检查与修复节点，并在未通过时阻止该章进入下游或终稿，同时不误停其他独立 owner 的章节。
+- How to block a failed chapter from downstream promotion without globally stopping other independently owned chapters.
 - 如何在失败时回溯到正确阶段。
 - 如何构建并校验 EPUB。
 - 如何把 Markdown 章节转换为 XHTML，并把图像、SVG、CSS、表格等 EPUB 资源复制、登记到 OPF manifest。
@@ -49,6 +50,12 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 - `qa/pretranslation/pretranslation_report.md`
 - `glossary/terms.csv`
 - `glossary/proper_nouns.csv`
+- `glossary/proper_noun_candidates.csv`
+- `glossary/proper_noun_occurrences.csv`
+- `glossary/proper_noun_discovery_manifest.json`
+- `state/translation_contract.json`
+- `translation_units/manifest.json` and immutable generation store
+- `state/orchestration_capabilities.json`, `state/orchestration_runtime.json`, and `qa/orchestration/work_plan.json`
 - `metadata/style_profile.md`
 - 启用 profile 时的 `metadata/reference_witness_policy.md`
 - 启用 profile 时的 `qa/technical/terminology_lock_report.md`
@@ -63,15 +70,20 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 - 每章写入 `chapters/translated/{NNN_slug}.md` 后，AI 必须立即只针对该章执行“每章译后，全量检查并修复节点”，并写入 `qa/chapter_controls/{NNN_slug}.control.md`。
 - 该节点必须检查该章是否符合模板要求，包括但不限于该章对 metadata/nav/目录/章节标题的影响、正文、注释、图表/公式/表格/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语、注释密度、事实和数值。不得只检查用户点名项目，也不得扩大成全书门禁。
 - 该节点必须按 `glossary/proper_nouns.csv` 检查重点专有名词（人名、地名、术语、罕见名词、音译后体验很差的名字等）的显示策略。用户未设置时默认使用策略 `3`：第一次正文自然出现 `译名（原文）`，后续用译名；标题、副标题和目录题名不计入正文首次出现。
+- 在翻译 worker 启动前，必须锁定全书专名 discovery manifest、逐项候选裁决、`entity_id` 注册表和 occurrence ledger。worker 只能在自有章节 patch 中写 `{{pn:entity_id}}` target template；唯一合并器用按章 CAS 合并并从锁定 CSV 渲染。合同或全局 revision 改变会使相关旧 patch、audit 和 artifact evidence 失效；只修改另一章时，不得无故使本章已密封审计失效。
+- 不同章节可在锁定后按 `references/adaptive_parallel_orchestration.md` 并行翻译和审计；同一章节不得多写入者竞态。活动客户端必须先声明真实能力和用户授权，再运行 `translation:orchestration:plan`；未知能力默认 0 worker，GPT 派生 worker 上限为 4，非 GPT 上限为 8。先以最多 2 个 worker 试运行，质量信号满足阈值后才扩容。翻译 producer、独立 audit consumer 和唯一 coordinator/merger 身份必须分离；审核者不得审核自己翻译的章节。
+- 每个 patch 同时保存追踪用全书 base manifest hash 和并发控制用 `base_chapter_digest`。不同章节从同一 base 产生的 patch 可以依次合并；同章陈旧 patch 必须 `PATCH_CONFLICT`。语义审计按章生成、验证和密封，完整全书只有在每个当前章节都具备独立密封 PASS 后才生成 `book_completion_manifest.json`。
+- `chapters/translated` 与 `chapters/final` 是同一 canonical target 的派生投影，不是两个翻译阶段；单目标语版和双语版也不得分别翻译。
 - 该节点必须按 `references/note_marker_policy.md` 检查注号。允许 `[1]`、`(1)`、全角 `（1）` 和 `注1`；不得使用带圈数字、裸 `注` 标签、裸 `译注：` 或尾随裸数字。
 - 该节点必须全章检查，而不是只抽样检查。抽样朗读或抽样段落只能作为辅助证据，不能替代全章核查。
 - 若发现 P0/P1/P2、读者不可理解、事实/术语/文字接口错误、模板硬门禁失败、目标语言翻译腔、读起来费劲、中文润色不足、为了通俗而损害专业度、专业术语解释不足，或任何其他翻译/润色问题，必须修复；但发现并修复问题的这一轮只能记录为 `FIXED_RECHECK_REQUIRED`，不得直接 `PASS`。
 - 必须追加一次新的整章复查。只有最近一轮同时记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，才允许继续；若 profile/项目规则更严格，按更严格规则。分数不能抵消 P0/P1/P2、读者难以理解、事实/术语/文字接口错误、模板硬门禁失败或明显目标语言翻译腔。
 - 通俗化与专业质量不是二选一。当前章文字应尽量读得顺、有趣、不费劲，同时保持原书应有的专业术语、概念层级、论证水准和知识风格；不得为了“好懂”把专业内容改扁、改错或泛化。
-- 只有满足上述条件后，才允许进入下一章翻译、后续 fidelity/readability/terminology 审校或 `chapters/final/`。
+- 只有满足上述条件后，该章才允许进入后续 fidelity/readability/terminology 审校或 `chapters/final/`。在自适应并行模式中，其他独立 owner 的章节可继续；`allow_next_chapter` 不得解释为全局 producer 停止信号。
+- Only that chapter is blocked; after the global locks, other independently owned chapters may continue translating and auditing under the current plan.
 - 图表、表格、公式和图片在本节点只做当前章文字接口检查与资产分流。重绘、OCR、裁剪、数值校验、公式排版、资源路径或 manifest 问题应路由到资产/技术门禁；已路由问题阻止进入终稿、构建和 release，但不让译后文字门禁无限循环。
 - 所有失败点、修复摘要、复查轮次和是否允许继续，必须记录在该章 control 文件中；不得覆盖失败教训。
-- `preflight:template` 必须检查 `chapters/translated/*.md` 的对应章节 control 是否存在，且最近整章轮次是否满足上述零问题 PASS 字段。发现 `chapters/final/*.md` 时，还必须检查对应章节 gate 是否存在且 PASS。失败时不得继续下一章、构建 EPUB、创建 release 或 private artifact。
+- `preflight:template` 必须检查 `chapters/translated/*.md` 的对应章节 control 是否存在，且最近整章轮次是否满足上述零问题 PASS 字段。发现 `chapters/final/*.md` 时，还必须检查对应章节 gate 是否存在且 PASS。失败章不得进入下游；全书任一当前章节未闭环时不得构建 EPUB、创建 release 或 private artifact。
 
 ## EPUB 资源自动化规则
 

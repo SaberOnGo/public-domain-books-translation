@@ -82,18 +82,20 @@ Rights and publication mode are separate from the edition decision. A public or 
 
 Hard rules:
 
-- If a source block contains source paragraphs `S0...Sn`, the following target block must contain all target paragraphs that translate `S0...Sn`.
-- If one source paragraph translates into several target paragraphs, all those target paragraphs must remain in the same paired target block.
-- If several source paragraphs translate into one target paragraph, all those source paragraphs and the single target paragraph must remain in the same paired unit.
+- A reader-visible paired unit must contain material from exactly one source natural paragraph. It must never combine `S0...Sn` from multiple source natural paragraphs.
+- Every visible unit has exactly one source block followed immediately by exactly one target block. The target block must completely translate that source unit.
+- If a source natural paragraph is too long, split it only at complete-sentence boundaries into several short source units, and create one complete target block for each short source unit. Never split or merge by page boundaries.
+- Several source natural paragraphs must never be merged into one reader-visible target paragraph. Repair or retranslate them as distinct pairs.
 - Do not split a paired unit merely to hit a word-count target.
 - Do not emit source paragraphs whose complete target translation is missing.
 - Do not emit target paragraphs whose source counterpart is missing, except documented translator notes, editorial notes, frontmatter, or target-only supplements.
 
 硬规则：
 
-- 源语块包含哪些源段落，紧随其后的目标语块必须完整包含这些源段落对应的全部目标语译文。
-- 一个源段落译成多个目标语段落时，这些目标语段落必须绑定在同一个目标语块内。
-- 多个源段落合译成一个目标语段落时，这些源段落和该目标语段落必须绑定在同一个对齐单元内。
+- 一个读者可见对齐单元只能包含一个原著自然段的内容，严禁把多个原著自然段 `S0...Sn` 合并成一个源语块。
+- 每个读者可见 unit 必须恰有一个 source block，并立即跟随恰有一个 target block；target block 必须完整翻译该 source unit。
+- 源自然段过长时，只能在完整句群边界内拆成多个短 source unit，并为每个短 source unit 建立一个完整 target block；不得按页面边界拆分或合并。
+- 多个原著自然段不得合译成一个读者可见目标段；必须修复或重译为各自独立、紧邻的配对。
 - 不得为了凑字数切断对齐关系。
 - 不得输出缺少完整目标语对应的源语段落。
 - 不得输出缺少源语对应的目标语段落；译者注、编辑说明、前置页或目标语补充内容必须另有记录。
@@ -104,14 +106,22 @@ Required machine-readable model:
 {
   "alignment_units": [
     {
-      "id": "u0001",
-      "source_paragraphs": ["s0001", "s0002"],
-      "target_paragraphs": ["t0001", "t0002", "t0003"]
+      "id": "persistent-unit-uuid-1",
+      "source_parent_id": "persistent-parent-uuid-1",
+      "source_text": "complete short source paragraph",
+      "target_text": "完整目标语短段",
+      "source_sha256": "...",
+      "target_sha256": "...",
+      "global_order": 1
     },
     {
-      "id": "u0002",
-      "source_paragraphs": ["s0003"],
-      "target_paragraphs": ["t0004", "t0005"]
+      "id": "persistent-unit-uuid-2",
+      "source_parent_id": "persistent-parent-uuid-1",
+      "source_text": "next complete sentence group from the same long natural paragraph",
+      "target_text": "同一长自然段内下一完整句群的完整译段",
+      "source_sha256": "...",
+      "target_sha256": "...",
+      "global_order": 2
     }
   ]
 }
@@ -121,49 +131,27 @@ The default alignment map path is `qa/bilingual_parallel/alignment_map.json`. It
 
 默认对齐映射路径是 `qa/bilingual_parallel/alignment_map.json`。它是具体书籍工程内的 QA 证据，不得写回 `template/`。
 
-`npm run build:bilingual` reads `chapters/src/*.md`, `chapters/final/*.md`, and the alignment map to build `output/book_bilingual_parallel.epub`. Paragraph IDs can be explicit or generated:
+`npm run build:bilingual` reads the canonical unit manifest and the deterministic alignment projection. Unit IDs are persistent UUIDs retained across harmless insertions; sequential paragraph numbers and source-text hashes are not durable IDs. The builder must reject duplicate IDs, missing IDs, order drift, source/target hash drift, unregistered reader text, and anything other than direct source-then-target children.
 
-- explicit marker before or inside a paragraph: `<!-- id: s0001 -->`, `[id:s0001]`, or `{#s0001}`;
-- generated source IDs: `s0001`, `s0002`, ... in sorted `chapters/src/*.md` paragraph order;
-- generated target IDs: `t0001`, `t0002`, ... in sorted `chapters/final/*.md` paragraph order;
-- local aliases: `{chapter_stem}:p0001`, `s:{chapter_stem}:p0001`, and `t:{chapter_stem}:p0001`.
-
-For durable book production, explicit paragraph IDs are preferred because later chapter edits can change generated sequential IDs.
-
-`npm run build:bilingual` 读取 `chapters/src/*.md`、`chapters/final/*.md` 和对齐映射，生成 `output/book_bilingual_parallel.epub`。段落 ID 可以显式标注，也可以使用生成 ID：
-
-- 段落前或段落内显式标注：`<!-- id: s0001 -->`、`[id:s0001]` 或 `{#s0001}`；
-- 源文生成 ID：按 `chapters/src/*.md` 排序后的段落顺序生成 `s0001`、`s0002`；
-- 目标文生成 ID：按 `chapters/final/*.md` 排序后的段落顺序生成 `t0001`、`t0002`；
-- 本地别名：`{chapter_stem}:p0001`、`s:{chapter_stem}:p0001` 和 `t:{chapter_stem}:p0001`。
-
-正式书籍制作推荐使用显式段落 ID，因为后续章节编辑可能改变自动生成的顺序 ID。
+`npm run build:bilingual` 读取 canonical unit manifest 与确定性 alignment projection。unit ID 是可跨无害插入保持的 persistent UUID；顺序段号和 source-text hash 都不能充当持久 ID。构建器必须拦截重复/缺失 ID、顺序漂移、source/target hash 漂移、未注册读者文字，以及非直接 source-then-target 子节点结构。
 
 ## Reading Chunk Size / 阅读块大小
 
-The EPUB equivalent of a print "one source page, one target page" is a reflowable "one phone-screen-ish source chunk, then one phone-screen-ish target chunk." Do not depend on fixed pages.
+The canonical reading unit is a complete short paragraph pair, not a page or screen. Screen size and word counts are risk signals only and must never merge source natural paragraphs.
 
-纸书“一页原文、一页译文”在 reflowable EPUB 中应转换为“接近一屏的源语块，然后接近一屏的目标语块”。不得依赖固定页。
+EPUB 的 canonical 阅读单位是“完整源文短段 + 完整目标短段”，不是页或屏幕。屏幕尺寸和字数只用于风险提示，绝不能据此合并原著自然段。
 
-Default sizing for phone reading:
+Advisory segmentation inside one source natural paragraph:
 
-- Target-language block recommendation: about 350-550 Chinese characters for Simplified Chinese prose.
-- Soft lower bound: about 150-250 Chinese characters, unless a chapter, scene, poem stanza, or alignment unit naturally ends.
-- Soft upper bound: about 700-900 Chinese characters, unless a single indivisible alignment unit exceeds it.
-- English source block recommendation: about 150-230 words.
-- Dialogue-heavy prose: group a full exchange or small scene, not each line.
-- Poetry: group a stanza or complete poem unit; do not alternate source line, target line, source line, target line unless the source itself is alternating bilingual text.
-- Scholarly, technical, or philosophical prose: group a complete argument unit.
+- Prefer complete short-paragraph units of roughly 60-160 source words for ordinary English prose, but never pad, omit, merge natural paragraphs, or cut an incomplete sentence to meet a number.
+- A naturally short paragraph remains one unit; do not join it to the next paragraph.
+- Dialogue, verse, notes, lists, tables, code, and quotations preserve their Markdown AST block boundary. Do not group multiple natural paragraphs into a scene-sized screen chunk.
 
-手机阅读默认尺寸：
+单个原著自然段内部的建议尺寸：
 
-- 简体中文目标语块建议约 350-550 字。
-- 软下限约 150-250 字，除非章节、场景、诗节或对齐单元自然结束。
-- 软上限约 700-900 字，除非单个不可拆对齐单元已经超过。
-- 英文源语块建议约 150-230 words。
-- 对话密集文本按完整对话轮或小场景成块，不逐句切。
-- 诗歌按诗节或完整诗歌单元成块；除非原文自身就是交替双语文本，否则不做源语一行、目标语一行的交错排法。
-- 学术、技术、哲学文本按完整论点单元成块。
+- 普通英文散文优先采用约 60-160 source words 的完整短段 unit，但不得为凑数而补写、少译、跨自然段合并或切断不完整句子。
+- 原著自然短段保持一个 unit，不得并入下一段。
+- 对话、诗歌、注释、列表、表格、代码和引文保持 Markdown AST block 边界，不得把多个自然段按场景或屏幕大小聚成一块。
 
 ## Reader-Facing Layout / 读者版式
 
@@ -223,9 +211,13 @@ Recommended CSS intent:
 
 ## Non-Regression Boundary / 非退化边界
 
-`chapters/final/` remains the target-language finished manuscript. A bilingual EPUB must be generated as a separate edition from source text, target text, and an alignment map. It must not weaken target-only publication lint, chapter gates, random review, or release requirements.
+The canonical target store remains the only target-language truth. `chapters/translated/` and `chapters/final/` are identical deterministic projections of it. A bilingual EPUB is a separate edition and must not weaken target-only publication lint, chapter gates, random review, or release requirements.
 
-`chapters/final/` 仍然是目标语成书稿。双语 EPUB 必须作为独立版本，由源文、目标文和对齐映射生成。它不得削弱单目标语 EPUB 的出版 lint、章节门禁、随机抽检或 release 要求。
+canonical target store 是唯一目标语事实源；`chapters/translated/` 与 `chapters/final/` 是目标文本完全一致的确定性投影。双语 EPUB 是独立版本，不得削弱单目标语 EPUB 的出版 lint、章节门禁、随机抽检或 release 要求。
+
+Adaptive parallel orchestration may distribute canonical chapters among translation producers, but it must never assign a second producer to create a separate bilingual translation. Target-only and bilingual artifacts consume the same target unit IDs, text, order, and hashes. Independent audit consumers review that canonical target before either edition is released.
+
+自适应并行编排可以把 canonical 章节分配给不同 translation producer，但绝不能另派一组 producer 为双语版重新翻译。单目标语和双语产物必须消费完全相同的目标 unit ID、文本、顺序和 hash；独立 audit consumer 审核的也是这份 canonical target，两个版本通过后才能发布。
 
 Target-only and bilingual outputs may share the same translation-quality evidence for `chapters/final/`, but bilingual output requires additional checks:
 
@@ -253,7 +245,7 @@ Target-only and bilingual outputs may share the same translation-quality evidenc
 
 `npm run check:bilingual` runs `scripts/check_bilingual_parallel.py`. It is intentionally edition-driven, not copyright-mode-driven: the checker reads only `state/pipeline_state.json.edition_type`, `output_editions`, and `bilingual_parallel`. It must not decide bilingual output from `publication_mode`.
 
-`npm run build:bilingual` runs `scripts/build_bilingual_epub.py`. It is also edition-driven and is a no-op when the bilingual edition is disabled. When enabled, it builds the separate bilingual EPUB from source paragraphs, target paragraphs, and `qa/bilingual_parallel/alignment_map.json`; it must not mutate `chapters/final/`.
+`npm run build:bilingual` runs `scripts/build_bilingual_epub.py`. It is edition-driven and is a no-op when disabled. When enabled, it builds from canonical units and their deterministic alignment projection; it must not mutate either target projection.
 
 When the bilingual edition is disabled, the gate is a no-op PASS. When enabled, it checks:
 

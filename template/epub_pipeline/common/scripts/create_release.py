@@ -208,16 +208,74 @@ def latest_round_dir(book_root: Path) -> Path | None:
     return sorted(rounds)[-1][1] if rounds else None
 
 
+def safe_edition_type(value: str) -> str:
+    return re.sub(r"[^A-Za-z0-9_-]+", "_", value or "edition")
+
+
+def expected_epubcheck_records(book_root: Path) -> list[dict]:
+    state = read_json(book_root / "state" / "pipeline_state.json")
+    configured = state.get("output_editions") if isinstance(state, dict) else None
+    enabled = [item for item in configured or [] if isinstance(item, dict) and item.get("enabled") is True]
+    if not enabled:
+        enabled = [{"edition_type": "target_only", "artifact": "output/book.epub"}]
+    records: list[dict] = []
+    for item in enabled:
+        edition_type = str(item.get("edition_type") or "target_only")
+        artifact_value = str(item.get("artifact") or "output/book.epub")
+        artifact = Path(artifact_value)
+        artifact = artifact.resolve() if artifact.is_absolute() else (book_root / artifact).resolve()
+        report_name = "epubcheck.json" if edition_type == "target_only" else f"epubcheck_{safe_edition_type(edition_type)}.json"
+        report_path = book_root / "output" / report_name
+        report = read_json(report_path)
+        checker = report.get("checker", {}) if isinstance(report, dict) else {}
+        evidence = report.get("lifebook_evidence", {}) if isinstance(report, dict) else {}
+        artifact_hash = sha256(artifact) if artifact.is_file() else ""
+        records.append(
+            {
+                "edition_type": edition_type,
+                "artifact_path": rel_or_abs(book_root, artifact),
+                "artifact_sha256": artifact_hash,
+                "report_path": rel_or_abs(book_root, report_path) if report_path.is_file() else "",
+                "report_artifact_sha256": str(evidence.get("artifact_sha256") or ""),
+                "report_artifact_path": str(evidence.get("artifact_path") or ""),
+                "report_edition_type": str(evidence.get("edition_type") or ""),
+                "fatal": int(checker.get("nFatal", 0)) if checker else None,
+                "error": int(checker.get("nError", 0)) if checker else None,
+                "warning": int(checker.get("nWarning", 0)) if checker else None,
+                "hash_match": bool(artifact_hash and evidence.get("artifact_sha256") == artifact_hash),
+                "identity_match": bool(
+                    evidence.get("artifact_path") == rel_or_abs(book_root, artifact)
+                    and evidence.get("edition_type") == edition_type
+                ),
+            }
+        )
+    return records
+
+
 def gate_summary(book_root: Path) -> dict:
     round_dir = latest_round_dir(book_root)
     validation_report = round_dir / "validation_report.json" if round_dir else None
     validation = read_json(validation_report) if validation_report else {}
-    epubcheck = read_json(book_root / "output" / "epubcheck.json")
+    epubcheck_records = expected_epubcheck_records(book_root)
+    target_epubcheck = next(
+        (item for item in epubcheck_records if item.get("edition_type") == "target_only"),
+        epubcheck_records[0] if epubcheck_records else {},
+    )
     lint = read_json(book_root / "output" / "publication_lint.json")
     metrics_path = book_root / "output" / "release" / "translation_metrics.json"
     metrics = read_json(metrics_path)
     literary_review_path = book_root / "qa" / "literary_style" / "literary_style_review.md"
-    epubcheck_checker = epubcheck.get("checker", {}) if isinstance(epubcheck, dict) else {}
+    artifact_gate_path = book_root / "output" / "translation_unit_artifact_check.json"
+    artifact_gate = read_json(artifact_gate_path)
+    artifact_gate_hashes = {
+        str(item.get("kind")): str(item.get("epub_sha256") or "")
+        for item in artifact_gate.get("artifacts", [])
+        if isinstance(item, dict)
+    }
+    enabled_hashes = {
+        ("bilingual" if item.get("edition_type") == "bilingual_parallel" else str(item.get("edition_type"))): str(item.get("artifact_sha256") or "")
+        for item in epubcheck_records
+    }
     lint_issues = lint.get("issues", []) if isinstance(lint, dict) else []
     estimate = metrics.get("pretranslation_estimate", {}) if isinstance(metrics, dict) else {}
     actual = metrics.get("post_translation_actual", {}) if isinstance(metrics, dict) else {}
@@ -231,10 +289,17 @@ def gate_summary(book_root: Path) -> dict:
         "current_review_run_id": validation.get("current_review_run_id", ""),
         "current_run_pass_rounds_required": int(validation.get("current_run_pass_rounds_required", 0) or 0),
         "current_run_pass_rounds_count": int(validation.get("current_run_pass_rounds_count", 0) or 0),
-        "epubcheck_path": "output/epubcheck.json" if epubcheck else "",
-        "epubcheck_fatal": int(epubcheck_checker.get("nFatal", 0)) if epubcheck_checker else None,
-        "epubcheck_error": int(epubcheck_checker.get("nError", 0)) if epubcheck_checker else None,
-        "epubcheck_warning": int(epubcheck_checker.get("nWarning", 0)) if epubcheck_checker else None,
+        "epubcheck_path": target_epubcheck.get("report_path", ""),
+        "epubcheck_fatal": target_epubcheck.get("fatal"),
+        "epubcheck_error": target_epubcheck.get("error"),
+        "epubcheck_warning": target_epubcheck.get("warning"),
+        "epubcheck_records": epubcheck_records,
+        "translation_artifact_gate_path": rel_or_abs(book_root, artifact_gate_path) if artifact_gate_path.is_file() else "",
+        "translation_artifact_gate_status": artifact_gate.get("status", ""),
+        "translation_artifact_reader_policy": artifact_gate.get("reader_policy", ""),
+        "translation_artifact_reader_status": artifact_gate.get("reader_validation_status", ""),
+        "translation_artifact_warnings": artifact_gate.get("warnings", []),
+        "translation_artifact_hash_match": bool(enabled_hashes and artifact_gate_hashes == enabled_hashes),
         "publication_lint_path": "output/publication_lint.json" if lint else "",
         "publication_lint_issue_count": len(lint_issues) if lint else None,
         "translation_metrics_path": "output/release/translation_metrics.json" if metrics else "",
@@ -291,10 +356,27 @@ def require_pass_gates(summary: dict) -> None:
     confidence = summary.get("release_confidence")
     if confidence is None or float(confidence) < 0.80:
         errors.append("release_confidence is missing or below 0.80")
-    if not summary.get("epubcheck_path"):
-        errors.append("output/epubcheck.json is missing")
-    if summary.get("epubcheck_fatal") not in (0, None) or summary.get("epubcheck_error") not in (0, None):
-        errors.append("EPUBCheck fatal/error count is not zero")
+    epubcheck_records = summary.get("epubcheck_records") or []
+    if not epubcheck_records:
+        errors.append("EPUBCheck evidence is missing for enabled EPUB artifacts")
+    for item in epubcheck_records:
+        label = item.get("edition_type") or "unknown"
+        if not item.get("report_path"):
+            errors.append(f"EPUBCheck report is missing for {label}")
+        if not item.get("hash_match"):
+            errors.append(f"ARTIFACT_REPORT_HASH_MISMATCH: EPUBCheck report is stale or unbound for {label}")
+        if not item.get("identity_match"):
+            errors.append(f"ARTIFACT_REPORT_HASH_MISMATCH: EPUBCheck report artifact identity differs for {label}")
+        if any(item.get(key) not in (0,) for key in ("fatal", "error", "warning")):
+            errors.append(f"EPUBCheck fatal/error/warning count is not zero for {label}")
+    if summary.get("translation_artifact_gate_status") != "PASS":
+        errors.append("current translation-unit artifact gate is not PASS")
+    if summary.get("translation_artifact_reader_policy") not in {"required", "if_available"}:
+        errors.append("release artifact gate was not run with a release reader policy")
+    if summary.get("translation_artifact_reader_status") not in {"PASS", "SKIPPED_UNAVAILABLE"}:
+        errors.append("real-reader smoke test neither passed nor recorded SKIPPED_UNAVAILABLE")
+    if not summary.get("translation_artifact_hash_match"):
+        errors.append("translation-unit artifact evidence hashes do not match all enabled EPUBs")
     if not summary.get("publication_lint_path"):
         errors.append("output/publication_lint.json is missing")
     elif summary.get("publication_lint_issue_count") not in (0, None):
@@ -446,6 +528,10 @@ def main() -> None:
     issues = [clean_note_text(item) for item in args.issues]
     fixes = [clean_note_text(item) for item in args.fixes]
     risks = [clean_note_text(item) for item in args.risks]
+    if summary.get("translation_artifact_reader_status") == "SKIPPED_UNAVAILABLE":
+        risks.append(
+            "REAL_READER_SKIPPED_UNAVAILABLE: no supported EPUB reader was detected on the build computer, so real-reader viewport and navigation smoke testing was not performed; full static gates and EPUBCheck still passed. / 构建电脑未检测到受支持 EPUB 阅读器，因此未执行真实阅读器视口与目录跳转冒烟测试；全书静态门禁和 EPUBCheck 仍已通过。"
+        )
     note = [
         f"## Release {version} / 版本 {version}",
         "",
@@ -487,6 +573,13 @@ def main() -> None:
         f"- epubcheck_fatal: `{summary.get('epubcheck_fatal') if summary.get('epubcheck_fatal') is not None else 'MISSING'}`",
         f"- epubcheck_error: `{summary.get('epubcheck_error') if summary.get('epubcheck_error') is not None else 'MISSING'}`",
         f"- epubcheck_warning: `{summary.get('epubcheck_warning') if summary.get('epubcheck_warning') is not None else 'MISSING'}`",
+        *[
+            f"- epubcheck_{item.get('edition_type')}: `{item.get('report_path') or 'MISSING'}` artifact_sha256=`{item.get('artifact_sha256') or 'MISSING'}` hash_match=`{item.get('hash_match')}`"
+            for item in summary.get("epubcheck_records", [])
+        ],
+        f"- translation_artifact_gate: `{summary.get('translation_artifact_gate_path') or 'MISSING'}`",
+        f"- translation_artifact_gate_status: `{summary.get('translation_artifact_gate_status') or 'MISSING'}`",
+        f"- real_reader_validation_status: `{summary.get('translation_artifact_reader_status') or 'MISSING'}`",
         f"- publication_lint: `{summary.get('publication_lint_path') or 'MISSING'}`",
         f"- publication_lint_issue_count: `{summary.get('publication_lint_issue_count') if summary.get('publication_lint_issue_count') is not None else 'MISSING'}`",
         f"- translation_metrics: `{summary.get('translation_metrics_path') or 'MISSING'}`",

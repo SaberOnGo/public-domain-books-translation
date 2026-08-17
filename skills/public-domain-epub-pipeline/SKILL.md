@@ -11,6 +11,28 @@ Use this skill when an AI agent is asked to create a book project, add or update
 
 ## Core Workflow / 核心流程
 
+### Canonical translation-unit gate / Canonical 翻译单元门禁
+
+For new or migrated translation projects, treat `translation_units/` as the only authoritative source-target store. Lock the full-source proper-noun discovery manifest, candidate decisions, `entity_id` register, occurrence ledger, terminology, and translation contract before parallel translation. When the user does not choose a proper-noun display mode, policy `3` is allowed only with `selection_source=default`; it never waives discovery or review. Translators write `{{pn:entity_id}}` templates in worker-owned chapter patches, and the single CAS merger renders names from locked CSV data. `chapters/translated` and `chapters/final` are deterministic identical-target projections and must not be edited independently.
+
+新建或迁移翻译工程时，`translation_units/` 是唯一权威 source-target store。并行翻译前必须锁定全书专名发现 manifest、候选裁决、`entity_id` 注册表、occurrence ledger、术语和翻译合同。用户未选择专名显示方式时可用策略 `3`，但必须记录 `selection_source=default`，且仍须完成发现与复核。译者只在自有章节 patch 中写 `{{pn:entity_id}}` 模板；唯一 CAS 合并器只从锁定 CSV 渲染名称。`chapters/translated` 和 `chapters/final` 是目标文本完全一致的确定性投影，不得分别手改。
+
+For long-book parallel work, read `references/adaptive_parallel_orchestration.md`, run the weighted planner, and use Scheme B: disjoint translation producers, independent chapter audit consumers, and one coordinator/merger. Never infer capacity from page count alone. Unknown or unauthorized client capability means zero spawned workers. GPT-family clients may spawn at most four workers and non-GPT clients at most eight; start with no more than two and scale only after the pilot satisfies the recorded structural, proper-noun, semantic, rework, and conflict thresholds. A reviewer must not be that chapter's translation owner. Different chapters use chapter-scoped CAS and audit invalidation; same-chapter stale patches still fail.
+
+长书并行工作必须读取 `references/adaptive_parallel_orchestration.md`、运行加权规划器并采用方案 B：互不重叠的 translation producer、独立 chapter audit consumer 和唯一 coordinator/merger。不得只按页数推断并发。客户端能力未知或未经用户授权时派生 worker 为 0；GPT 家族最多 4 个，非 GPT 最多 8 个；首轮最多 2 个，只有 pilot 达到结构、专名、语义、返工和冲突阈值才扩容。reviewer 不得是该章 translation owner。不同章节使用按章 CAS 和局部审计失效；同章陈旧 patch 仍必须失败。
+
+When the active client exposes safe subagent creation, its coordinator must populate the capability file from live tool/model metadata, run `npm run translation:orchestration:plan`, and create no more workers than the resulting `spawned_worker_count`. Keep the returned task/agent IDs in run evidence and enforce the planned producer/auditor roles. Re-run the planner after the pilot, rate-limit changes, budget changes, or quality regressions. If the client cannot create workers, continue serially; do not emulate parallel writes with uncontrolled processes.
+
+活动客户端具备安全子代理创建能力时，coordinator 必须依据实时 tool/model metadata 填写能力文件，运行 `npm run translation:orchestration:plan`，且实际创建数不得超过 `spawned_worker_count`。返回的 task/agent ID 必须进入执行证据，并严格执行规划中的 producer/auditor 角色。pilot 完成、限流变化、预算变化或质量退化后必须重跑规划器。客户端不能创建 worker 时应串行继续，不得用不受控进程模拟并行写入。
+
+For bilingual editions, one complete source short paragraph must be followed immediately by its complete target paragraph. A unit may split one long natural paragraph only at complete-sentence boundaries; it must never cross two source natural paragraphs. Sentence-by-sentence subtitles, viewport/page chunking, or several source units followed by a target-language batch are release blockers. Structural PASS and EPUBCheck never substitute for hash-bound semantic omission/addition/neighbor-boundary audits.
+
+双语版必须是“完整源语短段后立即跟随该段完整目标语译段”。长自然段只能在完整句群边界内部拆分，绝不跨两个源自然段。逐句字幕、按视口/页面聚块、连续多个源语单元后集中目标语都属于发布阻塞。结构 PASS 与 EPUBCheck 不能替代绑定 hash 的遗漏、增译和邻段串译语义审计。
+
+Ordinary translation and builds use full-book static DOM/text/order/navigation checks and EPUBCheck only. A real-reader smoke test is attempted only for the final release candidate. If no supported reader is installed, record `SKIPPED_UNAVAILABLE`, allow release, and disclose the unverified boundary to the user; never skip the static gates.
+
+普通翻译和构建只运行全书 DOM/文本/顺序/目录静态检查与 EPUBCheck。真实阅读器只在最终发布候选阶段尝试；未安装受支持阅读器时记录 `SKIPPED_UNAVAILABLE`、允许发布并向用户披露未验证边界，但不得跳过静态门禁。
+
 1. Read `AGENTS.md`.
    先读取 `AGENTS.md`。
 2. Before doing any repository task, read the relevant `template/` files. The template is the source of truth; do not rely on memory or prior runs.
@@ -26,6 +48,7 @@ Use this skill when an AI agent is asked to create a book project, add or update
    - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
    - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
    - `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
+   - `template/epub_pipeline/common/references/adaptive_parallel_orchestration.md`
    - `template/epub_pipeline/common/references/quality_gate_framework.md`
    - `template/epub_pipeline/common/references/proper_noun_display_policy.md`
    - `template/epub_pipeline/common/references/note_marker_policy.md`
@@ -37,6 +60,7 @@ Use this skill when an AI agent is asked to create a book project, add or update
    - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
    - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
    - `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
+   - `template/epub_pipeline/common/references/adaptive_parallel_orchestration.md`
    - `template/epub_pipeline/common/references/quality_gate_framework.md`
    - `template/epub_pipeline/common/references/proper_noun_display_policy.md`
    - `template/epub_pipeline/common/references/note_marker_policy.md`

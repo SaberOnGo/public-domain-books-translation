@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+import importlib.util
+import json
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -56,6 +60,42 @@ class LanguagePairTemplateNameTests(unittest.TestCase):
 
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertRegex(result.stdout, r"books/zh-Hans/\d+_template_name_smoke_delete_me")
+
+    def test_language_overlay_cannot_remove_canonical_translation_release_gates(self) -> None:
+        script = REPO_ROOT / "books" / "scripts" / "create_book_project.py"
+        spec = importlib.util.spec_from_file_location("lifebook_create_book_project_test", script)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as temporary:
+            destination = Path(temporary) / "package.json"
+            shutil.copyfile(TEMPLATE_ROOT / "common" / "package.json", destination)
+            module.merge_package_json(
+                TEMPLATE_ROOT / "Ancient-Greek-to-Simplified-Chinese" / "package.json",
+                destination,
+            )
+            scripts = json.loads(destination.read_text(encoding="utf-8"))["scripts"]
+            self.assertIn("translation:contract:validate", scripts["preflight:template"])
+            self.assertIn("translation:prebuild", scripts["build:epub"])
+            self.assertIn("translation:artifact:release-validate", scripts["release:create"])
+            self.assertIn("--all-enabled", scripts["check:epub"])
+            self.assertIn("reader:static-check", scripts["reader:check"])
+            self.assertIn("plan_parallel_translation.py", scripts["translation:orchestration:plan"])
+
+    def test_every_language_translation_prompt_uses_canonical_patches(self) -> None:
+        prompts = sorted(TEMPLATE_ROOT.glob("*-to-*/prompts/07_translate_chapters_*.md"))
+        self.assertGreaterEqual(len(prompts), 10)
+        for prompt in prompts:
+            with self.subTest(prompt=prompt.relative_to(REPO_ROOT).as_posix()):
+                text = prompt.read_text(encoding="utf-8")
+                self.assertIn("translation_units/", text)
+                self.assertIn("chapter patch", text)
+                self.assertIn("CAS", text)
+                self.assertIn("proper_nouns.csv", text)
+                self.assertIn("adaptive_parallel_orchestration.md", text)
+                self.assertNotIn("章节译文先写入 `chapters/translated/`", text)
+                self.assertNotIn("- `chapters/translated/{same_filename}.md`", text)
 
 
 if __name__ == "__main__":

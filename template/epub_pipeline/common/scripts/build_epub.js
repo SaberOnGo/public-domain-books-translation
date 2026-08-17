@@ -49,7 +49,11 @@ function escapeHtml(text) {
 function inline(text) {
   return escapeHtml(text)
     .replace(/(^|[^\w])\[(\d+)\](?!\w)/g, '$1<sup class="note-ref">[$2]</sup>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>');
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/__([^_]+)__/g, '<strong>$1</strong>')
+    .replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, '$1<em>$2</em>')
+    .replace(/(^|[^_])_([^_]+)_(?!_)/g, '$1<em>$2</em>');
 }
 
 function parseMarkdownTable(lines, start) {
@@ -157,9 +161,17 @@ function resolveBookPath(fromFile, ref) {
 function markdownToBody(file, imageMap) {
   const out = [];
   let para = [];
+  let pendingUnit = null;
+  const markerPattern = /^<!--\s*lifebook-unit:([^\s]+)\s+source-sha256:([0-9a-f]{64})\s+target-sha256:([0-9a-f]{64})\s*-->$/;
+  const takeUnitAttrs = () => {
+    if (!pendingUnit) return '';
+    const attrs = ` data-unit-id="${escapeHtml(pendingUnit.id)}" data-source-sha256="${pendingUnit.sourceHash}" data-target-sha256="${pendingUnit.targetHash}"`;
+    pendingUnit = null;
+    return attrs;
+  };
   const flush = () => {
     if (para.length) {
-      out.push(`<p>${inline(para.join(' ').trim())}</p>`);
+      out.push(`<p${takeUnitAttrs()}>${inline(para.join(' ').trim())}</p>`);
       para = [];
     }
   };
@@ -168,20 +180,27 @@ function markdownToBody(file, imageMap) {
   for (let i = 0; i < lines.length; i += 1) {
     const raw = lines[i];
     const line = raw.trimEnd();
+    const marker = markerPattern.exec(line.trim());
+    if (marker) {
+      flush();
+      if (pendingUnit) throw new Error(`Two LifeBook unit markers without reader content in ${file}`);
+      pendingUnit = { id: marker[1], sourceHash: marker[2], targetHash: marker[3] };
+      continue;
+    }
     if (!line.trim()) {
       flush();
       continue;
     }
     if (isRawHtmlLine(line)) {
       flush();
-      out.push(line.trim());
+      out.push(`<div${takeUnitAttrs()}>${line.trim()}</div>`);
       continue;
     }
     const table = parseMarkdownTable(lines, i);
     if (table) {
       if (table.caption && para.join(' ').trim() === table.caption) para = [];
       flush();
-      out.push(tableHtml(table.rows, table.caption));
+      out.push(`<div${takeUnitAttrs()}>${tableHtml(table.rows, table.caption)}</div>`);
       i = table.next - 1;
       continue;
     }
@@ -191,25 +210,26 @@ function markdownToBody(file, imageMap) {
       const src = resolveBookPath(file, image[2]);
       const copied = copyAsset(src, 'images');
       imageMap.set(copied.href, copied);
-      out.push(`<figure><img src="${copied.href}" alt="${escapeHtml(image[1])}" /><figcaption>${inline(image[1])}</figcaption></figure>`);
+      out.push(`<figure${takeUnitAttrs()}><img src="${copied.href}" alt="${escapeHtml(image[1])}" /><figcaption>${inline(image[1])}</figcaption></figure>`);
       continue;
     }
     const heading = /^(#{1,6})\s+(.+)$/.exec(line);
     if (heading) {
       flush();
       const level = Math.min(heading[1].length, 3);
-      out.push(`<h${level}>${inline(heading[2].trim())}</h${level}>`);
+      out.push(`<h${level}${takeUnitAttrs()}>${inline(heading[2].trim())}</h${level}>`);
       continue;
     }
     const ordered = /^\d+\.\s+(.+)$/.exec(line.trim());
     if (ordered) {
       flush();
-      out.push(`<p class="list-item">${inline(ordered[1])}</p>`);
+      out.push(`<p class="list-item"${takeUnitAttrs()}>${inline(ordered[1])}</p>`);
       continue;
     }
     para.push(line.trim());
   }
   flush();
+  if (pendingUnit) throw new Error(`LifeBook unit marker has no reader content in ${file}: ${pendingUnit.id}`);
   return out.join('\n');
 }
 
@@ -313,6 +333,11 @@ function main() {
     '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />',
     '<item id="css" href="styles/book.css" media-type="text/css" />',
   ];
+  const translationManifest = path.join(outDir, 'translation_unit_manifest.json');
+  if (fs.existsSync(translationManifest)) {
+    fs.copyFileSync(translationManifest, path.join(workDir, 'EPUB', 'translation-unit-manifest.json'));
+    manifestItems.push('<item id="translation-unit-manifest" href="translation-unit-manifest.json" media-type="application/json" />');
+  }
   const navItems = [];
 
   const frontmatter = listFiles(frontmatterDir, '.md').sort((a, b) => {
@@ -326,7 +351,7 @@ function main() {
     const firstHeading = readerTitle(file, readerTitles);
     const body = hasMarkdownHeading(file)
       ? markdownToBody(file, imageMap)
-      : `<h1>${escapeHtml(firstHeading)}</h1>\n${markdownToBody(file, imageMap)}`;
+      : `<h1 data-lifebook-editorial="reader-title">${escapeHtml(firstHeading)}</h1>\n${markdownToBody(file, imageMap)}`;
     writeText(path.join(workDir, 'EPUB', href), xhtml(firstHeading, body, language));
     manifestItems.push(`<item id="${idref}" href="${href}" media-type="application/xhtml+xml" />`);
     spine.push(`<itemref idref="${idref}" />`);
@@ -349,10 +374,10 @@ function main() {
 <head><meta charset="utf-8" /><title>目录</title><link rel="stylesheet" type="text/css" href="styles/book.css" /></head>
 <body>
 <nav epub:type="toc" id="toc"><h1>目录</h1><ol>${navItems.join('\n')}</ol></nav>
-<nav epub:type="landmarks" id="landmarks" hidden="hidden"><h2>导览</h2><ol>
+${coverHref || bookInfoHref ? `<nav epub:type="landmarks" id="landmarks" hidden="hidden"><h2>导览</h2><ol>
 ${coverHref ? `<li><a epub:type="cover" href="${coverHref}">封面</a></li>` : ''}
 ${bookInfoHref ? `<li><a epub:type="frontmatter" href="${bookInfoHref}">书籍信息</a></li>` : ''}
-</ol></nav>
+</ol></nav>` : ''}
 </body>
 </html>
 `);

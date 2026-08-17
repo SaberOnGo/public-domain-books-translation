@@ -229,7 +229,11 @@ def inline_markdown(text: str) -> str:
         escaped,
         flags=re.ASCII,
     )
-    return re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
+    escaped = re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
+    escaped = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", escaped)
+    escaped = re.sub(r"__([^_]+)__", r"<strong>\1</strong>", escaped)
+    escaped = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", escaped)
+    return re.sub(r"(?<!_)_([^_]+)_(?!_)", r"<em>\1</em>", escaped)
 
 
 def markdown_body(path: Path) -> str:
@@ -319,7 +323,18 @@ def load_alignment_units(path: Path, book_root: Path, state: dict) -> list[dict]
             raise SystemExit("Alignment map list format lacks required input-file provenance hashes.")
         units = data
     else:
-        validate_alignment_provenance(data, book_root, require_provenance)
+        if data.get("schema_version") == "canonical-units-1.0":
+            store = book_root / str(data.get("canonical_unit_store") or "")
+            manifest_path = book_root / "output" / "translation_unit_manifest.json"
+            if not store.is_file() or sha256_file(store) != data.get("canonical_unit_store_sha256"):
+                raise SystemExit("Canonical unit store changed; rematerialize bilingual alignment map.")
+            if not manifest_path.is_file():
+                raise SystemExit("Canonical translation-unit manifest is missing.")
+            manifest = read_json(manifest_path)
+            if manifest.get("target_unit_manifest_sha256") != data.get("target_unit_manifest_sha256"):
+                raise SystemExit("Canonical target manifest changed; rematerialize bilingual alignment map.")
+        else:
+            validate_alignment_provenance(data, book_root, require_provenance)
         units = data.get("alignment_units")
     if not isinstance(units, list) or not units:
         raise SystemExit("Alignment map must contain a non-empty alignment_units list.")
@@ -329,7 +344,12 @@ def load_alignment_units(path: Path, book_root: Path, state: dict) -> list[dict]
     return units
 
 
-def render_paragraphs(paragraphs: list[str]) -> str:
+def render_paragraphs(paragraphs: list[str], unit_type: str = "body", heading_level: int = 0) -> str:
+    if unit_type == "heading":
+        if len(paragraphs) != 1:
+            raise SystemExit("Canonical heading unit must contain exactly one source or target text block.")
+        level = max(1, min(6, heading_level or 2))
+        return f'<h{level} class="bitext-section-heading">{inline_markdown(paragraphs[0])}</h{level}>'
     rendered: list[str] = []
     for text in paragraphs:
         stripped = text.strip()
@@ -505,6 +525,10 @@ def main() -> None:
     manifest_items: list[str] = []
     spine_items: list[str] = []
     nav_items: list[str] = []
+    translation_manifest = book_root / "output" / "translation_unit_manifest.json"
+    if translation_manifest.is_file():
+        shutil.copyfile(translation_manifest, work_dir / "EPUB" / "translation-unit-manifest.json")
+        manifest_items.append('\n    <item id="translation-unit-manifest" href="translation-unit-manifest.json" media-type="application/json" />')
     doc_index = 0
 
     for frontmatter in sorted((book_root / "frontmatter").glob("*.md"), key=frontmatter_rank):
@@ -524,41 +548,29 @@ def main() -> None:
         key_path = Path(group_key)
         href = f"bilingual_{slug(key_path.stem if key_path.suffix else group_key)}.xhtml"
         title_text = reader_title(book_root / group_key, book_root, reader_titles)
-        sections: list[str] = [f"<h1>{html.escape(title_text)}</h1>"]
-        body_units = [unit for unit in group if str(unit.get("unit_type") or "body") != "note"]
-        note_units = [unit for unit in group if str(unit.get("unit_type") or "body") == "note"]
-        for index, unit in enumerate(body_units, start=1):
+        sections: list[str] = [f'<h1 data-lifebook-editorial="reader-title">{html.escape(title_text)}</h1>']
+        for index, unit in enumerate(group, start=1):
             unit_id = str(unit.get("id") or f"u{index:04d}")
+            source_hash = str(unit.get("source_sha256") or "")
+            target_hash = str(unit.get("target_sha256") or "")
+            if not re.fullmatch(r"[0-9a-f]{64}", source_hash) or not re.fullmatch(r"[0-9a-f]{64}", target_hash):
+                raise SystemExit(f"Canonical bilingual unit lacks source/target hashes: {unit_id}")
             source_texts = resolve_texts(unit, "source_paragraphs", source_paragraphs, unit_id)
             target_texts = resolve_texts(unit, "target_paragraphs", target_paragraphs, unit_id)
+            unit_type = str(unit.get("unit_type") or "body")
+            heading_level = int(unit.get("markdown_heading_level") or 0)
+            note_class = " bitext-note-unit" if unit_type == "note" else ""
             sections.append(
-                f'<section class="bitext-unit" data-align-id="{html.escape(unit_id, quote=True)}">\n'
+                f'<section class="bitext-unit{note_class}" data-align-id="{html.escape(unit_id, quote=True)}" '
+                f'data-source-sha256="{source_hash}" data-target-sha256="{target_hash}">\n'
                 f'<div class="bitext-source" xml:lang="{source_language}" lang="{source_language}">\n'
-                f"{render_paragraphs(source_texts)}\n"
+                f"{render_paragraphs(source_texts, unit_type, heading_level)}\n"
                 "</div>\n"
                 f'<div class="bitext-target" xml:lang="{target_language}" lang="{target_language}">\n'
-                f"{render_paragraphs(target_texts)}\n"
+                f"{render_paragraphs(target_texts, unit_type, heading_level)}\n"
                 "</div>\n"
                 "</section>"
             )
-        if note_units:
-            note_sections: list[str] = ['<section class="chapter-notes" epub:type="footnotes">', "<h2>\u672c\u7ae0\u6ce8\u91ca</h2>"]
-            for index, unit in enumerate(note_units, start=1):
-                unit_id = str(unit.get("id") or f"note-{index:04d}")
-                source_texts = resolve_texts(unit, "source_paragraphs", source_paragraphs, unit_id)
-                target_texts = resolve_texts(unit, "target_paragraphs", target_paragraphs, unit_id)
-                note_sections.append(
-                    f'<div class="bitext-unit bitext-note-unit" data-align-id="{html.escape(unit_id, quote=True)}">\n'
-                    f'<div class="bitext-source" xml:lang="{source_language}" lang="{source_language}">\n'
-                    f"{render_paragraphs(source_texts)}\n"
-                    "</div>\n"
-                    f'<div class="bitext-target" xml:lang="{target_language}" lang="{target_language}">\n'
-                    f"{render_paragraphs(target_texts)}\n"
-                    "</div>\n"
-                    "</div>"
-                )
-            note_sections.append("</section>")
-            sections.append("\n".join(note_sections))
         write_text(work_dir / "EPUB" / href, xhtml_doc(title_text, "\n".join(sections), target_language))
         manifest_items.append(f'\n    <item id="doc{doc_index}" href="{href}" media-type="application/xhtml+xml" />')
         spine_items.append(f'\n    <itemref idref="doc{doc_index}" />')

@@ -1,8 +1,16 @@
 # 08a Per-Chapter Post-Translation Full Check / 每章译后全量检查
 
-Run this node immediately after one chapter is written to `chapters/translated/{chapter}.md`. Do not translate the next chapter first.
+Run this node immediately after one chapter patch is merged into the current immutable canonical generation. `chapters/translated/{chapter}.md` and `chapters/final/{chapter}.md` are read-only projections, never independent review sources.
 
-每章写入 `chapters/translated/{chapter}.md` 后，必须立即执行本节点。不得先翻译下一章。
+每章 patch 合并到当前 immutable canonical generation 后，必须立即执行本节点。`chapters/translated/{chapter}.md` 与 `chapters/final/{chapter}.md` 只是同一目标文本的只读投影，不得分别审校或手改。
+
+After proper-noun discovery, terminology, and the translation contract are locked, different chapters may be translated and audited under `references/adaptive_parallel_orchestration.md`. A translation producer owns only its chapter patch; an independent audit consumer owns the chapter audit run; the reviewer must not be a recorded translation owner for that chapter. Follow the queue's batch ID, per-unit token budget, and maximum-attempt fields; every retry after attempt 1 must preserve the prior failure evidence. A unit audit must bind the current source/target hashes, translation owner, contract, terminology, proper-noun register, occurrence ledger, reviewer/model, rubric, timestamp, and batch. Scalar `PASS` values are invalid: omission, addition, neighbor-boundary contamination, and numbers/names/negation/notes each require structured evidence. A full-chapter PASS must bind the exact ordered unit IDs and current chapter digest. Validation seals evidence per chapter; never edit a sealed run. An unrelated chapter merge must not invalidate this chapter, but any change to this chapter's source, target, owner, or locked revisions does.
+
+A failed or just-fixed chapter may not enter downstream review, projection, build, or release. This is not a global producer stop: after the book-level locks, other independently owned chapters may continue. Treat `allow_next_chapter` as a legacy field meaning only that the current chapter may advance.
+
+专名发现、术语和翻译合同锁定后，不同章节可按 `references/adaptive_parallel_orchestration.md` 并行翻译、并行审计。translation producer 只拥有自己的 chapter patch；独立 audit consumer 拥有该章 audit run；reviewer 不得与该章记录的 translation owner 相同。必须遵守 queue 的 batch ID、逐 unit token 预算和最大尝试次数；第 2 次起的重试必须保留前次失败证据。unit audit 必须绑定当前 source/target hash、translation owner、合同、术语、专名表、occurrence ledger、reviewer/model、rubric、时间戳和 batch。单独字符串 `PASS` 无效；遗漏、增译、邻段串译、数字/专名/否定/注释四类检查均须提供结构化 evidence。全章 PASS 必须绑定精确有序 unit ID 与当前 chapter digest。校验器按章封存证据；封存轮不得再编辑。无关章节合并不得使本章失效，但本章 source、target、owner 或锁定 revision 变化必须使其失效。
+
+失败或刚修复的章节不得进入后续审校、投影、构建或发布。这不是全局 producer 停止信号：全书合同锁定后，其他独立 owner 的章节可继续。`allow_next_chapter` 仅表示当前章可向下游流转的旧兼容字段。
 
 ## Scope / 范围
 
@@ -143,4 +151,4 @@ allow_next_chapter: true
 
 Run `npm run check:chapter-controls` or `npm run preflight:template` before moving on when tooling is available. The gate must fail if any translated chapter lacks a closed zero-issue control file.
 
-如果工具可用，进入下一章前运行 `npm run check:chapter-controls` 或 `npm run preflight:template`。任何已译章节缺少零问题闭环 control 文件时，门禁必须失败。
+如果工具可用，在本章进入下游投影/终稿前运行 `npm run check:chapter-controls` 或 `npm run preflight:template`。并行模式下，其他独立 owner 的章节可以继续生产；本章及依赖本章上下文的工作不得越过失败门禁。任何已译章节缺少零问题闭环 control 文件时，整书构建和发布门禁必须失败。

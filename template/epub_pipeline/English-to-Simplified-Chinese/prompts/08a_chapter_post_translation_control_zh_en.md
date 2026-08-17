@@ -4,14 +4,14 @@
 
 在每章翻译完成后，立即只针对该章做全章文字检查和必要修复，避免风格、语气、可读性、术语、注释和读者可见文字问题被拖到分层随机抽检阶段才暴露。
 
-本节点是当前章的译后文字硬门禁，不是全书门禁，也不是抽样审校。未通过时不得进入下一章翻译、后续章节审校、`chapters/final/` 或 EPUB 构建。
+本节点是当前章的译后文字硬门禁，不是全书门禁，也不是抽样审校。未通过时，该章不得进入后续章节审校、`chapters/final/`、EPUB 构建或发布；全书合同锁定后，其他独立 owner 的章节可按自适应计划继续翻译和审计。`allow_next_chapter` 只是当前章可下游流转的旧兼容字段。
 
 本节点必须先做“只看中文”的独立润色判断：暂时不看英文原文，只阅读译文，判断它是否像一本自然的中文书。若中文本身不自然、长句不断气、翻译腔明显或像说明书，即使事实大体准确，也必须先修中文，再进入源文对照校准。
 
 ## 输入 / Input
 
 - `chapters/src/{NNN_slug}.md`
-- `chapters/translated/{NNN_slug}.md`
+- 当前 canonical generation 中该章的 source-target units（`chapters/translated` 仅可作为只读投影核对）
 - `chapters/notes/{NNN_slug}.*`（如有）
 - `metadata/style_profile.md`
 - `metadata/book_specific_translation_research.md`
@@ -33,7 +33,7 @@
 - 本章译后全量检查范围，明确覆盖当前章整章，而不是抽样、全书扫描或只看用户点名项目。
 - metadata/nav/目录中由本章产生的标题和链接、正文、注释、图表/公式/表格/图片的读者可见文字接口、样式和读者可见内容的检查结论。
 - 通俗化、可读性、润色、叙述节奏、术语、专名、译注、数字、事实关系和读者理解门槛的检查结论。
-- 标题人名检查结果：章节标题/副标题/目录题名只使用中文译名；标题中的人名不计入“正文首次出现”；英文原名只出现在正文第一次自然出现处、译注或术语表。
+- 标题专名检查结果：章节标题/副标题/目录题名不计入“正文首次出现”，并使用锁定 CSV 的 `subsequent_rendering`；策略 `1`/`3`/`5` 通常显示中文，策略 `2`/`4` 保留原名，标题不得追加首次出现括注。
 - 重点专有名词译表检查结果：必须读取 `glossary/proper_nouns.csv` 的 `display_policy`、`first_rendering`、`subsequent_rendering`、`note_required` 和 `repeat_original_allowed_when`，核对本章正文是否按用户设置或默认策略 `3` 呈现。
 - 原词呈现检查结果：普通名词、历史制度、身份称谓、专业术语和文化负载词正文原则上用中文译名或准确意译；原词、定义和译名理由优先放入本章译注、章末注或术语表。正文出现 `中文译名（source term）` 只允许作为少量例外，且必须记录必要性理由。
 - 术语表逐项审计结果：必须读取 `glossary/terms.csv` 的 `display_policy`、`forbidden_body_renderings`、`note_text` 和 `exception_reason`，逐项检查本章正文。发现禁用写法、未授权正文括注原词、裸露源语词或误导性泛译，必须修复后追加复查。
@@ -131,7 +131,7 @@ polysemy_unresolved_count: 0
 
 ## 并行 / Parallelism
 
-默认逐章闭环：上一章未通过本节点时，不得进入下一章翻译。只有项目明确批准并行批处理时，才可并行处理不同章节；即便并行，每章也必须独立 PASS 且 `allow_next_chapter: true` 后才可进入后续流程，流水线不得把未通过章节视为已完成。
+专名、术语和合同锁定后，允许不同章节并行翻译与并行检查；同一章节仍必须独立闭环。每个 audit run 必须绑定当前 canonical manifest、unit store、contract、proper-noun ledger、术语 revision 与 reviewer/model/rubric 身份。必须遵守 queue 的 batch ID、逐 unit token 预算和最大尝试次数，第 2 次起保留前次失败证据。每个 unit 的遗漏、增译、邻段串译、数字/专名/否定/注释检查必须分别包含结构化 `status`、非空 evidence、时间戳和 batch；单独字符串 `PASS`、手写总状态或旧 generation 的报告无效。全章 PASS 必须绑定该章 unit ID 的精确顺序与 chapter digest，并在完整通过后封存 unit/chapter/batch/queue 的证据哈希；封存轮不得修改。
 
 ## 输出 / Output
 

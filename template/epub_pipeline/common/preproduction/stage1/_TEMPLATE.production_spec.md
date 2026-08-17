@@ -75,12 +75,31 @@ human_required: false
 - 其他语言方向只有用户明确写明“请输出 edition_type: bilingual_parallel，同时生成目标语言版 EPUB 和源语言-目标语言双语对照版 EPUB”时，才生成双语对照版。
 - `target_only` 成书稿仍以 `chapters/final/` 为准；双语版不得把源文块写入 `chapters/final/`，不得降低单目标语 EPUB 的章节门禁、publication lint、随机抽检和 release 要求。
 - 双语版必须遵守 `references/bilingual_parallel_edition_policy.md`，由源文、目标语成书稿和对齐映射生成。
+- 双语 visible unit 固定为“完整源语短段 -> 紧随的完整目标语译段”；不得逐句交错、跨两个源自然段、按页面/视口聚合或连续多段源文后集中目标语。
+- 翻译前必须记录 `state/translation_contract.json`，完成全书专名 discovery/candidate decision/`entity_id`/occurrence ledger/CSV 锁定。用户未选专名策略时默认策略 `3` 并记录 `selection_source=default`，不得以默认值跳过发现。
+- `translation_units/` 是唯一权威 store；并行 worker 只输出 chapter patch，CAS 合并器唯一写入。`chapters/translated` 与 `chapters/final` 从同一 target hash 投影。
 - 双语对齐映射默认写入 `qa/bilingual_parallel/alignment_map.json`；双语版启用后必须运行 `npm run build:bilingual` 生成独立双语 EPUB，并通过 `npm run check:bilingual`。这两个脚本只读取输出版本状态，不得按 `publication_mode` 判断。
-- 双语分块以完整源段落到目标段落映射为边界：源语块包含的全部源段落，必须在紧随其后的目标语块中有完整目标语对应；不得因为接近一屏大小而截断一个源段落的多段译文。
-- 双语版阅读块建议接近手机一屏：英文源文约 150-230 words，简体中文目标语约 350-550 字；可以上下浮动，以便在自然段落边界闭合。
-- 双语版默认顺序为源语言块在前、目标语言块在后；不得逐句交错，不推荐机械逐段交错。
+- 一个读者可见双语 unit 只能来自一个原著自然段；自然段过长时，只能按完整句群拆为数个短段，并让每个完整 source short paragraph 后立即紧跟它的完整 target short paragraph。
+- 字数和屏幕尺寸只能用于提示长段风险，不能作为切分或合并依据；严禁为接近一屏而合并多个自然段、截断句子或集中后置译文。
+- 双语版默认顺序为源语言短段在前、其完整目标语言译段紧随其后；不得逐句字幕式交错，也不得连续输出多个源段后再集中输出目标语。
 - 双语版不得反复加入 `原文` / `译文` 标签，不得在每章开头加“原文在前，译文在后”之类说明。
 - 目标语言是主阅读文本，保持正常正文字号和节奏；源语言为辅助对照文本，建议 `0.92em`，不得低于 `0.88em`，不得依赖字体族、斜体或颜色作为唯一区分。
+
+## 自适应并行编排 / Adaptive Parallel Orchestration
+
+- 本书加权工作量（`weighted_source_units`）：
+- 客户端能力来源与验证时间：
+- 用户是否允许派生 worker：
+- 用户上限、速率上限、预算上限、质量上限：
+- provider family：`gpt` / `non_gpt` / `unknown`。
+- worker profile（客户端本地标识，可空）：
+- pilot 章节与结果：
+- 最终派生 worker 上限与理由：
+- 翻译 producer 数、独立 audit consumer 数、唯一 merger：
+
+并行策略必须遵守 `references/adaptive_parallel_orchestration.md`。不得只按 PDF 页数决定并发；必须先完成全书合同、专名、出现账本、术语和 canonical units 锁定。能力未知、用户未授权或小书默认 0 worker；GPT 家族最多派生 4 个，非 GPT 最多 8 个。首轮最多 2 个 worker，只有当前 pilot 的结构违规/专名违规为 0、语义首过率至少 90%、返工率不超过 10%、patch 冲突率不超过 1% 才能扩容。
+
+每章只能有一个 translation producer；相邻章节优先保持同一 owner。audit consumer 不得审核自己翻译的章节，coordinator 是唯一 canonical merger。单目标语和双语版共用一套 canonical target，不得分别翻译。
 
 ## 标题与正文 / Headings and Body
 
@@ -126,6 +145,7 @@ python scripts/check_reader_facing_policy.py --write-report
 - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
 - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
 - `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
+- `template/epub_pipeline/common/references/adaptive_parallel_orchestration.md`
 - `template/epub_pipeline/common/references/quality_gate_framework.md`
 - `template/epub_pipeline/common/references/proper_noun_display_policy.md`
 - `template/epub_pipeline/common/references/note_marker_policy.md`

@@ -17,6 +17,8 @@ This file is for AI agents working from a downloaded copy of this repository.
   - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
   - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
   - `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
+  - `template/epub_pipeline/common/references/adaptive_parallel_orchestration.md`
+  - `template/epub_pipeline/common/references/translation_unit_xliff_policy.md`
   - `template/epub_pipeline/common/references/quality_gate_framework.md`
   - `template/epub_pipeline/common/references/release_versioning.md`
 - 权威流程规则位于 `template/epub_pipeline/`。凡涉及 EPUB 制作、前置页、封面、书籍信息页、资产、质量门禁、随机评审或发布，编辑或构建前必须先读取适用的 common references，尤其是：
@@ -27,6 +29,8 @@ This file is for AI agents working from a downloaded copy of this repository.
   - `template/epub_pipeline/common/references/book_info_frontmatter_policy.md`
   - `template/epub_pipeline/common/references/epub_assets_figures_tables.md`
   - `template/epub_pipeline/common/references/bilingual_parallel_edition_policy.md`
+  - `template/epub_pipeline/common/references/adaptive_parallel_orchestration.md`
+  - `template/epub_pipeline/common/references/translation_unit_xliff_policy.md`
   - `template/epub_pipeline/common/references/quality_gate_framework.md`
   - `template/epub_pipeline/common/references/release_versioning.md`
 

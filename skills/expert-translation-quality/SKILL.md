@@ -18,6 +18,16 @@ Do not use this skill for format-only work such as cover assets, OPF manifest er
 
 ## Workflow / 流程
 
+### Evidence-bearing canonical units / 带证据的 canonical units
+
+Perform translation and review against persistent canonical unit IDs. Each target template must cover the complete source unit and may use only locked `{{pn:entity_id}}` markers for registered names. Never repair a bilingual alignment problem by shortening the target, borrowing a neighboring paragraph, merging several source paragraphs, or hand-editing the derived translated/final files. If one sample exposes omission, addition, or neighbor-boundary contamination, define the defect family and audit all units with the same signal.
+
+翻译与审校必须基于持久 canonical unit ID。每个 target template 必须完整覆盖该 source unit；已注册专名只能使用锁定的 `{{pn:entity_id}}` 标记。不得通过缩短译文、借用邻段、合并多个源自然段或手改派生的 translated/final 文件来“修复”双语对齐。一个样本发现少译、增译或邻段串译后，必须归纳问题族并审计全书同类 unit。
+
+A semantic PASS is evidence, not a label. For every unit, independently record source-to-target omission, target-to-source addition, neighbor-boundary contamination, and numbers/names/negation/notes checks with non-empty evidence bound to current hashes and revisions. Then run a fresh full-chapter pass over the exact ordered unit IDs. A scalar PASS, mutable summary file, stale generation, or structural coverage ratio is insufficient.
+
+语义 PASS 是证据，不是标签。每个 unit 都要分别记录 source-to-target 遗漏、target-to-source 增译、邻段串译、数字/专名/否定/注释检查，并给出绑定当前 hash/revision 的非空 evidence；随后对精确有序 unit ID 做一次新鲜全章复核。标量 PASS、可变总表、旧 generation 或结构覆盖率都不能放行。
+
 ### 1. Orient Before Translating / 先定向再翻译
 
 Before translating a chapter or passage, identify:

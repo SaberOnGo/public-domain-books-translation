@@ -50,7 +50,11 @@ Other language pairs produce a bilingual parallel EPUB only when the user explic
 
 Read `common/references/bilingual_parallel_edition_policy.md` before changing bilingual layout, production specs, quality gates, or release behavior.
 
+Read `common/references/adaptive_parallel_orchestration.md` before changing worker concurrency, chapter ownership, audit roles, capability detection, or merge scheduling.
+
 修改双语排版、制作规格、质量门禁或 release 行为前，必须读取 `common/references/bilingual_parallel_edition_policy.md`。
+
+修改 worker 并发、章节所有权、审核角色、能力检测或合并调度前，必须读取 `common/references/adaptive_parallel_orchestration.md`。
 
 ### Private-Use Projects / 私人自用工程
 

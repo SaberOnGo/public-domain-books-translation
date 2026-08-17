@@ -51,6 +51,10 @@ Titles, subtitles, and EPUB navigation labels do not count as first body occurre
 
 标题、副标题和 EPUB 目录题名不计入正文首次出现。首次出现规则只在该名词第一次自然进入正文叙述时生效。
 
+Title-like positions use the row's locked `subsequent_rendering` without consuming the first-body occurrence. Therefore policy `1`/`3`/`5` normally displays the target form in titles, while policy `2`/`4` displays the source form. Do not impose a Chinese-only title rule when the user selected source-form display.
+
+标题性位置使用该行已锁定的 `subsequent_rendering`，但不消耗正文首次出现。因而策略 `1`/`3`/`5` 的标题通常显示目标语形式，策略 `2`/`4` 显示原文形式。用户选择保留原名时，不得再用“标题一律中文”覆盖用户决策。
+
 For policy `3`, the standard zh-Hans rendering is:
 
 策略 `3` 的简体中文标准形式为：
@@ -89,14 +93,22 @@ Each book must keep important proper-noun decisions in:
 glossary/proper_nouns.csv
 ```
 
-Required columns:
+The book-level value is a default, not permission to flatten every entity into one rendering. In a mixed book, each locked row records its own `display_policy`, `display_strategy`, `first_rendering`, and `subsequent_rendering`. Stable conventional Chinese names may use policy `1`; uncommon names may use policy `2` or `4`; policy `4` may choose either `target（source）` or source-first `source（中文释义）` for the first body occurrence, but later occurrences must use the source form. The renderer validates these fields as one decision and rejects disagreements.
 
-必备列：
+全书设置是默认值，不得据此把所有实体机械压成一种显示形式。混合策略书籍的每个锁定行都要分别记录 `display_policy`、`display_strategy`、`first_rendering` 与 `subsequent_rendering`。已有稳定通行中文名可用策略 `1`；罕见名称可用策略 `2` 或 `4`；策略 `4` 的正文首次形式可选 `译名（原文）`，也可选原名优先的 `source（中文释义）`，但后续必须使用原名。渲染器把这些字段作为同一个裁决校验，彼此不一致时拒绝处理。
+
+Canonical-unit projects require entity identity and occurrence evidence. Required columns:
+
+canonical-unit 工程必须保存实体身份和出现证据。必备列：
 
 ```csv
-source_name,target_name,category,display_policy,first_rendering,subsequent_rendering,note_required,repeat_original_allowed_when,notes
+entity_id,source_name,target_name,category,display_policy,first_rendering,subsequent_rendering,note_required,repeat_original_allowed_when,notes,source_aliases,target_aliases,scope,status,chinese_gloss,display_strategy,first_occurrence_rule,same_name_disambiguation
 ```
 
-The file is user-editable. Agents must follow it and update it when a new high-risk name is introduced.
+The file is user-editable during preproduction. Before body translation, agents must complete book-wide discovery, bind every occurrence to an `entity_id`, and lock the register. If a missing high-risk name is found later, invalidate the current batch and return to discovery; do not append it while continuing the same translation batch.
 
-该文件允许用户修改。Agent 必须遵守，并在新增高风险专名时更新。
+该文件在预生产阶段允许用户修改。正文翻译前必须完成全书发现，把每次出现绑定到 `entity_id` 并锁定译表。正文阶段发现漏项时，必须使当前批次失效并回到发现阶段；不得一边继续翻译一边临时追加。
+
+Canonical-unit projects must also keep `glossary/proper_noun_occurrences.csv` and a source-hash-bound `glossary/proper_noun_discovery_manifest.json`. Multiple entities may share the same `source_name`; uniqueness is enforced on `entity_id`, not spelling.
+
+canonical-unit 工程还必须保存 `glossary/proper_noun_occurrences.csv` 和绑定全书源文哈希的 `glossary/proper_noun_discovery_manifest.json`。多个实体可以共享同一 `source_name`；唯一键是 `entity_id`，不是拼写。
