@@ -20,7 +20,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--version", default=None, help="Explicit version such as v0.0.1. Defaults to next patch version.")
     parser.add_argument("--main-version", type=int, default=None, help="Main version used when no release state exists.")
     parser.add_argument("--sub-version", type=int, default=None, help="Sub version used when no release state exists.")
-    parser.add_argument("--status", choices=("DRAFT", "PASS"), default="DRAFT", help="Release status.")
+    parser.add_argument("--status", choices=("DRAFT", "ITERATIVE_RELEASE", "PASS"), default="DRAFT", help="Release status.")
     parser.add_argument("--require-pass", action="store_true", help="Require PASS gate records before creating release.")
     parser.add_argument("--reason", default="", help="Release reason.")
     parser.add_argument("--changes", action="append", default=[], help="Release change entry. Can be repeated.")
@@ -492,6 +492,18 @@ def main() -> None:
         main_version, sub_version, patch_version, version = next_version(state, args.main_version, args.sub_version)
 
     summary = gate_summary(book_root)
+    if args.status == "ITERATIVE_RELEASE":
+        prior_round = summary.get("random_spotcheck_round") or "MISSING"
+        summary.update(
+            {
+                "random_spotcheck_round": f"STALE_PREVIOUS_RELEASE: {prior_round}",
+                "random_spotcheck_status": "NOT_RUN_AFTER_CURRENT_CHANGES",
+                "random_spotcheck_require_pass": False,
+                "current_review_run_id": "",
+                "current_run_pass_rounds_count": 0,
+                "release_confidence": None,
+            }
+        )
     if args.require_pass or args.status == "PASS":
         require_pass_gates(summary)
 
@@ -536,6 +548,7 @@ def main() -> None:
         f"## Release {version} / 版本 {version}",
         "",
         f"status: {args.status}",
+        f"quality_gate_status: {'PASS' if args.status == 'PASS' else 'NOT_PASS'}",
         f"main_version: {main_version}",
         f"sub_version: {sub_version}",
         f"patch_version: {patch_version}",
@@ -601,7 +614,7 @@ def main() -> None:
         "",
         "## Risks / 风险",
         "",
-        *bullet_lines(risks, "If status is DRAFT, independent agent review or closure gates may still be incomplete. / 若状态为 DRAFT，独立 Agent 评审或闭环门禁可能尚未全部完成。"),
+        *bullet_lines(risks, "ITERATIVE_RELEASE artifacts are distributable iterations, not a formal quality PASS; open review gates remain visible. / ITERATIVE_RELEASE 表示可分发的迭代版本，不等于正式质量 PASS；未关闭的审阅门禁仍会明确列出。"),
         "",
         "## Next Iteration / 下一轮迭代",
         "",
@@ -620,6 +633,7 @@ def main() -> None:
         "latest_epubs": release_artifacts,
         "latest_release_note": note_name,
         "latest_status": args.status,
+        "quality_gate_status": "PASS" if args.status == "PASS" else "NOT_PASS",
         "latest_created_at": created_at,
         "latest_sha256": release_artifacts[0]["sha256"],
         "latest_size_bytes": release_artifacts[0]["size_bytes"],

@@ -96,8 +96,13 @@ npm run private:artifact:create
 
 ```powershell
 python scripts/create_release.py --status DRAFT
+python scripts/create_release.py --status ITERATIVE_RELEASE
 python scripts/create_release.py --status PASS --require-pass
 ```
+
+`ITERATIVE_RELEASE` 是可分发、可持续更新的正式版本状态，适用于用户明确要求在后续质量审阅继续进行时发布当前版本。它不是 DRAFT，也不代表质量门禁 PASS：release note 和 `release_state.json` 必须同时记录 `quality_gate_status: NOT_PASS`，并如实列出未关闭事项。只有全部正式门禁通过后才能使用 `PASS`；`DONE` 仍要求 `latest_status = PASS`。
+
+`ITERATIVE_RELEASE` is a distributable, versioned release status for cases where the user wants the current edition available while later reviews continue. It is not DRAFT and does not mean the quality gates passed: the release note and `release_state.json` must record `quality_gate_status: NOT_PASS` and list open items. Use `PASS` only after all formal gates pass; `DONE` still requires `latest_status = PASS`.
 
 `PASS` release 必须满足文学顺读复审、随机抽检闭环、所有已发现问题族的全书同类问题审计与关闭记录、当前执行批次问题轮次的译文质量 skill backfill 字段校验、`validation_report.json.require_pass = true`、`release_confidence >= 0.80`、EPUBCheck fatal/error 为 0、publication lint 无未解决问题，以及其他最终门禁。`DRAFT` release 可以用于人工核查或候选版本，但不得作为 `DONE` 的依据。
 
