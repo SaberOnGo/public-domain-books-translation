@@ -368,6 +368,26 @@ def group_units(units: list[dict]) -> dict[str, list[dict]]:
     return grouped
 
 
+def first_heading_is_reader_title(units: list[dict], reader_title_text: str) -> bool:
+    """Avoid emitting a second target-language chapter title in bilingual XHTML.
+
+    The EPUB document title and navigation label remain target-language titles.
+    When the first canonical unit already pairs that same title in both
+    languages, the paired heading itself should be the body heading.
+    """
+    if not units or str(units[0].get("unit_type") or "") != "heading":
+        return False
+    target_text = units[0].get("target_text")
+    if not isinstance(target_text, str) or not target_text.strip():
+        return False
+
+    def normalize(value: str) -> str:
+        value = re.sub(r"^#{1,6}\s+", "", value.strip())
+        return " ".join(value.split()).casefold()
+
+    return normalize(target_text) == normalize(reader_title_text)
+
+
 def xhtml_doc(title: str, body: str, language: str) -> str:
     escaped_title = html.escape(title, quote=True)
     return f"""<?xml version="1.0" encoding="utf-8"?>
@@ -548,7 +568,9 @@ def main() -> None:
         key_path = Path(group_key)
         href = f"bilingual_{slug(key_path.stem if key_path.suffix else group_key)}.xhtml"
         title_text = reader_title(book_root / group_key, book_root, reader_titles)
-        sections: list[str] = [f'<h1 data-lifebook-editorial="reader-title">{html.escape(title_text)}</h1>']
+        sections: list[str] = []
+        if not first_heading_is_reader_title(group, title_text):
+            sections.append(f'<h1 data-lifebook-editorial="reader-title">{html.escape(title_text)}</h1>')
         for index, unit in enumerate(group, start=1):
             unit_id = str(unit.get("id") or f"u{index:04d}")
             source_hash = str(unit.get("source_sha256") or "")
