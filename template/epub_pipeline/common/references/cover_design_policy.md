@@ -33,9 +33,9 @@ This policy centralizes cover requirements that were previously scattered across
 - 封面图像必须有可理解的替代文本，例如书名或“书名封面”。
 - 不能使用现代受版权保护的封面、插画、影视剧照、盗版图片或来源权利不明的图片。
 
-`publication_mode=private_use` 项目必须改读并遵守 `template/epub_pipeline/modes/private_use/references/private_use_cover_policy.md`。私人自用封面不得写公版来源行，也不得把 `仅供个人自用，不传播，不商业使用` 这类长声明放到封面；私人自用边界应写在书籍信息页/前置页和 metadata 中。
+`publication_mode=private_use` 项目必须改读并遵守 `template/epub_pipeline/modes/private_use/references/private_use_cover_policy.md`。私人自用封面不得写公版来源行，也不得把 `本版本仅供个人自用，风险由个人承担` 这类长声明放到封面；私人自用边界应写在书籍信息页/前置页和 metadata 中。
 
-`publication_mode=private_use` projects must additionally read and follow `template/epub_pipeline/modes/private_use/references/private_use_cover_policy.md`. A private-use cover must not use a public-domain source line or place long rights disclaimers such as `仅供个人自用，不传播，不商业使用` on the cover; the private-use boundary belongs in book-info/frontmatter and metadata.
+`publication_mode=private_use` projects must additionally read and follow `template/epub_pipeline/modes/private_use/references/private_use_cover_policy.md`. A private-use cover must not use a public-domain source line or place long rights disclaimers such as `本版本仅供个人自用，风险由个人承担` on the cover; the private-use boundary belongs in book-info/frontmatter and metadata.
 
 ## 设计目标 / Design Goals
 

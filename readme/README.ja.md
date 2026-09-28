@@ -46,7 +46,7 @@ Digest を生成する場合は、書籍プロジェクトのルートに `diges
 
 最初の EPUB がすでにあり、品質をさらに上げたい場合は、AI に「精密に直して」とだけ依頼しないでください。how-to-use ガイドの 2 つの後続 prompt を使います。章品質の閉じ方が不確かな場合は **Prompt B：章ごとの全量再点検と修正**、release 前には **Prompt C：層化ランダム抜き取り検査と defect family closure** を使ってください。
 
-パブリックドメインではない本は、ローカルの private-use モードだけで扱います。ユーザーは自分のローカル電子書籍ファイルを提供し、個人学習用のみ、再配布なし、商用利用なしと明示する必要があります。AI は `books/private/{target}/{number}_{対象言語の書名}_{対象言語の著者名}/` に private project を作成します。スクリプトは `template/epub_pipeline/modes/private_use/` を重ね、private-use の cover、frontmatter、artifact ルールを公開用ルールから分離します。`books/private/` は Git で無視され、原文、訳文、QA、EPUB、private artifact を GitHub に公開してはいけません。
+パブリックドメインではない本やオンラインの HTML/Wiki を個人用に翻訳する場合は、private-use モードを使います。ユーザーはローカルファイル、または適法にアクセスできる特定の URL と個人利用の宣言を提供します。AI は Git で無視される `books/private/{target}/{number}_{対象言語の書名}_{対象言語の著者名}/` に project を作成し、その内容を GitHub に公開してはいけません。本人だけが閲覧できる LifeBook オンライン本棚には、アクセス制御が利用可能な場合に保存できます。公開には別途、公開権限の確認が必要です。
 
 ## AI クライアント
 
@@ -67,7 +67,7 @@ Launcher は API Key を保存せず、OpenCode 本体もこのリポジトリ�
 - `.\tools\lifebook-launcher`：LifeBook Launcher クライアントのインストール・起動フォルダです。LifeBook プロジェクトを使い、OpenCode をインストールするためにユーザーが知っておくべき場所です。
 - `.\doc\public\user_prompt`：公開スターター prompt の場所です。AI に渡す prompt の詳細を確認したり、手動で調整したりできます。
 - `.\books\zh-Hans`：もっとも重要な完成本の場所です。簡体字中国語への翻訳が完了したら、該当する書籍フォルダの `output\release\` を確認します。公開可能なのは release 成果物です。
-- `.\books\private`：ローカル private-use 書籍プロジェクト用フォルダです。ユーザー提供のローカル書源を使う非パブリックドメインの個人学習用翻訳はここに置きます。このフォルダは Git で無視され、GitHub に公開してはいけません。
+- `.\books\private`：ローカルファイルまたは指定されたオンライン URL を書源とする private-use 書籍プロジェクト用フォルダです。Git で無視され、GitHub に公開してはいけません。
 
 ## LifeBook Digest
 
@@ -121,10 +121,10 @@ private-use project は明示的に `private-use` モードで作成します。
 
 ```powershell
 cd books
-npm run new:book -- {対象言語の書名}_{対象言語の著者名} --source-target {language-pair-template} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "個人学習用のみ。再配布なし。商用利用なし。"
+npm run new:book -- {対象言語の書名}_{対象言語の著者名} --source-target {language-pair-template} --mode private-use --source-url "{オンラインHTMLまたはWikiのURL}" --private-use-declaration "個人利用のみ。"
 ```
 
-private mode は翻訳、レビュー、EPUB 検証、層化ランダム抜き取り検査の品質基準を下げません。ただし権利境界、読者に見える文言、artifact の意味を変えます。private cover の下部は `个人学习版`、private frontmatter は `参考LifeBook书坊 个人自制` を使い、パブリックドメイン説明を削除し、個人利用のみ、再配布なし、商用利用なし、リスクは個人が負うことを明記します。private artifact は `output/private_artifacts/` に書き込み、公開 release ではありません。
+private mode は翻訳、レビュー、EPUB 検証、層化ランダム抜き取り検査の品質基準を下げません。private cover にパブリックドメインの出典を記載せず、frontmatter には `参考public-domain-books-translation 开源项目 个人自制` と個人利用・本人のリスク負担を明記します。private artifact は `output/private_artifacts/` に書き込みます。
 
 ## 基本ルール
 
@@ -179,7 +179,7 @@ npm run private:artifact:create
 
 このプロジェクトで作られた翻訳、注記、表紙、組版、EPUB パッケージなどの非コードコンテンツは、別記がない限り `CC BY-NC-SA 4.0` で公開されます。第三者による商業利用には、LifeBook 書坊および関係する権利者からの別途許可が必要です。
 
-`books/private/` 下の private-use project は公開コンテンツではなく、既定の公開ライセンスの対象ではなく、GitHub に commit または公開してはいけません。private translation は個人利用のみ、再配布なし、商用利用なしです。関連リスクは個人が負います。LifeBook書坊は LifeBook 翻訳發布系統だけを公開し、他の個人による非パブリックドメイン内容の翻訳、保存、配布、利用から生じる著作権リスクまたは責任を負いません。
+`books/private/` 下の private-use project は公開コンテンツではなく、既定の公開ライセンスの対象でもありません。GitHub への公開は禁止です。本人だけが閲覧できる LifeBook オンライン本棚には、アクセス制御が利用可能な場合に保存できます。private translation は個人利用のためのもので、リスクは本人が負います。public-domain-books-translation オープンソースプロジェクトはパブリックドメイン書籍の翻訳と公開を目的とし、他の個人による非パブリックドメイン内容の翻訳、保存、配布、利用から生じる著作権上のリスクや責任を負いません。
 
 参照：
 

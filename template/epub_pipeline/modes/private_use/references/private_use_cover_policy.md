@@ -20,13 +20,13 @@ Do not add a public-project source line such as `依据 Project Gutenberg #xxxxx
 
 ## Forbidden Text / 禁止文字
 
-- Do not put `仅供个人自用，不传播，不商业使用` on the cover.
+- Do not put the full personal-use and risk statement on the cover.
 - Do not put public-domain source claims on the cover.
 - Do not put public license wording on the cover.
 - Do not use `LifeBook 书坊 译制`, `LifeBook 书坊 SaberOnGo`, or `LifeBook 书坊 + 个人名`.
 - Do not imply the public-domain-books-translation project published or authorized this private translation.
 
-- 封面不写 `仅供个人自用，不传播，不商业使用`。
+- 封面不写完整的个人自用与风险声明。
 - 封面不写公版来源声明。
 - 封面不写公开授权措辞。
 - 封面不使用 `LifeBook 书坊 译制`、`LifeBook 书坊 SaberOnGo` 或 `LifeBook 书坊 + 个人名`。

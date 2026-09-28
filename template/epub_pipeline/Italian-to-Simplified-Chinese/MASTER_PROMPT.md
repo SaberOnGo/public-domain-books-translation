@@ -24,7 +24,7 @@ LOCAL_SOURCE_FILE = {LOCAL_SOURCE_FILE}
 
 硬性要求：
 
-- 先核查意大利语原文来源、版权/公版/授权状态、底本文字形态和现代参考材料使用边界；公开发布权利不明确且没有私人本地书源时停止。
+- 先核查意大利语原文来源、版权/公版/授权状态、底本文字形态和现代参考材料使用边界；公开发布权利不明确且没有可识别的私人书源时停止。
 - 未完成模板复制，不得抓取原文。
 - 批量翻译前必须完成 `metadata/italian_source_profile.md`、`metadata/book_specific_translation_research.md`、`metadata/style_profile.md`、`glossary/terms.csv`。
 - 正式翻译前必须完成 `qa/pretranslation/pretranslation_report.md`，且结论为 PASS。

@@ -8,16 +8,15 @@ This file is required only for `publication_mode=private_use` projects under `bo
 
 ## User Declaration / 用户声明
 
-- Personal study only:
-- No redistribution:
-- No commercial use:
-- User-provided local source file:
+- Personal use:
+- Source type: `local_file` / `online_url`
+- User-provided local source file or identified online URL:
 - Declaration timestamp:
 
 ## Source Evidence / 书源证据
 
-- Local source file name:
-- Local source SHA256:
+- Local source file name and SHA256 (if applicable):
+- Online source URL and page/revision (if applicable):
 - Source acquired by user:
 - Source URL or store/library record if available:
 
@@ -33,15 +32,13 @@ Do not record a local absolute path in publishable files. A private project may 
 - The public-domain-books-translation open-source project does not assume copyright risk or liability caused by other individuals' translation, storage, redistribution, or use of non-public-domain content.
 - The project must not publish source text, translations, QA files, EPUB output, or book-specific metadata to GitHub.
 - The project must not treat private-use artifacts as public release artifacts.
-- If the user did not provide a local source file, the agent must search only public-domain, authorized, or otherwise clearly lawful sources.
+- If the user provided neither a local file nor an identifiable online source, the agent must search only public-domain, authorized, or otherwise clearly lawful sources.
 
 - 本工程可以为了用户个人学习进行翻译、审校、EPUB 构建、分层随机抽检，并生成私人自用版本化产物。
-- 风险由个人承担。
-- public-domain-books-translation 开源项目仅用于公版书翻译发布。
-- public-domain-books-translation 开源项目不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+- 本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
 - 本工程不得把原文、译文、QA、EPUB 输出或具体书籍 metadata 发布到 GitHub。
 - 本工程不得把私人自用产物当作公开 release。
-- 如果用户没有提供本地书源文件，agent 只能查找公版、授权或其他权利清楚的合法来源。
+- 如果用户既未提供本地文件，也未指定可识别的在线书源，agent 只能查找公版、授权或其他权利清楚的合法来源。
 
 ## Decision / 结论
 

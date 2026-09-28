@@ -11,7 +11,7 @@ from pathlib import Path
 
 DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
 RISK_BOUNDARY = (
-    "仅供个人自用，不传播，不商业使用。风险由个人承担。"
+    "本版本仅供个人自用，风险由个人承担。"
     "public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。"
 )
 

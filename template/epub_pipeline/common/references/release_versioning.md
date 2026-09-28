@@ -130,6 +130,6 @@ python scripts/create_release.py --status PASS --require-pass
 - 至少存在一个 `output/private_artifacts/{目标语言书名}_private_vX.X.X.epub`。
 - `output/private_artifacts/private_artifact_notes.md` 存在，且最新版本条目位于最上方。
 - `private_artifact_state.json.latest_status = PASS`。
-- private artifact note 记录抽检、问题族全书同类审计、修复、风险和校验证据，并明确该产物仅供个人自用、不传播、不商业使用、不得发布到 GitHub。
+- private artifact note 记录抽检、问题族全书同类审计、修复、风险和校验证据，并明确该产物仅供个人自用、不得发布到 GitHub；具备仅本人可见的访问控制时，可存入个人 LifeBook 在线书架。
 
 这让 EPUB 可以像软件一样持续迭代：每次读者反馈或自动化检查产生修改，就发布一个新的 patch version。

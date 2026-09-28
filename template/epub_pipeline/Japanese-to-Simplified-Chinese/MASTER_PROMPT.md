@@ -5,7 +5,7 @@
 - `{TEMPLATE_ROOT}`：语言方向模板目录，即 `template/epub_pipeline/Japanese-to-Simplified-Chinese`。
 - `{COMMON_TEMPLATE_ROOT}`：共享模板目录，即 `template/epub_pipeline/common`。
 - `{PROJECT_ROOT}`：复制模板后的具体书籍工程目录，默认格式为 `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}`。
-- `{SOURCE_URL}`：原书公版或授权来源 URL。私人自用模式可为空。
+- `{SOURCE_URL}`：原书公版或授权来源 URL；私人自用模式可填用户指定的在线来源，用本地文件时可为空。
 - `{LOCAL_SOURCE_FILE}`：可选，仅用于用户提供本地书源的 `private_use` 模式。
 
 ```text
@@ -32,7 +32,7 @@ LOCAL_SOURCE_FILE = {LOCAL_SOURCE_FILE}
 
 硬性要求：
 
-- 先核查日语原文来源、版权/公版/授权状态、底本文字形态和现代参考材料使用边界；若用户提供本地书源并声明个人自用、不传播、不商业使用，则进入 `private_use` 模式，读取并应用 `template/epub_pipeline/modes/private_use/` 覆盖层规则，记录 `metadata/private_use_declaration.md`。公开发布权利不明确且没有私人本地书源时停止。
+- 先核查日语原文来源、版权/公版/授权状态、底本文字形态和现代参考材料使用边界；若用户提供本地文件或明确指定可合法访问的在线书源，并声明个人自用，则进入 `private_use` 模式，读取并应用 `template/epub_pipeline/modes/private_use/` 覆盖层规则，记录 `metadata/private_use_declaration.md`。公开发布权利不明确且没有可识别的私人书源时停止。
 - 未完成模板复制，不得抓取原文。
 - 批量翻译前必须完成 `metadata/japanese_source_profile.md` 和 `qa/textual/japanese_textual_notes.md`。
 - 先完成通用翻译研究和本书专项翻译研究。

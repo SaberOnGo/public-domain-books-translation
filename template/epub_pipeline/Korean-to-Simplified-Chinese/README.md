@@ -2,9 +2,9 @@
 
 ## 目标 / Goal
 
-给 AI 这个语言模板目录 `TEMPLATE_ROOT`、共享模板目录 `COMMON_TEMPLATE_ROOT`、目标工程目录 `PROJECT_ROOT` 和原书来源 `SOURCE_URL` 或私人本地书源，AI 应能自动完成：
+给 AI 这个语言模板目录 `TEMPLATE_ROOT`、共享模板目录 `COMMON_TEMPLATE_ROOT`、目标工程目录 `PROJECT_ROOT` 和原书来源 `SOURCE_URL` 或私人书源（本地文件/在线 URL），AI 应能自动完成：
 
-1. 下载/读取韩语/朝鲜语公版或授权原文，优先使用可审计的纯文本、HTML 或扫描来源；若是非公版私人自用模式，则读取用户提供的本地书源。
+1. 下载/读取韩语/朝鲜语公版或授权原文，优先使用可审计的纯文本、HTML 或扫描来源；若是非公版私人自用模式，则读取用户提供的本地文件或明确指定的在线书源。
 2. 核查来源、版权、底本文字形态、现代校订成分、站点版权口径和使用边界。
 3. 记录韩语/朝鲜语底本的韩文/汉字混排、旧拼写、旧汉字词、注记、分段、异体字和 OCR 状态。
 4. 清洗、分章，并保留可追溯的原文证据。
@@ -46,7 +46,7 @@ This template handles Korean source-language issues for Simplified Chinese EPUB 
 
 之后所有抓取、研究、翻译、QA、EPUB 输出都只能写入新书籍工程目录。
 
-如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地书源并声明个人自用、不传播、不商业使用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，并最后叠加 `template/epub_pipeline/modes/private_use/` 覆盖层。
+如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地文件或明确指定可合法访问的在线书源，并声明个人自用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，并最后叠加 `template/epub_pipeline/modes/private_use/` 覆盖层。
 
 Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `npm install`，再进入具体书籍目录运行 `npm run lint:publication`、`npm run build:epub`、`npm run check:epub`。本模板的 `package.json` 只提供本书脚本，依赖统一来自共享的 `books/node_modules/`。
 
@@ -139,7 +139,7 @@ Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `
 
 ## 硬门禁 / Hard Gates
 
-- 公开项目没有韩语/朝鲜语公版或授权来源证据，不得翻译；私人自用项目没有本地书源文件和 `metadata/private_use_declaration.md`，不得翻译。
+- 公开项目没有韩语/朝鲜语公版或授权来源证据，不得翻译；私人自用项目没有本地文件或可识别在线书源，或缺少 `metadata/private_use_declaration.md`，不得翻译。
 - 未记录底本文字形态、来源版本和版权风险，不得预翻译。
 - 现代中文译本或现代出版社校注材料的版权和使用边界不清楚，不得使用。
 - 未建立 `metadata/korean_source_profile.md`，不得批量分章翻译。

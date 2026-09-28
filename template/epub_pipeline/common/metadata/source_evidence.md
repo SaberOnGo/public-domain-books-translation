@@ -13,7 +13,7 @@ Record immutable evidence:
 
 ## Source Type
 
-- `public_url` / `authorized_url` / `user_provided_local_file`
+- `public_url` / `authorized_url` / `user_provided_local_file` / `user_identified_online_url`
 
 ## Selected Text
 
@@ -21,18 +21,20 @@ Record immutable evidence:
 - Direct download URL:
 - Why this version:
 
-## Local Private Source
+## Private Source / 私人书源
 
 Use only for `publication_mode=private_use` projects under ignored `books/private/`.
 
-- Local source file name:
-- Local source SHA256:
+- Source type: `local_file` / `online_url`
+- Online source URL and page/revision (if applicable):
+- Local source file name and SHA256 (if applicable):
 - User declaration file: `metadata/private_use_declaration.md`
 
 仅用于被忽略的 `books/private/` 下的 `publication_mode=private_use` 工程。
 
-- 本地书源文件名：
-- 本地书源 SHA256：
+- 书源类型：本地文件 / 在线网页
+- 在线书源 URL 和页面版本（如适用）：
+- 本地书源文件名及 SHA256（如适用）：
 - 用户声明文件：`metadata/private_use_declaration.md`
 
 ## Excluded Versions

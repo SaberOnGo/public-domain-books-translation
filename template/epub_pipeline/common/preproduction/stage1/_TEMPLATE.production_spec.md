@@ -13,7 +13,7 @@ human_required: false
 - 翻译/译制时间：
 - 公版或授权来源 URL：
 - 公版说明（仅公版或授权项目）：
-- 私人自用说明（仅 `publication_mode=private_use`）：仅供个人自用，不传播，不商业使用；风险由个人承担；public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+- 私人自用说明（仅 `publication_mode=private_use`）：本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
 
 ## 封面 / Cover
 

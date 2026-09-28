@@ -10,6 +10,7 @@ import re
 import shutil
 import unicodedata
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 BOOK_DIR_PATTERN = re.compile(r"^(\d+)_")
@@ -93,16 +94,16 @@ def parse_args() -> argparse.Namespace:
         default="public-domain",
         help="Project mode. public-domain writes to books/{target}/; private-use writes to ignored books/private/{target}/.",
     )
-    parser.add_argument("--source-url", default="", help="Optional public-domain or authorized source URL to record in state.")
+    parser.add_argument("--source-url", default="", help="Source URL. For private-use projects, this can replace --local-source-file when the user identifies an accessible HTML or wiki source.")
     parser.add_argument(
         "--local-source-file",
         default="",
-        help="Required for --mode private-use. User-provided local source file for personal study only.",
+        help="Optional private-use source file; provide this or --source-url.",
     )
     parser.add_argument(
         "--private-use-declaration",
         default="",
-        help="Required for --mode private-use. User declaration that output is personal study only, not redistributed, and not commercial.",
+        help="Required for --mode private-use. User declaration that the translation is for personal use.",
     )
     parser.add_argument("--dry-run", action="store_true", help="Print the planned directory without copying files.")
     return parser.parse_args()
@@ -246,27 +247,47 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def build_private_use_record(local_source_file: str, declaration: str) -> dict[str, str | bool]:
-    source_path = Path(local_source_file).expanduser().resolve()
-    if not source_path.is_file():
-        raise SystemExit(f"--local-source-file must point to an existing file in private-use mode: {source_path}")
+def build_private_use_record(local_source_file: str, source_url: str, declaration: str) -> dict[str, str | bool]:
+    source_url = source_url.strip()
+    if source_url:
+        parsed = urlparse(source_url)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.username or parsed.password:
+            raise SystemExit("--source-url must be an HTTP(S) URL in private-use mode.")
+    if not local_source_file and not source_url:
+        raise SystemExit("Private-use mode requires --local-source-file or --source-url.")
     normalized_declaration = declaration.strip()
     if not normalized_declaration:
         raise SystemExit("--private-use-declaration is required in private-use mode.")
-    return {
-        "local_source_file_name": source_path.name,
-        "local_source_sha256": sha256_file(source_path),
+    record = {
         "user_declaration": normalized_declaration,
-        "redistribution_allowed": False,
-        "commercial_use_allowed": False,
+        "source_type": "local_file" if local_source_file else "online_url",
         "github_publish_allowed": False,
     }
+    if local_source_file:
+        source_path = Path(local_source_file).expanduser().resolve()
+        if not source_path.is_file():
+            raise SystemExit(f"--local-source-file must point to an existing file: {source_path}")
+        record["local_source_file_name"] = source_path.name
+        record["local_source_sha256"] = sha256_file(source_path)
+    if source_url:
+        record["source_url"] = source_url
+    return record
 
 
 def write_private_use_declaration(project_root: Path, record: dict[str, str | bool]) -> None:
     metadata_dir = project_root / "metadata"
     metadata_dir.mkdir(parents=True, exist_ok=True)
     declaration_path = metadata_dir / "private_use_declaration.md"
+    source_lines = [f"- Source type: {record['source_type']}"]
+    if record.get("local_source_file_name"):
+        source_lines.extend(
+            [
+                f"- Local source file name: {record['local_source_file_name']}",
+                f"- Local source SHA256: {record['local_source_sha256']}",
+            ]
+        )
+    if record.get("source_url"):
+        source_lines.append(f"- Source URL: {record['source_url']}")
     declaration_path.write_text(
         "\n".join(
             [
@@ -278,20 +299,16 @@ def write_private_use_declaration(project_root: Path, record: dict[str, str | bo
                 "",
                 str(record["user_declaration"]),
                 "",
-                "## Source File Evidence / 本地书源证据",
+                "## Source Evidence / 书源证据",
                 "",
-                f"- Local source file name: {record['local_source_file_name']}",
-                f"- Local source SHA256: {record['local_source_sha256']}",
+                *source_lines,
                 "",
                 "## Boundaries / 边界",
                 "",
                 "- Personal study only. / 仅限个人学习自用。",
-                "- No redistribution. / 不得传播。",
-                "- No commercial use. / 不得商业使用。",
-                "- Personal risk is borne by the individual user. / 风险由个人承担。",
-                "- The public-domain-books-translation open-source project is intended only for public-domain book translation and publication. / public-domain-books-translation 开源项目仅用于公版书翻译发布。",
-                "- The public-domain-books-translation open-source project does not assume copyright risk or liability caused by other individuals' translation, storage, redistribution, or use of non-public-domain content. / public-domain-books-translation 开源项目不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。",
-                "- Do not publish source text, translations, QA files, or EPUB output to GitHub. / 不得把原文、译文、QA 或 EPUB 输出发布到 GitHub。",
+                "- 本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。",
+                "- An owner-only LifeBook online bookshelf may hold this personal edition when access controls are available. / 若具备仅本人可见的访问控制，可存入个人 LifeBook 在线书架。",
+                "- Do not publish source text, translations, QA files, or EPUB output to GitHub or a public bookshelf. / 不得把原文、译文、QA 或 EPUB 输出发布到 GitHub 或公开书架。",
                 "",
             ]
         ),
@@ -421,7 +438,7 @@ def main() -> None:
     slug = clean_slug(args.book_slug)
     private_use_record = None
     if args.mode == "private-use":
-        private_use_record = build_private_use_record(args.local_source_file, args.private_use_declaration)
+        private_use_record = build_private_use_record(args.local_source_file, args.source_url, args.private_use_declaration)
 
     common_root = template_root / "common"
     language_root = template_root / source_target

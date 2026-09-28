@@ -16,6 +16,7 @@
 - Source URL:
 - Local source file name:
 - Local source SHA256:
+- Online page or wiki revision (if applicable):
 - Selected source text:
 - First publication year:
 - Retrieval date:
@@ -28,7 +29,8 @@
 - Translation permitted:
 - Commercial redistribution risk:
 - Private-use declaration present:
-- Private-use local source file present:
+- Private-use local file or identified online URL present:
+- Private-use online access and site terms checked (if applicable):
 - Private-use personal risk accepted:
 - public-domain-books-translation project private-use boundary recorded:
 - GitHub publication permitted:
@@ -43,6 +45,6 @@
 - `PUBLICATION_PASS`, `LICENSED_PASS`, `PRIVATE_USE_PASS`, or `FAIL`:
 - Reason:
 
-Use `PUBLICATION_PASS` only when the source can be publicly released as public-domain. Use `LICENSED_PASS` only when the project records an explicit license or authorization. Use `PRIVATE_USE_PASS` only when the user supplied a local source file and an explicit personal-use, non-redistribution, non-commercial declaration; this does not permit GitHub publication. `PRIVATE_USE_PASS` must also record that personal risk is borne by the individual user and that the public-domain-books-translation open-source project is intended only for public-domain book translation and publication, without assuming copyright risk or liability caused by other individuals' translation, storage, redistribution, or use of non-public-domain content. If `FAIL`, stop pipeline before translation.
+Use `PUBLICATION_PASS` only when the source can be publicly released as public-domain. Use `LICENSED_PASS` only when the project records an explicit license or authorization. Use `PRIVATE_USE_PASS` when the user supplied a local file or identified lawfully accessible online source and an explicit personal-use declaration; this does not permit GitHub or public bookshelf publication. An owner-only LifeBook online bookshelf may hold the private edition when access control is available. Record personal risk and the public-domain-books-translation project boundary. If `FAIL`, stop before translation.
 
-只有来源可按公版公开发布时才使用 `PUBLICATION_PASS`。只有项目记录了明确授权时才使用 `LICENSED_PASS`。只有用户提供本地书源文件并明确声明个人自用、不传播、不商业使用时才使用 `PRIVATE_USE_PASS`；它不允许发布到 GitHub。`PRIVATE_USE_PASS` 还必须记录风险由个人承担，并记录 public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。如果是 `FAIL`，翻译前必须停止。
+只有来源可按公版公开发布时才使用 `PUBLICATION_PASS`。只有项目记录了明确授权时才使用 `LICENSED_PASS`。用户提供本地文件或明确指定可合法访问的在线书源，并声明个人自用时，可使用 `PRIVATE_USE_PASS`；它不允许发布到 GitHub 或公开书架。具备仅本人可见的访问控制时，可存入个人 LifeBook 在线书架。还须记录风险由个人承担及 public-domain-books-translation 项目的责任边界。如果是 `FAIL`，翻译前必须停止。

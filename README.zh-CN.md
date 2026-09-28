@@ -46,7 +46,7 @@ LifeBook 书坊是一个多语言公版书翻译与 EPUB 制作流程。它不�
 
 如果已经生成第一版 EPUB，但想继续提高质量，请不要只写“帮我精修”。使用 how-to-use 文档里的两个后期 prompt：先按需要执行 **Prompt B：章节全量复检与修复**，再执行 **Prompt C：分层随机抽检与问题族追杀**。
 
-如果是非公版书，只能使用本地私人模式。用户必须提供自己的本地电子书文件，并明确声明仅供个人学习自用、不传播、不商业使用；AI 应创建 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下的私人工程。脚本还会叠加 `template/epub_pipeline/modes/private_use/`，把私人封面、首页/前置页和产物规则与公版发布规则隔离。`books/private/` 被 Git 忽略，里面的原文、译文、QA、EPUB 和私人产物不能发布到 GitHub。
+非公版书或在线 HTML/Wiki 内容用于个人翻译时，使用私人模式。用户可提供本地文件或明确指定可合法访问的网址，并作个人自用声明。AI 在被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下创建工程；内容不得发布到 GitHub。具备仅本人可见的访问控制时，私人译本可存入个人 LifeBook 在线书架；公开上架须另行核查发布权利。
 
 ## AI 客户端
 
@@ -67,7 +67,7 @@ Launcher 不会保存 API Key，也不会把 OpenCode 本体放进本仓库。Op
 - `.\tools\lifebook-launcher`：LifeBook Launcher 客户端安装启动目录。用户需要知道这个位置，以使用 LifeBook 项目和安装 OpenCode。
 - `.\doc\public\user_prompt`：公共启动提示词目录。用户想了解提示词细节，或想手动调整给 AI 的 prompt，可以看这里。
 - `.\books\zh-Hans`：最重要的成书目录。翻译成简体中文成功后，到对应书籍目录里找 `output\release\`；只有 release 目录里的成品才算可发布结果。
-- `.\books\private`：本地私人自用书籍工程目录。这里用于用户提供本地书源的非公版个人学习翻译，已被 Git 忽略，不能发布到 GitHub。
+- `.\books\private`：私人自用书籍工程目录，可使用本地文件或指定的在线书源；已被 Git 忽略，不能发布到 GitHub。
 
 ## LifeBook Digest
 
@@ -121,10 +121,10 @@ books/{target}/{number}_{目标语言书名}_{目标语言作者名}/
 
 ```powershell
 cd books
-npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {language-pair-template} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "仅供个人学习自用；不传播；不用于商业。"
+npm run new:book -- "{目标语言书名}_{目标语言作者名}" --source-target {language-pair-template} --mode private-use --source-url "{在线HTML或Wiki网址}" --private-use-declaration "仅供个人自用。"
 ```
 
-私人模式不降低翻译、审校、EPUB 校验、分层随机抽检要求，但会改变权利、读者可见措辞和产物语义。私人封面底部使用 `个人学习版`；私人首页/前置页使用 `参考public-domain-books-translation 开源项目 个人自制`，去掉所有公版说明，并写明仅供个人自用、不传播、不商业使用、风险由个人承担。私人产物写入 `output/private_artifacts/`，不是公开 release。
+私人模式不降低翻译、审校、EPUB 校验、分层随机抽检要求。私人封面不写公版来源；私人首页/前置页使用 `参考public-domain-books-translation 开源项目 个人自制`，并使用固定声明：`本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。` 私人产物写入 `output/private_artifacts/`。
 
 ## 核心规则
 
@@ -179,7 +179,7 @@ npm run private:artifact:create
 
 本项目产生的译文、注释、封面、排版和 EPUB 打包等非代码内容，默认按 `CC BY-NC-SA 4.0` 发布；第三方商业使用必须另行取得 LifeBook 书坊及相关权利人的授权。
 
-`books/private/` 下的私人自用项目不属于公开发布内容，不适用默认公开授权，不得提交或发布到 GitHub。任何私人译本仅供个人自用，不传播，不商业使用；相关风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+`books/private/` 下的私人自用项目不属于公开发布内容，不适用默认公开授权，不得提交或发布到 GitHub。具备仅本人可见的访问控制时，私人译本可存入个人 LifeBook 在线书架。本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
 
 参见：
 

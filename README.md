@@ -46,7 +46,7 @@ The proper-noun format setting is optional; the default is `3`. Values: `1` tran
 
 If a first EPUB already exists and higher quality is needed, do not ask the AI to "just polish it." Use the two post-EPUB prompts in the how-to-use guide: **Prompt B: Full-chapter recheck and repair** when chapter quality closure is uncertain, then **Prompt C: Stratified random spot-check and defect-family closure** before release.
 
-For non-public-domain books, use private-use mode only. The user must provide a local ebook file and explicitly declare personal study only, no redistribution, and no commercial use. The AI should create the project under `books/private/{target}/{number}_{target_language_title}_{target_language_author}/`; the script also overlays `template/epub_pipeline/modes/private_use/` so private cover, frontmatter, and artifact rules cannot be confused with public publication rules. `books/private/` is ignored by Git, and its source text, translations, QA records, EPUB files, and private artifacts must not be published to GitHub.
+For non-public-domain books or online HTML/wiki content, use private-use mode for personal translations. The user may provide a local file or identify a lawfully accessible source URL, plus a personal-use declaration. Create the project under ignored `books/private/{target}/{number}_{target_language_title}_{target_language_author}/`. Its content must not be published to GitHub. An owner-only LifeBook online bookshelf may hold the private edition when access control is available; public listing requires separate publication rights.
 
 ## AI Clients
 
@@ -67,7 +67,7 @@ The launcher does not store API keys and does not include OpenCode binaries in t
 - `.\tools\lifebook-launcher`: LifeBook Launcher client install and launch folder. Users need this path to use the LifeBook project and install OpenCode.
 - `.\doc\public\user_prompt`: public starter prompts. Read or adjust these when the prompt given to an AI client needs review or manual refinement.
 - `.\books\zh-Hans`: the most important output area for Simplified Chinese books. After translation succeeds, open the matching book folder and check `output\release\`; only release artifacts count as publishable results.
-- `.\books\private`: local private-use book projects. This is for user-provided local sources used for personal non-public-domain translation. It is ignored by Git and must not be published to GitHub.
+- `.\books\private`: local private-use book projects based on a local file or identified online source. It is ignored by Git and must not be published to GitHub.
 
 ## LifeBook Digest
 
@@ -121,10 +121,10 @@ Private-use projects must be created explicitly:
 
 ```powershell
 cd books
-npm run new:book -- "{target_language_title}_{target_language_author}" --source-target {language-pair-template} --mode private-use --local-source-file "{path_to_local_ebook}" --private-use-declaration "Personal study only; no redistribution; no commercial use."
+npm run new:book -- "{target_language_title}_{target_language_author}" --source-target {language-pair-template} --mode private-use --source-url "{https_url_to_html_or_wiki}" --private-use-declaration "Personal use only."
 ```
 
-Private mode keeps the translation and QA quality bar, but changes rights, reader-facing wording, and artifact semantics. Private covers use `个人学习版`; private frontmatter uses `参考LifeBook书坊 个人自制`, removes public-domain notices, and states personal-use/no-redistribution/no-commercial-use plus personal risk responsibility. Private artifacts are written under `output/private_artifacts/` and are personal-use outputs, not public releases.
+Private mode keeps the translation and QA quality bar. Private covers omit public-domain source claims; private frontmatter uses `参考public-domain-books-translation 开源项目 个人自制` and states personal use and risk responsibility. Private artifacts are written under `output/private_artifacts/` and may be imported into an owner-only LifeBook online bookshelf when that access control is available.
 
 ## Core Rules
 
@@ -179,7 +179,7 @@ Each source book requires its own rights check. Public-domain status may vary by
 
 Non-code book content produced in this project is released under `CC BY-NC-SA 4.0` by default unless a file says otherwise. Third-party commercial use requires separate permission from LifeBook Shufang and relevant rights holders.
 
-Private-use projects under `books/private/` are not public project content, are not covered by the default public release license, and must not be committed or published to GitHub. Any private translation is for the individual user's personal study only, with no redistribution and no commercial use; the user's private use risk is their own. LifeBook Shufang publishes the reusable LifeBook translation publishing system only and does not assume copyright risk or liability caused by another person's private translation, storage, redistribution, or use of non-public-domain content.
+Private-use projects under `books/private/` are not public project content, are not covered by the default public release license, and must not be committed or published to GitHub. A private edition may be stored in an owner-only LifeBook online bookshelf when available. It is for the individual user's personal use; the user bears the risk. The public-domain-books-translation open-source project is for public-domain translation and publication and does not assume copyright risk or liability caused by another person's translation, storage, distribution, or use of non-public-domain content.
 
 See:
 

@@ -15,7 +15,7 @@
 
 核心要求：
 
-- 先核查西班牙语原文来源、版权/公版/授权状态、底本文字形态和现代参考材料使用边界；公开发布权利不明确且没有私人本地书源时停止。
+- 先核查西班牙语原文来源、版权/公版/授权状态、底本文字形态和现代参考材料使用边界；公开发布权利不明确且没有可识别的私人书源时停止。
 - 所有具体书籍产物只能写入 `books/zh-Hans/{number}_{目标语言书名}_{目标语言作者名}/`。
 - 批量翻译前必须完成 `metadata/spanish_source_profile.md`、`metadata/book_specific_translation_research.md`、`metadata/style_profile.md`、`glossary/terms.csv`。
 - 分章翻译时，每章必须立即执行 08a 全章译后检查；发现问题的轮次只能 `FIXED_RECHECK_REQUIRED`，追加新一轮零问题 PASS 后才可继续。

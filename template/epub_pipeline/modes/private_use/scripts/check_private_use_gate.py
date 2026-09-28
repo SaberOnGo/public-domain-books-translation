@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +25,8 @@ REQUIRED_PACKAGE_SCRIPTS = [
     "build:private-epub",
     "private:artifact:create",
 ]
+
+PRIVATE_USE_NOTICE = "本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。"
 
 
 def parse_args() -> argparse.Namespace:
@@ -85,12 +88,19 @@ def check_state(book_root: Path, issues: list[dict]) -> dict:
     if state and state.get("publication_mode") != "private_use":
         add_issue(issues, "not_private_use_mode", "pipeline_state.json must set publication_mode=private_use.", rel(book_root, state_path))
     private_record = state.get("private_use", {}) if isinstance(state, dict) else {}
-    for key in ["local_source_file_name", "local_source_sha256", "user_declaration"]:
-        if not private_record.get(key):
-            add_issue(issues, "private_use_state_missing_field", f"state.private_use.{key} is required.", rel(book_root, state_path))
-    for key in ["redistribution_allowed", "commercial_use_allowed", "github_publish_allowed"]:
-        if private_record.get(key) is not False:
-            add_issue(issues, "private_use_state_boundary_not_false", f"state.private_use.{key} must be false.", rel(book_root, state_path))
+    if not private_record.get("user_declaration"):
+        add_issue(issues, "private_use_state_missing_field", "state.private_use.user_declaration is required.", rel(book_root, state_path))
+    local_name = private_record.get("local_source_file_name")
+    local_hash = private_record.get("local_source_sha256")
+    source_url = private_record.get("source_url") or state.get("source_url")
+    if not ((local_name and local_hash) or source_url):
+        add_issue(issues, "private_use_source_missing", "A local source file or online source URL is required.", rel(book_root, state_path))
+    if source_url:
+        parsed = urlparse(source_url)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.username or parsed.password:
+            add_issue(issues, "private_use_source_url_invalid", "Online source URL must be HTTP(S).", rel(book_root, state_path))
+    if private_record.get("github_publish_allowed") is not False:
+        add_issue(issues, "private_use_github_boundary_missing", "state.private_use.github_publish_allowed must be false.", rel(book_root, state_path))
     return state
 
 
@@ -100,7 +110,7 @@ def check_declaration(book_root: Path, issues: list[dict]) -> None:
         add_issue(issues, "missing_private_use_declaration", "metadata/private_use_declaration.md is required.", rel(book_root, path))
         return
     text = path.read_text(encoding="utf-8", errors="replace")
-    for token in ["PRIVATE_USE_PASS", "No redistribution", "No commercial use", "Do not publish"]:
+    for token in ["PRIVATE_USE_PASS", "Personal study only", PRIVATE_USE_NOTICE, "Do not publish"]:
         if token not in text:
             add_issue(issues, "private_use_declaration_missing_boundary", f"private declaration must contain {token!r}.", rel(book_root, path))
 

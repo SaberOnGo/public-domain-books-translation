@@ -3,20 +3,20 @@
 This directory is copied only for `publication_mode=private_use` projects created with:
 
 ```powershell
-books/scripts/create_book_project.py --mode private-use --local-source-file ... --private-use-declaration ...
+books/scripts/create_book_project.py --mode private-use --source-url ... --private-use-declaration ...
 ```
 
 本目录只会复制到 `publication_mode=private_use` 的私人自用工程中。
 
 ## Boundary / 边界
 
-- This mode is for a user-provided local source file only.
-- The produced EPUB is a private personal-study artifact, not a public release.
+- This mode accepts a user-provided local file or an identified, lawfully accessible online HTML/wiki URL. Use `--local-source-file` instead of `--source-url` for a file.
+- The produced EPUB is a personal-use artifact. It may be stored in an owner-only LifeBook online bookshelf when that access control is available.
 - Concrete source text, translations, QA, EPUB output, and book metadata must stay under ignored `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`.
 - Public projects under `books/{target}/` must not contain this overlay.
 
-- 本模式只用于用户提供的本地书源。
-- 生成的 EPUB 是个人学习自用产物，不是公开 release。
+- 本模式可使用用户提供的本地文件，或明确指定且可合法访问的在线 HTML/Wiki URL；本地文件使用 `--local-source-file`。
+- 生成的 EPUB 是个人自用产物。具备仅本人可见的访问控制时，可存入个人 LifeBook 在线书架。
 - 具体原文、译文、QA、EPUB 输出和书籍 metadata 必须留在被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 下。
 - 公开项目 `books/{target}/` 不得包含本覆盖层文件。
 
@@ -25,7 +25,8 @@ books/scripts/create_book_project.py --mode private-use --local-source-file ... 
 - Private-use cover: no public-domain source claims and no long rights disclaimers.
 - Private-use frontmatter producer line: `参考public-domain-books-translation 开源项目 个人自制`.
 - Private-use frontmatter must not contain public-domain notices, public licenses, public release wording, or public source claims unless the source is actually public-domain.
-- Rights/risk wording must state: `仅供个人自用，不传播，不商业使用`，风险由个人承担；public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+- Simplified Chinese rights/risk wording must state: `本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。`
+- An online source does not by itself grant public publication rights. A public LifeBook bookshelf requires separate rights evidence; personal bookshelf access must be owner-only.
 
 ## Translation Quality / 译文质量
 

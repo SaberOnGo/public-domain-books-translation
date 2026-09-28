@@ -17,9 +17,8 @@ Use the target language as the primary reader-facing language. For Simplified Ch
 
 - Edition label: `私人学习版本`.
 - Producer line: `参考public-domain-books-translation 开源项目 个人自制`.
-- Source evidence: local source file name and SHA256 summary only; do not show the user's local absolute path.
-- Use boundary: `仅供个人自用，不传播，不商业使用`.
-- Risk boundary: `风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。`
+- Source evidence: online source URL (and page/revision when relevant), or local file name and SHA256 summary; do not show the user's local absolute path.
+- Use and risk boundary: `本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。`
 
 ## Forbidden Content / 禁止内容
 
@@ -48,12 +47,10 @@ Use the target language as the primary reader-facing language. For Simplified Ch
 作者：...
 版本：私人学习版本
 制作标识：参考public-domain-books-translation 开源项目 个人自制
-本地书源：{file_name}
-书源校验：SHA256 {short_or_full_hash}
+书源：{source_url_or_local_file_name}
+本地文件校验（如适用）：SHA256 {short_or_full_hash}
 
 ## 使用边界
 
-仅供个人自用，不传播，不商业使用。
-
-风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
 ```

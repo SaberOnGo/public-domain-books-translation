@@ -67,9 +67,9 @@ npm install
 
 不要在每个 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/` 目录里重复安装 `node_modules/`。具体书籍的 `package.json` 只保留脚本；`scripts/run_epubcheck.js` 等脚本必须向上查找共享的 `books/node_modules/`。
 
-Private-use projects live under ignored `books/private/{target}/{number}_{target_language_title}_{target_language_author}/`. They use the same shared tooling and the private-use mode overlay, but their source text, translations, QA records, EPUB artifacts, private artifacts, and book-specific metadata must remain local and must not be published to GitHub.
+Private-use projects live under ignored `books/private/{target}/{number}_{target_language_title}_{target_language_author}/`. They use the same shared tooling and the private-use mode overlay. Their content must not be published to GitHub; a personal EPUB may be stored in an owner-only LifeBook online bookshelf when access control is available.
 
-私人自用工程位于被忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。它们使用同一套共享工具和 private-use 模式覆盖层，但其中的原文、译文、QA 记录、EPUB 产物、私人产物和具体书籍 metadata 必须留在本地，不得发布到 GitHub。
+私人自用工程位于被忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。它们使用同一套共享工具和 private-use 模式覆盖层；原文、译文、QA、EPUB 和具体书籍 metadata 不得发布到 GitHub。具备仅本人可见的访问控制时，私人 EPUB 可存入个人 LifeBook 在线书架。
 
 ## Publication Lint / 出版文本检查
 
@@ -292,7 +292,7 @@ npm run release:create
 
 Release artifacts are named with the target-language title plus version, for example `金属巨兽_v0.0.4.epub`, with `v0.0.1` as the default first version. Every release also needs the cumulative `release_notes.md`, `release_state.json`, and `release_index.md`. New release-note entries are inserted at the top of `release_notes.md`, like software changelogs. See `references/release_versioning.md` and `prompts/18a_release_versioning.md`.
 
-Private-use projects are different: they must create local-only versioned artifacts under `output/private_artifacts/` by running:
+Private-use projects create versioned personal artifacts under `output/private_artifacts/` by running:
 
 ```powershell
 npm run private:artifact:create
@@ -300,7 +300,7 @@ npm run private:artifact:create
 
 Private-use artifacts are not public releases and must not be submitted to GitHub.
 
-私人自用项目不同：它们必须通过以下命令在 `output/private_artifacts/` 下创建仅限本地的版本化产物：
+私人自用项目通过以下命令在 `output/private_artifacts/` 下创建版本化私人产物；具备仅本人可见的访问控制时，可导入个人 LifeBook 在线书架：
 
 ```powershell
 npm run private:artifact:create

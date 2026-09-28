@@ -38,13 +38,10 @@ FORBIDDEN_LIFEBOOK_PRODUCER_SNIPPETS = [
 
 REQUIRED_BOOK_INFO_SNIPPETS = [
     "参考public-domain-books-translation 开源项目 个人自制",
-    "仅供个人自用",
-    "不传播",
-    "不商业使用",
-    "风险由个人承担",
-    "public-domain-books-translation 开源项目仅用于公版书翻译发布",
-    "不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任",
+    "本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。",
 ]
+
+FORBIDDEN_OLD_BOOK_INFO_SNIPPETS = ["不传播，不商业使用", "不传播、不商业使用"]
 
 
 def parse_args() -> argparse.Namespace:
@@ -134,7 +131,7 @@ def check_cover(book_root: Path, files: list[Path], issues: list[dict]) -> None:
     for path in cover_files:
         text = path.read_text(encoding="utf-8", errors="replace")
         relative = rel(book_root, path)
-        if "仅供个人自用" in text or "不传播" in text or "不商业使用" in text:
+        if "仅供个人自用" in text or "风险由个人承担" in text:
             add_issue(issues, "private_cover_contains_long_rights_notice", relative, "Private-use cover must not contain the long rights disclaimer; keep the personal-use boundary in book-info/frontmatter.")
 
 
@@ -159,6 +156,9 @@ def check_book_info(book_root: Path, files: list[Path], issues: list[dict]) -> N
                     relative,
                     f"Private-use book-info/frontmatter must contain required boundary wording: {snippet}",
                 )
+        for snippet in FORBIDDEN_OLD_BOOK_INFO_SNIPPETS:
+            if snippet in text:
+                add_issue(issues, "private_book_info_old_boundary", relative, f"Remove superseded wording: {snippet}")
 
 
 def main() -> None:

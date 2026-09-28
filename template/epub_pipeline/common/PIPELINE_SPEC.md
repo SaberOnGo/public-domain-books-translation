@@ -6,7 +6,7 @@
 - `PROFILE_ROOT`：可选。特殊书型控制模板目录，例如 `template/epub_pipeline/profiles/classical-science-zh-Hans`。
 - `MODE_ROOT`：可选。模式覆盖层目录；非公版私人自用项目必须使用 `template/epub_pipeline/modes/private_use`。
 - `PROJECT_ROOT`
-- `SOURCE_URL`：公开模式或授权模式的来源 URL。
+- `SOURCE_URL`：来源 URL；私人自用模式也可用明确指定的在线 HTML/Wiki URL。
 - `LOCAL_SOURCE_FILE`：可选，仅用于 `publication_mode=private_use` 的用户本地书源文件。
 - `publication_mode`：`public_domain` / `licensed` / `private_use`。
 
@@ -15,7 +15,7 @@
 - `TEMPLATE_ROOT` 是只读模板目录。
 - AI 不得把具体书籍的原文、译文、QA、EPUB 输出写入模板原目录。
 - 实际做书时，AI 必须通过 `books/scripts/create_book_project.py` 复制模板为独立书籍工程目录，例如 `books/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。`{target}` 是输出电子书的目标语言标签，`{number}` 由脚本在该目标语言目录内自动递增分配。数字前缀后的目录名必须使用目标语言可读书名和作者名。
-- 非公版私人自用书籍必须通过 `books/scripts/create_book_project.py --mode private-use --local-source-file ... --private-use-declaration ...` 创建到 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。`books/private/` 被 Git 忽略；其中的原文、译文、QA、EPUB 输出和具体书籍 metadata 不得发布到 GitHub。
+- 非公版私人自用书籍必须通过 `books/scripts/create_book_project.py --mode private-use` 创建，并提供 `--local-source-file` 或 `--source-url` 及 `--private-use-declaration`。工程位于 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。`books/private/` 被 Git 忽略；其中的原文、译文、QA、EPUB 输出和具体书籍 metadata 不得发布到 GitHub。具备仅本人可见的访问控制时，私人产物可存入个人 LifeBook 在线书架；公开书架须另行核查发布权利。
 - 若启用 `PROFILE_ROOT`，必须先复制 `common` 和语言方向模板，再把 `PROFILE_ROOT` 覆盖复制到同一个书籍工程目录。
 - 若 `publication_mode=private_use`，必须最后叠加 `MODE_ROOT=template/epub_pipeline/modes/private_use`。私人自用封面、首页/前置页、私人产物和门禁脚本不得混入公版或授权发布项目。
 - 复制完成后，后续 `PROJECT_ROOT` 指向独立书籍工程目录。
@@ -283,7 +283,7 @@ node scripts/asset_manifest_check.js --write-report
 必须同时满足：
 
 - `metadata/rights_checklist.md` 明确可继续：公开项目必须是 `PUBLICATION_PASS` 或 `LICENSED_PASS`；私人自用项目必须是 `PRIVATE_USE_PASS`。
-- 若 `publication_mode=private_use`，`metadata/private_use_declaration.md` 必须存在并记录用户本地书源文件名、SHA256、个人自用、不传播、不商业使用声明、风险由个人承担、public-domain-books-translation 开源项目仅用于公版书翻译发布，且不承担他人翻译/保存/传播/使用非公版内容导致的版权风险及责任；工程路径必须位于 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。
+- 若 `publication_mode=private_use`，`metadata/private_use_declaration.md` 必须存在并记录本地文件名及 SHA256 或在线 URL、个人自用声明、风险由个人承担及 public-domain-books-translation 项目责任边界；工程路径必须位于 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`。
 - 若启用特殊书型 profile，`metadata/reference_witness_policy.md` 必须明确原文底本和第二语言参考译本的使用边界。
 - `qa/pretranslation/pretranslation_report.md` 结论为 `PASS`。
 - 所有章节存在 `qa/chapter_controls/*.control.md` 且结论为 `PASS`。

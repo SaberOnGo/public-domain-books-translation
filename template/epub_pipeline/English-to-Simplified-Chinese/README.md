@@ -2,9 +2,9 @@
 
 ## 目标 / Goal
 
-给 AI 这个语言模板目录 `TEMPLATE_ROOT`、共享模板目录 `COMMON_TEMPLATE_ROOT`、目标工程目录 `PROJECT_ROOT` 和原书来源 `SOURCE_URL` 或私人本地书源，AI 应能自动完成：
+给 AI 这个语言模板目录 `TEMPLATE_ROOT`、共享模板目录 `COMMON_TEMPLATE_ROOT`、目标工程目录 `PROJECT_ROOT` 和原书来源 `SOURCE_URL` 或私人书源（本地文件/在线 URL），AI 应能自动完成：
 
-1. 下载/读取公版或授权英文原文；若是非公版私人自用模式，则读取用户提供的本地书源。
+1. 下载/读取公版或授权英文原文；若是非公版私人自用模式，则读取用户提供的本地文件或明确指定的在线书源。
 2. 核查来源、版权风险与使用边界。
 3. 清洗、分章。
 4. 完成通用翻译研究、本书专项翻译研究、预翻译试译。
@@ -43,7 +43,7 @@ Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `
 
 复制时若同名文件冲突，以语言方向模板为准。之后所有抓取、研究、翻译、QA、EPUB 输出都只能写入这个新目录。
 
-如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须是定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地书源并声明个人自用、不传播、不商业使用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，并最后叠加 `template/epub_pipeline/modes/private_use/` 覆盖层。
+如果用户只给了语言模板目录和 `SOURCE_URL`，AI 的第一步必须是定位对应的 `COMMON_TEMPLATE_ROOT`，然后用 `books/scripts/create_book_project.py` 创建独立工程目录并自动分配数字前缀；不得把某本书的数据写回模板目录。若用户提供本地文件或明确指定可合法访问的在线书源，并声明个人自用，必须使用 `--mode private-use` 创建到被 Git 忽略的 `books/private/{target}/{number}_{目标语言书名}_{目标语言作者名}/`，并最后叠加 `template/epub_pipeline/modes/private_use/` 覆盖层。
 
 ## 人类可选干预点 / Optional Human Checkpoints
 
@@ -92,7 +92,7 @@ Node.js 工具依赖不随每本书重复安装。先在 `books/` 目录运行 `
 
 ## 硬门禁 / Hard Gates
 
-- 公开项目没有版权/公版/授权来源核查，不得翻译；私人自用项目没有本地书源文件和 `metadata/private_use_declaration.md`，不得翻译。
+- 公开项目没有版权/公版/授权来源核查，不得翻译；私人自用项目没有本地文件或可识别在线书源，或缺少 `metadata/private_use_declaration.md`，不得翻译。
 - 未复制模板到独立书籍工程目录，不得开始抓取原文。
 - 没有本书专项翻译研究，不得预翻译。
 - 预翻译未 `PASS`，不得批量分章翻译。

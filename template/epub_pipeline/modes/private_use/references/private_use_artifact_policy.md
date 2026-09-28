@@ -5,9 +5,9 @@ scope: "publication_mode=private_use only / 仅私人自用模式"
 
 ## Artifact Semantics / 产物语义
 
-Private-use EPUB files are local personal-study artifacts. They are not public releases, not licensed releases, and not repository deliverables.
+Private-use EPUB files are personal-use artifacts. They may be imported into an owner-only LifeBook online bookshelf when that access control is available. They are not public releases or repository deliverables.
 
-私人自用 EPUB 是本地个人学习产物，不是公开 release，不是授权发布物，也不是仓库交付物。
+私人自用 EPUB 是个人自用产物；具备仅本人可见的访问控制时，可导入个人 LifeBook 在线书架。它不是公开 release，也不是仓库交付物。
 
 ## Output Directory / 输出目录
 
@@ -34,7 +34,7 @@ Do not use private EPUB artifacts as GitHub release assets. Do not commit them.
 
 Private-use mode controls rights, storage, and publication boundaries. It does not decide whether the book outputs only the target-language EPUB or both target-language and bilingual parallel EPUBs. For `English-to-Simplified-Chinese`, the default `edition_type: bilingual_parallel` applies in private-use projects as well; the resulting EPUBs remain local private artifacts and must not be published to GitHub.
 
-私人自用模式只控制版权边界、存放位置和是否能公开发布；它不决定一本书只输出目标语言 EPUB，还是同时输出目标语言 EPUB 和双语对照 EPUB。对 `English-to-Simplified-Chinese`，默认 `edition_type: bilingual_parallel` 同样适用于私人自用项目；生成的 EPUB 仍然只是本地私人产物，不得发布到 GitHub。
+私人自用模式只控制版权边界、存放位置和是否能公开发布；它不决定一本书只输出目标语言 EPUB，还是同时输出目标语言 EPUB 和双语对照 EPUB。对 `English-to-Simplified-Chinese`，默认 `edition_type: bilingual_parallel` 同样适用于私人自用项目；生成的 EPUB 可保存在个人在线书架，但不得发布到 GitHub。
 
 ## Random Spot-Check Evidence / 随机抽检证据
 
@@ -52,8 +52,6 @@ Before creating a PASS private artifact, translation QA must use `skills/expert-
 
 Every private artifact note must include:
 
-- `仅供个人自用，不传播，不商业使用`
-- 风险由个人承担。
-- public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+- `本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。`
 
 每份私人产物说明必须包含上述使用边界、个人风险和 public-domain-books-translation 开源项目责任边界。

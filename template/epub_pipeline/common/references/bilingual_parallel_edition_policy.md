@@ -74,7 +74,7 @@ The versioned release/private artifact filename must use a reader-facing bilingu
 
 Rights and publication mode are separate from the edition decision. A public or licensed project writes versioned public release artifacts under `output/release/`; a `private_use` project writes versioned local artifacts under `output/private_artifacts/`. Either mode may contain target-only and bilingual EPUB artifacts when `output_editions` enables both.
 
-版权/发布模式与输出版本决定彼此独立。公版或授权项目把版本化公开产物写入 `output/release/`；`private_use` 项目把版本化本地产物写入 `output/private_artifacts/`。只要 `output_editions` 同时启用单目标语和双语版，两种发布模式都可以包含这两个 EPUB 产物。
+版权/发布模式与输出版本决定彼此独立。公版或授权项目把版本化公开产物写入 `output/release/`；`private_use` 项目把版本化私人产物写入 `output/private_artifacts/`，可在仅本人可见的个人 LifeBook 在线书架保存。只要 `output_editions` 同时启用单目标语和双语版，两种模式都可以包含这两个 EPUB 产物。
 
 ## Alignment Integrity / 对齐完整性
 

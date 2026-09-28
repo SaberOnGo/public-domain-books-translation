@@ -26,8 +26,8 @@ This file is for AI agents using the `English-to-Simplified-Chinese` template.
 - Important files and prompts for this template must include Simplified Chinese. English may be included in parallel, but English-only important instructions are not acceptable here.
 - 本模板的重要文件和 prompt 必须包含简体中文。英文可以并列，但重要说明不能只写英文。
 
-- Preserve source evidence and rights checks before translation. Public projects require public-domain or licensed source evidence; private-use projects require a user-provided local source file and `metadata/private_use_declaration.md`.
-- 翻译前必须保留来源证据并完成版权核查。公开项目必须有公版或授权来源证据；私人自用项目必须有用户提供的本地书源文件和 `metadata/private_use_declaration.md`。
+- Preserve source evidence and rights checks before translation. Public projects require public-domain or licensed source evidence; private-use projects require a local file or identified online source URL and `metadata/private_use_declaration.md`.
+- 翻译前必须保留来源证据并完成版权核查。公开项目必须有公版或授权来源证据；私人自用项目须有本地文件或明确指定的在线书源 URL，以及 `metadata/private_use_declaration.md`。
 
 - Do not use modern Chinese translations as source material or hidden reference material.
 - 不得使用现代中文译本作为翻译底本或隐藏参考材料。
@@ -52,8 +52,8 @@ This file is for AI agents using the `English-to-Simplified-Chinese` template.
 
 - After the first full-book EPUB and after each post-EPUB refinement pass, at least two independent agents must run the stratified random spot-check gate. The sampled population is reader-facing audit units, including paragraphs, tables, figures, formulas/proof blocks, captions, and notes. Both agents, fix closure, and `npm run review:random-validate:pass` must pass before refinement can be considered complete.
 - 第一版全书 EPUB 生成后，以及每轮 EPUB 后精校完成后，必须由至少两个独立 Agent 执行分层随机抽检门禁。抽样总体是读者可见审计单元，包括正文段落、表格、图片、公式/证明块、图注和注释。两个 Agent、修复闭环和 `npm run review:random-validate:pass` 都通过后，才可认为精校完成。
-- After random spot-check closure, create a versioned artifact: public-domain or licensed projects use `output/release/`, while `private_use` projects use local-only `output/private_artifacts/`; `output/book.epub` alone is not a final artifact.
-- 随机抽检闭环通过后，必须创建带版本号产物：公版或授权项目使用 `output/release/`，`private_use` 项目使用仅限本地的 `output/private_artifacts/`；只有 `output/book.epub` 不是最终产物。
+- After random spot-check closure, create a versioned artifact: public-domain or licensed projects use `output/release/`, while `private_use` projects use personal `output/private_artifacts/`; `output/book.epub` alone is not a final artifact.
+- 随机抽检闭环通过后，必须创建带版本号产物：公版或授权项目使用 `output/release/`，`private_use` 项目使用私人 `output/private_artifacts/`；只有 `output/book.epub` 不是最终产物。
 
 - Before building or publishing an EPUB, run `node scripts/publication_lint.js --target=zh-Hans --write-report` and fix all hard errors.
 - 构建或发布 EPUB 前，必须运行 `node scripts/publication_lint.js --target=zh-Hans --write-report`，并修复所有硬错误。

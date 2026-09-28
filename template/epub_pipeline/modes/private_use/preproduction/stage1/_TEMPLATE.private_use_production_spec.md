@@ -9,8 +9,9 @@ This addendum is required only for `books/private/{target}/{number}_{目标语�
 
 ## Private Source / 私人书源
 
-- Local source file name:
-- Local source SHA256:
+- Source type: `local_file` / `online_url`
+- Local source file name and SHA256 (if applicable):
+- Online source URL and page/revision (if applicable):
 - User declaration file: `metadata/private_use_declaration.md`
 - Rights decision: `PRIVATE_USE_PASS` / `FAIL`
 
@@ -36,7 +37,7 @@ Private-use boundaries must be stated in book-info/frontmatter and metadata. Do 
 Forbidden cover text:
 
 - Public-domain source line such as `依据 Project Gutenberg ... 制作`.
-- Long rights disclaimer such as `仅供个人自用，不传播，不商业使用`.
+- Long rights disclaimer such as `本版本仅供个人自用，风险由个人承担`.
 - `LifeBook 书坊 译制`.
 - `LifeBook 书坊 SaberOnGo`.
 - `LifeBook 书坊 + 个人名`.
@@ -51,9 +52,8 @@ Required reader-facing wording:
 
 - Edition label: `私人学习版本` or target-language equivalent.
 - Producer line: `参考public-domain-books-translation 开源项目 个人自制`.
-- Local source evidence: local file name and SHA256 summary only.
-- Rights/use boundary: `仅供个人自用，不传播，不商业使用`.
-- Risk boundary: 风险由个人承担；public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。
+- Source evidence: online URL or local file name and SHA256 summary.
+- Rights and risk boundary: `本版本仅供个人自用，风险由个人承担。public-domain-books-translation 开源项目仅用于公版书翻译发布，不承担其他个人翻译、保存、传播或使用非公版内容导致的版权风险及责任。`
 
 Forbidden book-info/frontmatter wording:
 
@@ -75,6 +75,6 @@ Forbidden book-info/frontmatter wording:
 - Private artifact state: `output/private_artifacts/private_artifact_state.json`
 - Private artifact notes: `output/private_artifacts/private_artifact_notes.md`
 
-`output/private_artifacts/` is a local-only private artifact directory. It is not a public release directory and must not be published to GitHub.
+`output/private_artifacts/` is the private build directory. Its EPUBs may be imported into an owner-only LifeBook online bookshelf when access control is available; they must not be published to GitHub or a public bookshelf without separate rights evidence.
 
-`output/private_artifacts/` 是本地私人产物目录，不是公开 release 目录，不得发布到 GitHub。
+`output/private_artifacts/` 是私人产物构建目录。具备仅本人可见的访问控制时，可将 EPUB 导入个人 LifeBook 在线书架；没有另行核查的发布权利，不得发布到 GitHub 或公开书架。
