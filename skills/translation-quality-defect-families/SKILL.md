@@ -202,6 +202,10 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 
 ### Historical Names and Currency Left in Source Form / 历史人名与币名裸留源语
 
+- Numeric-to-translated-currency spacing guard: After localizing a currency name, inspect joins between numbers and Chinese names, including decimals: source-style `10.5 兹普币` ordinarily becomes `10.5兹普币` in continuous Chinese prose. A scan such as `[0-9][ \t]+[一-龥]` only finds candidates; preserve meaningful spacing in identifiers, code, source quotations, table structure, and source-language blocks. Compare the value, currency identity, unit, and nearby text; scan generated target and bilingual target XHTML after rebuilding, and use a fresh random seed for post-EPUB repairs.
+  数值与译后币名空格防护：币名中文化后还须核对数字与币名的连接，包括小数；连续中文正文中的源语式“10.5 兹普币”通常应为“10.5兹普币”。`[0-9][ \t]+[一-龥]` 一类扫描只生成候选；标识符、代码、原文引句、表格结构和源语块中的必要空格应保留。对照数值、币种、单位及邻文；重建后扫描中文版和双语版的中文 XHTML，EPUB 后修复须用新 seed 再抽检。
+
+
 - Symptom: A literary translation keeps ordinary source-language names, currency units, or social terms in Latin letters inside continuous target-language narration, such as `Zaide`, `blanca`, `maravedí`, or `real`, even though the passage is not discussing source-language form.
   症状：文学译文在连续目标语叙事中裸留普通源语人名、币名或社会词，例如 `Zaide`、`blanca`、`maravedí`、`real`，但该处并不是在讨论源语词形。
 - Find by: Start from random-sample hits, then scan final chapters, translated drafts, generated EPUB XHTML, and glossary forbidden renderings with exact strings and `rg --no-ignore` when ordinary directory scans are affected by ignore rules.
@@ -412,6 +416,9 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 
 ### Unclear Pronoun Reference / 代词指代不清
 
+- Number/addressee guard: English `you/your` does not mark number. Audit interface strings and dialogue with `room numbers`, multiple keys, `you all`, or group reactions against actual recipients and adjacent actions. A plural object alone does not prove plural addressees; retain a singular address when the context supports one person.
+  单复数与受话对象防护：英语 `you/your` 不标单复数。对设备界面和对白中的多个房间号、多把钥匙、`you all` 及群体反应，核对实际受话对象和邻段动作。宾语为复数本身不能证明受话对象为多人；上下文支持一人时保留单称。
+
 - Symptom: A pronoun, demonstrative, or ellipsis that was clear in the source becomes ambiguous after translation, especially in dialogue, multi-character scenes, legal argument, or technical explanation.
   症状：原文清楚的代词、指示词或省略，在译文中变得含混；常见于对话、多人物场景、法律论证和技术说明。
 - Find by: Reading only the translated paragraph and asking who/what each pronoun points to; then compare with the source chain.
@@ -422,6 +429,45 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   复查：确认没读过原文的读者也能不猜测地跟上关系。
 
 ### Source-Syntax Residue / 源语句法残留
+
+- Fronted spatial clauses and inserted subjects: When an English placement sentence interrupts a fronted location with a clause about another subject, establish the target-language main action first, then attach the intervening description to its actual subject. Preserve position, quantity and direction: placing ships behind walls does not itself mean that the ships follow the walls in motion. Search source patterns such as `behind ... , ... he/she/they` and `all/both aimed`, plus target phrases such as `紧跟在…，`; inspect each complete candidate and neighbors, retaining natural contextual exceptions. Avoid adding extra named-entity occurrences merely to clarify a pronoun; check the locked occurrence ledger and require a fresh independent full-chapter review after repair.
+  前置方位与插入主语防护：英文放置句在前置方位中插入另一主语的说明时，中文先让主动作成立，再把插入说明明确挂到它实际修饰的主体上。保留位置、数量和方向；把飞船放在墙后并不自动表示飞船跟随墙运动。低 token 检索源文 `behind … , … he/she/they`、`all/both aimed` 及译文“紧跟在…，”等候选，再实际读完整片段与邻段，保留自然的上下文例外。不能为澄清代词随意增加专名出现次数；须核对已锁出现账本，修订后追加新独立全章复查。
+
+- Counted-unit and object-boundary guard: A locked fictional unit still needs natural target-language counting grammar. In Chinese, `a few ticks` may require `几个时拍`, while `一道测验` can falsely turn an entire quiz into one question; choose `一份测验` when the source refers to the complete instrument. Do not insert `个` into every technical unit or change a genuinely single question. Scan exact residues and paired source triggers, then read each complete candidate and neighbors.
+  数量单位与对象边界防护：锁定的虚构单位仍须符合目标语数量语法。例如 `a few ticks` 在中文可需“几个时拍”；“一道测验”可能把整份测验缩成单道题，源文指完整测验时应用“一份测验”。不能给所有技术单位机械加“个”，也不能改掉真正的单道题。先扫确认残留与配对源语触发词，再实际读完整候选及邻段。
+- Duration, utterance, and proximity guard: Keep a duration attached to the action it measures: `a few moments' pause` describes how long the pause lasts, not a delay before it begins. `one last thing` introduces a final topic or addition, not necessarily one sentence; check the following utterance before using `最后一句话`. `not quite adult` can mark proximity to adulthood, which generic `尚未成年` may flatten; retain that proximity where supported. Repair relations in natural prose without inventing sentence counts, timing, or age.
+  时长、话题与临近状态防护：时长须修饰原文计量的动作。`a few moments' pause` 表示停顿持续片刻，不能移成停顿前先过片刻；`one last thing` 引出最后的话题或补充，并不限定一句话，使用“最后一句话”前须检查后续实际话语；`not quite adult` 可带临近成年之意，泛写“尚未成年”可能抹掉临近状态，应按源文保留。用自然中文修复关系，不新增句数、时间或年龄。
+- Recheck these as book-wide candidates, retain contextual exceptions, and require a fresh independent full-chapter zero-issue review for every changed chapter before closing the family. Source terms, glossary decisions, emphasis, and the original natural-paragraph boundaries remain authoritative.
+  复查时把上述触发式扩展为全书候选，记录上下文例外；每个修订章须经新独立全章零问题审校后才能关闭问题族。源语术语、术语表裁决、强调及原著自然段边界仍须保留。
+
+
+- Deliberate repetition guard: In ordinary narration or dialogue, repeated words or connectives may carry another viewpoint turn, hesitation, insistence, or voice. Preserve that function and emphasis in natural target prose. After an ordinary contrast, an emphasized `other other hand` can require `再换个角度看`; reducing both turns to the same ordinary contrast loses the extra turn. Grammar such as `had had` or `that that`, valid labels, fictional language, and ordinary contrasts are contextual exceptions, not automatic errors. Exact quotation or source-prosody evidence still follows its existing preservation policy.
+  有意重复防护：普通叙述或对白中的重复词与连接语，可能承载再一层视角转折、迟疑、坚持或人物语气。用自然目标语保留其功能和强调。前段已有普通转折时，带强调的 `other other hand` 可能需要“再换个角度看”；两次都压成普通“另一方面”会丢掉额外转折。`had had`、`that that` 等语法结构、有效标签、虚构语言和普通转折均属须结合语境判断的例外，不自动判错。精确引文与源语声韵证据仍按既有保留政策执行。
+- Low-token audit: Scan source adjacent repeated words and connective turns, then read each complete current source-target pair and immediate neighbors, including emphasis tags. Classify functional repetition and contextual exceptions before repairing; do not translate duplicate tokens mechanically. Repair confirmed omissions throughout the book and obtain fresh independent full review for every changed chapter before closing the family.
+  低 token 审计：先扫源语相邻重复词与连续转折，再实际读每条完整当前源译及即时邻段，并核对强调标签。先区分有功能的修辞与上下文例外，再修订，不能机械重复翻译词面。全书关闭确认遗漏，每个改动章完成新独立全量复查后，才关闭问题族。
+
+- Proof-frame and enumeration guard: Reporting `how you can prove that X` conveys a proof explanation as well as proposition X; retaining X alone can omit the reporting frame. A source fragment such as `location tracking, behavior profiling, all of it` may rely on the previous sentence's predicate. Supply that source-supported predicate when Chinese would otherwise end at a dangling `所有这些都是`, while preserving the list and scope. An elliptical `所有人都一样` can already mean that the preceding requirement applies to all; distinguish clarification from a proven assertion that the people are identical. `Start heading over` can become `动身过去`, keeping the beginning of movement without a mechanical `开始过去`. Search full source triggers and confirmed target residues, read every candidate with neighbors, and record substring false positives as exceptions.
+  证明框架与列举防护：how you can prove that X除命题X外，还包含讲解证明的叙述框架；只译X可能漏掉这一层。location tracking, behavior profiling, all of it等源文残句可承接前句谓语，中文若停在“所有这些都是”，应补出源文已支持的谓语，同时保留列表和范围。“所有人都一样”本身也可能省略承接前句要求对所有人适用，须区分明确化与已证实的人人相同断言。start heading over可译“动身过去”，保留行动开始，避免机械“开始过去”。检索完整源语触发与确认残留，实读每个候选及邻段，子串假阳性须记为例外。
+
+- Speech-source and comparison guard: An `announcer voice` or automatic voice does not prove that a human announcer is present. A voice can naturally be a grammatical subject; remove heavy reporting scaffolding without inventing an actor. For comparative clauses, name both compared quantities or states: walls falling faster than they are built compares rates, while one person's protection exceeding another's compares protection. Make directional modifiers readable without relocating a wall, ship, or described event. Verify whole source/target pairs and neighbors, then re-audit every changed chapter.
+  声源与比较防护：announcer voice或自动声音不证明现场有人类播报员；声音本身可以自然地作语法主语。简化归属语的解释堆叠时不得新增施事。比较句须完整呈现两边的量或状态：墙崩塌快于新建，比的是速度；某人的保护远胜另一人，比的是受保护程度。重排方位修饰时不得移动原文墙、飞船或事件的位置。核对完整源译及邻段，修订章重新全量审校。
+
+- Coordinated-reason guard: In `motivated, or at least justified to X, by Y`, Y is both the possible motive and the justification offered to X; do not turn the second branch into a bare act of explaining. Likewise, `possible because A and B` makes A and B joint conditions, not A the cause of permission B. Preserve modifiers such as `other`, group membership, and first encounters when splitting long clauses.
+  并列理由防护：`motivated, or at least justified to X, by Y` 中，Y同时是可能动机和向X说明合理性的理由，不能把第二分支改成没有理由的解释动作。`possible because A and B` 的A和B是共同条件，不是A导致B许可。拆长句时保留other、组内成员关系及首次接触等限定。
+- Placement and redundancy guard: `pressed against a corner` normally describes an object's close placement, not a corner pressing the object. Repair repeated wording such as `当面见面` without deleting a meaningful `in person` limitation; a natural alternative must retain the distinction from remote meeting. Source `without internet` does not itself specify an active disconnection procedure.
+  位置与去冗防护：`pressed against a corner` 通常描述器物贴靠角落，不是角落压住器物。修订“当面见面”等重复搭配时仍保留in person的实体会面限定，顺读写法不得消去它与远程会面的区别。without internet本身不规定主动断网步骤。
+
+- Fractional-time naturalness guard: A mathematically exact literal phrase can still interrupt narrative reading. In ordinary elapsed-time prose, `a quarter minute` can become `十五秒` after explicitly checking the 1/4 × 60 equivalence and preserving approximation, repetition, and event order. Do not mechanically convert naturally readable `半分钟`, or fictional units such as `tick` and `longhour` whose conversion is not established. Search source fractions and confirmed target residues throughout the book, read complete candidate pairs and neighbors, and re-audit each changed chapter before closing the family.
+  分数时间顺读防护：数学上准确的直译仍可能打断叙事阅读。普通经过时间中的 `a quarter minute`，可在明确核对 1/4 × 60 等值关系后改为“十五秒”，同时保留近似、再次及事件顺序。不能机械换掉自然的“半分钟”，也不能换算未确立数值关系的 `tick`、`longhour` 等虚构单位。全书检索源文分数表达与确认的译文残留，实际读完整候选源译及邻段；每个修订章重新全量审校后，才关闭问题族。
+
+- Membership/responsibility guard: `on the ... rubric` can describe membership in the group drafting a rule; it need not confer leadership or sole responsibility. Check the surrounding institutional definition before using `负责`, and preserve the difference between membership, participation, and duty. In Chinese, `在某小组` can already express membership; changing it to `属于某小组` may be an editorial clarification, not proof of a missing predicate. Record that distinction and do not impose a global ban on `在` or `负责`.
+  成员与职责防护：`on the ... rubric` 在本书制度语境中可能指参加制定规则的小组，不必意味着主持或独自负责。使用“负责”前回查邻近制度定义，保留成员身份、参与和职责的区别。中文“在某小组”本身可以表达成员身份；改成“属于某小组”可能只是编辑明确化，不能据此断言旧句缺谓语，也不能全书禁用“在”或“负责”。
+
+- Relation-first naturalness guard: Before polishing stacked possessives, nominal complements, or countdown descriptions, identify the recipient, object, described event, measurement unit, and deadline. `his tea ... handed him` may need only `给他递上茶`; `that is crazy` may need an event-bearing complement such as `是件疯狂的事`; a timer `counting down in ticks the remaining time until ...` should directly name the remaining time and preserve both the source unit and deadline. These are contextual rewrites, not global bans on possessives or copular sentences. Compare full candidate pairs and neighbors, then confirm that no relation or technical unit was lost.
+  先理关系再顺读防护：润色多层物主代词、名词性补语或倒计时描述前，列清接收者、物件、所述事件、计量单位和截止事件。`his tea ... handed him` 在语境中可能只需“给他递上茶”；`that is crazy` 可能需要“是件疯狂的事”这样的事件补语；`counting down in ticks the remaining time until ...` 应直接写清剩余时间，并保留源文单位与截止事件。这些属于上下文改写，不能泛化为禁止物主代词或判断句。核对完整候选源译及邻段，再确认关系与技术单位均未丢失。
+
+- Voice/agent guard: Rewriting passives must preserve who acts and what is acted upon. `surveillance drones getting snuck in` describes drones covertly introduced, not drones independently infiltrating. Keep an unspecified agent and method unspecified; do not invent a carrier, transport method, or autonomous action. Scan source passive/covert phrases and compare only matched source-target-context packets first.
+  语态与施事防护：改写被动句时保留谁行动、什么承受行动。`surveillance drones getting snuck in` 指被秘密引入的无人机，不能写成无人机自行潜入。原文未明的施事和方式仍应未明，不新增运输者、运输方式或自主行动。先检索源语被动及隐蔽行动表达，仅对候选源译邻段作专项核对。
 
 - Symptom: The target text is understandable but still follows source clause order, modifier stacking, passive structure, or abstract noun scaffolding.
   症状：译文能懂，但仍保留源语从句顺序、修饰堆叠、被动结构或抽象名词支架。
@@ -443,6 +489,10 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   特别检查：审计 `misdeeds`、`wrongdoing`、`fault`、`blame`、`guilt`、`sin`、`offense` 等抽象道德/法律评价词，防止近形误选或语域误选。把 `misdeeds` 译成“错行”是读者可见错词；应对照上下文改为“过错”“错事”“恶行”“责任”“罪责”“罪”等合适表达。
 - Special check: Audit literal body, motion, and position metaphors copied from source-language idioms, such as "glides into sentences", "in the guts", "pushed over the top", or "after interest is lost". These often look vivid in isolation but become stiff or physically odd in Chinese.
   特别检查：审计从源语习语机械搬来的身体、动作和位置隐喻，例如 "glides into sentences"、"in the guts"、"pushed over the top"、"after interest is lost" 一类表达。它们单看似乎有画面，进入中文后常变成生硬或物理感别扭的句子。
+- Special check: In literary narration, audit ordinary English abstract nouns, passive sensory frames, and idioms that become awkward Chinese shells. Examples include `my incapacity to escape them` becoming “我逃不开它们的无能”, `made itself known to my naked feet` becoming “被我赤裸的脚感觉到”, `very far from well` becoming “离舒服很远”, `I am that--individual` becoming “我就是那个，人物”, `jumped out of my skin` becoming “从皮里跳出来”, and `bore my part` becoming “扮演一份角色”. Use exact target residues first, then small-context source checks; rewrite as target-language narration such as “我竟无力逃开”, “赤脚第一次踩上…”, “浑身很不好受”, “我就是那个人”, “差点吓得跳起来”, or “卷入这些事件”.
+  特别检查：文学叙事中，审计普通英语抽象名词、被动感知结构和习语进入中文后形成的硬壳。例如 `my incapacity to escape them` 不应成为“我逃不开它们的无能”，`made itself known to my naked feet` 不应成为“被我赤裸的脚感觉到”，`very far from well` 不应成为“离舒服很远”，`I am that--individual` 不应成为“我就是那个，人物”，`jumped out of my skin` 不应成为“从皮里跳出来”，`bore my part` 不应成为“扮演一份角色”。先用目标语精确残留收集候选，再只对命中段落做小上下文源文对照；修复为目标语叙事，如“我竟无力逃开”“赤脚第一次踩上……”“浑身很不好受”“我就是那个人”“差点吓得跳起来”“卷入这些事件”。
+- Special check: Also audit ironic or colloquial idioms whose literal images are not important to the scene, such as `strong on questions of instinct`, `an axe of his own to grind`, `found in me a grindstone`, `confined yourself to gentle felony`, or `shower blessings`. Do not keep Chinese shells like “在本能问题上有分量”, “一把斧头要磨”, “磨刀石”, “温和的重罪”, or “祝福倾倒”; translate the social function instead, such as “很有一套”, “另有盘算”, “从我身上得利”, “犯了个不算太重的罪”, or “送上祝福”.
+  特别检查：还要审计讽刺或口语习语中并不承担场景事实的字面意象，例如 `strong on questions of instinct`、`an axe of his own to grind`、`found in me a grindstone`、`confined yourself to gentle felony`、`shower blessings`。不要保留“在本能问题上有分量”“一把斧头要磨”“磨刀石”“温和的重罪”“祝福倾倒”这类中文硬壳；应译出社交功能，如“很有一套”“另有盘算”“从我身上得利”“犯了个不算太重的罪”“送上祝福”。
 - Special check: Audit abstract-force injury metaphors copied as literal bodily harm, such as "suffered the scald of irony" becoming “被反讽烫伤”. In Chinese, preserve the cognitive/emotional effect with expressions like “尝过……的刺痛”, “感到……刺痛”, or another context-supported idiom rather than making irony, desire, truth, or memory physically burn the reader.
   特别检查：审计抽象力量造成身体伤害的硬译，例如把 "suffered the scald of irony" 译成“被反讽烫伤”。中文应保留认知/情绪效果，例如“尝过……的刺痛”“感到……刺痛”或其他有上下文支撑的习惯表达，不要让反讽、欲望、真相、记忆等抽象物在字面上烫伤读者。
 - Special check: Audit throat-grab, drag-to-crawl, and concealed-hurt idioms when the source uses body language for rhythm or emotion, such as "the fear of embarrassment grabs them by the throat", "their stride shuffle to a crawl", or "concealing the hurt". Translate the effect as being stuck, slowed, stung, embarrassed, or emotionally hurt instead of importing a literal body-action chain.
@@ -536,6 +586,12 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 
 ### Over-Explanation and Invented Motive / 过度解释或加戏
 
+- Attention/action guard: A shift of attention or a gaze direction does not automatically assert a head turn, body turn, or walking past somebody. Compare `moving attention`, `stared`, and `looking past` against added physical verbs, and keep the grammatical subject clear when it is the gaze that passes another person. Explicit source body movement is a justified exception; do not ban a physical verb throughout the book merely because one instance was added.
+  注意力与动作防护：注意力转移或凝视方向不自动意味着转头、转身或走过某人。对照moving attention、stared、looking past与新增身体动词；越过人物的是视线时，应明确视线主语。原文明示身体动作属于合理例外，不能因一处增译就全书禁用某个动作词。
+
+- Pause/action guard: A bare `paused` or `paused again before finally speaking` records a pause, not necessarily thinking, hesitation, or deliberation. Back-check added `想了想` and similar mental actions against the actual source and neighboring dialogue. Preserve an explicit `paused to think` as an exception; repair only unsupported additions and re-audit the changed chapter in full.
+  停顿与动作防护：单独的 `paused`，或“再次停顿后终于开口”，只陈述停顿，未必包含思考、犹豫或斟酌。将新增的“想了想”等心理动作回查到实际源句与邻近对白；原文明示 `paused to think` 时保留为例外。只修复没有源文依据的增写，修订后追加整章全量复查。
+
 - Symptom: The translation explains what the source leaves implicit, supplies motives, modernizes attitudes, or adds emotional judgment not present in the source.
   症状：译文解释了原文留白，补动机，现代化人物态度，或添加原文没有的情绪判断。
 - Find by: Comparing explanatory phrases, psychological verbs, moral labels, and added causal connectors against the source.
@@ -550,6 +606,16 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   复查：确认读者推断距离与原文一致。
 
 ### Terminology Drift Under Readability Pressure / 顺读压力下的术语漂移
+
+- Locked institutional-term guard: Ordinary dictionary alternatives may be wrong for a book-defined institution. Once `rubric` is locked as `评定规则` by the work's own definition, do not alternate it with `评议标准` in later exposition. Scan all source occurrences and reader-visible target variants, including body, interfaces and figures; inspect each in context, repair confirmed institutional uses, and retain genuinely ordinary uses as documented exceptions without changing the locked register silently.
+  锁定制度术语防护：普通词典中的可选译法，未必适合书内定义的制度。`rubric` 已依据作品定义锁定为“评定规则”时，不能在后文说明中随意漂成“评议标准”。检索全书源词与读者可见译名变体，覆盖正文、界面和图示；逐候选回查上下文，修复确认的制度用法，普通词义则记录为合理例外，不悄然改变锁定表。
+- Tax or interface labels may abbreviate the surrounding explanation but must preserve the book-defined category. Replacing an institutional rule with a scoring item can change what the displayed tax applies to. Check the complete label, neighboring explanation and numeric table; do not repair only narrative occurrences.
+- 税项和界面标签可以简写邻近说明，但须保留书内定义的类别。把制度规则译成评分项可能改变读者理解的征税对象；应检查完整标签、邻近解释和数值表，不能只修正文中的源词命中。
+- After an explicit institutional term has been introduced, short references such as “the rule” or “this group” can be valid anaphora. Retain them when the local referent is clear; require the locked term where a fresh explicit source occurrence or category label would otherwise broaden or narrow the concept.
+- 制度术语明确引入后，“规则”“这个小组”等短回指可以成立。局部指向清楚时保留；原文明说该术语或标签分类会因简称泛化、窄化时，采用锁定译名。不得全书机械替换所有“规则”“标准”“小组”。
+
+- Unregistered-term guard: A missing glossary entry does not permit inconsistent prose and interface names for the same specialist mechanism. Compare every source occurrence, the local definition, and authoritative domain usage before choosing one rendering; `social recovery` through preselected friends/family is `社交恢复`, not a recovery of society. Record the book-local contextual decision and re-audit affected chapters without silently changing locked registers.
+  未入术语表的术语防护：术语表中没有词条，不代表同一专门机制可在正文和界面任意变名。统一前核对全部源语出现、本书定义及权威领域用法；借助预选亲友恢复钱包的 `social recovery` 应为“社交恢复”，不能误成社会秩序恢复。记录书内上下文裁决并重审受影响章，不悄然改动已锁定表。
 
 - Symptom: A translator varies terms for smoother prose, but the variation changes a concept, institution, case name, identity, ship, place, or fictional science item.
   症状：为了顺读变换术语，却改变了概念、制度、案例名、身份、船名、地名或虚构科学设定。
@@ -572,7 +638,37 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 - Russian weapon terminology guard: When a Russian glossary locks culturally specific weapons, do not smooth them into a generic familiar weapon name. If `шашка` is locked as `长刀` and `马刀` is listed as forbidden or over-generalized, scan source triggers (`шашка|шашкой|шашку|шашки`) and target residues (`马刀|长刀`) across final chapters, translated drafts, generated XHTML, source text, and the glossary; repair every confirmed target residue to the locked term and record any exceptions.
   俄语武器术语防护：俄语术语表锁定具有文化语境的武器名时，不要为了顺口改成泛化常用武器名。若 `шашка` 已锁定为“长刀”，且“马刀”在术语表中列为禁用或泛化过强，必须同时扫描源语触发词（`шашка|шашкой|шашку|шашки`）和目标语残留（`马刀|长刀`），覆盖终稿、译稿、生成 XHTML、源文和术语表；确认命中一律改回锁定译名，并记录合理例外。
 
+### Modality, Probability and Negation Scope / 情态、概率与否定范围
+
+- Tried-set and duration guard: `no combination that he tried` concerns attempted combinations, not all conceivable combinations. Preserve that bound when removing modifier stacks. In an uncertain prediction, `ten or twenty days, maybe a month` retains alternatives and an estimate, rather than a fixed deadline or an unsupported continuous range; classify neighboring numerical uses contextually instead of applying a global punctuation substitution.
+  尝试集合与时长防护：no combination that he tried只否定实际尝试的组合，不否定一切可能组合。去掉定语堆叠时保留此范围。不确定预测中的ten or twenty days, maybe a month须保留备选和估计，不能改成固定期限或无依据的连续区间；邻近数字应按语境裁决，不做全书机械标点替换。
+
+- Risk/event and temporal-negation guard: `no risk from others influencing them` negates the risk, not the existence of influence; `manipulate media into not covering this` does not itself assert earlier coverage. Separate the event, its consequence, and any prior-state claim before choosing `不会` or `不再`. In nested conditional relatives, keep `would/might` attached to the qualified people and preserve quantifiers such as `most`; do not turn possible manipulation into an accomplished event. Read neighboring source-target units and retain explicit prior-state or no-action claims as justified exceptions.
+  风险、事件与时间否定防护：`no risk from others influencing them` 否定的是影响造成的风险，不能改成无人施加影响；`manipulate media into not covering this` 本身不证明此前曾经报道。选用“不会”“不再”前，分别列清事件、后果及先前状态。条件关系从句中的 `would/might` 应仍修饰所限定的人群，并保留 `most` 等量词，不能把可能发生的操纵变成既成事实。实际阅读候选源译及邻段；原文明示先前状态或无人行动时，应保留为合理例外。
+
+- Symptom and risk: A fluent rewrite attaches a probability to the wrong quantity, strengthens a possibility into certainty or an exclusive path, shifts a past inference into a future prediction, or changes the scope of coordinated negation.
+  症状与风险：顺口改写把概率挂到错误数量上，将可能性强化成必然或唯一路径，把过去推断改成未来预测，或改变并列否定的范围。
+- Probability guard: Attach percentages to the source event, not a nearby rate or outcome magnitude. Maximizing the chance of being useful does not assert guaranteed usefulness or the only possible course of action.
+  概率防护：百分比必须明确修饰源文事件，不能读成附近税率或结果幅度。“最能增加派上用场的机会”不等于“只能这样才能最大限度发挥作用”。
+- Temporal-modal guard: Back-check `must have`, `could always have`, and `with luck`. Past high-confidence inference must remain past inference, and past/counterfactual possibility must not become “总能” or “早晚会”. Explicit source guarantees, actual frequency and conditional mathematical claims remain justified exceptions.
+  时态与情态防护：回查 `must have`、`could always have`、`with luck`。对过去事件的高确信推断仍应是过去推断；过去或反事实可能性不能变成“总能”“早晚会”。原文明示的保证、实际频率、有前提的数学结论应记录为合理例外。
+- Negation guard: Identify each mechanism and conjunction before rewriting a coordinated condition. Do not omit a negated item or mechanically distribute `not(A and B)` into `not A and not B`. “Not need A to obtain B” retains the ability to obtain B without A; it does not negate B.
+  否定防护：并列条件先列清每项机制和连接关系，再确定否定范围。不得漏掉被否定项目，也不得机械将 `not(A and B)` 扩张成 `not A and not B`。“无需A仍能B”不能变成“无需A，也无需B”。
+- Context and ledger guard: Make an elliptical comparison readable with a source-supported demonstrative when appropriate; do not insert an extra person or institution occurrence to explain it and bypass the locked proper-noun ledger. Resolve actors through causal insertions, but distinguish ambiguous wording from a proven actor reversal and verify the reviewer's asserted source object.
+  上下文与账本防护：省略比较可在原文上下文支持下补“这种分组和……”等指代，不得为解释而擅加人名/机构名或绕过已锁专名账本。复杂因果插入语须判清动作主体；旧译歧义不等于已证实角色颠倒，reviewer 断言的源文宾语也必须回查。
+- Low-token audit and closure: Retrieve source triggers and confirmed target residues first, then read complete candidate pairs with neighbors. Record mechanically scanned units separately from actually read candidates, repaired seeds and contextual exceptions. Words such as “只能”“本身” are signals, not universal bans; a preferred alternative alone is not a defect. Every confirmed chapter repair still needs a fresh full-chapter zero-issue independent recheck before its local family closes.
+  低 token 审计与闭环：先检索源语触发词和已确认坏译残留，再实际阅读完整候选源译及邻段。分开记录机械扫描单元、实际读过候选、修复种子和语境例外。“只能”“本身”等只是信号，不是全书禁词；个人偏爱另一种通读写法本身不构成缺陷。确认修复后必须追加独立整章零问题复查，再关闭本书问题族。
+
 ### Context-Disambiguation Drift / 上下文选义漂移
+
+- Spatial-anchor and visibility guard: Resolve what `both sides` refers to before reordering `behind the trees on both sides`: a path can have trees on either side and houses behind those trees; do not move the houses to either side of an unspecified tree. `Blocking the view to a tunnel` obscures the tunnel from sight and does not establish that the tunnel is physically blocked. Use natural target-language placement and visibility verbs, then back-check the spatial anchor and the affected object. Search source triggers together with confirmed target residues, inspect full pairs and neighbors, and preserve justified cases where `both sides` means opposing parties or where the source describes an actual physical barrier.
+  空间锚点与可见性防护：重排behind the trees on both sides前，先判清both sides的锚点；可能是小径两侧都有树，房屋位于那些树木之后，不能移成未明确的某棵树的两边。blocking the view to a tunnel遮挡的是看向隧道的视线，不证明隧道被实体堵塞。采用自然中文位置语序和可见性动词后，回查锚点与承受动作的对象。并查完整源语触发与确认译文残留，实读源译和邻段；both sides指交战双方、或原文明示实体障碍时，均保留为语境例外。
+
+- Praise and tactical-speech guard: `Impressed` can convey admiration rather than mere surprise; preserve both meanings when the source coordinates them. `Held out` in a defensive contest concerns resistance and need not specify elapsed time. Tactical `hunker down` may describe maintaining a defense, not shrinking the body. Rewrite short inner speech for cadence while retaining its strategic steps; an idiomatic sports phrase such as `打防守` is not universally wrong. Read praise, response, and neighboring action before deciding whether a change repairs meaning or only clarifies style.
+  赞赏与战术自语防护：impressed可能表达佩服，不能只剩惊讶；源文并列两种感受时须均保留。防守比赛中的held out侧重抵抗效果，不必新增经过时长。战术hunker down可能指固守，而非身体缩小。短促自语的顺读改写须保留策略步骤；竞技用语“打防守”并非普遍错误。实际核对赞赏、回应及邻近行动，区分修复语义与编辑明确化。
+
+- Spatial and interruption guard: Resolve both the object and the modifier attachment. A `sealed exit` need not be an additional passage, a `large black car` need not be a sedan, and a connection broken `by trees` may be interrupted by their obstruction rather than by the trees being disconnected. A viewpoint `from a few meters away` should clearly modify seeing; do not automatically attach that distance to a building's movement or location. Compare full source-target-neighbor packets and leave unspecified object types unspecified.
+  空间与中断防护：同时判清所指物件和修饰附着。`sealed exit` 不必新增通道，`large black car` 不必限定为轿车；连接 `by trees` 中断时，可能是树木遮挡导致中断，不是树木被断开。`from a few meters away` 若说明观察视点，应清楚修饰看见，不能顺手改成建筑移动或所在的位置。实际核对完整源译邻文；未明确的物件类型仍保持未明确。
 
 - Symptom: A polysemous or context-dependent source word is translated with a plausible early meaning, but later context shows the wrong sense. The paragraph may read smoothly, so ordinary readability review misses it.
   症状：多义词或依赖上下文的源语词在前文被译成一个看似合理的义项，但后文证明选义错误。句子可能很顺，所以普通顺读审校容易漏掉。
@@ -848,6 +944,9 @@ When samples repeatedly expose source-order calques, metaphor literalization, mi
 
 ### Repeated lexical rendering and duplicated Chinese spans
 
+- Appositive-description guard: Repeating a source noun across an inserted explanation may produce several target actions for one event. Merge `lights ... lights not noticed before ... green` into one activation with its descriptive qualification and color. Do not collapse genuinely distinct objects, locations or functions, such as separate yellow and violet lights. Search the known noun and nearby repetitions, then decide with complete source and neighbors.
+  同位描述防护：把插入说明中的同一名词再次译出，可能使一个事件变成多次中文动作。`lights ... lights not noticed before ... green` 可合并成此前未注意到的灯一次亮起并发出绿光。不同物体、位置或功能仍须分别保留，例如用途不同的黄光与紫光。先检索已知名词及邻近重复，再按完整源句和邻段判定。
+
 - Symptom: A source concept is rendered twice inside one target span, producing forms such as `搜索搜索空间`, `数量的数量`, `自然选择选择了`, `表征表征`, or `初级视觉皮层皮层输出`. These defects can remain semantically guessable while making the textbook sound mechanically generated.
   症状：同一源概念在一个中文片段中被重复译出，例如 `搜索搜索空间`、`数量的数量`、`自然选择选择了`、`表征表征` 或 `初级视觉皮层皮层输出`。这类问题即使不妨碍猜义，也会使教材呈现机械生成痕迹。
 - Find by: Build a low-token candidate pool with `rg --pcre2 "(\p{Han}{2,5})\1" chapters/final chapters/translated`, plus exact scans for known duplicated terms and glossary target variants. Inspect each hit against the full source sentence because legitimate Chinese reduplication, quoted wording, and proper names are exceptions.
@@ -857,6 +956,15 @@ When samples repeatedly expose source-order calques, metaphor literalization, mi
 - Recheck: A repair round for this family is `FIXED_RECHECK_REQUIRED`, never PASS. Re-run full-chapter source/translation/context comparison, the duplicate scan, terminology forbidden-rendering scan, regenerated XHTML scan, publication and EPUB gates, and a fresh random seed; only the later zero-issue round may pass.
   复查：修复此问题族的轮次必须记为 `FIXED_RECHECK_REQUIRED`，不能记 PASS。随后重新逐章对照原文、译文和上下文，重跑重复词扫描、术语禁用写法扫描、生成 XHTML 扫描、出版与 EPUB 门禁，并开启新随机种子；只有之后的零问题轮次才可通过。
 ### Technical-term semantic drift and literal-calque polish / 技术术语语义漂移与直译腔润色
+
+- Data-object and guarantee guard: Separate a physical chip, its extraction, and training data obtained from a battle; a chip used to obtain data is not itself the data. Resolve object ellipses such as a drone swarm coming to `finish ours off` from the local referent before making the target appear to describe killing people. `Built-in hard guarantees` about information transmission must retain the device's strict can/cannot boundary when redundant noun scaffolding is removed; do not reduce it to an unenforced statement, or invent an unspecified hardware/software implementation. Compare the full technical claim, its uncertainty markers, and neighboring explanation before rewriting.
+  数据对象与严格保障防护：区分实体芯片、提取芯片的动作与从战斗取得的训练数据，用来获取数据的芯片并非数据本身。无人机群赶来finish ours off等对象省略须先按局部指代明确我方无人机，避免让译文显得是在消灭人员。删去built-in hard guarantees的重复名词支架时，仍须保留设备内置、严格的可/不可传输边界，不能弱化为没有执行保障的说法，也不新增未明确的硬件或软件实现。改写前核对完整技术论断、不确定标记及邻文解释。
+
+- Process/type guard: A technical verb must fit the local process. Information loss described as `entropy collapses` need not be a quantum-state collapse; `re-randomized AI-generated voice` describes randomization of a generated voice, not necessarily regenerating it. In algorithm prose, determine what a final modifier such as `added to the end` attaches to before inventing a result-appending step. Compare complete source/target and neighbors, preserve the author's claim and any documented ambiguity, and record genuine physical randomization or literal appending as contextual exceptions.
+  过程与类型防护：技术动词须符合局部过程。信息损失语境的entropy collapses不一定是量子态塌缩；re-randomized AI-generated voice指合成声音再经随机化，不必意味着重新生成声音。算法说明中须先判定added to the end等句末修饰语的附着对象，不能擅添拼接结果步骤。回读完整源译及邻文，保留作者论断和已记录歧义，真实的物理随机化或末尾拼接应记作语境例外。
+
+- Predicate-relation guard: A correct technical noun can still occur in a wrong relation. `checking that the tax-paying transaction type was used` asks whether payment used a specified transaction type, not whether that type belongs to a tax regime. Back-check the predicate, its subject/object, conditions and interface witnesses together; a terminology string match is insufficient.
+  谓词关系防护：技术名词正确，句中关系仍可能错误。`checking that the tax-paying transaction type was used` 核验付款是否使用规定的缴税交易类型，不是核验该类型是否纳入税制。应连同谓词、主宾语、条件及界面见证一起回查，不能只靠术语字符串相同判断正确。
 
 - Symptom: A technical term is translated through a false friend or a mechanically literal phrase, or an otherwise accurate sentence keeps a stiff image that makes the Chinese reader pause. In this book the confirmed examples were `null hypothesis` rendered as `无效假设`, `beating them into submission by sheer computational power` rendered as `把问题压服`, `a unified intellectual enterprise` rendered as `统一的智识事业`, and `biological plausibility ... goes even deeper` rendered as `生物学合理性还更深入`.
   症状：技术术语被假朋友或机械直译带偏，或者句意虽大体正确，却保留让中文读者停顿的生硬意象。本书确认的例子包括：`null hypothesis` 译成“无效假设”、`beating them into submission by sheer computational power` 译成“把问题压服”、`a unified intellectual enterprise` 译成“统一的智识事业”，以及 `biological plausibility ... goes even deeper` 译成“生物学合理性还更深入”。

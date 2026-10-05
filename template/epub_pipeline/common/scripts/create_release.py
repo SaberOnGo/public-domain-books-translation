@@ -276,6 +276,10 @@ def gate_summary(book_root: Path) -> dict:
         ("bilingual" if item.get("edition_type") == "bilingual_parallel" else str(item.get("edition_type"))): str(item.get("artifact_sha256") or "")
         for item in epubcheck_records
     }
+    # Canonical target-unit evidence covers translated editions. Source-original
+    # editions retain their separate source checks and all EPUBCheck gates.
+    translated_hashes = {kind: value for kind, value in enabled_hashes.items()
+                         if kind in {"target_only", "bilingual"}}
     lint_issues = lint.get("issues", []) if isinstance(lint, dict) else []
     estimate = metrics.get("pretranslation_estimate", {}) if isinstance(metrics, dict) else {}
     actual = metrics.get("post_translation_actual", {}) if isinstance(metrics, dict) else {}
@@ -299,7 +303,7 @@ def gate_summary(book_root: Path) -> dict:
         "translation_artifact_reader_policy": artifact_gate.get("reader_policy", ""),
         "translation_artifact_reader_status": artifact_gate.get("reader_validation_status", ""),
         "translation_artifact_warnings": artifact_gate.get("warnings", []),
-        "translation_artifact_hash_match": bool(enabled_hashes and artifact_gate_hashes == enabled_hashes),
+        "translation_artifact_hash_match": bool(translated_hashes and artifact_gate_hashes == translated_hashes),
         "publication_lint_path": "output/publication_lint.json" if lint else "",
         "publication_lint_issue_count": len(lint_issues) if lint else None,
         "translation_metrics_path": "output/release/translation_metrics.json" if metrics else "",
@@ -376,7 +380,7 @@ def require_pass_gates(summary: dict) -> None:
     if summary.get("translation_artifact_reader_status") not in {"PASS", "SKIPPED_UNAVAILABLE"}:
         errors.append("real-reader smoke test neither passed nor recorded SKIPPED_UNAVAILABLE")
     if not summary.get("translation_artifact_hash_match"):
-        errors.append("translation-unit artifact evidence hashes do not match all enabled EPUBs")
+        errors.append("translation-unit artifact evidence hashes do not match all enabled translated EPUBs")
     if not summary.get("publication_lint_path"):
         errors.append("output/publication_lint.json is missing")
     elif summary.get("publication_lint_issue_count") not in (0, None):
