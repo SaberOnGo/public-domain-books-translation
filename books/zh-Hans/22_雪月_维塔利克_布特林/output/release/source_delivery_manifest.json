@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "title": "雪月",
+  "original_title": "Snowmoon",
+  "author": "Vitalik Buterin",
+  "producer": "LifeBook 书坊 SaberOnGo 译制",
+  "cover_producer": "LifeBook 书坊译制",
+  "version": "v0.0.2",
+  "release_status": "PASS",
+  "source_url": "https://vitalik.eth.limo/snowmoon/",
+  "source_snapshot_utc": "2026-10-02T00:38:38.610779+00:00",
+  "license": "GPL-3.0-only",
+  "license_file": "COPYING-GPL-3.0.txt",
+  "epub": [
+    {
+      "filename": "雪月_v0.0.2.epub",
+      "bytes": 2129654,
+      "sha256": "76cfc68cf625c619d83678f786b41b7b602d2de66e77d275e35462b2dc72068d",
+      "download_url": "https://github.com/SaberOnGo/public-domain-books-translation/releases/download/snowmoon-v0.0.2/Snowmoon_zh-Hans_v0.0.2.epub",
+      "github_asset_filename": "Snowmoon_zh-Hans_v0.0.2.epub"
+    },
+    {
+      "filename": "雪月_中英双语_v0.0.2.epub",
+      "bytes": 2495045,
+      "sha256": "c94d48ad7b7921b160483faed6fbde591581b58e96db08745633ce1590a3315a",
+      "download_url": "https://github.com/SaberOnGo/public-domain-books-translation/releases/download/snowmoon-v0.0.2/Snowmoon_zh-Hans-en_v0.0.2.epub",
+      "github_asset_filename": "Snowmoon_zh-Hans-en_v0.0.2.epub"
+    },
+    {
+      "filename": "雪月_英文原文_v0.0.2.epub",
+      "bytes": 1090504,
+      "sha256": "68bb6e0667eb52d583281fbf319efc3b2fe6e856d59e131278419255a7e166e1",
+      "download_url": "https://github.com/SaberOnGo/public-domain-books-translation/releases/download/snowmoon-v0.0.2/Snowmoon_en_v0.0.2.epub",
+      "github_asset_filename": "Snowmoon_en_v0.0.2.epub"
+    }
+  ],
+  "corresponding_source": {
+    "filename": "Snowmoon_Corresponding_Source_v0.0.2.zip",
+    "bytes": 590779472,
+    "sha256": "ebbaed15e57a401b80489d5fb1217ed16000a57698c8a92cbc1494bef8bcba7b",
+    "download_url": "https://github.com/SaberOnGo/public-domain-books-translation/releases/download/snowmoon-v0.0.2/Snowmoon_Corresponding_Source_v0.0.2.zip",
+    "member_count": 30650,
+    "rebuild_status": "PASS",
+    "build_environment_scope": "同一主机隔离书源，独立Python/Java运行时及共享Node依赖；不是干净机器或跨平台构建声明。"
+  },
+  "web": {
+    "filename": "Snowmoon_Web_v0.0.2.zip",
+    "bytes": 1416095,
+    "sha256": "a269e638a8f50d2414bbccfdb1bd3b221956b164c82233d7171f7a3e8e4dbe40",
+    "download_url": "https://github.com/SaberOnGo/public-domain-books-translation/releases/download/snowmoon-v0.0.2/Snowmoon_Web_v0.0.2.zip",
+    "verified_file_count": 94,
+    "entries": {
+      "zh-Hans": "Snowmoon_Web_v0.0.2/zh-Hans/index.html",
+      "bilingual": "Snowmoon_Web_v0.0.2/bilingual/index.html"
+    }
+  },
+  "online_library": {
+    "status": "NOT_CONFIGURED",
+    "deployment": "NOT_DEPLOYED",
+    "monitor": "snowmoon",
+    "monitor_status": "ACTIVE",
+    "boundary": "提供可接入静态网页版；配置和授权后才更新LifeBook书库。"
+  },
+  "quality": {
+    "independent_sections": 33,
+    "canonical_units": 4373,
+    "current_consecutive_ab_pass_rounds": 2,
+    "epubcheck_fatal_error_warning": [
+      0,
+      0,
+      0
+    ],
+    "native_reader_evidence": "PASS",
+    "lifebook_digest": "DISABLED"
+  },
+  "historical_deviation": "预估记录在开工后补齐；不回填历史时间。有效工时不可测量。",
+  "github_release_url": "https://github.com/SaberOnGo/public-domain-books-translation/releases/tag/snowmoon-v0.0.2"
+}

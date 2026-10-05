@@ -1,0 +1,18 @@
+{
+  "status": "CURRENT_SAME_VERSION_GPL_SOURCE_REBUILD_AND_FIVE_ARTIFACTS_VERIFIED",
+  "version": "v0.0.2",
+  "archive": "output/source_packages/v0.0.2/Snowmoon_Corresponding_Source_v0.0.2.zip",
+  "archive_sha256": "ebbaed15e57a401b80489d5fb1217ed16000a57698c8a92cbc1494bef8bcba7b",
+  "package_verification": "output/source_packages/v0.0.2/package_verification.json",
+  "package_verification_sha256": "5e5c6cdadc351698f8214af68278d5fb2a4a0858f15541cff374f8c618d1fe49",
+  "isolated_rebuild_report": "build/source_rebuild/v0.0.2/rebuild_verification.json",
+  "isolated_rebuild_report_sha256": "1a8dd4bf2f53420659799fc24a7c5631743db70b2db4fc1a270a2978f74bca0e",
+  "immutable_baseline_proof": "qa/technical/final_subject_attachment_20261005_round007_candidate_baseline.json",
+  "immutable_baseline_proof_sha256": "53515054bb17ece6a44728a011513b4f61bf0ecee104a190262fb4fa2a31809b",
+  "artifact_sha256": {
+    "book.epub": "76cfc68cf625c619d83678f786b41b7b602d2de66e77d275e35462b2dc72068d",
+    "book_bilingual_parallel.epub": "c94d48ad7b7921b160483faed6fbde591581b58e96db08745633ce1590a3315a",
+    "book_english.epub": "68bb6e0667eb52d583281fbf319efc3b2fe6e856d59e131278419255a7e166e1"
+  },
+  "web_file_count": 94
+}

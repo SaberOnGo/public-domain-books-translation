@@ -1,0 +1,428 @@
+{
+  "schema_version": "1.0.0",
+  "metrics_status": "PASS",
+  "created_at": "2026-10-02T21:02:26Z",
+  "privacy_contract": {
+    "contains_source_text": false,
+    "contains_prompt_text": false,
+    "contains_local_absolute_paths": false,
+    "publishable_to_github": true
+  },
+  "book": {
+    "title": "雪月",
+    "original_title": "Snowmoon",
+    "author": "维塔利克·布特林（Vitalik Buterin）",
+    "source_target": "template/epub_pipeline/English-to-Simplified-Chinese",
+    "publication_mode": "licensed",
+    "profile": ""
+  },
+  "post_translation_actual": {
+    "status": "PASS",
+    "started_at": "2026-10-02T00:17:21.576Z",
+    "finished_at": "2026-10-05T05:01:26.265217+00:00",
+    "actual_calendar_days": 3.1972764955671296,
+    "actual_active_hours": null,
+    "actual_review_rounds": 5,
+    "actual_difficulty_level": "high",
+    "actual_difficulty_score_1_to_5": 4,
+    "models_used": [
+      {
+        "provider": "gpt",
+        "model_name": "gpt-6.1-sol",
+        "model_tier": "high",
+        "role": "已核验的协调、串行合并、修订与门禁阶段",
+        "input_tokens": 830054135,
+        "output_tokens": 4270222,
+        "measurement_records": {},
+        "reasoning_efforts": [
+          "high",
+          "max",
+          "xhigh"
+        ],
+        "identity_evidence": "qa/orchestration/actual_model_inventory_current_20261003.json",
+        "identity_evidence_sha256": "01754908859227f0ab16a923c5af866e873620e397b7657780aaaf018f3d6dd5",
+        "cached_input_tokens": 806168960,
+        "reasoning_output_tokens": 1544845,
+        "usage_evidence": "output/release/measurement_evidence.json",
+        "usage_evidence_sha256": "cb3a0b7ab81d4437385f5d8254e4cf0d1fdbb280efe3bf5300aa88a93702dfae"
+      },
+      {
+        "provider": "gpt",
+        "model_name": "gpt-6-astra",
+        "model_tier": "high",
+        "role": "宿主记录中已核验的早期协调与直属子任务阶段；不臆测每个历史子任务角色",
+        "input_tokens": 282545577,
+        "output_tokens": 862251,
+        "measurement_records": {},
+        "reasoning_efforts": [
+          "medium"
+        ],
+        "identity_evidence": "qa/orchestration/actual_model_inventory_current_20261003.json",
+        "identity_evidence_sha256": "01754908859227f0ab16a923c5af866e873620e397b7657780aaaf018f3d6dd5",
+        "cached_input_tokens": 277276544,
+        "reasoning_output_tokens": 166208,
+        "usage_evidence": "output/release/measurement_evidence.json",
+        "usage_evidence_sha256": "cb3a0b7ab81d4437385f5d8254e4cf0d1fdbb280efe3bf5300aa88a93702dfae"
+      },
+      {
+        "provider": "gpt",
+        "model_name": "gpt-5.6-luna",
+        "model_tier": "high",
+        "role": "已核验的直属翻译与独立审校worker，reasoning=max",
+        "input_tokens": 2176179004,
+        "output_tokens": 13565293,
+        "measurement_records": {},
+        "reasoning_efforts": [
+          "max"
+        ],
+        "identity_evidence": "qa/orchestration/actual_model_inventory_current_20261003.json",
+        "identity_evidence_sha256": "01754908859227f0ab16a923c5af866e873620e397b7657780aaaf018f3d6dd5",
+        "cached_input_tokens": 2101364736,
+        "reasoning_output_tokens": 4344970,
+        "usage_evidence": "output/release/measurement_evidence.json",
+        "usage_evidence_sha256": "cb3a0b7ab81d4437385f5d8254e4cf0d1fdbb280efe3bf5300aa88a93702dfae"
+      }
+    ],
+    "total_input_tokens": 3288778716,
+    "total_output_tokens": 18697766,
+    "quality_scores": {
+      "random_spotcheck_average": 95.76218097447796,
+      "random_spotcheck_lowest": 91,
+      "release_confidence": 1.0
+    },
+    "variance_against_estimate": "统计窗口经过 3.197 天，低于原机器估计 19–53 天；该估计记录在开工后补齐，不视为严格事前预测。有效工时不可测量，不比较 95–159 小时估计。共启动5个seed轮，3轮有A/B实际裁决，其中1轮FAIL，最终当前稿2轮连续优秀PASS；不是5轮完整PASS。输入包括缓存，不等于计费token。",
+    "lessons_for_future_estimates": [
+      "在完整翻译前冻结预估及计量边界；历史记录补齐不能冒充事前估计。",
+      "分别统计已启动、双审交付及当前稿连续PASS轮次；未交付的DRAFT模板不计完成。",
+      "预算应单列全章独立复查、整书问题族闭环、矢量图表及原生阅读器视觉检查。",
+      "只有经核验的生成时间允许在源码重建比较中忽略；正文、资产和许可差异仍失败。",
+      "缓存上下文占据大部分输入；累计宿主输入、有效工时与供应商费用分别记录。"
+    ],
+    "measurement_records": {
+      "actual_active_hours": {
+        "status": "UNAVAILABLE",
+        "reason": "没有经核验的分项有效工时计量；经过时间、并发时间与token不能替代有效工时。",
+        "evidence": "output/release/measurement_evidence.json",
+        "evidence_sha256": "cb3a0b7ab81d4437385f5d8254e4cf0d1fdbb280efe3bf5300aa88a93702dfae"
+      }
+    },
+    "model_inventory_status": "EXACT_HOST_TURN_ID_MODEL_ATTRIBUTION_VERIFIED_AT_QUALITY_CUTOFF",
+    "measurement_accounting_status": "SEALED_QUALITY_CUTOFF_PREFIX_USAGE_MEASURED_ADMIN_AND_FUTURE_UPDATES_EXCLUDED",
+    "measurement_scope": "九个登记自有线程到全书质量及源码重建门禁关闭后的完整行前缀；不包括此后统计整理、GitHub分发及持续更新的管理调用。不是整个仍活动任务的最终生命周期或供应商账单。",
+    "review_round_definition": "actual_review_rounds为有实际A裁决的已启动seed轮；双审交付3轮（含1轮FAIL），当前稿连续PASS为2轮。",
+    "completed_ab_review_rounds": 3,
+    "current_consecutive_pass_rounds": 2,
+    "independently_audited_sections": 33,
+    "canonical_units": 4373
+  },
+  "updated_at": "2026-10-05T05:04:40.993233+00:00",
+  "pretranslation_estimate": {
+    "status": "PASS",
+    "created_at": "2026-10-02T21:06:55Z",
+    "book_complexity_profile": {
+      "primary_book_type": "fiction",
+      "secondary_book_types": [
+        "history",
+        "science",
+        "programming",
+        "philosophy",
+        "language_learning"
+      ],
+      "domains": [
+        "fiction",
+        "history",
+        "science",
+        "programming",
+        "philosophy",
+        "language_learning"
+      ],
+      "source_unit": "words",
+      "source_unit_count": 102959,
+      "chapter_count": 32,
+      "estimated_target_unit_count": 118402,
+      "figures_count": 56,
+      "tables_count": 69,
+      "formula_or_code_block_count": 0,
+      "notes_or_annotations_count": 0,
+      "named_entity_density": "very_high",
+      "requires_external_research": true,
+      "requires_table_or_figure_reconstruction": true,
+      "requires_formula_or_code_validation": false,
+      "requires_historical_or_philosophical_context": true,
+      "special_risk_notes": [
+        "Primary detected type is history; secondary types: science, fiction, programming, philosophy, language_learning.",
+        "Source size is 102959 words; chapter_count=32.",
+        "Detected figures=56, tables=69, formula_or_code_blocks=0, notes=0.",
+        "Named-entity density is very_high."
+      ]
+    },
+    "difficulty_level": "high",
+    "difficulty_score_1_to_5": 4,
+    "difficulty_components_1_to_5": {
+      "source_language_complexity": 3,
+      "domain_knowledge_load": 5,
+      "terminology_density": 5,
+      "argument_or_plot_complexity": 4,
+      "historical_context_load": 4,
+      "philosophical_or_theoretical_density": 4,
+      "technical_code_or_formula_load": 1,
+      "tables_figures_formula_load": 4,
+      "target_style_difficulty": 4,
+      "annotation_and_cross_reference_load": 1
+    },
+    "difficulty_factors": [
+      "Primary detected type is history; secondary types: science, fiction, programming, philosophy, language_learning.",
+      "Source size is 102959 words; chapter_count=32.",
+      "Detected figures=56, tables=69, formula_or_code_blocks=0, notes=0.",
+      "Named-entity density is very_high."
+    ],
+    "difficulty_rationale": "Primary detected type is history; secondary types: science, fiction, programming, philosophy, language_learning. Source size is 102959 words; chapter_count=32. Detected figures=56, tables=69, formula_or_code_blocks=0, notes=0. Named-entity density is very_high.",
+    "estimated_calendar_days": {
+      "min": 19,
+      "max": 53
+    },
+    "estimated_active_hours": {
+      "min": 95,
+      "max": 159
+    },
+    "estimated_review_rounds": 5,
+    "parallelization_profile": {
+      "planning_basis": "weighted_source_units_and_chapters_not_page_count",
+      "weighted_source_unit_estimate": 137171,
+      "chapter_count": 32,
+      "named_entity_density": "very_high",
+      "figures_tables_formula_count": 125,
+      "capability_declaration_required": true,
+      "unknown_capability_spawned_worker_count": 0,
+      "next_command": "npm run translation:orchestration:plan"
+    },
+    "historical_reference": {
+      "history_root": "books",
+      "matched_count": 5,
+      "candidate_count": 7,
+      "similar_books": [
+        {
+          "book_title": "拉萨里略·德·托尔梅斯的一生",
+          "similarity": 0.8509,
+          "primary_book_type": "history",
+          "domains": [
+            "history",
+            "philosophy",
+            "fiction",
+            "science",
+            "programming"
+          ],
+          "source_unit_count": 56226,
+          "difficulty_level": "high",
+          "difficulty_score_1_to_5": 4,
+          "actual_active_hours": 6,
+          "actual_calendar_days": 1,
+          "actual_review_rounds": 5,
+          "total_input_tokens": 240000,
+          "total_output_tokens": 110000,
+          "model_tiers_used": [
+            "high"
+          ],
+          "lessons": [
+            "Short early-modern fiction can still require high-tier review because old social ranks, church terms, and currency words carry narrative evidence.",
+            "Post-EPUB random sampling should treat source-form residue in names and currency as a defect family and audit with exact-string scans before PASS.",
+            "For short fiction, LifeBook Digest should remain disabled unless the book is long, professional, or philosophical by the project policy."
+          ]
+        },
+        {
+          "book_title": "约翰生传",
+          "similarity": 0.8058,
+          "primary_book_type": "history",
+          "domains": [
+            "history",
+            "fiction",
+            "philosophy",
+            "science",
+            "language_learning",
+            "programming"
+          ],
+          "source_unit_count": 3579198,
+          "difficulty_level": "very_high",
+          "difficulty_score_1_to_5": 5,
+          "actual_active_hours": 27,
+          "actual_calendar_days": 11,
+          "actual_review_rounds": 46,
+          "total_input_tokens": 18000000,
+          "total_output_tokens": 9377464,
+          "model_tiers_used": [
+            "very_high"
+          ],
+          "lessons": [
+            "Long annotated biographies require substantial post-EPUB QA for index boundaries, ibid-style notes, OCR page artifacts, foreign-title interfaces, and letter-header structure.",
+            "For book-length release workflows, budget for repeated random-review seed resets after every defect-family repair; a repair round must not be counted as the clean PASS round.",
+            "Dense 18th-century English prose benefits from deterministic whole-book scans for Latin titles, bibliography rows, page-number residue, and title/note punctuation interfaces before final random review.",
+            "Thread-level token totals are approximate release-planning records rather than provider billing records; future runs should record per-stage token use at chapter, EPUB, random-review, and release gates."
+          ]
+        },
+        {
+          "book_title": "罗马帝国衰亡史",
+          "similarity": 0.8043,
+          "primary_book_type": "history",
+          "domains": [
+            "history",
+            "fiction",
+            "science",
+            "philosophy",
+            "language_learning",
+            "programming"
+          ],
+          "source_unit_count": 4783891,
+          "difficulty_level": "high",
+          "difficulty_score_1_to_5": 4,
+          "actual_active_hours": 120,
+          "actual_calendar_days": 4,
+          "actual_review_rounds": 304,
+          "total_input_tokens": 20550631,
+          "total_output_tokens": 13288266,
+          "model_tiers_used": [
+            "high",
+            "medium"
+          ],
+          "lessons": []
+        },
+        {
+          "book_title": "甲虫",
+          "similarity": 0.4389,
+          "primary_book_type": "fiction",
+          "domains": [
+            "fiction",
+            "history",
+            "programming",
+            "science",
+            "language_learning",
+            "philosophy"
+          ],
+          "source_unit_count": 231569,
+          "difficulty_level": "high",
+          "difficulty_score_1_to_5": 4,
+          "actual_active_hours": 9,
+          "actual_calendar_days": 1,
+          "actual_review_rounds": 50,
+          "total_input_tokens": 1500000,
+          "total_output_tokens": 620000,
+          "model_tiers_used": [
+            "high"
+          ],
+          "lessons": [
+            "Long Gothic novels with many short chapters need per-chapter control overhead that can dominate final QA even when terminology density is moderate.",
+            "Existing English-to-Simplified-Chinese templates and deterministic coverage gates reduce setup time, but release still needs explicit cover, book-info, asset, Digest, random-review, and metrics closure.",
+            "Future estimates should count post-EPUB random review and release metrics as separate production work, not as part of translation drafting."
+          ]
+        },
+        {
+          "book_title": "当代英雄",
+          "similarity": 0.4279,
+          "primary_book_type": "fiction",
+          "domains": [
+            "fiction",
+            "science",
+            "philosophy",
+            "history",
+            "language_learning"
+          ],
+          "source_unit_count": 151122,
+          "difficulty_level": "high",
+          "difficulty_score_1_to_5": 4,
+          "actual_active_hours": 12,
+          "actual_calendar_days": 1,
+          "actual_review_rounds": 9,
+          "total_input_tokens": 650000,
+          "total_output_tokens": 260000,
+          "model_tiers_used": [
+            "high"
+          ],
+          "lessons": [
+            "俄语长篇小说即使无图表，也应按 high 难度估算，因为专名、军职、法语社交短句和心理独白会增加逐章审校成本。",
+            "先完善语言方向模板能减少后续章节控制返工，但新模板首本书需要额外预留模板回填和门禁调试时间。",
+            "Digest 对长篇小说适用；应在 EPUBCheck 通过后生成并单独校验合并后的 digest EPUB。",
+            "随机抽检若首轮无问题，仍需要新 seed 追加第二轮当前 run PASS，避免把单轮抽样当作 release 结论。"
+          ]
+        }
+      ],
+      "estimated_from_history": {
+        "active_hours_per_10k_source_units": 0.2,
+        "input_tokens_per_source_unit": 4.65,
+        "output_tokens_per_source_unit": 2.69
+      },
+      "history_usage_note": "Uses only publishable output/release/translation_metrics.json files with PASS estimates and PASS actuals. Private-use projects and metrics containing source text or prompt text are ignored.",
+      "export_note": "保留原估计数值；公开数据仅移除 4 条不可恢复的乱码历史经验。原始草稿在本书QA保留。历史对照是当时记录，不代表重新核验其他书的计量。"
+    },
+    "model_recommendations": [
+      {
+        "provider": "deepseek",
+        "model_name": "",
+        "model_tier": "medium",
+        "recommended_for": "low-cost first-pass translation, terminology expansion, and broad chapter drafts",
+        "estimated_input_tokens": 271000,
+        "estimated_output_tokens": 212900,
+        "cost_control_notes": [
+          "Use for broad drafting when the difficulty components are not dominated by philosophy, formulas, or dense historical context.",
+          "Escalate sampled hard passages to a higher-tier reviewer before finalizing."
+        ],
+        "quality_risk_notes": [
+          "Watch for term drift, over-literal prose, and missed context in high-density historical or philosophical passages."
+        ]
+      },
+      {
+        "provider": "gpt",
+        "model_name": "",
+        "model_tier": "high",
+        "recommended_for": "final-quality translation, difficult passages, polysemy checks, and release-facing QA",
+        "estimated_input_tokens": 329100,
+        "estimated_output_tokens": 232300,
+        "cost_control_notes": [
+          "Reserve higher-tier GPT use for dense chapters, final polish, terminology-sensitive passages, and failed review families.",
+          "Use medium tier only when trial translation and random samples prove stable quality."
+        ],
+        "quality_risk_notes": [
+          "For history, philosophy, programming, and science books, require source-supported review rather than fluency-only scoring."
+        ]
+      },
+      {
+        "provider": "claude",
+        "model_name": "",
+        "model_tier": "high",
+        "recommended_for": "long-context consistency review, style comparison, and independent QA",
+        "estimated_input_tokens": 290300,
+        "estimated_output_tokens": 87100,
+        "cost_control_notes": [
+          "Use as an independent reviewer on representative samples or high-risk chapters rather than duplicating the full draft path."
+        ],
+        "quality_risk_notes": [
+          "Require explicit issue rows and source references; do not accept general praise as a quality gate."
+        ]
+      }
+    ],
+    "cost_quality_strategy": [
+      "Use lower-cost models for broad drafting only after sample quality is acceptable.",
+      "Escalate high-risk chapters and recurring defect families to high or very_high tier models.",
+      "Spend reviewer tokens on source-supported checks, terminology consistency, and structural assets before broad rereads."
+    ],
+    "timing_deviation": {
+      "record_timing": "LATE_RECONSTRUCTION",
+      "recorded_at": "2026-10-02T21:07:34.860712+00:00",
+      "timing_requirement_met": false,
+      "reason": "独立指标文件此前漏写；本次以冻结32章原文补做，不回填虚假的译前时间。",
+      "initial_scan_correction": "初次工具重复统计投影/更新快照；已按source_manifest中每章原始HTML哈希与words计数修正，旧结果保存在qa/technical/metrics_initial_inflated_scan。"
+    },
+    "classification_correction": {
+      "previous_primary": "history",
+      "current_primary": "fiction",
+      "reason": "词频把战争/共和国等题材当成体裁。现有研究与冻结正文显示未来架空人物、竞技和战争小说；并非历史非虚构。",
+      "corrected_at_utc": "2026-10-03T23:12:08.714728+00:00",
+      "estimate_values_recomputed": false,
+      "boundary": "Original size, component scores, estimate ranges and late reconstruction timing retained; only genre ordering corrected. Secondary tags remain heuristic topics."
+    },
+    "timing_validation": {
+      "estimate_created_at": "2026-10-02T21:06:55Z",
+      "task_started_at": "2026-10-02T00:17:21.576Z",
+      "timing_requirement_met": false,
+      "boundary": "保留历史时序；估计记录在任务启动后补齐，不回填伪造的开工前时间。"
+    }
+  }
+}

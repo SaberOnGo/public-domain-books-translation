@@ -1,0 +1,155 @@
+{
+  "status": "MEASURED_QUALITY_CUTOFF_AGGREGATES_WITH_EXPLICIT_UNAVAILABLE_ACTIVE_HOURS",
+  "observed_at_utc": "2026-10-05T05:01:26.265217+00:00",
+  "measurement_scope": "九个登记自有线程到全书质量及源码重建门禁关闭后的完整行前缀；不包括此后统计整理、GitHub分发及持续更新的管理调用。不是整个仍活动任务的最终生命周期或供应商账单。",
+  "started_at": "2026-10-02T00:17:21.576Z",
+  "actual_calendar_days": 3.1972764955671296,
+  "active_hours": {
+    "status": "UNAVAILABLE",
+    "reason": "没有经核验的分项有效工时计量；经过时间、并发时间与token不能替代有效工时。"
+  },
+  "owned_thread_count": 9,
+  "distinct_response_count": 22398,
+  "usage_evidence_sha256": "00bf35635980f1e5934b86afcf13d6dff3eddd8ca21f0551dd211cb00219ca33",
+  "complete_prefix_sha256": [
+    "dec4827e2942d1bd8eb6e2de933384acbf825b42ba0fb3e3b3e5fe8e69a3862a",
+    "2daaef7827b098b41752d3318498e2ad38a479911a464614cd858e28027096c9",
+    "818fe823a80ffe016f1c5670f71aae687cc01688aefea9100370f9701117e23d",
+    "7f4bf97956aaba3fa87a2b19700f281d331b57d9c52e973aed9ad571ed28ceeb",
+    "d6f1fcbcf5ad27a0f40f888c8472086a4bad68c5f01704ebcd18b48c84146d54",
+    "b0661b1b36ee127a2e2a44c80175536f59331bddd53eedca3b19670de2b710df",
+    "080ba1b5331b72953903e972ced875359c403023f42c4831271462e220fad05e",
+    "ab888c8abb354d305d626b2470235e05ca2bd1453d34dae78d03e427db034bc3",
+    "de403f668876cfdc16d7dede0f24c7ef60dbe738a052933f96d46bf8fed3e53d"
+  ],
+  "totals": {
+    "input_tokens": 3288778716,
+    "cached_input_tokens": 3184810240,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 18697766,
+    "reasoning_output_tokens": 6056023,
+    "total_tokens": 3307476482
+  },
+  "models": {
+    "gpt-6.1-sol": {
+      "response_count": 5427,
+      "tokens": {
+        "input_tokens": 830054135,
+        "cached_input_tokens": 806168960,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 4270222,
+        "reasoning_output_tokens": 1544845,
+        "total_tokens": 834324357
+      }
+    },
+    "gpt-6-astra": {
+      "response_count": 1954,
+      "tokens": {
+        "input_tokens": 282545577,
+        "cached_input_tokens": 277276544,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 862251,
+        "reasoning_output_tokens": 166208,
+        "total_tokens": 283407828
+      }
+    },
+    "gpt-5.6-luna": {
+      "response_count": 15017,
+      "tokens": {
+        "input_tokens": 2176179004,
+        "cached_input_tokens": 2101364736,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 13565293,
+        "reasoning_output_tokens": 4344970,
+        "total_tokens": 2189744297
+      }
+    }
+  },
+  "subset_note": "缓存输入已包含在输入中，推理输出已包含在输出中，不重复相加；不推算价格。",
+  "random_review": {
+    "started_seed_rounds": [
+      "round_001",
+      "round_002",
+      "round_003",
+      "round_004",
+      "round_005"
+    ],
+    "authored_ab_pairs": [
+      "round_001",
+      "round_004",
+      "round_005"
+    ],
+    "current_consecutive_pass_rounds": [
+      "round_004",
+      "round_005"
+    ],
+    "final_current_judgment_count": 862,
+    "weighted_average": 95.76218097447796,
+    "minimum": 91,
+    "score_evidence": [
+      {
+        "round": "round_004",
+        "reviewer": "a",
+        "samples": 216,
+        "average": 94.10185185185185,
+        "minimum": 91,
+        "evidence_sha256": "87f27cc17cbb9eef625a2fdc07943f7ff5434e49190ba0ed7d982f2b0d0e0cc8"
+      },
+      {
+        "round": "round_004",
+        "reviewer": "b",
+        "samples": 215,
+        "average": 97.33023255813953,
+        "minimum": 95,
+        "evidence_sha256": "fc749d6ca77855e5e9f50b37171734cdc1c648782ac7f64dcff7443661cdc37e"
+      },
+      {
+        "round": "round_005",
+        "reviewer": "a",
+        "samples": 216,
+        "average": 95.06481481481481,
+        "minimum": 94,
+        "evidence_sha256": "77297f5cb7d1d6445beb50e00445b4f655e4359dea019b2bb47696f56633265b"
+      },
+      {
+        "round": "round_005",
+        "reviewer": "b",
+        "samples": 215,
+        "average": 96.56279069767442,
+        "minimum": 93,
+        "evidence_sha256": "263c7caced87df0665c2f4116ff581005455b723cee9ee01455501f5f9ccd101"
+      }
+    ],
+    "confidence_scope": "1.0 为分层随机评审校验器的置信字段，不是绝对无错保证。"
+  },
+  "source_release": {
+    "status": "CURRENT_SAME_VERSION_GPL_SOURCE_REBUILD_AND_FIVE_ARTIFACTS_VERIFIED",
+    "version": "v0.0.2",
+    "archive": "output/source_packages/v0.0.2/Snowmoon_Corresponding_Source_v0.0.2.zip",
+    "archive_sha256": "ebbaed15e57a401b80489d5fb1217ed16000a57698c8a92cbc1494bef8bcba7b",
+    "package_verification": "output/source_packages/v0.0.2/package_verification.json",
+    "package_verification_sha256": "5e5c6cdadc351698f8214af68278d5fb2a4a0858f15541cff374f8c618d1fe49",
+    "isolated_rebuild_report": "build/source_rebuild/v0.0.2/rebuild_verification.json",
+    "isolated_rebuild_report_sha256": "1a8dd4bf2f53420659799fc24a7c5631743db70b2db4fc1a270a2978f74bca0e",
+    "immutable_baseline_proof": "qa/technical/final_subject_attachment_20261005_round007_candidate_baseline.json",
+    "immutable_baseline_proof_sha256": "53515054bb17ece6a44728a011513b4f61bf0ecee104a190262fb4fa2a31809b",
+    "artifact_sha256": {
+      "book.epub": "76cfc68cf625c619d83678f786b41b7b602d2de66e77d275e35462b2dc72068d",
+      "book_bilingual_parallel.epub": "c94d48ad7b7921b160483faed6fbde591581b58e96db08745633ce1590a3315a",
+      "book_english.epub": "68bb6e0667eb52d583281fbf319efc3b2fe6e856d59e131278419255a7e166e1"
+    },
+    "web_file_count": 94
+  },
+  "estimate_timing": {
+    "estimate_created_at": "2026-10-02T21:06:55Z",
+    "task_started_at": "2026-10-02T00:17:21.576Z",
+    "timing_requirement_met": false,
+    "boundary": "保留历史时序；估计记录在任务启动后补齐，不回填伪造的开工前时间。"
+  },
+  "privacy_contract": {
+    "contains_source_text": false,
+    "contains_prompt_text": false,
+    "contains_local_absolute_paths": false,
+    "publishable_to_github": true
+  }
+}
