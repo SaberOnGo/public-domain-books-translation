@@ -41,7 +41,7 @@ LOCAL_SOURCE_FILE = {LOCAL_SOURCE_FILE}
 - 翻译阶段第一目标是自然中文正文：译文必须像一本自然的中文书，长句要能拆，短句不能省成提纲；术语一致和出版格式不得压倒中文可读性。
 - 分章译文不得直接进入 chapters/final。
 - 每章翻译后必须立即创建并执行 `qa/chapter_controls/{NNN_slug}.control.md`，作为“每章译后，全量检查并修复节点”。该节点只检查当前章，必须检查该章正文、注释、图表/表格/公式/图片的文字接口、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目，也不得扩大成全书章节检查。
-- 每章 control 必须先做只看中文的独立可读性复查：中文独立阅读评分低于 4/5、20 句朗读中明显拗口超过 1 句，或关键句不断气时，即使事实大体准确也必须返工。
+- 每章 control 必须先做只看中文的独立可读性复查：中文独立阅读评分低于 4/5，或关键句难以顺畅理解时，即使事实大体准确也必须返工。
 - 若该章 control 最近一轮不是全章零问题 PASS，必须修复并追加不可变复查轮；更严格项目/profile 规则仍优先。发现并修复问题的轮次只能记为 `FIXED_RECHECK_REQUIRED`，不得直接 PASS。只有绑定精确有序 unit、当前 chapter digest、零问题/修复/未解阻塞的密封 PASS 才能让该章进入后续审校或 `chapters/final/`；其他独立 owner 的章节可按自适应计划继续。复杂图表/资产问题应路由到资产/技术门禁并阻止终稿/构建/release，不让本节点无限循环。
 - 每章必须完成 fidelity/readability/imagery/terminology/gate 报告。
 - 只有 gate PASS 的 canonical generation 才可由物化脚本投影到 `chapters/final`；任何 agent 不得直接写或手改投影。

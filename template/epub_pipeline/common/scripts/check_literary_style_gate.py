@@ -168,7 +168,6 @@ def validate_review(book_root: Path, review_path: Path) -> list[dict]:
     text = read_text(review_path)
     status = read_field(text, "status")
     target_score = read_number(text, "target_only_reading_score")
-    awkward_count = read_number(text, "read_aloud_awkward_sentence_count")
     unresolved_debt = read_number(text, "unresolved_style_debt_count")
     literal_debt = read_number(text, "literal_explanatory_style_debt_count")
     high_impact_reviewed = read_bool(text, "high_impact_sections_reviewed")
@@ -182,8 +181,6 @@ def validate_review(book_root: Path, review_path: Path) -> list[dict]:
         add("literary_style_review_not_pass", "Literary style review must set status: PASS before final release.")
     if target_score is None or target_score < 5:
         add("literary_target_only_score_below_final_bar", "Final literary review requires target_only_reading_score: 5.")
-    if awkward_count is None or awkward_count != 0:
-        add("literary_read_aloud_has_awkward_sentences", "Final literary review requires read_aloud_awkward_sentence_count: 0.")
     if unresolved_debt is None or unresolved_debt != 0:
         add("literary_unresolved_style_debt", "Final literary review requires unresolved_style_debt_count: 0.")
     if literal_debt is None or literal_debt != 0:

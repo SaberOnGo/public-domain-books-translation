@@ -198,6 +198,63 @@ def scored_reviewed_unit_ids(review_path: Path, unit_ids: set[str]) -> set[str]:
     return scored
 
 
+SCORE_CELL_RE = re.compile(r"(?:100|[1-9]?[0-9])(?:\.\d+)?")
+TEMPLATED_MIN_ROWS = 10
+TEMPLATED_SHARE = 0.8
+
+
+def scored_review_rows(review_path: Path, unit_ids: set[str]) -> list[tuple[str, str, str]]:
+    """(unit id, score, reason) for each scored table row; the reason is the longest non-numeric cell."""
+    if not review_path.exists() or not unit_ids:
+        return []
+    rows: list[tuple[str, str, str]] = []
+    for line in review_path.read_text(encoding="utf-8", errors="replace").splitlines():
+        if "|" not in line:
+            continue
+        matching = [unit_id for unit_id in unit_ids if unit_id in line]
+        if not matching:
+            continue
+        cells = [cell.strip().strip("`") for cell in line.strip().strip("|").split("|")]
+        scores = [cell for cell in cells if SCORE_CELL_RE.fullmatch(cell)]
+        if not scores:
+            continue
+        texts = [" ".join(cell.split()) for cell in cells
+                 if cell and not SCORE_CELL_RE.fullmatch(cell) and not any(unit_id in cell for unit_id in matching)]
+        rows.append((matching[0], scores[0], max(texts, key=len) if texts else ""))
+    return rows
+
+
+def review_authenticity_errors(rows_by_agent: dict[str, list[tuple[str, str, str]]], label_by_agent: dict[str, str]) -> list[str]:
+    """Reject review tables that are evidently generated from a template rather than written per sample."""
+    errors: list[str] = []
+    for agent, rows in rows_by_agent.items():
+        if len(rows) < TEMPLATED_MIN_ROWS:
+            continue
+        scores = {score for _, score, _ in rows}
+        reasons = [reason for _, _, reason in rows]
+        top_share = max(reasons.count(reason) for reason in set(reasons)) / len(reasons)
+        if len(scores) == 1 and len(set(reasons)) <= 1:
+            errors.append(
+                f"TEMPLATED_REVIEW: all {len(rows)} rows carry the same score and the same reason; "
+                f"each sample needs its own judgement with quoted evidence: {label_by_agent[agent]}"
+            )
+        elif top_share >= TEMPLATED_SHARE:
+            errors.append(
+                f"TEMPLATED_REVIEW: {round(top_share * 100)}% of {len(rows)} rows share one reason; "
+                f"each sample needs its own judgement with quoted evidence: {label_by_agent[agent]}"
+            )
+    agents = [agent for agent, rows in rows_by_agent.items() if len(rows) >= TEMPLATED_MIN_ROWS]
+    for index, first in enumerate(agents):
+        for second in agents[index + 1:]:
+            if [(score, reason) for _, score, reason in rows_by_agent[first]] == \
+               [(score, reason) for _, score, reason in rows_by_agent[second]]:
+                errors.append(
+                    f"DUPLICATED_REVIEW: {label_by_agent[first]} and {label_by_agent[second]} have identical score and reason "
+                    "sequences; the two reviews are not independent"
+                )
+    return errors
+
+
 def stratum_confidence(info: dict) -> float:
     candidate_count = int(info.get("candidate_count", 0))
     sample_count = int(info.get("sample_count", 0))
@@ -459,6 +516,14 @@ def validate_round_artifacts(
         errors.append(f"release_confidence below target: {release_confidence} < {target_confidence}")
 
     sample_sets = manifest.get("sample_sets", {})
+    if require_pass:
+        rows_by_agent = {}
+        label_by_agent = {}
+        for agent_name in sample_sets:
+            review_path = round_dir / "reviews" / f"{agent_name}_review.md"
+            rows_by_agent[agent_name] = scored_review_rows(review_path, agent_unit_ids(manifest, agent_name))
+            label_by_agent[agent_name] = relative_to_book(book_root, review_path)
+        errors.extend(review_authenticity_errors(rows_by_agent, label_by_agent))
     for agent_name in sample_sets:
         all_samples = round_dir / "samples" / agent_name / "all_samples.md"
         if not all_samples.exists():

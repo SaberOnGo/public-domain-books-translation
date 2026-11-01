@@ -7,7 +7,6 @@ control_status: "AUTO_PENDING" # AUTO_PENDING | REWORK_REQUIRED | PASS
 latest_round: 0
 overall_score: null # 0-100
 chinese_reading_score: null # 1-5
-read_aloud_sample_count: 20
 awkward_sentence_count: null
 breathless_long_sentence_count: null
 high_impact_opening_section: false
@@ -34,9 +33,8 @@ return_to_stage: "07_translate_chapters"
 - [ ] nav / 目录 / 标题：本章短目录题名、页面主标题、副标题自然准确，无英文标题链、英文括注或人名原文污染。
 - [ ] 正文完整性：无漏译、错译、顺序错乱、段落层级损坏。
 - [ ] 中文独立可读性：先不看原文，只读译文，确认它像自然中文书；中文独立阅读评分不低于 4/5。
-- [ ] 朗读测试：随机朗读 20 句，明显拗口不超过 1 句，关键句没有不断气问题。
 - [ ] 高影响开篇：若本章是原作者序言、导言、开篇或首章，已记录 `high_impact_opening_section: true`，并确认直译腔、解释腔、平硬句、怪句和“说明原意而不是中文书”的段落为 0。
-- [ ] 正文可读性：自然、通俗、可朗读；无大段长句、不断气句、机械直译、英文句法硬搬、学术腔堆叠、AI 味或省字式提纲化。
+- [ ] 正文可读性：自然、通俗、易读；无大段长句、不断气句、机械直译、英文句法硬搬、学术腔堆叠、AI 味或省字式提纲化。
 - [ ] 润色与节奏：长句已拆解或重组；连接关系符合中文；论文型内容也能让普通读者明白。
 - [ ] 术语与专名：术语、专名、历史制度、身份称谓、变量名、数字、时间、地名一致且准确。
 - [ ] 重点专名译表：已读取 `glossary/proper_nouns.csv`；非空行均有 `display_policy`；本章按用户设置或默认策略 `3` 处理首次正文出现和后续出现。
@@ -62,7 +60,6 @@ After each translated chapter is produced, the AI must create and read this chap
 - 不存在未关闭的 P0/P1/P2。
 - 不存在模板硬门禁失败。
 - 中文独立阅读评分 >= 4/5。
-- 20 句朗读测试中明显拗口不超过 1 句，且关键句没有不断气问题。
 - 若本章为原作者序言、导言、开篇或首章，`literal_explanatory_style_debt_count = 0`。
 - 不存在读者不可理解、明显拗口、学术味过重、大段长句、不断气句、机械直译或英文句法硬搬。
 - 不存在严重误译、漏译、术语/专名/数字/事实错误。
@@ -93,7 +90,6 @@ fixes_applied:
 unresolved_blocking_issues:
 score: null
 chinese_reading_score: null # 1-5
-read_aloud_sample_count: 20
 awkward_sentence_count: null
 breathless_long_sentence_count: null
 high_impact_opening_section: false

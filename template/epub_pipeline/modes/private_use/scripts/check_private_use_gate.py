@@ -145,7 +145,7 @@ def main() -> None:
     check_package(book_root, issues)
 
     report = {
-        "book_root": str(book_root),
+        "book_root": ".",
         "ok": not issues,
         "issues": issues,
     }

@@ -245,6 +245,14 @@ Target-only and bilingual outputs may share the same translation-quality evidenc
 
 `npm run check:bilingual` runs `scripts/check_bilingual_parallel.py`. It is intentionally edition-driven, not copyright-mode-driven: the checker reads only `state/pipeline_state.json.edition_type`, `output_editions`, and `bilingual_parallel`. It must not decide bilingual output from `publication_mode`.
 
+Structure is not pairing. `npm run check:bilingual:alignment` runs `scripts/check_bilingual_alignment.py` on the finished bilingual EPUB and fails when consecutive pairs match a neighbouring block better than their own, or when a heading or short line is paired with a whole paragraph. The bilingual edition also passes `npm run check:final-epub` like every other edition, and it uses its own `dc:identifier` (`bilingual_identifier` in `metadata/book.yaml`, otherwise derived from the target-only identifier).
+
+结构正确不等于对应正确。`npm run check:bilingual:alignment` 检查成品双语 EPUB：
+- 连续多对原文/译文块与相邻块更吻合时判失败；
+- 小标题或短行配上整段译文时判失败。
+
+双语版和其他版本一样，必须通过 `npm run check:final-epub`。双语版使用自己的 `dc:identifier`：优先取 `metadata/book.yaml` 的 `bilingual_identifier`，没有时由单语版 identifier 派生。
+
 `npm run build:bilingual` runs `scripts/build_bilingual_epub.py`. It is edition-driven and is a no-op when disabled. When enabled, it builds from canonical units and their deterministic alignment projection; it must not mutate either target projection.
 
 When the bilingual edition is disabled, the gate is a no-op PASS. When enabled, it checks:

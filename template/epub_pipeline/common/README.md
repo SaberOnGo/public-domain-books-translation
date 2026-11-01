@@ -39,6 +39,14 @@ The bilingual parallel edition rules live in `references/bilingual_parallel_edit
 
 `npm run build:bilingual` is driven only by output-edition state in `state/pipeline_state.json`: it skips when the bilingual edition is disabled, and builds `output/book_bilingual_parallel.epub` from `qa/bilingual_parallel/alignment_map.json` when enabled. `npm run check:bilingual` is the follow-up structural gate for enabled artifacts, alignment, bilingual XHTML, and language metadata. Neither script may infer bilingual output from `publication_mode`.
 
+Both builders use English navigation labels for English output and Chinese labels for Chinese output. Other target languages should set `navigation_title`, `navigation_landmarks_title`, `navigation_cover_title`, and `navigation_book_info_title` in `metadata/book.yaml`; these override the default Contents, Guide, Cover, and Book Information labels. Chapter labels come from `references/reader_facing_titles.json` or the chapter heading. Both editions include cover/book-information landmarks when those frontmatter documents exist.
+
+The bilingual builder converts standalone Markdown images in frontmatter and aligned units to figures with alt text and captions, and packages referenced local image resources in the OPF manifest. Image paths must remain inside the book project; missing files, external references and unsupported image formats fail the build. A canonical top-level chapter heading supplies the body title even when its short navigation label differs.
+
+双语构建器将前置页和对齐单元中的独立 Markdown 图片转换为带 alt 与图注的 figure，并在 OPF manifest 中登记本地图片。路径必须位于书籍工程内；缺失文件、外部引用或不支持的格式会阻断构建。canonical 一级标题作为正文标题，短导航名称不同也不会在正文另添重复标题。
+
+两个构建器按目标语生成导航标签：英语输出使用英文，中文输出使用中文。其他目标语应在 `metadata/book.yaml` 设置 `navigation_title`、`navigation_landmarks_title`、`navigation_cover_title` 和 `navigation_book_info_title`，覆盖默认的目录、导览、封面、书籍信息标签。章节目录题名来自 `references/reader_facing_titles.json` 或章节标题；存在对应前置页时，两个版本均生成封面和书籍信息导览入口。
+
 长书并行规则见 `references/adaptive_parallel_orchestration.md`，AI 实际派生和滚动执行规则见 `references/ai_parallel_execution_guidance.md`。先运行 `npm run metrics:evaluate` 获取加权工作量输入，锁定合同、专名、出现账本和术语并初始化 canonical units 后，再由活动客户端写入带 UTC `verified_at`/`valid_until` 的实时能力声明，运行 `npm run translation:orchestration:plan`。能力未知、未验证、已过期或用户未授权时默认不派生 worker；GPT 家族最多 4 个，非 GPT 最多 8 个，且必须保留独立审核者和唯一合并器。LifeBook 不实现运行时任务队列；活动 AI 按有限静态批次执行并根据证据重规划。
 
 Long-book parallelism is governed by `references/adaptive_parallel_orchestration.md`, and AI dispatch and rolling execution by `references/ai_parallel_execution_guidance.md`. Run `npm run metrics:evaluate` for weighted workload inputs; after the contract, names, occurrence ledger, terminology, and canonical units are locked, the active client writes a live-verified capability record with UTC `verified_at`/`valid_until` and runs `npm run translation:orchestration:plan`. Unknown, unverified, expired, or unauthorized capability spawns no workers. GPT-family clients stop at four workers and non-GPT clients at eight, with independent auditors and one merger. LifeBook does not implement a runtime task queue; the active AI executes finite static waves and replans from evidence.
@@ -118,6 +126,10 @@ python scripts/check_private_reader_facing_policy.py --write-report
 These checks are common because template drift, unnumbered book paths, encoding damage, legacy print tables of contents, repeated spacing, missing image resources, missing output cover assets, reader-facing production notes, disallowed note markers, unmanifested SVG/PNG/CSS files, and path portability problems can affect any language.
 
 这些检查属于通用层，因为模板漂移、未编号书籍路径、编码污染、旧纸书页码目录、连续空格、图片资源丢失、output 封面资产缺失、读者可见制作说明、SVG/PNG/CSS 未登记到 OPF manifest、路径可移植性问题可能影响任何语言方向。
+
+For `zh-Hans` publication text, Chinese semicolons are strict-gated in reader-facing `chapters/final/` and `frontmatter/`. Any `；` must either be rewritten as a sentence break, comma, colon, or re-layered clause, or be recorded in `qa/punctuation/semicolon_exceptions.json` with a concrete line-level justification. ASCII semicolons `;` remain hard errors and are not auto-converted by `fix:publication`.
+
+对 `zh-Hans` 出版文本，读者可见的 `chapters/final/` 与 `frontmatter/` 中的中文分号执行严格门禁。任何 `；` 都必须优先改写为句号、逗号、冒号或重组句群；确需保留时，必须在 `qa/punctuation/semicolon_exceptions.json` 逐行记录具体理由。ASCII 分号 `;` 始终是硬错误，`fix:publication` 不会自动把它改成中文分号。
 
 `check_reader_facing_policy.py` 会拦截进入读者版 EPUB 的生产痕迹，例如章节开头的 `译文说明` / `章节控制说明`、书籍信息页里的项目宣传语、制作日志、QA/prompt 记录，以及同一前置页内反复出现的版权/权利说明。
 

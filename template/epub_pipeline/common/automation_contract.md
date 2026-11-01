@@ -75,7 +75,7 @@ AI 可以在以下文件生成后提示用户审阅，但不能把流程设计�
 - 每个 patch 同时保存追踪用全书 base manifest hash 和并发控制用 `base_chapter_digest`。不同章节从同一 base 产生的 patch 可以依次合并；同章陈旧 patch 必须 `PATCH_CONFLICT`。语义审计按章生成、验证和密封，完整全书只有在每个当前章节都具备独立密封 PASS 后才生成 `book_completion_manifest.json`。
 - `chapters/translated` 与 `chapters/final` 是同一 canonical target 的派生投影，不是两个翻译阶段；单目标语版和双语版也不得分别翻译。
 - 该节点必须按 `references/note_marker_policy.md` 检查注号。允许 `[1]`、`(1)`、全角 `（1）` 和 `注1`；不得使用带圈数字、裸 `注` 标签、裸 `译注：` 或尾随裸数字。
-- 该节点必须全章检查，而不是只抽样检查。抽样朗读或抽样段落只能作为辅助证据，不能替代全章核查。
+- 该节点必须全章检查，而不是只抽样检查。抽样段落只能作为辅助证据，不能替代全章核查。
 - 若发现 P0/P1/P2、读者不可理解、事实/术语/文字接口错误、模板硬门禁失败、目标语言翻译腔、读起来费劲、中文润色不足、为了通俗而损害专业度、专业术语解释不足，或任何其他翻译/润色问题，必须修复；但发现并修复问题的这一轮只能记录为 `FIXED_RECHECK_REQUIRED`，不得直接 `PASS`。
 - 必须追加一次新的整章复查。只有最近一轮同时记录 `scope: FULL_CHAPTER`、`issues_found: 0`、`fixes_applied: 0`、`unresolved_blocking_issues: 0`、`latest_round_status: PASS`、`allow_next_chapter: true` 时，才允许继续；若 profile/项目规则更严格，按更严格规则。分数不能抵消 P0/P1/P2、读者难以理解、事实/术语/文字接口错误、模板硬门禁失败或明显目标语言翻译腔。
 - 通俗化与专业质量不是二选一。当前章文字应尽量读得顺、有趣、不费劲，同时保持原书应有的专业术语、概念层级、论证水准和知识风格；不得为了“好懂”把专业内容改扁、改错或泛化。

@@ -1,0 +1,4 @@
+# Offline XLIFF schemas are pinned to canonical LF byte hashes. Windows
+# checkout conversion must not invalidate that integrity evidence.
+template/epub_pipeline/common/references/xliff-2.1-schemas/xliff_core_2.0.xsd text eol=lf
+template/epub_pipeline/common/references/xliff-2.1-schemas/informativeCopiesOf3rdPartySchemas/w3c/xml.xsd text eol=lf

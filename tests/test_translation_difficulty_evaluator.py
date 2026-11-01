@@ -15,6 +15,25 @@ RELEASE_SCRIPT_PATH = REPO_ROOT / "template" / "epub_pipeline" / "common" / "scr
 
 
 class TranslationDifficultyEvaluatorTests(unittest.TestCase):
+    def test_canonical_source_is_counted_once_without_raw_or_target_copies(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            book_root = self.make_complex_book(Path(tmp))
+            (book_root / "chapters/src").mkdir()
+            (book_root / "chapters/src/001.md").write_text("# One\n\n甲乙丙丁\n", encoding="utf-8")
+            (book_root / "chapters/src/002.md").write_text("# Two\n\n戊己庚辛\n", encoding="utf-8")
+            (book_root / "source/raw.txt").write_text("甲乙丙丁戊己庚辛" * 20, encoding="utf-8")
+            (book_root / "chapters/final").mkdir()
+            (book_root / "chapters/final/001.md").write_text("Translation " * 100, encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT_PATH), "--book-root", str(book_root)],
+                text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            assessment = json.loads((book_root / "output/release/translation_difficulty_assessment.json").read_text(encoding="utf-8"))
+            profile = assessment["book_complexity_profile"]
+            self.assertEqual(profile["chapter_count"], 2)
+            self.assertEqual(profile["source_unit_count"], 8)
+
     def make_complex_book(self, root: Path) -> Path:
         book_root = root / "books" / "zh-Hans" / "1_test_book"
         (book_root / "metadata").mkdir(parents=True)

@@ -7,6 +7,7 @@ import html
 import importlib.util
 import io
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -484,6 +485,21 @@ class TranslationUnitPipelineTests(unittest.TestCase):
 
         translated = {unit["chapter_id"] for unit in self.units() if unit["target_text"].strip()}
         self.assertEqual({"001", "002"}, translated)
+
+    def test_later_chapter_partial_validation_preserves_source_first_occurrence(self) -> None:
+        self.add_second_chapter()
+        self.finish_preproduction()
+        second_patch = self.create_patch_for_chapter("002", "later-owner")
+        self.run_cli("merge-chapter-patch", "--input", second_patch)
+        later_body = next(unit for unit in self.units() if unit["chapter_id"] == "002" and unit["unit_type"] == "body")
+        self.assertNotIn("（Nero）", later_body["target_text"])
+        self.assertNotIn("（Rome）", later_body["target_text"])
+        self.run_cli("validate", "--allow-incomplete")
+        incomplete = self.run_cli("validate", ok=False)
+        self.assertIn("target_text is empty", incomplete.stdout + incomplete.stderr)
+        first_patch = self.create_patch_for_chapter("001", "earlier-owner")
+        self.run_cli("merge-chapter-patch", "--input", first_patch)
+        self.run_cli("validate")
 
     def test_chapter_audit_survives_unrelated_merge_and_supports_distinct_reviewers(self) -> None:
         self.add_second_chapter()
@@ -1027,7 +1043,6 @@ class TranslationUnitPipelineTests(unittest.TestCase):
             "literary_style_review_path": "qa/literary_style/literary_style_review.md",
             "literary_style_status": "PASS",
             "literary_target_only_reading_score": 5,
-            "literary_read_aloud_awkward_sentence_count": 0,
             "literary_unresolved_style_debt_count": 0,
             "literary_literal_explanatory_style_debt_count": 0,
             "literary_high_impact_sections_reviewed": True,
@@ -1092,6 +1107,301 @@ class TranslationUnitPipelineTests(unittest.TestCase):
             self.assertEqual(0, report["checker"]["nError"])
             self.assertEqual(0, report["checker"]["nWarning"])
             self.assertEqual(sha256(self.book / "output" / artifact_name), report["lifebook_evidence"]["artifact_sha256"])
+
+
+class ProperNameBodyOccurrenceTests(unittest.TestCase):
+    def test_locked_latin_literal_requires_word_boundaries(self) -> None:
+        spec = importlib.util.spec_from_file_location("name_literal_boundaries", SCRIPT)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        row = {"entity_id": "animal", "source_name": "羚牛", "source_aliases": "",
+               "target_name": "takin", "chinese_gloss": "takin", "target_aliases": "",
+               "first_rendering": "takin (羚牛)", "subsequent_rendering": "takin"}
+        unit = {"unit_id": "u1", "target_template": "She was taking care of her young."}
+        with mock.patch.object(module, "load_name_rows", return_value=(None, [row], [])), \
+                mock.patch.object(module, "load_occurrence_rows", return_value=(None, [], [])):
+            rendered, issues = module.render_target_templates(REPO, {}, [unit])
+            self.assertEqual([], issues)
+            self.assertEqual(unit["target_template"], rendered["u1"])
+            for literal in ["takin", "takin-like", "羚牛"]:
+                unit["target_template"] = f"She saw a {literal}."
+                self.assertTrue(module.render_target_templates(REPO, {}, [unit])[1])
+
+    def test_nested_entities_do_not_consume_parent_first_occurrence(self) -> None:
+        spec = importlib.util.spec_from_file_location("name_overlap_validation", SCRIPT)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        rows = []
+        for source, target in [("某城", "City"), ("某城山", "City Hill"), ("某城山动物园", "City Hill Zoo")]:
+            rows.append({"source_name": source, "source_aliases": "", "target_name": target,
+                         "target_aliases": "", "chinese_gloss": target,
+                         "display_strategy": "target_source_then_target",
+                         "first_rendering": f"{target} ({source})", "subsequent_rendering": target})
+        units = [{"unit_type": "body", "target_text": "City Hill Zoo (某城山动物园) opened."},
+                 {"unit_type": "body", "target_text": "City (某城) and City Hill (某城山) are nearby."}]
+        self.assertEqual([], module.validate_name_rendering(units, rows, "hybrid"))
+        units[1]["target_text"] = "City and City Hill (某城山) are nearby."
+        self.assertTrue(module.validate_name_rendering(units, rows, "hybrid"))
+        units[1]["target_text"] = "City (某城) and City (某城) and City Hill (某城山) are nearby."
+        self.assertTrue(module.validate_name_rendering(units, rows, "hybrid"))
+
+    def test_titles_do_not_consume_first_body_occurrence(self) -> None:
+        spec = importlib.util.spec_from_file_location("name_body_validation", SCRIPT)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        row = {
+            "source_name": "源名", "source_aliases": "", "target_name": "Name",
+            "target_aliases": "", "chinese_gloss": "Name",
+            "display_strategy": "target_source_then_target",
+            "first_rendering": "Name (源名)", "subsequent_rendering": "Name",
+        }
+        units = [
+            {"unit_type": "heading", "target_text": "Name"},
+            {"unit_type": "navigation", "target_text": "Name"},
+            {"unit_type": "subtitle", "target_text": "Name"},
+            {"unit_type": "body", "target_text": "Name (源名) appeared."},
+            {"unit_type": "body", "target_text": "Name returned."},
+        ]
+        self.assertEqual([], module.validate_name_rendering(units, [row], "hybrid"))
+        units[3]["target_text"] = "Name appeared."
+        self.assertTrue(module.validate_name_rendering(units, [row], "hybrid"))
+        units[3]["target_text"] = "Name (源名) appeared."
+        units[4]["target_text"] = "Name (源名) returned."
+        self.assertTrue(module.validate_name_rendering(units, [row], "hybrid"))
+
+
+class OccurrenceExclusionTests(unittest.TestCase):
+    """Exact, hash-bound contextual exclusions for registered source spans."""
+
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory(dir=REPO / "books")
+        self.book = Path(self.temp.name)
+        self.script = SCRIPT
+        spec = importlib.util.spec_from_file_location("occurrence_exclusion_pipeline", self.script)
+        self.module = importlib.util.module_from_spec(spec)
+        assert spec.loader is not None
+        spec.loader.exec_module(self.module)
+        self.source = "沃弥犬看见沃弥。"
+        self.unit_id = "unit-contextual-exclusion"
+        self.source_hash = self.module.sha256_text(self.source)
+        self._write_fixture()
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def _write_fixture(self) -> None:
+        (self.book / "state").mkdir(parents=True)
+        (self.book / "glossary").mkdir(parents=True)
+        (self.book / "state" / "units.jsonl").write_text(
+            json.dumps({
+                "unit_id": self.unit_id,
+                "source_file": "chapters/src/001.md",
+                "source_text": self.source,
+                "source_sha256": self.source_hash,
+                "unit_type": "body",
+            }, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        name_fields = [
+            "entity_id", "source_name", "target_name", "category", "display_policy",
+            "first_rendering", "subsequent_rendering", "note_required",
+            "repeat_original_allowed_when", "notes", "source_aliases", "target_aliases",
+            "scope", "status", "chinese_gloss", "display_strategy", "first_occurrence_rule",
+            "same_name_disambiguation",
+        ]
+        with (self.book / "glossary" / "proper_nouns.csv").open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=name_fields)
+            writer.writeheader()
+            writer.writerow({
+                "entity_id": "entity-vomi",
+                "source_name": "沃弥",
+                "target_name": "Vomi",
+                "category": "synthetic_nickname",
+                "display_policy": "3",
+                "first_rendering": "Vomi（沃弥）",
+                "subsequent_rendering": "Vomi",
+                "note_required": "false",
+                "repeat_original_allowed_when": "",
+                "notes": "contextual exclusion fixture",
+                "source_aliases": "沃弥犬",
+                "target_aliases": "",
+                "scope": "whole_book",
+                "status": "locked",
+                "chinese_gloss": "沃弥",
+                "display_strategy": "target_source_then_target",
+                "first_occurrence_rule": "first_body_only",
+                "same_name_disambiguation": "exact fixture source forms",
+            })
+        contract = {
+            "schema_version": "2.0",
+            "proper_nouns": {
+                "register": "glossary/proper_nouns.csv",
+                "occurrence_ledger": "glossary/proper_noun_occurrences.csv",
+            },
+            "canonical_units": {
+                "store": "state/units.jsonl",
+                "manifest": "state/manifest.json",
+            },
+        }
+        self.contract_path = self.book / "state" / "translation_contract.json"
+        self.contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    def _run_cli(self, *args: str, ok: bool = True) -> subprocess.CompletedProcess[str]:
+        env = dict(os.environ)
+        env["PYTHONDONTWRITEBYTECODE"] = "1"
+        result = subprocess.run(
+            [sys.executable, "-B", str(self.script), "--book-root", str(self.book), *args],
+            text=True,
+            encoding="utf-8",
+            capture_output=True,
+            check=False,
+            env=env,
+        )
+        if ok:
+            self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+        else:
+            self.assertNotEqual(0, result.returncode, result.stdout)
+        return result
+
+    def _set_exclusions(self, rows: list[dict[str, str]] | None) -> None:
+        contract = json.loads(self.contract_path.read_text(encoding="utf-8"))
+        exclusion_path = self.book / "glossary" / "contextual_occurrence_exclusions.csv"
+        if rows is None:
+            contract["proper_nouns"].pop("occurrence_exclusions", None)
+            self.contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            exclusion_path.unlink(missing_ok=True)
+            return
+        fields = [
+            "unit_id", "source_sha256", "start_offset", "end_offset",
+            "source_form", "rationale", "reviewer",
+        ]
+        with exclusion_path.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(rows)
+        contract["proper_nouns"]["occurrence_exclusions"] = {
+            "path": "glossary/contextual_occurrence_exclusions.csv",
+            "sha256": sha256(exclusion_path),
+        }
+        self.contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    def _valid_row(self) -> dict[str, str]:
+        start = self.source.index("沃弥犬")
+        return {
+            "unit_id": self.unit_id,
+            "source_sha256": self.source_hash,
+            "start_offset": str(start),
+            "end_offset": str(start + len("沃弥犬")),
+            "source_form": "沃弥犬",
+            "rationale": "This descriptive span is not the later identity-bearing nickname occurrence.",
+            "reviewer": "contextual-exclusion-test",
+        }
+
+    def _ledger_rows(self) -> list[dict[str, str]]:
+        path = self.book / "glossary" / "proper_noun_occurrences.csv"
+        with path.open("r", encoding="utf-8-sig", newline="") as handle:
+            return list(csv.DictReader(handle))
+
+    def test_cli_builder_excludes_exact_span_and_no_config_restores_semantics(self) -> None:
+        self._run_cli("build-proper-noun-ledger")
+        baseline = self._ledger_rows()
+        self.assertEqual(2, len(baseline))
+        baseline_keys = {(row["unit_id"], row["start_offset"], row["end_offset"], row["source_form"]) for row in baseline}
+
+        self._set_exclusions([self._valid_row()])
+        self._run_cli("build-proper-noun-ledger")
+        excluded_rows = self._ledger_rows()
+        self.assertEqual(1, len(excluded_rows))
+        self.assertNotEqual(baseline_keys, {(row["unit_id"], row["start_offset"], row["end_offset"], row["source_form"]) for row in excluded_rows})
+        self.assertEqual("true", excluded_rows[0]["counts_as_first_body_occurrence"])
+
+        unit = json.loads((self.book / "state" / "units.jsonl").read_text(encoding="utf-8"))
+        unit["target_template"] = "{{pn:entity-vomi}} saw the dog."
+        rendered, issues = self.module.render_target_templates(self.book, json.loads(self.contract_path.read_text(encoding="utf-8")), [unit])
+        self.assertEqual([], issues)
+        self.assertEqual("Vomi（沃弥） saw the dog.", rendered[self.unit_id])
+        self.assertNotIn("{{pn:", rendered[self.unit_id])
+
+        self._set_exclusions(None)
+        self._run_cli("build-proper-noun-ledger")
+        restored = self._ledger_rows()
+        restored_keys = {(row["unit_id"], row["start_offset"], row["end_offset"], row["source_form"]) for row in restored}
+        self.assertEqual(baseline_keys, restored_keys)
+
+    def test_tampered_file_fails_before_build(self) -> None:
+        self._set_exclusions([self._valid_row()])
+        self._run_cli("build-proper-noun-ledger")
+        exclusion_path = self.book / "glossary" / "contextual_occurrence_exclusions.csv"
+        exclusion_path.write_text(exclusion_path.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+        result = self._run_cli("build-proper-noun-ledger", ok=False)
+        self.assertIn("exclusion file hash mismatch", result.stdout + result.stderr)
+        unit = json.loads((self.book / "state" / "units.jsonl").read_text(encoding="utf-8"))
+        unit["target_template"] = "{{pn:entity-vomi}} saw the dog."
+        _rendered, render_issues = self.module.render_target_templates(
+            self.book, json.loads(self.contract_path.read_text(encoding="utf-8")), [unit]
+        )
+        self.assertTrue(any("exclusion file hash mismatch" in issue for issue in render_issues))
+
+    def test_missing_file_fails_before_build(self) -> None:
+        self._set_exclusions([self._valid_row()])
+        exclusion_path = self.book / "glossary" / "contextual_occurrence_exclusions.csv"
+        exclusion_path.unlink()
+        result = self._run_cli("build-proper-noun-ledger", ok=False)
+        self.assertIn("missing exclusion file", result.stdout + result.stderr)
+
+    def test_source_text_hash_drift_fails_before_build(self) -> None:
+        self._set_exclusions([self._valid_row()])
+        units_path = self.book / "state" / "units.jsonl"
+        unit = json.loads(units_path.read_text(encoding="utf-8"))
+        unit["source_text"] = "沃弥犬看见沃弥！"
+        units_path.write_text(json.dumps(unit, ensure_ascii=False) + "\n", encoding="utf-8")
+        result = self._run_cli("build-proper-noun-ledger", ok=False)
+        self.assertIn("canonical unit source_sha256 does not match its source_text", result.stdout + result.stderr)
+
+    def test_subset_render_uses_full_canonical_exclusion_evidence(self) -> None:
+        units_path = self.book / "state" / "units.jsonl"
+        first = json.loads(units_path.read_text(encoding="utf-8"))
+        second_source = "另一段虚构文本。"
+        second = {
+            "unit_id": "unit-second-chapter",
+            "source_file": "chapters/src/002.md",
+            "source_text": second_source,
+            "source_sha256": self.module.sha256_text(second_source),
+            "unit_type": "body",
+            "target_state": "initial",
+            "target_template": "",
+        }
+        units_path.write_text(
+            json.dumps(first, ensure_ascii=False) + "\n" + json.dumps(second, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        self._set_exclusions([self._valid_row()])
+        self._run_cli("build-proper-noun-ledger")
+        contract = json.loads(self.contract_path.read_text(encoding="utf-8"))
+        rendered, issues = self.module.render_target_templates(self.book, contract, [second])
+        self.assertEqual([], issues)
+        self.assertEqual("", rendered[second["unit_id"]])
+
+        changed_first = dict(first)
+        changed_first["source_text"] = "沃弥犬改写文本。"
+        changed_first["target_template"] = "{{pn:entity-vomi}} saw the dog."
+        _rendered, changed_issues = self.module.render_target_templates(self.book, contract, [changed_first])
+        self.assertTrue(any("source binding differs from canonical unit" in issue for issue in changed_issues))
+
+    def test_duplicate_and_non_registered_spans_fail(self) -> None:
+        valid = self._valid_row()
+        self._set_exclusions([valid, dict(valid)])
+        duplicate = self._run_cli("build-proper-noun-ledger", ok=False)
+        self.assertIn("duplicates an exact exclusion span", duplicate.stdout + duplicate.stderr)
+
+        start = self.source.index("沃弥犬")
+        invalid = dict(valid)
+        invalid["start_offset"] = str(start)
+        invalid["end_offset"] = str(start + 2)
+        invalid["source_form"] = "沃弥"
+        self._set_exclusions([invalid])
+        non_registered = self._run_cli("build-proper-noun-ledger", ok=False)
+        self.assertIn("not an exact registered source occurrence", non_registered.stdout + non_registered.stderr)
 
 
 if __name__ == "__main__":

@@ -48,6 +48,13 @@
     "gpt_spawned_worker_cap": 4,
     "non_gpt_spawned_worker_cap": 8
   },
+  "book_settings": {
+    "proper_noun_translation_format": 3,
+    "user_overrides": {},
+    "effective_source": {
+      "proper_noun_translation_format": "default"
+    }
+  },
   "quality_gate": {
     "rights_check": "",
     "global_research": "references/translation_research_universal.md",

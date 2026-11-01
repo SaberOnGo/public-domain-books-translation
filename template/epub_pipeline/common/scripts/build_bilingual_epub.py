@@ -10,7 +10,7 @@ import zipfile
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from uuid import uuid4
+from uuid import NAMESPACE_URL, uuid4, uuid5
 
 
 DEFAULT_BOOK_ROOT = Path(__file__).resolve().parents[1]
@@ -71,6 +71,17 @@ def normalize_lang(value: str, fallback: str) -> str:
     if value == "zh-TW":
         return "zh-Hant"
     return value or fallback
+
+
+def navigation_labels(metadata: dict[str, str], language: str) -> dict[str, str]:
+    defaults = (
+        {"toc": "目录", "landmarks": "导览", "cover": "封面", "book_info": "书籍信息"}
+        if language.startswith("zh") else
+        {"toc": "Contents", "landmarks": "Guide", "cover": "Cover", "book_info": "Book Information"}
+    )
+    fields = {"toc": "navigation_title", "landmarks": "navigation_landmarks_title",
+              "cover": "navigation_cover_title", "book_info": "navigation_book_info_title"}
+    return {key: metadata.get(fields[key]) or value for key, value in defaults.items()}
 
 
 def bilingual_enabled(state: dict) -> bool:
@@ -172,6 +183,9 @@ def iter_markdown_blocks(path: Path) -> list[str]:
                 blocks.append("\n".join(current).strip())
                 current = []
             continue
+        # Keep CommonMark hard breaks (two trailing spaces or a trailing backslash) visible to join_lines().
+        if raw.endswith("  ") or line.endswith("\\"):
+            line = line.rstrip("\\") + LINE_BREAK
         current.append(line)
     if current:
         blocks.append("\n".join(current).strip())
@@ -221,8 +235,75 @@ def collect_paragraphs(root: Path, prefix: str) -> dict[str, Paragraph]:
     return paragraph_map
 
 
+CJK_TEXT = "、-〿぀-ヿ㐀-䶿一-鿿豈-﫿！-／：-＠［-｀｛-･"
+CJK_CHAR = re.compile(f"[{CJK_TEXT}]")
+CJK_QUOTES = "“”‘’"
+# Sentence-level storage sometimes rejoins CJK sentences with ASCII spaces; readers must not see them.
+SPACE_AFTER_CJK_PUNCT = re.compile(f"(?<=[，。！？；：、）」』〉》】…”’])[  ]+(?=[{CJK_TEXT}“‘「『（《〈【])")
+LINE_BREAK = " "
+TRAILING_BR = re.compile(r"<br\s*/?>\s*$", re.IGNORECASE)
+ESCAPED_BR = re.compile(r"&lt;br\s*/?&gt;", re.IGNORECASE)
+ESCAPED_SAFE_INLINE = re.compile(r"&lt;(/?)(em|strong|i|b|sup|sub|small)&gt;", re.IGNORECASE)
+ESCAPED_STRAY_BLOCK = re.compile(r"&lt;/?(?:blockquote|p|div|section)(?:\s[^&]*)?&gt;", re.IGNORECASE)
+THEMATIC_BREAK = re.compile(r"^(?:[*\-_]\s*){3,}$")
+QUOTE_LINE = re.compile(r"^>\s?")
+LIST_LINE = re.compile(r"^(?:([-*+])|(\d{1,3})[.)])\s+(\S.*)$")
+HEADING_LINE = re.compile(r"^(#{1,6})\s+(.+)$")
+RAW_TAG_LINE = re.compile(r"^</?(?:blockquote|ol|ul|section|aside|div|figure|table)\b[^>]*>$", re.IGNORECASE)
+RAW_BLOCK_START = re.compile(r"^</?(h[1-6]|section|p|aside|div|span|blockquote|ol|ul|li|dl|dt|dd|sup|sub|a|em|strong|br|table|figure)\b")
+VERSE_LINE_MAX_CJK = 32
+VERSE_LINE_MAX_LATIN = 48
+
+
+def is_cjk_boundary(left: str, right: str) -> bool:
+    left_cjk, right_cjk = bool(CJK_CHAR.match(left)), bool(CJK_CHAR.match(right))
+    return (left_cjk or left in CJK_QUOTES) and (right_cjk or right in CJK_QUOTES) and (left_cjk or right_cjk)
+
+
+SENTENCE_END = re.compile(r"[。！？!?…]+[”’」』）)]*$")
+
+
+def looks_like_verse(lines: list[str]) -> bool:
+    """Several short lines in one block are verse, a song, an address or a letter heading: keep the breaks.
+
+    Two short lines that each end a sentence are more likely two prose sentences stored one per line.
+    """
+    if len(lines) < 2:
+        return False
+    limit = VERSE_LINE_MAX_CJK if any(CJK_CHAR.search(line) for line in lines) else VERSE_LINE_MAX_LATIN
+    if not all(len(line) <= limit for line in lines):
+        return False
+    return len(lines) >= 3 or not SENTENCE_END.search(lines[0])
+
+
+def join_lines(text: str) -> str:
+    """Join a block's source lines: verse and hard breaks keep LINE_BREAK, CJK prose joins without spaces."""
+    lines: list[tuple[str, bool]] = []
+    for raw in text.split("\n"):
+        hard = raw.endswith(LINE_BREAK) or bool(TRAILING_BR.search(raw.strip()))
+        line = TRAILING_BR.sub("", raw.replace(LINE_BREAK, "").strip()).strip()
+        if line:
+            lines.append((line, hard))
+    if not lines:
+        return ""
+    verse = looks_like_verse([line for line, _ in lines])
+    out = lines[0][0]
+    for (_, hard), (line, _) in zip(lines, lines[1:]):
+        if verse or hard:
+            out += LINE_BREAK + line
+        elif is_cjk_boundary(out[-1], line[0]):
+            out += line
+        else:
+            out += " " + line
+    return out
+
+
 def inline_markdown(text: str) -> str:
-    escaped = html.escape(" ".join(part.strip() for part in text.split("\n") if part.strip()), quote=True)
+    joined = SPACE_AFTER_CJK_PUNCT.sub("", join_lines(text))
+    escaped = html.escape(joined, quote=True)
+    escaped = ESCAPED_BR.sub(LINE_BREAK, escaped)
+    escaped = ESCAPED_STRAY_BLOCK.sub("", escaped)
+    escaped = ESCAPED_SAFE_INLINE.sub(lambda m: f"<{m.group(1)}{m.group(2).lower()}>", escaped)
     escaped = re.sub(
         r"(^|[^\w])\[(\d+)\](?!\w)",
         r'\1<sup class="note-ref">[\2]</sup>',
@@ -233,23 +314,184 @@ def inline_markdown(text: str) -> str:
     escaped = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", escaped)
     escaped = re.sub(r"__([^_]+)__", r"<strong>\1</strong>", escaped)
     escaped = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", escaped)
-    return re.sub(r"(?<!_)_([^_]+)_(?!_)", r"<em>\1</em>", escaped)
+    escaped = re.sub(r"(?<![_\w])_([^_]+)_(?![_\w])", r"<em>\1</em>", escaped)
+    return escaped.replace(LINE_BREAK, "<br />")
 
 
-def markdown_body(path: Path) -> str:
+def render_text_block(text: str) -> list[str]:
+    """Render one Markdown block that starts with plain text.
+
+    Lines that open a blockquote, a list, a heading or a raw block tag start their own element, so a
+    paragraph followed by quoted verse no longer collapses into one paragraph full of '>' and '<br />'.
+    """
     out: list[str] = []
-    for block in iter_markdown_blocks(path):
-        if not block:
+    buffer: list[str] = []
+    kind = ""
+
+    def flush() -> None:
+        nonlocal buffer, kind
+        if buffer:
+            if kind == "quote":
+                paragraphs, current = [], []
+                for line in buffer:
+                    if line.strip():
+                        current.append(line)
+                    elif current:
+                        paragraphs.append(current)
+                        current = []
+                if current:
+                    paragraphs.append(current)
+                inner = "".join(f"<p>{inline_markdown(chr(10).join(lines))}</p>" for lines in paragraphs)
+                out.append(f"<blockquote>{inner}</blockquote>")
+            elif kind in {"ul", "ol"}:
+                items = "".join(f"<li>{inline_markdown(item)}</li>" for _, item in buffer)
+                start = buffer[0][0]
+                attrs = f' start="{start}"' if kind == "ol" and start not in ("", "1") else ""
+                out.append(f"<{kind}{attrs}>{items}</{kind}>")
+            else:
+                out.append(f"<p>{inline_markdown(chr(10).join(buffer))}</p>")
+        buffer, kind = [], ""
+
+    for raw in text.split("\n"):
+        line = raw.strip()
+        if not line or THEMATIC_BREAK.match(line):
+            flush()
             continue
-        heading = re.match(r"^(#{1,6})\s+(.+)$", block)
+        if RAW_TAG_LINE.match(line):
+            flush()
+            out.append(line)
+            continue
+        heading = HEADING_LINE.match(line)
         if heading:
+            flush()
             level = min(len(heading.group(1)), 3)
             out.append(f"<h{level}>{inline_markdown(heading.group(2))}</h{level}>")
             continue
-        if re.match(r"^</?(h[1-6]|section|p|aside|div|span|blockquote|ol|ul|li|dl|dt|dd|sup|sub|a|em|strong|br)\b", block):
+        if QUOTE_LINE.match(line):
+            if kind != "quote":
+                flush()
+                kind = "quote"
+            buffer.append(QUOTE_LINE.sub("", line, count=1))
+            continue
+        listed = LIST_LINE.match(line)
+        if listed and kind != "quote":
+            item_kind = "ul" if listed.group(1) else "ol"
+            if kind != item_kind:
+                flush()
+                kind = item_kind
+            buffer.append((listed.group(2) or "", listed.group(3)))
+            continue
+        if kind in {"ul", "ol"} and buffer:
+            number, item = buffer[-1]
+            buffer[-1] = (number, f"{item}\n{line}")
+            continue
+        if kind not in {"", "para"}:
+            flush()
+        kind = "para"
+        buffer.append(raw)
+    flush()
+    return out
+
+
+class ImageAssets:
+    """Package referenced local images once, preserving book-relative identity."""
+    MEDIA_TYPES = {'.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
+                   '.gif': 'image/gif', '.svg': 'image/svg+xml', '.webp': 'image/webp'}
+
+    def __init__(self, book_root: Path, work_dir: Path):
+        self.root = book_root.resolve()
+        self.work = work_dir
+        self.entries: dict[Path, dict] = {}
+        self.cover_source: Path | None = None
+
+    def register(self, from_file: Path, reference: str, cover: bool = False) -> str:
+        if re.match(r'^[A-Za-z][A-Za-z0-9+.-]*:', reference) or reference.startswith(('/', '\\')):
+            raise SystemExit(f'EPUB image reference must be relative: {reference}')
+        source = (from_file.parent / reference).resolve()
+        if not source.is_relative_to(self.root):
+            raise SystemExit(f'EPUB image escapes book root: {reference}')
+        if not source.is_file():
+            raise SystemExit(f'Missing EPUB image: {reference}')
+        media_type = self.MEDIA_TYPES.get(source.suffix.lower())
+        if not media_type:
+            raise SystemExit(f'Unsupported EPUB image type: {reference}')
+        if source not in self.entries:
+            relative = source.relative_to(self.root)
+            # Preserve folders, so two images with the same filename cannot collide.
+            href = relative.as_posix() if relative.parts[0] == 'assets' else f'assets/{relative.as_posix()}'
+            target = self.work / 'EPUB' / href
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, target)
+            self.entries[source] = {'href': href, 'media_type': media_type}
+        if cover and self.cover_source is None:
+            self.cover_source = source
+        return self.entries[source]['href']
+
+    def manifest_items(self) -> list[str]:
+        items = []
+        for index, (source, entry) in enumerate(self.entries.items(), start=1):
+            properties = ' properties="cover-image"' if source == self.cover_source else ''
+            items.append(f'\n    <item id="image{index}" href="{html.escape(entry["href"], quote=True)}" '
+                         f'media-type="{entry["media_type"]}"{properties} />')
+        return items
+
+
+IMAGE_BLOCK = re.compile(r'^!\[([^\]\n]*)\]\(([^)\n]+)\)$')
+
+
+def image_block(text: str, from_file: Path | None, assets: ImageAssets | None, cover: bool = False) -> str | None:
+    match = IMAGE_BLOCK.fullmatch(text.strip())
+    if not match:
+        return None
+    if assets is None or from_file is None:
+        raise SystemExit('Image rendering requires a book-relative file and asset registry.')
+    alt, reference = match.groups()
+    if not alt.strip():
+        raise SystemExit(f'EPUB image needs descriptive alt text: {reference}')
+    href = assets.register(from_file, reference.strip(), cover=cover)
+    image = f'<img src="{html.escape(href, quote=True)}" alt="{html.escape(alt, quote=True)}" />'
+    # A cover page shows the cover image only: no visible caption or "封面/Cover" text.
+    if cover:
+        return f'<figure class="cover">{image}</figure>'
+    return f'<figure>{image}<figcaption>{inline_markdown(alt)}</figcaption></figure>'
+
+
+def is_cover_file(path: Path) -> bool:
+    return path.stem.lower() == "cover"
+
+
+PLACEHOLDER_MARKER = re.compile(r"<!--\s*lifebook:placeholder\b", re.IGNORECASE)
+LEGACY_PLACEHOLDER = re.compile(r"本页为模板占位|译本前言模板|译者说明模板|模板占位|Translator Name", re.IGNORECASE)
+
+
+def frontmatter_status(path: Path) -> str:
+    """'skip' for marked or heading-only placeholders, 'fail' for unedited template text, else 'ok'."""
+    text = read_text(path)
+    if PLACEHOLDER_MARKER.search(text):
+        return "skip"
+    body = re.sub(r"<!--.*?-->", "", text, flags=re.DOTALL)
+    if LEGACY_PLACEHOLDER.search(body):
+        return "fail"
+    content = [line for line in body.split("\n") if line.strip() and not re.match(r"^\s*#{1,6}\s", line)]
+    return "ok" if content else "skip"
+
+
+def markdown_body(path: Path, assets: ImageAssets | None = None) -> str:
+    out: list[str] = []
+    cover = is_cover_file(path)
+    for block in iter_markdown_blocks(path):
+        if not block:
+            continue
+        image = image_block(block, path, assets, cover=cover)
+        if image is not None:
+            out.append(image)
+            continue
+        if cover:
+            continue
+        if RAW_BLOCK_START.match(block):
             out.append(block.strip())
             continue
-        out.append(f"<p>{inline_markdown(block)}</p>")
+        out.extend(render_text_block(block))
     return "\n".join(out)
 
 
@@ -344,7 +586,8 @@ def load_alignment_units(path: Path, book_root: Path, state: dict) -> list[dict]
     return units
 
 
-def render_paragraphs(paragraphs: list[str], unit_type: str = "body", heading_level: int = 0) -> str:
+def render_paragraphs(paragraphs: list[str], unit_type: str = "body", heading_level: int = 0,
+                      from_file: Path | None = None, assets: ImageAssets | None = None) -> str:
     if unit_type == "heading":
         if len(paragraphs) != 1:
             raise SystemExit("Canonical heading unit must contain exactly one source or target text block.")
@@ -353,10 +596,14 @@ def render_paragraphs(paragraphs: list[str], unit_type: str = "body", heading_le
     rendered: list[str] = []
     for text in paragraphs:
         stripped = text.strip()
-        if re.match(r"^</?(h[1-6]|section|p|aside|div|span|blockquote|ol|ul|li|dl|dt|dd|sup|sub|a|em|strong|br)\b", stripped):
+        image = image_block(stripped, from_file, assets)
+        if image is not None:
+            rendered.append(image)
+            continue
+        if RAW_BLOCK_START.match(stripped):
             rendered.append(stripped)
         else:
-            rendered.append(f"<p>{inline_markdown(text)}</p>")
+            rendered.extend(render_text_block(text))
     return "\n".join(rendered)
 
 
@@ -380,6 +627,10 @@ def first_heading_is_reader_title(units: list[dict], reader_title_text: str) -> 
     target_text = units[0].get("target_text")
     if not isinstance(target_text, str) or not target_text.strip():
         return False
+    # A canonical top-level heading already supplies the page's title system.
+    # A deliberately shorter navigation label must not add another visible title.
+    if int(units[0].get("markdown_heading_level") or 0) == 1:
+        return True
 
     def normalize(value: str) -> str:
         value = re.sub(r"^#{1,6}\s+", "", value.strip())
@@ -428,6 +679,10 @@ def write_css(work_dir: Path) -> None:
             ".chapter-notes p.endnote{text-indent:0;margin:0}"
             ".note-gap{display:none!important}"
             ".endnote-label{font-size:.9em;font-weight:600;margin-right:.25em}"
+            "img{max-width:100%;height:auto}figure{margin:1.2em 0;text-align:center;break-inside:avoid}"
+            "figcaption{font-size:.88em;line-height:1.45;text-indent:0}"
+            "figure.cover{margin:0}blockquote{margin:.6em 0 .9em 2em}blockquote p{text-indent:0}"
+            "ul,ol{margin:.4em 0 .8em 2em;padding:0}li{margin:0 0 .3em}"
         ),
     )
 
@@ -457,6 +712,19 @@ def zip_epub(work_dir: Path, epub_path: Path) -> None:
                 archive.write(path, path.relative_to(work_dir).as_posix(), compress_type=zipfile.ZIP_DEFLATED)
 
 
+def edition_identifier(metadata: dict[str, str]) -> str:
+    """The bilingual edition is a separate publication, so it must not reuse the target-only dc:identifier."""
+    explicit = metadata.get("bilingual_identifier")
+    if explicit:
+        return explicit
+    base = metadata.get("identifier") or ""
+    if not base:
+        return f"urn:uuid:{uuid4()}"
+    if base.lower().startswith("urn:uuid:"):
+        return f"urn:uuid:{uuid5(NAMESPACE_URL, base + '#bilingual_parallel')}"
+    return f"{base}-bilingual-parallel"
+
+
 def package_opf(
     title: str,
     metadata: dict[str, str],
@@ -472,7 +740,7 @@ def package_opf(
     description = metadata.get("description") or metadata.get("subtitle") or ""
     rights = metadata.get("rights") or ""
     date = metadata.get("date") or ""
-    identifier = metadata.get("identifier") or f"urn:uuid:{uuid4()}"
+    identifier = edition_identifier(metadata)
     languages = [target_language]
     if source_language and source_language not in languages:
         languages.append(source_language)
@@ -527,6 +795,7 @@ def main() -> None:
     source_language = normalize_lang(str(state.get("source_language") or ""), "en")
     metadata = parse_yaml(book_root / "metadata" / "book.yaml")
     target_language = normalize_lang(str(state.get("target_language") or metadata.get("language") or ""), "zh-Hans")
+    labels = navigation_labels(metadata, target_language)
     reader_titles = load_reader_titles(book_root)
     alignment_units = load_alignment_units(alignment_map_path(book_root, state), book_root, state)
     source_paragraphs = collect_paragraphs(book_root / "chapters" / "src", "s")
@@ -541,6 +810,7 @@ def main() -> None:
     (work_dir / "EPUB" / "styles").mkdir(parents=True, exist_ok=True)
     write_container(work_dir)
     write_css(work_dir)
+    images = ImageAssets(book_root, work_dir)
 
     manifest_items: list[str] = []
     spine_items: list[str] = []
@@ -551,12 +821,23 @@ def main() -> None:
         manifest_items.append('\n    <item id="translation-unit-manifest" href="translation-unit-manifest.json" media-type="application/json" />')
     doc_index = 0
 
+    packaged_frontmatter: list[Path] = []
     for frontmatter in sorted((book_root / "frontmatter").glob("*.md"), key=frontmatter_rank):
+        status = frontmatter_status(frontmatter)
+        if status == "fail":
+            raise SystemExit(
+                f"frontmatter/{frontmatter.name} still contains template placeholder text; "
+                "rewrite it for readers or delete the file. / 前置页仍是模板占位文字，请改写为读者内容或删除该文件。"
+            )
+        if status == "skip":
+            print(f"skipped placeholder frontmatter: frontmatter/{frontmatter.name}")
+            continue
+        packaged_frontmatter.append(frontmatter)
         doc_index += 1
         href = f"{slug(frontmatter.stem)}.xhtml"
         title_text = reader_title(frontmatter, book_root, reader_titles)
-        body = markdown_body(frontmatter)
-        if not has_markdown_heading(frontmatter):
+        body = markdown_body(frontmatter, images)
+        if not has_markdown_heading(frontmatter) and not is_cover_file(frontmatter):
             body = f"<h1>{html.escape(title_text)}</h1>\n{body}"
         write_text(work_dir / "EPUB" / href, xhtml_doc(title_text, body, target_language))
         manifest_items.append(f'\n    <item id="doc{doc_index}" href="{href}" media-type="application/xhtml+xml" />')
@@ -581,15 +862,17 @@ def main() -> None:
             target_texts = resolve_texts(unit, "target_paragraphs", target_paragraphs, unit_id)
             unit_type = str(unit.get("unit_type") or "body")
             heading_level = int(unit.get("markdown_heading_level") or 0)
+            source_file = book_root / str(unit.get("source_file") or group_key)
+            target_file = book_root / str(unit.get("target_file") or group_key)
             note_class = " bitext-note-unit" if unit_type == "note" else ""
             sections.append(
                 f'<section class="bitext-unit{note_class}" data-align-id="{html.escape(unit_id, quote=True)}" '
                 f'data-source-sha256="{source_hash}" data-target-sha256="{target_hash}">\n'
                 f'<div class="bitext-source" xml:lang="{source_language}" lang="{source_language}">\n'
-                f"{render_paragraphs(source_texts, unit_type, heading_level)}\n"
+                f"{render_paragraphs(source_texts, unit_type, heading_level, source_file, images)}\n"
                 "</div>\n"
                 f'<div class="bitext-target" xml:lang="{target_language}" lang="{target_language}">\n'
-                f"{render_paragraphs(target_texts, unit_type, heading_level)}\n"
+                f"{render_paragraphs(target_texts, unit_type, heading_level, target_file, images)}\n"
                 "</div>\n"
                 "</section>"
             )
@@ -598,17 +881,29 @@ def main() -> None:
         spine_items.append(f'\n    <itemref idref="doc{doc_index}" />')
         nav_items.append(f'<li><a href="{href}">{html.escape(title_text)}</a></li>')
 
+    cover_href = next((f"{slug(file.stem)}.xhtml" for file in packaged_frontmatter if file.stem == "cover"), "")
+    info_href = next((f"{slug(file.stem)}.xhtml" for file in packaged_frontmatter if file.stem in {"book-info", "book_info"}), "")
+    landmark_links = []
+    if cover_href:
+        landmark_links.append(f'<li><a epub:type="cover" href="{cover_href}">{html.escape(labels["cover"])}</a></li>')
+    if info_href:
+        landmark_links.append(f'<li><a epub:type="frontmatter" href="{info_href}">{html.escape(labels["book_info"])}</a></li>')
+    landmarks = (
+        f'<nav epub:type="landmarks" id="landmarks" hidden="hidden"><h2>{html.escape(labels["landmarks"])}</h2>'
+        f'<ol>{"".join(landmark_links)}</ol></nav>' if landmark_links else ""
+    )
     write_text(
         work_dir / "EPUB" / "nav.xhtml",
         xhtml_doc(
-            "目录",
-            f'<nav epub:type="toc" id="toc"><h1>目录</h1><ol>{"".join(nav_items)}</ol></nav>',
+            labels["toc"],
+            f'<nav epub:type="toc" id="toc"><h1>{html.escape(labels["toc"])}</h1><ol>{"".join(nav_items)}</ol></nav>{landmarks}',
             target_language,
         ),
     )
     write_text(
         work_dir / "EPUB" / "package.opf",
-        package_opf(title_for_package, metadata, source_language, target_language, manifest_items, spine_items),
+        package_opf(title_for_package, metadata, source_language, target_language,
+                    manifest_items + images.manifest_items(), spine_items),
     )
 
     epub_path = book_root / bilingual_artifact(state)

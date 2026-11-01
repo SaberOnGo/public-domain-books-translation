@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import re
 import shutil
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -276,6 +278,40 @@ def prepend_note(path: Path, entry: str) -> None:
     path.write_text(f"{title}\n\n{entry}\n\n{rest}", encoding="utf-8", newline="\n")
 
 
+def load_gate(name: str):
+    """Import a common gate script: next to this file in a book project, or from template/common in the repository."""
+    here = Path(__file__).resolve()
+    for candidate in (here.with_name(f"{name}.py"), here.parents[3] / "common" / "scripts" / f"{name}.py"):
+        if candidate.is_file():
+            spec = importlib.util.spec_from_file_location(name, candidate)
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[name] = module
+            spec.loader.exec_module(module)
+            return module
+    raise SystemExit(f"gate script not found: {name}.py")
+
+
+def final_artifact_findings(editions: list[dict]) -> list[str]:
+    """Reader-facing problems in the finished EPUBs themselves (not their Markdown sources)."""
+    final_gate = load_gate("check_final_epub")
+    alignment_gate = load_gate("check_bilingual_alignment")
+    findings: list[str] = []
+    results = final_gate.check_editions([(edition["source"], edition["edition_type"]) for edition in editions])
+    for edition, result in zip(editions, results):
+        if result["error_count"]:
+            rules = ", ".join(f"{rule}={count}" for rule, count in result["rule_counts"].items()
+                              if final_gate.RULES[rule][0] == "error")
+            findings.append(f"FINAL_EPUB_READER_DEFECTS in {edition['source_label']}: {rules}")
+        if edition["edition_type"] == "bilingual_parallel":
+            alignment = alignment_gate.analyse(alignment_gate.read_pairs(edition["source"]))
+            if alignment["status"] != "PASS":
+                findings.append(
+                    f"BILINGUAL_PAIRING_DEFECTS in {edition['source_label']}: misaligned_runs={alignment['misaligned_runs']}, "
+                    f"extreme_length_mismatches={alignment['extreme_length_mismatches']}"
+                )
+    return findings
+
+
 def main() -> None:
     args = parse_args()
     book_root = resolve_book_root(args.book_root)
@@ -297,6 +333,15 @@ def main() -> None:
     title = safe_filename(read_book_title(book_root))
     created_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     editions, pipeline_state = enabled_output_editions(book_root, source_epub)
+    findings = final_artifact_findings(editions)
+    if findings and args.status == "PASS":
+        for finding in findings:
+            print(f"ERROR: {finding}")
+        print("Run check_final_epub.py and check_bilingual_alignment.py with --write-report for details. "
+              "/ 运行成品门禁脚本查看明细并修复后再生成 PASS 产物。")
+        raise SystemExit(1)
+    for finding in findings:
+        print(f"WARNING (DRAFT artifact): {finding}")
     private_artifacts: list[dict] = []
     for edition in editions:
         suffix = edition_private_suffix(edition, pipeline_state)

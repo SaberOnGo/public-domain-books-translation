@@ -46,14 +46,93 @@ function escapeHtml(text) {
     .replace(/"/g, '&quot;');
 }
 
+function navigationLabels(metadata, language) {
+  const defaults = language.startsWith('zh')
+    ? { toc: '目录', landmarks: '导览', cover: '封面', bookInfo: '书籍信息' }
+    : { toc: 'Contents', landmarks: 'Guide', cover: 'Cover', bookInfo: 'Book Information' };
+  return {
+    toc: escapeHtml(metadata.navigation_title || defaults.toc),
+    landmarks: escapeHtml(metadata.navigation_landmarks_title || defaults.landmarks),
+    cover: escapeHtml(metadata.navigation_cover_title || defaults.cover),
+    bookInfo: escapeHtml(metadata.navigation_book_info_title || defaults.bookInfo),
+  };
+}
+
+const CJK_TEXT = '\\u3001-\\u303f\\u3040-\\u30ff\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\uff01-\\uff0f\\uff1a-\\uff20\\uff3b-\\uff40\\uff5b-\\uff65';
+const CJK_CHAR = new RegExp(`[${CJK_TEXT}]`);
+const CJK_QUOTES = '“”‘’';
+// Sentence-level storage sometimes rejoins CJK sentences with ASCII spaces; readers must not see them.
+const SPACE_AFTER_CJK_PUNCT = new RegExp(`(?<=[，。！？；：、）」』〉》】…”’])[ \\u00a0]+(?=[${CJK_TEXT}“‘「『（《〈【])`, 'g');
+const LINE_BREAK = ' ';
+const TRAILING_BR = /<br\s*\/?>\s*$/i;
+const SENTENCE_END = /[。！？!?…]+[”’」』）)]*$/;
+const THEMATIC_BREAK = /^(?:[*\-_]\s*){3,}$/;
+const QUOTE_LINE = /^>\s?/;
+const LIST_LINE = /^(?:([-*+])|(\d{1,3})[.)])\s+(\S.*)$/;
+const RAW_TAG_LINE = /^<\/?(?:blockquote|ol|ul|section|aside|div|figure|table)\b[^>]*>$/i;
+const IMAGE_LINE = /^!\[([^\]]*)\]\(([^)]+)\)$/;
+const VERSE_LINE_MAX_CJK = 32;
+const VERSE_LINE_MAX_LATIN = 48;
+const PLACEHOLDER_MARKER = /<!--\s*lifebook:placeholder\b/i;
+const LEGACY_PLACEHOLDER = /本页为模板占位|译本前言模板|译者说明模板|模板占位|Translator Name/i;
+
+function isCjkBoundary(left, right) {
+  const leftCjk = CJK_CHAR.test(left);
+  const rightCjk = CJK_CHAR.test(right);
+  return (leftCjk || CJK_QUOTES.includes(left)) && (rightCjk || CJK_QUOTES.includes(right)) && (leftCjk || rightCjk);
+}
+
+// Several short lines in one block are verse, a song, an address or a letter heading: keep the breaks.
+// Two short lines that each end a sentence are more likely two prose sentences stored one per line.
+function looksLikeVerse(lines) {
+  if (lines.length < 2) return false;
+  const limit = lines.some((line) => CJK_CHAR.test(line)) ? VERSE_LINE_MAX_CJK : VERSE_LINE_MAX_LATIN;
+  if (!lines.every((line) => [...line].length <= limit)) return false;
+  return lines.length >= 3 || !SENTENCE_END.test(lines[0]);
+}
+
+// Join a block's source lines: verse and hard breaks keep LINE_BREAK, CJK prose joins without spaces.
+function joinLines(rawLines) {
+  const lines = [];
+  for (const raw of rawLines) {
+    const hard = / {2}$/.test(raw) || /\\$/.test(raw.trimEnd()) || TRAILING_BR.test(raw.trim());
+    const line = raw.trim().replace(/\\$/, '').replace(TRAILING_BR, '').trim();
+    if (line) lines.push([line, hard]);
+  }
+  if (!lines.length) return '';
+  const verse = looksLikeVerse(lines.map(([line]) => line));
+  let out = lines[0][0];
+  for (let i = 1; i < lines.length; i += 1) {
+    const line = lines[i][0];
+    if (verse || lines[i - 1][1]) out += LINE_BREAK + line;
+    else if (isCjkBoundary(out[out.length - 1], line[0])) out += line;
+    else out += ` ${line}`;
+  }
+  return out;
+}
+
 function inline(text) {
-  return escapeHtml(text)
+  return escapeHtml(text.replace(SPACE_AFTER_CJK_PUNCT, ''))
+    .replace(/&lt;br\s*\/?&gt;/gi, LINE_BREAK)
+    .replace(/&lt;\/?(?:blockquote|p|div|section)(?:\s[^&]*)?&gt;/gi, '')
+    .replace(/&lt;(\/?)(em|strong|i|b|sup|sub|small)&gt;/gi, (match, slash, tag) => `<${slash}${tag.toLowerCase()}>`)
     .replace(/(^|[^\w])\[(\d+)\](?!\w)/g, '$1<sup class="note-ref">[$2]</sup>')
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/__([^_]+)__/g, '<strong>$1</strong>')
     .replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, '$1<em>$2</em>')
-    .replace(/(^|[^_])_([^_]+)_(?!_)/g, '$1<em>$2</em>');
+    .replace(/(^|[^_\w])_([^_]+)_(?![_\w])/g, '$1<em>$2</em>')
+    .split(LINE_BREAK).join('<br />');
+}
+
+// 'skip' for marked or heading-only placeholders, 'fail' for unedited template text, else 'ok'.
+function frontmatterStatus(file) {
+  const text = readText(file);
+  if (PLACEHOLDER_MARKER.test(text)) return 'skip';
+  const body = text.replace(/<!--[\s\S]*?-->/g, '');
+  if (LEGACY_PLACEHOLDER.test(body)) return 'fail';
+  const content = body.split('\n').filter((line) => line.trim() && !/^\s*#{1,6}\s/.test(line));
+  return content.length ? 'ok' : 'skip';
 }
 
 function parseMarkdownTable(lines, start) {
@@ -158,78 +237,145 @@ function resolveBookPath(fromFile, ref) {
   return resolved;
 }
 
-function markdownToBody(file, imageMap) {
+function markdownToBody(file, imageMap, options = {}) {
+  const cover = Boolean(options.cover);
   const out = [];
   let para = [];
-  let pendingUnit = null;
+  let quote = null;
+  let list = null;
+  let unit = null;
   const markerPattern = /^<!--\s*lifebook-unit:([^\s]+)\s+source-sha256:([0-9a-f]{64})\s+target-sha256:([0-9a-f]{64})\s*-->$/;
-  const takeUnitAttrs = () => {
-    if (!pendingUnit) return '';
-    const attrs = ` data-unit-id="${escapeHtml(pendingUnit.id)}" data-source-sha256="${pendingUnit.sourceHash}" data-target-sha256="${pendingUnit.targetHash}"`;
-    pendingUnit = null;
-    return attrs;
+  const flushPara = () => {
+    const text = joinLines(para);
+    if (text) out.push(`<p>${inline(text)}</p>`);
+    para = [];
+  };
+  const flushQuote = () => {
+    if (!quote) return;
+    const paragraphs = [];
+    let current = [];
+    for (const line of quote) {
+      if (line.trim()) current.push(line);
+      else if (current.length) {
+        paragraphs.push(current);
+        current = [];
+      }
+    }
+    if (current.length) paragraphs.push(current);
+    out.push(`<blockquote>${paragraphs.map((lines) => `<p>${inline(joinLines(lines))}</p>`).join('')}</blockquote>`);
+    quote = null;
+  };
+  const flushList = () => {
+    if (!list) return;
+    const start = list.kind === 'ol' && list.start && list.start !== '1' ? ` start="${list.start}"` : '';
+    out.push(`<${list.kind}${start}>${list.items.map((item) => `<li>${inline(joinLines(item))}</li>`).join('')}</${list.kind}>`);
+    list = null;
   };
   const flush = () => {
-    if (para.length) {
-      out.push(`<p${takeUnitAttrs()}>${inline(para.join(' ').trim())}</p>`);
-      para = [];
-    }
+    flushPara();
+    flushQuote();
+    flushList();
+  };
+  // Everything between two unit markers belongs to that unit; a unit that renders as several elements
+  // is wrapped once, so no reader text sits outside a registered unit.
+  const closeUnit = () => {
+    flush();
+    if (!unit) return;
+    const elements = out.splice(unit.start);
+    if (!elements.length) throw new Error(`LifeBook unit marker has no reader content in ${file}: ${unit.id}`);
+    const attrs = ` data-unit-id="${escapeHtml(unit.id)}" data-source-sha256="${unit.sourceHash}" data-target-sha256="${unit.targetHash}"`;
+    if (elements.length === 1 && !/^<\//.test(elements[0])) out.push(elements[0].replace(/^<([a-z0-9]+)/i, `<$1${attrs}`));
+    else out.push(`<div class="unit"${attrs}>\n${elements.join('\n')}\n</div>`);
+    unit = null;
+  };
+  const figure = (image, withCaption) => {
+    const src = resolveBookPath(file, image[2]);
+    const copied = copyAsset(src, 'images');
+    imageMap.set(copied.href, copied);
+    const img = `<img src="${copied.href}" alt="${escapeHtml(image[1])}" />`;
+    // A cover page shows the cover image only: no visible caption or "封面/Cover" text.
+    return withCaption ? `<figure>${img}<figcaption>${inline(image[1])}</figcaption></figure>` : `<figure class="cover">${img}</figure>`;
   };
 
   const lines = readText(file).split('\n');
   for (let i = 0; i < lines.length; i += 1) {
     const raw = lines[i];
-    const line = raw.trimEnd();
-    const marker = markerPattern.exec(line.trim());
+    const line = raw.trim();
+    const marker = markerPattern.exec(line);
     if (marker) {
-      flush();
-      if (pendingUnit) throw new Error(`Two LifeBook unit markers without reader content in ${file}`);
-      pendingUnit = { id: marker[1], sourceHash: marker[2], targetHash: marker[3] };
+      closeUnit();
+      unit = { id: marker[1], sourceHash: marker[2], targetHash: marker[3], start: out.length };
       continue;
     }
-    if (!line.trim()) {
+    if (!line || THEMATIC_BREAK.test(line)) {
       flush();
+      continue;
+    }
+    const image = IMAGE_LINE.exec(line);
+    if (cover) {
+      if (image) {
+        flush();
+        out.push(figure(image, false));
+      }
+      continue;
+    }
+    if (RAW_TAG_LINE.test(line)) {
+      flush();
+      out.push(line);
       continue;
     }
     if (isRawHtmlLine(line)) {
       flush();
-      out.push(`<div${takeUnitAttrs()}>${line.trim()}</div>`);
+      out.push(`<div>${line}</div>`);
       continue;
     }
     const table = parseMarkdownTable(lines, i);
     if (table) {
-      if (table.caption && para.join(' ').trim() === table.caption) para = [];
+      if (table.caption && joinLines(para) === table.caption) para = [];
       flush();
-      out.push(`<div${takeUnitAttrs()}>${tableHtml(table.rows, table.caption)}</div>`);
+      out.push(`<div>${tableHtml(table.rows, table.caption)}</div>`);
       i = table.next - 1;
       continue;
     }
-    const image = /^!\[([^\]]*)\]\(([^)]+)\)$/.exec(line.trim());
     if (image) {
       flush();
-      const src = resolveBookPath(file, image[2]);
-      const copied = copyAsset(src, 'images');
-      imageMap.set(copied.href, copied);
-      out.push(`<figure${takeUnitAttrs()}><img src="${copied.href}" alt="${escapeHtml(image[1])}" /><figcaption>${inline(image[1])}</figcaption></figure>`);
+      out.push(figure(image, true));
       continue;
     }
     const heading = /^(#{1,6})\s+(.+)$/.exec(line);
     if (heading) {
       flush();
       const level = Math.min(heading[1].length, 3);
-      out.push(`<h${level}${takeUnitAttrs()}>${inline(heading[2].trim())}</h${level}>`);
+      out.push(`<h${level}>${inline(heading[2].trim())}</h${level}>`);
       continue;
     }
-    const ordered = /^\d+\.\s+(.+)$/.exec(line.trim());
-    if (ordered) {
-      flush();
-      out.push(`<p class="list-item"${takeUnitAttrs()}>${inline(ordered[1])}</p>`);
+    if (QUOTE_LINE.test(line)) {
+      flushPara();
+      flushList();
+      if (!quote) quote = [];
+      quote.push(line.replace(QUOTE_LINE, ''));
       continue;
     }
-    para.push(line.trim());
+    const listed = LIST_LINE.exec(line);
+    if (listed && !quote) {
+      const kind = listed[1] ? 'ul' : 'ol';
+      if (!list || list.kind !== kind) {
+        flushPara();
+        flushList();
+        list = { kind, start: listed[2] || '', items: [] };
+      }
+      list.items.push([listed[3]]);
+      continue;
+    }
+    if (list) {
+      list.items[list.items.length - 1].push(raw);
+      continue;
+    }
+    if (quote) flushQuote();
+    para.push(raw);
   }
+  closeUnit();
   flush();
-  if (pendingUnit) throw new Error(`LifeBook unit marker has no reader content in ${file}: ${pendingUnit.id}`);
   return out.join('\n');
 }
 
@@ -281,7 +427,7 @@ function writeCss() {
   writeText(path.join(workDir, 'EPUB', 'styles', 'book.css'), `body{line-height:1.72;margin:0;padding:1.2em;overflow-wrap:break-word}p{margin:0 0 .7em;text-indent:2em}h1{font-size:1.55em;line-height:1.25}h2{font-size:1.2em}h3{font-size:1.05em}img{max-width:100%;height:auto}figure{margin:1.2em 0;text-align:center;break-inside:avoid}figcaption{font-size:.88em;line-height:1.45}code{font-family:monospace;overflow-wrap:anywhere}.list-item{text-indent:0;margin-left:1.5em}.parallel-passage{margin:0 0 1.15em}.source-text{color:#4c3828}.modern-text{color:#1f1f1f}aside{font-size:.88em;line-height:1.55;margin:.25em 0 .75em 2em;color:#4b4b4b}.table-wrap{display:block;width:100%;max-width:100%;margin:.8em 0 1.2em;overflow:visible}table{border-collapse:collapse;width:100%;max-width:100%;table-layout:fixed;font-size:.74em;line-height:1.34;page-break-inside:auto;break-inside:auto}caption{font-size:.9em;line-height:1.35;margin:0 0 .35em;text-align:left}th,td{border:1px solid #777;padding:.22em .28em;vertical-align:top;white-space:normal;overflow-wrap:anywhere;word-break:break-word}th{font-weight:600;background:#f2f2f2}tr{page-break-inside:avoid;break-inside:avoid}`);
   const cssPath = path.join(workDir, 'EPUB', 'styles', 'book.css');
   const css = readText(cssPath);
-  writeText(cssPath, `${css}.note-ref{font-size:.58em;line-height:0;vertical-align:super;white-space:nowrap}.chapter-notes{margin-top:2.2em;border-top:1px solid #999;padding-top:.8em}.chapter-notes>p.endnote{font-size:.9em;line-height:1.55;text-indent:0;margin:0 0 .65em}.endnote-label{font-size:.9em;font-weight:600;margin-right:.25em}`);
+  writeText(cssPath, `${css}.note-ref{font-size:.58em;line-height:0;vertical-align:super;white-space:nowrap}.chapter-notes{margin-top:2.2em;border-top:1px solid #999;padding-top:.8em}.chapter-notes>p.endnote{font-size:.9em;line-height:1.55;text-indent:0;margin:0 0 .65em}.endnote-label{font-size:.9em;font-weight:600;margin-right:.25em}figure.cover{margin:0}blockquote{margin:.6em 0 .9em 2em}blockquote p{text-indent:0}ul,ol{margin:.4em 0 .8em 2em;padding:0}li{margin:0 0 .3em}`);
 }
 
 function zipEpub() {
@@ -320,6 +466,7 @@ function main() {
   const rights = metadata.rights || '';
   const date = metadata.date || '';
   const language = metadata.language || 'zh-Hans';
+  const labels = navigationLabels(metadata, language);
   const id = metadata.identifier || `urn:uuid:${randomUUID()}`;
   const imageMap = new Map();
   const readerTitles = loadReaderTitles();
@@ -340,7 +487,15 @@ function main() {
   }
   const navItems = [];
 
-  const frontmatter = listFiles(frontmatterDir, '.md').sort((a, b) => {
+  const frontmatter = listFiles(frontmatterDir, '.md').filter((file) => {
+    const status = frontmatterStatus(file);
+    if (status === 'fail') {
+      console.error(`frontmatter/${path.basename(file)} still contains template placeholder text; rewrite it for readers or delete the file. / 前置页仍是模板占位文字，请改写为读者内容或删除该文件。`);
+      process.exit(1);
+    }
+    if (status === 'skip') console.log(`skipped placeholder frontmatter: frontmatter/${path.basename(file)}`);
+    return status === 'ok';
+  }).sort((a, b) => {
     const rank = frontmatterRank(a) - frontmatterRank(b);
     return rank || path.basename(a).localeCompare(path.basename(b));
   });
@@ -349,8 +504,9 @@ function main() {
     const idref = `doc${index + 1}`;
     const href = `${slug(file)}.xhtml`;
     const firstHeading = readerTitle(file, readerTitles);
-    const body = hasMarkdownHeading(file)
-      ? markdownToBody(file, imageMap)
+    const isCover = slug(file).toLowerCase() === 'cover';
+    const body = hasMarkdownHeading(file) || isCover
+      ? markdownToBody(file, imageMap, { cover: isCover })
       : `<h1 data-lifebook-editorial="reader-title">${escapeHtml(firstHeading)}</h1>\n${markdownToBody(file, imageMap)}`;
     writeText(path.join(workDir, 'EPUB', href), xhtml(firstHeading, body, language));
     manifestItems.push(`<item id="${idref}" href="${href}" media-type="application/xhtml+xml" />`);
@@ -371,12 +527,12 @@ function main() {
   writeText(path.join(workDir, 'EPUB', 'nav.xhtml'), `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="${escapeHtml(language)}" lang="${escapeHtml(language)}">
-<head><meta charset="utf-8" /><title>目录</title><link rel="stylesheet" type="text/css" href="styles/book.css" /></head>
+<head><meta charset="utf-8" /><title>${labels.toc}</title><link rel="stylesheet" type="text/css" href="styles/book.css" /></head>
 <body>
-<nav epub:type="toc" id="toc"><h1>目录</h1><ol>${navItems.join('\n')}</ol></nav>
-${coverHref || bookInfoHref ? `<nav epub:type="landmarks" id="landmarks" hidden="hidden"><h2>导览</h2><ol>
-${coverHref ? `<li><a epub:type="cover" href="${coverHref}">封面</a></li>` : ''}
-${bookInfoHref ? `<li><a epub:type="frontmatter" href="${bookInfoHref}">书籍信息</a></li>` : ''}
+<nav epub:type="toc" id="toc"><h1>${labels.toc}</h1><ol>${navItems.join('\n')}</ol></nav>
+${coverHref || bookInfoHref ? `<nav epub:type="landmarks" id="landmarks" hidden="hidden"><h2>${labels.landmarks}</h2><ol>
+${coverHref ? `<li><a epub:type="cover" href="${coverHref}">${labels.cover}</a></li>` : ''}
+${bookInfoHref ? `<li><a epub:type="frontmatter" href="${bookInfoHref}">${labels.bookInfo}</a></li>` : ''}
 </ol></nav>` : ''}
 </body>
 </html>

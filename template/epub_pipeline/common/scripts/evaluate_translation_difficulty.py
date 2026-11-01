@@ -149,6 +149,11 @@ def read_yaml_scalar(path: Path, key: str) -> str:
 
 
 def iter_text_files(book_root: Path, extra_source_dirs: list[str]) -> list[Path]:
+    # The canonical chapter corpus is the workload, not raw witnesses plus projections.
+    canonical = book_root / "chapters" / "src"
+    canonical_files = sorted(path for path in canonical.glob("*.md") if path.is_file())
+    if canonical_files:
+        return canonical_files
     candidates = [
         "source",
         "chapters/source",
@@ -200,7 +205,7 @@ def count_files(root: Path, suffixes: set[str]) -> int:
 
 
 def count_chapters(files: list[Path]) -> int:
-    chapter_like = [path for path in files if path.parent.name in {"source", "raw", "clean", "cleaned", "translated", "final"}]
+    chapter_like = [path for path in files if path.parent.name in {"src", "source", "raw", "clean", "cleaned", "translated", "final"}]
     return max(1, len(chapter_like) or len(files))
 
 

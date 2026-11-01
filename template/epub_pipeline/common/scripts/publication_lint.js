@@ -15,7 +15,13 @@ const target = getArg('--target', '');
 const fix = args.has('--fix');
 const strictSpaces = args.has('--strict-spaces');
 const writeReport = args.has('--write-report');
-const maxZhSemicolons = Number(getArg('--max-zh-semicolons', '20'));
+const semicolonExceptionsRel = getArg('--semicolon-exceptions', path.join('qa', 'punctuation', 'semicolon_exceptions.json'));
+const semicolonExceptionTypes = new Set([
+  'parallel_clauses',
+  'contrastive_parallel',
+  'enumerated_long_items',
+  'source_quote_preserved',
+]);
 
 const scanRoots = [
   'frontmatter',
@@ -54,7 +60,6 @@ function normalizeText(text, file) {
 
     let next = line.replace(/[ \t]+$/g, '');
     if (target === 'zh-Hans') {
-      next = next.replace(/;/g, '；');
       next = next.replace(cjkMultiSpace, '$1$2');
     }
     if (!/^\s*\|/.test(next)) {
@@ -85,6 +90,117 @@ function collectMatches(text, regex, file, rule, limit = 20) {
     });
   }
   return issues;
+}
+
+function normalizedRelPath(value) {
+  return String(value || '').replace(/\\/g, '/');
+}
+
+function isReaderFacingSemicolonScope(file) {
+  const normalizedFile = normalizedRelPath(file);
+  return normalizedFile.startsWith('chapters/final/') || normalizedFile.startsWith('frontmatter/');
+}
+
+function collectZhSemicolonMatches(text, file) {
+  if (target !== 'zh-Hans' || !isReaderFacingSemicolonScope(file)) return [];
+  return text.replace(/\r\n/g, '\n').split('\n').flatMap((line, idx) => {
+    if (!line.includes('；')) return [];
+    return [{
+      file,
+      line: idx + 1,
+      rule: 'zh_semicolon_requires_justification',
+      sample: line.trim().slice(0, 160),
+      lineText: line,
+      semicolonCount: (line.match(/；/g) || []).length,
+    }];
+  });
+}
+
+function loadSemicolonExceptions(projectRoot) {
+  const exceptionPath = path.isAbsolute(semicolonExceptionsRel)
+    ? semicolonExceptionsRel
+    : path.join(projectRoot, semicolonExceptionsRel);
+  const relPath = path.relative(projectRoot, exceptionPath).replace(/\\/g, '/');
+  if (!fs.existsSync(exceptionPath)) {
+    return { path: relPath, entries: [], issues: [] };
+  }
+  try {
+    const parsed = JSON.parse(fs.readFileSync(exceptionPath, 'utf8'));
+    const entries = Array.isArray(parsed) ? parsed : parsed.exceptions;
+    if (!Array.isArray(entries)) {
+      return {
+        path: relPath,
+        entries: [],
+        issues: [{
+          file: relPath,
+          line: 1,
+          rule: 'invalid_semicolon_exception_file',
+          sample: 'Expected an array or an object with an exceptions array.',
+        }],
+      };
+    }
+    return { path: relPath, entries, issues: [] };
+  } catch (error) {
+    return {
+      path: relPath,
+      entries: [],
+      issues: [{
+        file: relPath,
+        line: 1,
+        rule: 'invalid_semicolon_exception_json',
+        sample: String(error.message || error).slice(0, 160),
+      }],
+    };
+  }
+}
+
+function validateSemicolonException(entry, index, exceptionPath) {
+  const issues = [];
+  const file = normalizedRelPath(entry && entry.file);
+  const line = entry && entry.line;
+  const textExcerpt = String((entry && entry.text_excerpt) || '').trim();
+  const structureType = String((entry && entry.structure_type) || '').trim();
+  const reason = String((entry && entry.reason) || '').trim();
+  const approvedBy = String((entry && entry.approved_by) || '').trim();
+
+  if (!file || path.isAbsolute(file) || file.includes('../') || file.includes('..\\')) {
+    issues.push(`entry ${index}: file must be a repository-relative publication path`);
+  }
+  if (!Number.isInteger(line) || line < 1) {
+    issues.push(`entry ${index}: line must be a positive integer`);
+  }
+  if (!Number.isInteger(entry && entry.semicolon_count) || entry.semicolon_count < 1) {
+    issues.push(`entry ${index}: semicolon_count must be a positive integer`);
+  }
+  if (textExcerpt.length < 4) {
+    issues.push(`entry ${index}: text_excerpt must identify the approved line`);
+  }
+  if (!semicolonExceptionTypes.has(structureType)) {
+    issues.push(`entry ${index}: structure_type must be one of ${Array.from(semicolonExceptionTypes).join(', ')}`);
+  }
+  if (entry && entry.rewriting_attempted !== true) {
+    issues.push(`entry ${index}: rewriting_attempted must be true`);
+  }
+  if (reason.length < 12) {
+    issues.push(`entry ${index}: reason must explain why comma, period, or colon is worse`);
+  }
+  if (!['agent', 'human'].includes(approvedBy)) {
+    issues.push(`entry ${index}: approved_by must be agent or human`);
+  }
+
+  return issues.map((sample) => ({
+    file: exceptionPath,
+    line: index + 1,
+    rule: 'invalid_semicolon_exception',
+    sample,
+  }));
+}
+
+function semicolonExceptionMatches(hit, entry) {
+  if (normalizedRelPath(entry.file) !== normalizedRelPath(hit.file)) return false;
+  if (entry.line !== hit.line) return false;
+  if (entry.semicolon_count !== hit.semicolonCount) return false;
+  return hit.lineText.includes(String(entry.text_excerpt || '').trim());
 }
 
 function detectLegacyPrintToc(text, file) {
@@ -228,14 +344,19 @@ function detectDisallowedNoteMarkers(text, file) {
 }
 
 const files = scanRoots.flatMap((dir) => walk(dir));
+const semicolonExceptions = loadSemicolonExceptions(projectRoot);
 const report = {
   projectRoot: '.',
   target,
   fixed: fix,
+  semicolonExceptionsPath: semicolonExceptions.path,
   totals: {
     files: files.length,
     asciiSemicolon: 0,
     zhSemicolon: 0,
+    zhSemicolonReaderFacing: 0,
+    zhSemicolonApproved: 0,
+    zhSemicolonUnapproved: 0,
     cjkMultiSpace: 0,
     repeatedSpace: 0,
     mojibake: 0,
@@ -249,6 +370,17 @@ const report = {
   issues: [],
   warnings: [],
 };
+
+report.issues.push(...semicolonExceptions.issues);
+const validSemicolonExceptions = [];
+semicolonExceptions.entries.forEach((entry, index) => {
+  const validationIssues = validateSemicolonException(entry, index, semicolonExceptions.path);
+  if (validationIssues.length) {
+    report.issues.push(...validationIssues);
+  } else {
+    validSemicolonExceptions.push({ index, entry, used: false });
+  }
+});
 
 for (const file of files) {
   const original = fs.readFileSync(file, 'utf8');
@@ -270,9 +402,11 @@ for (const file of files) {
   const bodyOriginalTermGloss = detectBodyOriginalTermGloss(text, rel);
   const bodySceneSeparator = detectBodySceneSeparator(text, rel);
   const disallowedNoteMarker = detectDisallowedNoteMarkers(text, rel);
+  const zhSemicolonMatches = collectZhSemicolonMatches(text, rel);
 
   report.totals.asciiSemicolon += asciiSemi;
   report.totals.zhSemicolon += zhSemi;
+  report.totals.zhSemicolonReaderFacing += zhSemicolonMatches.reduce((sum, hit) => sum + hit.semicolonCount, 0);
   report.totals.cjkMultiSpace += cjkSpaces;
   report.totals.repeatedSpace += repeatedSpaces;
   report.totals.mojibake += mojibake;
@@ -284,13 +418,20 @@ for (const file of files) {
   report.totals.disallowedNoteMarker += disallowedNoteMarker.length;
 
   if (asciiSemi) report.issues.push(...collectMatches(asciiSemicolonText, /;/g, rel, 'ascii_semicolon'));
-  if (target === 'zh-Hans' && zhSemi > maxZhSemicolons) {
-    report.issues.push({
-      file: rel,
-      line: 1,
-      rule: 'zh_semicolon_overuse',
-      sample: `${zhSemi} Chinese semicolons; maximum is ${maxZhSemicolons}.`,
-    });
+  for (const hit of zhSemicolonMatches) {
+    const approved = validSemicolonExceptions.find((candidate) => semicolonExceptionMatches(hit, candidate.entry));
+    if (approved) {
+      approved.used = true;
+      report.totals.zhSemicolonApproved += hit.semicolonCount;
+    } else {
+      report.totals.zhSemicolonUnapproved += hit.semicolonCount;
+      report.issues.push({
+        file: hit.file,
+        line: hit.line,
+        rule: hit.rule,
+        sample: `${hit.semicolonCount} Chinese semicolon(s) require qa/punctuation/semicolon_exceptions.json justification: ${hit.sample}`,
+      });
+    }
   }
   if (cjkSpaces) {
     report.issues.push(...collectMatches(text, new RegExp(`[${cjk}][ \\t]{2,}[${cjk}]`, 'g'), rel, 'cjk_multi_space'));
@@ -306,6 +447,17 @@ for (const file of files) {
     report.issues.push(...collectMatches(text, /[^\n][ \t]{2,}[^\n]/g, rel, 'repeated_space'));
   } else if (repeatedSpaces) {
     report.warnings.push({ file: rel, rule: 'repeated_space', count: repeatedSpaces });
+  }
+}
+
+for (const candidate of validSemicolonExceptions) {
+  if (!candidate.used) {
+    report.issues.push({
+      file: semicolonExceptions.path,
+      line: candidate.index + 1,
+      rule: 'unused_semicolon_exception',
+      sample: `${candidate.entry.file}:${candidate.entry.line} did not match a reader-facing Chinese semicolon line.`,
+    });
   }
 }
 

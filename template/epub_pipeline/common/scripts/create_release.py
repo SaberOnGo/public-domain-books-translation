@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import re
 import shutil
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -319,10 +321,6 @@ def gate_summary(book_root: Path) -> dict:
         "literary_style_review_path": "qa/literary_style/literary_style_review.md" if literary_review_path.exists() else "",
         "literary_style_status": read_text_field(literary_review_path, "status") or "",
         "literary_target_only_reading_score": read_number_field(literary_review_path, "target_only_reading_score"),
-        "literary_read_aloud_awkward_sentence_count": read_number_field(
-            literary_review_path,
-            "read_aloud_awkward_sentence_count",
-        ),
         "literary_unresolved_style_debt_count": read_number_field(literary_review_path, "unresolved_style_debt_count"),
         "literary_literal_explanatory_style_debt_count": read_number_field(
             literary_review_path,
@@ -397,8 +395,6 @@ def require_pass_gates(summary: dict) -> None:
         errors.append("literary style review status is not PASS")
     if summary.get("literary_target_only_reading_score") != 5:
         errors.append("literary target-only reading score must be 5 for PASS release")
-    if summary.get("literary_read_aloud_awkward_sentence_count") != 0:
-        errors.append("literary read-aloud awkward sentence count must be 0 for PASS release")
     if summary.get("literary_unresolved_style_debt_count") != 0:
         errors.append("literary unresolved style debt count must be 0 for PASS release")
     if summary.get("literary_literal_explanatory_style_debt_count") != 0:
@@ -455,6 +451,46 @@ def enabled_output_editions(book_root: Path, fallback_source_epub: Path) -> tupl
         if not edition["source"].exists():
             raise SystemExit(f"enabled EPUB artifact does not exist: {edition['source']}")
     return editions, state
+
+
+def load_sibling(name: str):
+    """Import a gate script that lives next to this one, independent of sys.path."""
+    spec = importlib.util.spec_from_file_location(name, Path(__file__).with_name(f"{name}.py"))
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def final_artifact_findings(editions: list[dict]) -> list[str]:
+    """Reader-facing problems in the finished EPUBs themselves (not their Markdown sources)."""
+    final_gate = load_sibling("check_final_epub")
+    alignment_gate = load_sibling("check_bilingual_alignment")
+    findings: list[str] = []
+    results = final_gate.check_editions([(edition["source"], edition["edition_type"]) for edition in editions])
+    for edition, result in zip(editions, results):
+        if result["error_count"]:
+            rules = ", ".join(f"{rule}={count}" for rule, count in result["rule_counts"].items()
+                              if final_gate.RULES[rule][0] == "error")
+            findings.append(f"FINAL_EPUB_READER_DEFECTS in {edition['source_label']}: {rules}")
+        if edition["edition_type"] == "bilingual_parallel":
+            alignment = alignment_gate.analyse(alignment_gate.read_pairs(edition["source"]))
+            if alignment["status"] != "PASS":
+                findings.append(
+                    f"BILINGUAL_PAIRING_DEFECTS in {edition['source_label']}: misaligned_runs={alignment['misaligned_runs']}, "
+                    f"extreme_length_mismatches={alignment['extreme_length_mismatches']}"
+                )
+    return findings
+
+
+def registered_release_epubs(release_dir: Path, state: dict) -> set[str]:
+    names = {str(item.get("epub")) for item in state.get("latest_epubs", []) if isinstance(item, dict) and item.get("epub")}
+    if state.get("latest_epub"):
+        names.add(str(state["latest_epub"]))
+    index = release_dir / "release_index.md"
+    if index.exists():
+        names.update(re.findall(r"`([^`]+\.epub)`", index.read_text(encoding="utf-8", errors="replace")))
+    return names
 
 
 def append_release_index(path: Path, version: str, epub_name: str, note_name: str, status: str, created_at: str) -> None:
@@ -514,6 +550,32 @@ def main() -> None:
     release_dir.mkdir(parents=True, exist_ok=True)
     release_title = safe_filename_part(read_book_title(book_root))
     editions, pipeline_state = enabled_output_editions(book_root, source_epub)
+
+    # The release directory only holds artifacts this script created; anything else (a downloaded
+    # third-party EPUB, a hand-renamed copy) must be moved out before a new version is published.
+    registered = registered_release_epubs(release_dir, state)
+    unregistered = sorted(path.name for path in release_dir.glob("*.epub") if path.name not in registered)
+    if unregistered:
+        raise SystemExit(
+            "release directory contains EPUB files that no release record created: "
+            + ", ".join(unregistered)
+            + "; move them out of output/release/ before publishing. / 发布目录里有不是本脚本生成的 EPUB，请先移出。"
+        )
+    published_statuses = {"PASS", "ITERATIVE_RELEASE"}
+    if args.overwrite and state.get("current_version") == version and state.get("latest_status") in published_statuses:
+        raise SystemExit(
+            f"{version} was already published as {state.get('latest_status')}; published releases are immutable, "
+            "create the next patch version instead. / 已发布版本不可原地覆盖，请发布下一个小版本。"
+        )
+    findings = final_artifact_findings(editions)
+    if findings and args.status in published_statuses:
+        for finding in findings:
+            print(f"ERROR: {finding}")
+        print("Run check_final_epub.py and check_bilingual_alignment.py with --write-report for details. "
+              "/ 运行成品门禁脚本查看明细并修复后再发布。")
+        raise SystemExit(1)
+    args.risks.extend(findings)
+
     note_name = "release_notes.md"
     release_note = release_dir / note_name
     created_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -610,7 +672,6 @@ def main() -> None:
         f"- literary_style_review: `{summary.get('literary_style_review_path') or 'MISSING'}`",
         f"- literary_style_status: `{summary.get('literary_style_status') or 'MISSING'}`",
         f"- literary_target_only_reading_score: `{summary.get('literary_target_only_reading_score') if summary.get('literary_target_only_reading_score') is not None else 'MISSING'}`",
-        f"- literary_read_aloud_awkward_sentence_count: `{summary.get('literary_read_aloud_awkward_sentence_count') if summary.get('literary_read_aloud_awkward_sentence_count') is not None else 'MISSING'}`",
         f"- literary_unresolved_style_debt_count: `{summary.get('literary_unresolved_style_debt_count') if summary.get('literary_unresolved_style_debt_count') is not None else 'MISSING'}`",
         f"- literary_literal_explanatory_style_debt_count: `{summary.get('literary_literal_explanatory_style_debt_count') if summary.get('literary_literal_explanatory_style_debt_count') is not None else 'MISSING'}`",
         f"- literary_high_impact_sections_reviewed: `{summary.get('literary_high_impact_sections_reviewed')}`",

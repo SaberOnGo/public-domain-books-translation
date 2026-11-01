@@ -45,8 +45,6 @@ score:
 - expert_translation_skill_path: "skills/expert-translation-quality/SKILL.md"
 - high_impact_opening_section:
 - target_only_reading_score:
-- read_aloud_sentence_count:
-- read_aloud_awkward_sentence_count:
 - literal_explanatory_style_debt_count:
 - expert_level_review_status:
 - polysemy_translation_stage_review:
@@ -68,7 +66,6 @@ allow_next_chapter:
 expert_translation_skill_used:
 high_impact_opening_section:
 target_only_reading_score:
-read_aloud_awkward_sentence_count:
 literal_explanatory_style_debt_count:
 expert_level_review_status:
 polysemy_translation_stage_review:

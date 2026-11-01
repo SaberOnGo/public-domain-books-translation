@@ -2,8 +2,6 @@
 
 status: "DRAFT" # PASS | REWORK_REQUIRED | DRAFT
 target_only_reading_score:
-read_aloud_sentence_count: 30
-read_aloud_awkward_sentence_count:
 unresolved_style_debt_count:
 literal_explanatory_style_debt_count:
 high_impact_sections_reviewed: false
@@ -14,8 +12,8 @@ source_fidelity_backcheck_after_polish: false
 
 - Review author/source prefaces, introductions, openings, and first chapters first. These sections decide whether readers keep reading.
 - 先复审原作者序言、导言、开篇和首章。这些位置如果有直译腔、解释腔、平硬句，伤害比普通章节更大。
-- This review is target-language-first: read the target text aloud and silently before looking at the source.
-- 本复审先只看目标语：先默读、朗读，判断是否像自然成书文本，再回到原文校准忠实度。
+- This review is target-language-first: read the target text before looking at the source, judging prose, clarity, voice, and rhythm. Translation QA requires no audio generation, listening test, or user listening feedback.
+- 本复审先只看目标语文字，判断是否自然、清楚、声口和节奏是否合适，再回到原文校准忠实度。翻译质检不要求生成音频、试听或用户提供听音反馈。
 
 ## Findings / 发现
 
@@ -29,4 +27,4 @@ source_fidelity_backcheck_after_polish: false
 - [ ] Recurring families were audited with low-token searches and recorded in the book QA/fix log.
 - [ ] Reusable translation-quality lessons were merged into `skills/translation-quality-defect-families/SKILL.md` when applicable.
 
-Final PASS requires `target_only_reading_score: 5`, `read_aloud_awkward_sentence_count: 0`, `unresolved_style_debt_count: 0`, `literal_explanatory_style_debt_count: 0`, `high_impact_sections_reviewed: true`, `author_preface_and_first_chapter_reviewed: true`, and `source_fidelity_backcheck_after_polish: true`.
+Final PASS requires `target_only_reading_score: 5`, `unresolved_style_debt_count: 0`, `literal_explanatory_style_debt_count: 0`, `high_impact_sections_reviewed: true`, `author_preface_and_first_chapter_reviewed: true`, and `source_fidelity_backcheck_after_polish: true`.

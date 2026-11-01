@@ -18,4 +18,12 @@
 并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/{target}/{number}_{目标语言书名}_{目标语言作者名}`。输出仍然是标准 EPUB。
 特别注意: 翻译过程中积累的任何经验、教训、有用的积累、“18 世纪英语、传记、引语、典故、人物索引、注释”能力，等等都要必须要复盘沉淀进skill，模板、必要时增加新文档，
 不要在已有文档里添加，按照职责、风格、模块可新建目录/文件。
------------------------------------------------
+----------------------------------------------------
+本书项目：\books\private\zh-Hans\1_对白_罗伯特·麦基
+请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、
+template/epub_pipeline/common/README.md、
+template/epub_pipeline/common/prompts/08a_chapter_post_translation_control.md、
+template/epub_pipeline/common/references/quality_gate_framework.md、目标语言质量框架，
+以及 `skills/translation-quality-defect-families/SKILL.md`。
+请设置 /goal：对本书的中英双语版所有已翻译章节执行“每章译后全量复检并修复”。
+不得修改中文版EPUB。只对中英双语版进行检查。中英双语版的中文部分应使用中文版EPUB已翻译的中文作为参考。特别是序言精华部分。

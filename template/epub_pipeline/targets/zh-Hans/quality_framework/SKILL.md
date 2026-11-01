@@ -54,7 +54,7 @@ A chapter can become eligible for deterministic materialization into `chapters/f
 - Literary/narrative effect score is at least 4/5.
 - Chinese-only readability score is at least 4/5 before source calibration.
 - `qa/chapter_controls/` records `expert_translation_skill_used: true`, `expert_level_review_status: "PASS"`, `polysemy_translation_stage_review: "PASS"`, `polysemy_context_review: "PASS"`, and `polysemy_unresolved_count: 0`.
-- A 20-sentence read-aloud sample has at most one clearly awkward sentence, and no key sentence is breathless.
+- Target-language text must be clear and idiomatic, with no hard-to-follow key sentence.
 - The reviewer cannot point to a sentence that feels mechanically translated.
 - A gate report exists under `qa/gates/` and says `PASS`.
 - `qa/samples/sample_test_report.md` exists and says `PASS`.

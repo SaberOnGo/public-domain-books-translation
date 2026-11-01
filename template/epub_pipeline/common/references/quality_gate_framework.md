@@ -53,6 +53,36 @@ This file defines quality-gate concepts that apply to every translation directio
 - Final public publication requires a versioned release from `references/release_versioning.md`: `output/release/{target-language-title}_vX.X.X.epub`, cumulative bilingual `release_notes.md`, `release_state.json.latest_status = PASS`, and evidence that the latest random spot-check validation used `--require-pass`. `publication_mode=private_use` requires the `modes/private_use` private artifact gate instead: `output/private_artifacts/{target-language-title}_private_vX.X.X.epub`, `private_artifact_state.json.latest_status = PASS`, and the same random spot-check evidence.
 - 最终公开发布必须执行 `references/release_versioning.md` 定义的版本化发布：生成 `output/release/{目标语言书名}_vX.X.X.epub`、累计中英文 `release_notes.md`、`release_state.json.latest_status = PASS`，并证明最近一次随机抽检校验使用了 `--require-pass`。`publication_mode=private_use` 必须改走 `modes/private_use` 的私人产物门禁：生成 `output/private_artifacts/{目标语言书名}_private_vX.X.X.epub`、`private_artifact_state.json.latest_status = PASS`，并具备同等随机抽检证据。
 
+## Finished-Artifact Gates / 成品门禁
+
+These gates read what the reader actually receives, so they are machine checks rather than self-reported fields. `npm run reader:check` runs both after every build, and `release:create` / `private:artifact:create` refuse a PASS artifact while either reports an error.
+
+以下门禁直接检查读者拿到的成品，属于脚本机检，不是自报字段。`npm run reader:check` 在每次构建后运行它们；只要报错，`release:create` / `private:artifact:create` 就拒绝生成 PASS 产物。
+
+- `npm run check:final-epub` (`scripts/check_final_epub.py`) opens every enabled EPUB — target-only, bilingual, source-language edition — and fails on reader-visible residue: escaped HTML tags, Markdown markup (`#`, `**`, `_x_`, `>`, list dashes, links, backticks), print separators, empty or placeholder pages, visible spaces between CJK characters, straight quotes inside Chinese, pipeline tokens, split-script scaffold lines, illustration placeholders, Project Gutenberg boilerplate, cover-page text, file-name navigation labels, AI tool names on the cover/book-info page or in OPF credits, production wording in front matter, and editions that share a `dc:identifier`.
+- `npm run check:final-epub` 打开每个启用的 EPUB（单语版、双语版、原文版），发现读者可见的制作残留即失败，检查范围包括：
+  - 转义的 HTML 标签；Markdown 标记（`#`、`**`、`_x_`、`>`、列表短横、链接、反引号）；旧纸书分隔符。
+  - 空白页或占位页；中文中日文字符之间的可见空格；中文里的直引号。
+  - 流水线内部标记；拆章脚手架行；插图占位文字；Project Gutenberg 样板文字。
+  - 封面页文字；显示成文件名的目录条目。
+  - 封面、书籍信息页或 OPF 署名里的 AI 工具名；前置页里的制作流程用语。
+  - 不同版本共用 `dc:identifier`。
+- `npm run check:bilingual:alignment` (`scripts/check_bilingual_alignment.py`) checks content pairing, which `check:bilingual` cannot see: it compares each source block with its own target and its neighbours by length and by anchors (numbers, note markers, words left in the source script) and fails when a run of pairs matches a neighbour better than itself, or when a heading or short line is paired with a whole paragraph. Kept-original blocks (verse, constructed languages) are warnings to confirm, not errors.
+- `npm run check:bilingual:alignment` 检查 `check:bilingual` 看不到的内容对应关系：
+  - 按长度和锚点（数字、注号、未译出的原文词）比较每个原文块与自己的译文块、相邻的译文块。
+  - 以下情况判失败：连续多对与相邻块更吻合，或小标题、短行配上了整段译文。
+  - 有意保留原文的块（诗句、构造语言）只记为待确认的警告。
+- `review:random-validate:pass` rejects templated or duplicated review tables: a review whose rows all share one score and one reason, or where one reason covers 80% or more of the rows, or two agents whose score-and-reason sequences are identical. Each sampled unit needs its own judgement with quoted evidence.
+- `review:random-validate:pass` 拒绝模板化或重复的评审表：全表同分同理由、同一条理由占 80% 以上的行，或两个 Agent 的分数与理由序列完全相同。每个抽中单元都要有自己的判断，并引用具体句子。
+- Front-matter placeholders carry `<!-- lifebook:placeholder -->`; builders skip such pages and pages that hold only a heading, and stop the build when unedited template text (for example `本页为模板占位`) is still present. The release directory may contain only EPUBs that a release record created, and a version already published as PASS or ITERATIVE_RELEASE cannot be overwritten.
+- 前置页模板占位文件带有 `<!-- lifebook:placeholder -->` 标记：
+  - 构建器会跳过带此标记的页面和只有标题的页面。
+  - 仍含未改写的模板文字（如“本页为模板占位”）时，构建直接失败。
+  
+  发布目录只能放发布记录生成过的 EPUB；已按 PASS 或 ITERATIVE_RELEASE 发布的版本不得原地覆盖。
+- Library-wide regression: `npm --prefix books run check:final-epubs` checks the latest release or private artifact of every book and writes `books/private/final_epub_library_check.json` (private, ignored by Git). Re-run it whenever a gate rule changes.
+- 全书库回归：`npm --prefix books run check:final-epubs` 检查每本书最新的 release 或私人产物，报告写入被 Git 忽略的 `books/private/final_epub_library_check.json`。门禁规则一有变化，就要重跑一次。
+
 ## What Belongs Elsewhere / 哪些内容不属于这里
 
 - Target-language prose standards belong under `template/epub_pipeline/targets/{target}/`.

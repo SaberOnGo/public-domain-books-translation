@@ -59,6 +59,9 @@ Markdown source is acceptable as the authoring format, but EPUB content must be 
 - 不要把 `width: max-content`、固定大 `min-width`、整表 `white-space: nowrap` 作为默认 EPUB 表格样式；这些样式在部分手机分页阅读器中会造成空白页或无法正常翻页。
 - 需要保留横向查看能力时，只能作为增强样式；不得牺牲手机分页、换页和基本可读性。
 - QA 状态、抽查状态、脚本状态等生产控制列不应进入读者正文表格，应保存在 `qa/technical/` 或 release 证据中。
+- 表题、图注等新增编辑文字必须在所在容器的实际背景上检查对比度，覆盖输出版本、手机/桌面宽度与明暗主题。原文保留的深色组件可能覆盖阅读器全局主题；修复应限定到新增编辑元素，并保全原始样式来源。计算检查与独立实际截图检查分别记录，不能互相代替。
+
+Editorial captions must remain readable against their actual container background across output editions, phone/desktop widths, and light/dark themes. Preserved source components may override the reader theme. Scope repairs to added editorial elements and preserve original style evidence; keep computed checks separate from independent actual screenshot review.
 
 ```html
 <table id="tbl-i-11-chords">
@@ -116,6 +119,12 @@ EPUB 构建脚本必须把所有实际使用的资源写入 `package.opf` manife
 - 不存在本机绝对路径、外链热链接、丢失图片或未登记图片。
 - 图表密集书籍已完成 `qa/technical/{NNN_slug}.diagram_table_audit.md`。
 - 技术表格已完成 `qa/technical/table_validation_log.md`。
+- 大型地图或关系图必须在默认打开时保留完整总览；仅有缩放按钮、横向滚动或超大 SVG 不证明手机分页阅读器能读全。需要放大局部时，保留原图，并提供来自同一原图的静态局部及对应关系；检查所有局部的标签、边界和互补覆盖。实际原生阅读器可用时，应检查其当前产物，且在结束后退出本任务阅读器、浏览器及辅助服务。
+- 修复后复查应绑定当前产物与截图哈希。旧独立实看可以在当前 PNG 字节完全相同时继承；任何不同截图需要重新实看，并分别记录继承数量与新实看数量。不得把测量数量或继承数量声称为本轮新实看数量。
+
+Large maps and relationship diagrams require a complete initial overview. Zoom controls, horizontal scrolling, or an oversized SVG alone do not establish readability in a phone paginated reader. Preserve the original and provide static details from that same image when needed; check labels, boundaries, and complementary coverage. Check the current artifact in an available native reader and exit task-owned readers, browsers, and helper services afterward.
+
+Bind repaired-artifact reviews to current artifact and screenshot hashes. A prior independent actual view may carry forward only when the current PNG bytes are identical; changed screenshots require fresh actual review. Report carried-forward and newly viewed counts separately, without presenting measurements or reused views as fresh image inspection.
 
 ## Forbidden / 禁止
 

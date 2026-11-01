@@ -50,7 +50,9 @@
     "check:epub": "node scripts/run_epubcheck.js --all-enabled",
     "check:bilingual": "node scripts/run_python.js scripts/check_bilingual_parallel.py --write-report",
     "check:bilingual:interleave": "node scripts/run_python.js scripts/check_bilingual_interleave.py --write-report",
-    "reader:static-check": "node scripts/run_python.js scripts/check_reader_facing_policy.py --write-report && node scripts/run_python.js scripts/check_reader_navigation.py --write-report && npm run check:bilingual && npm run check:bilingual:interleave",
+    "check:final-epub": "node scripts/run_python.js scripts/check_final_epub.py --write-report",
+    "check:bilingual:alignment": "node scripts/run_python.js scripts/check_bilingual_alignment.py --write-report",
+    "reader:static-check": "node scripts/run_python.js scripts/check_reader_facing_policy.py --write-report && node scripts/run_python.js scripts/check_reader_navigation.py --write-report && npm run check:bilingual && npm run check:bilingual:interleave && npm run check:final-epub && npm run check:bilingual:alignment",
     "reader:check": "npm run reader:static-check"
   },
   "description": "Book-local npm scripts. Shared Node dependencies are installed once under books/node_modules and are resolved by walking up from the project root.",

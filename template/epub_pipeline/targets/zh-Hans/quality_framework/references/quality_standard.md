@@ -183,7 +183,7 @@
 - 每个抽中样本都有逐项评分行；只写总评无效。
 - `blocking_issue_count = 0`，`open_p0_p1_p2_count = 0`。
 - `style_debt_count = 0`，`literal_explanatory_style_debt_count = 0`，`high_impact_style_debt_count = 0`。
-- `qa/literary_style/literary_style_review.md` 必须 PASS；目标语独立阅读 5/5，朗读拗口句 0，未关闭文学性债务 0。
+- `qa/literary_style/literary_style_review.md` 必须 PASS；目标语独立阅读 5/5，未关闭文学性债务 0。
 
 原作者序言、导言、开篇和首章是高影响区域。这里的“文学性不强、语言不顺口、怪、直译感重、句子平硬、解释腔明显”不应被当成普通 P3 建议；它会直接影响读者是否继续读下去。最终发布前，这些位置必须逐段做目标语独立复审，并在润色后回到原文校准，避免为了顺而加戏或改错语气。
 
@@ -201,7 +201,7 @@
 
 - 章节标题必须符合 `references/title_punctuation_and_heading_style.md`。机械保留多个破折号、半截标题、手机窄屏下过长的目录题名，都属于标题门禁问题。
 - 普通中文正文中不得出现 ASCII 分号 `;`。
-- 中文分号 `；` 只能用于确有并列分层关系的长句。不得把英文逗号、分号或连接词机械译成 `；`；一章内大量出现 `；` 时必须退回重修。
+- 中文分号 `；` 只能用于确有并列分层关系的长句。不得把英文逗号、分号或连接词机械译成 `；`；读者可见的 `chapters/final/` 和 `frontmatter/` 中只要出现 `；`，`publication_lint` 就必须先拦截。保留例外必须逐行写入 `qa/punctuation/semicolon_exceptions.json`，说明为什么句号、逗号、冒号或重组句群都不如分号，并记录已尝试改写。
 - 中文字符之间不得出现用于对齐的连续空格，例如“文字   这是”。普通正文中的中文字符之间通常不加空格。
 - 旧纸书的页码目录、插图页码目录、靠空格对齐的名单或页码，不得原样进入 EPUB 正文。需要保留时必须改为真实目录、列表、表格或译注；已由 EPUB nav 表达的纸书目录应删除。
 - 不得出现替换字符、mojibake、乱码字、半截 HTML/XML 或编码污染。

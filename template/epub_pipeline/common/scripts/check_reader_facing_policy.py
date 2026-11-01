@@ -72,6 +72,10 @@ def iter_reader_text_files(book_root: Path) -> list[Path]:
         book_root / "frontmatter",
         book_root / "chapters" / "translated",
         book_root / "chapters" / "final",
+        # Staging written by build_epub.js and build_bilingual_epub.py; the finished .epub files
+        # themselves are checked by check_final_epub.py.
+        book_root / "output" / "epub_work" / "EPUB",
+        book_root / "output" / "epub_work_bilingual" / "EPUB",
         book_root / "output" / "epub_source" / "EPUB",
         book_root / "output" / "book_i_publication" / "epub_source" / "EPUB",
     ]

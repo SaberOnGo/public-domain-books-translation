@@ -9,7 +9,8 @@
     "new:book": "node scripts/run_python.js scripts/create_book_project.py",
     "check:gitignore-policy": "node scripts/run_python.js scripts/check_gitignore_policy.py",
     "setup:tools": "node scripts/run_python.js scripts/setup_local_tools.py",
-    "check:tools": "node scripts/run_python.js scripts/setup_local_tools.py --check"
+    "check:tools": "node scripts/run_python.js scripts/setup_local_tools.py --check",
+    "check:final-epubs": "node scripts/run_python.js ../template/epub_pipeline/common/scripts/check_final_epub.py --library . --report private/final_epub_library_check.json"
   },
   "dependencies": {
     "epubchecker": "^5.2.1"

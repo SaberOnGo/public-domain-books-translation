@@ -153,8 +153,8 @@ The post-generation review must include:
 - Stratified random spot checks after the first full-book EPUB and after every refinement pass: at least two agents, deterministic random samples across reader-facing audit units, preserved seed, round manifest, samples, figure/table/formula evidence, agent reviews, fix log, and closure check.
 - 第一版全书 EPUB 生成后，以及每轮精校后必须做分层随机抽检：至少两个 Agent，使用确定性随机样本覆盖读者可见审计单元，并保留 seed、轮次 manifest、样本、图片/表格/公式证据、Agent 评审、修复记录和闭环检查。
 
-- Literary smoothness validation with `npm run literary:validate`: target-language-first review, read-aloud check, zero unresolved style debt, and explicit review of author/source prefaces, introductions, openings, and first chapters.
-- 使用 `npm run literary:validate` 做文学顺读校验：先只看目标语复审，进行朗读测试，未关闭文学债务为 0，并明确复审原作者/原书序言、导言、开篇和首章。
+- Literary smoothness validation with `npm run literary:validate`: target-language-first text review, zero unresolved style debt, and explicit review of author/source prefaces, introductions, openings, and first chapters. Audio generation, listening tests, and user listening feedback are not translation deliverables or release gates.
+- 使用 `npm run literary:validate` 做文学顺读校验：先只看目标语文字复审，未关闭文学债务为 0，并明确复审原作者/原书序言、导言、开篇和首章。生成音频、试听及用户听音反馈不属于翻译交付或发布门禁。
 
 - If a random sample reveals a defect, treat it as a possible book-wide pattern: classify the defect family, audit the whole reader-facing book for similar issues, fix all confirmed matches, document exceptions, and preserve that systemic closure under the same round's fix log and closure check.
 - 如果随机样本暴露问题，必须把它当作可能的全书模式处理：归纳问题族，审计整本读者可见书稿是否存在同类问题，修复所有确认命中，记录合理例外，并把这个系统性闭环保存在同一轮的修复记录和闭环检查中。

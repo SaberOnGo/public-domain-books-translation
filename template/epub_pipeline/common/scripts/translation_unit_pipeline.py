@@ -57,6 +57,15 @@ REQUIRED_OCCURRENCE_COLUMNS = {
     "counts_as_first_body_occurrence",
     "status",
 }
+REQUIRED_OCCURRENCE_EXCLUSION_COLUMNS = {
+    "unit_id",
+    "source_sha256",
+    "start_offset",
+    "end_offset",
+    "source_form",
+    "rationale",
+    "reviewer",
+}
 XLIFF_NS = "urn:oasis:names:tc:xliff:document:2.0"
 ET.register_namespace("", XLIFF_NS)
 
@@ -223,7 +232,21 @@ def contract_path(contract: dict, section: str, key: str) -> str:
 
 
 def parse_aliases(value: str) -> list[str]:
-    return [item.strip() for item in re.split(r"[;|]", value or "") if item.strip()]
+    """Split alias delimiters while retaining complete source character references."""
+    text = value or ""
+    aliases: list[str] = []
+    start = 0
+    for match in re.finditer(r"&(?:#[0-9]+|#[xX][0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9]*);|[;|]", text):
+        if match.group().startswith("&"):
+            continue
+        item = text[start:match.start()].strip()
+        if item:
+            aliases.append(item)
+        start = match.end()
+    item = text[start:].strip()
+    if item:
+        aliases.append(item)
+    return aliases
 
 
 def find_form_occurrences(text: str, forms: Iterable[str]) -> list[tuple[int, int, str]]:
@@ -281,6 +304,192 @@ def load_occurrence_rows(book_root: Path, contract: dict) -> tuple[Path, list[di
         columns = set(reader.fieldnames or [])
         rows = [{key: (value or "").strip() for key, value in row.items()} for row in reader if any(row.values())]
     return path, rows, columns
+
+
+def occurrence_exclusion_config(contract: dict) -> dict[str, str] | None:
+    """Return the optional exact-span exclusion binding, or None when unused.
+
+    The binding deliberately lives under proper_nouns so it is included in the
+    normal contract digest.  A configured exclusion file is never an implicit
+    skip list: both its file digest and every row's source evidence are checked
+    before a ledger is accepted or built.
+    """
+    proper = contract.get("proper_nouns") if isinstance(contract.get("proper_nouns"), dict) else {}
+    raw = proper.get("occurrence_exclusions")
+    if raw is None or raw == {}:
+        return None
+    if not isinstance(raw, dict):
+        raise ValueError("PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: proper_nouns.occurrence_exclusions must be an object")
+    path = str(raw.get("path") or "").strip()
+    digest = str(raw.get("sha256") or "").strip().casefold()
+    if not path:
+        raise ValueError("PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: occurrence_exclusions.path is required")
+    if Path(path).is_absolute():
+        raise ValueError("PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: occurrence_exclusions.path must be relative")
+    if not re.fullmatch(r"[0-9a-f]{64}", digest):
+        raise ValueError("PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: occurrence_exclusions.sha256 must be a 64-character hex digest")
+    return {"path": path, "sha256": digest}
+
+
+def load_occurrence_exclusions(
+    book_root: Path,
+    contract: dict,
+    units_by_id: dict[str, dict],
+    expected_occurrences: set[tuple[str, int, int, str]],
+) -> tuple[set[tuple[str, int, int, str]], list[str]]:
+    """Validate and load exact source spans intentionally excluded from a ledger.
+
+    Exclusions are source evidence, not a broad name suppression mechanism.
+    They must identify a current canonical unit and hash, reproduce the exact
+    source slice, and match one of the registered spans selected by
+    ``find_form_occurrences``.  Invalid files return no exclusions so callers
+    cannot accidentally build a partially trusted ledger; the returned issues
+    make validation/build fail hard.
+    """
+    issues: list[str] = []
+    try:
+        spec = occurrence_exclusion_config(contract)
+    except ValueError as exc:
+        return set(), [str(exc)]
+    if spec is None:
+        return set(), issues
+    try:
+        path = resolve_inside(book_root, spec["path"])
+    except ValueError as exc:
+        return set(), [f"PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: {exc}"]
+    if not path.is_file():
+        return set(), [f"PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: missing exclusion file: {path.relative_to(book_root).as_posix()}"]
+    if sha256_file(path) != spec["sha256"]:
+        return set(), [f"PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: exclusion file hash mismatch: {path.relative_to(book_root).as_posix()}"]
+
+    exclusions: set[tuple[str, int, int, str]] = set()
+    intervals: dict[str, list[tuple[int, int, int]]] = defaultdict(list)
+    try:
+        with path.open("r", encoding="utf-8-sig", newline="") as handle:
+            reader = csv.DictReader(handle)
+            columns = set(reader.fieldnames or [])
+            missing = sorted(REQUIRED_OCCURRENCE_EXCLUSION_COLUMNS - columns)
+            if missing:
+                issues.append(
+                    "PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: exclusion file missing columns: "
+                    + ", ".join(missing)
+                )
+            for index, raw in enumerate(reader, start=2):
+                row_issue_prefix = f"PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: row {index}"
+                if None in raw:
+                    issues.append(f"{row_issue_prefix} has more fields than the declared header")
+                row = {
+                    key: (value or "").strip()
+                    for key, value in raw.items()
+                    if key is not None and not isinstance(value, list)
+                }
+                unit_id = row.get("unit_id", "")
+                source_digest = row.get("source_sha256", "").casefold()
+                source_form = row.get("source_form", "")
+                rationale = row.get("rationale", "")
+                reviewer = row.get("reviewer", "")
+                if not unit_id or not source_digest or not source_form or not rationale or not reviewer:
+                    issues.append(f"{row_issue_prefix} requires unit_id, source_sha256, source_form, rationale, and reviewer")
+                if not re.fullmatch(r"[0-9a-f]{64}", source_digest):
+                    issues.append(f"{row_issue_prefix} source_sha256 must be a 64-character hex digest")
+                try:
+                    start = int(row.get("start_offset", ""))
+                    end = int(row.get("end_offset", ""))
+                except ValueError:
+                    issues.append(f"{row_issue_prefix} offsets must be integers")
+                    continue
+                if start < 0 or end <= start:
+                    issues.append(f"{row_issue_prefix} requires 0 <= start_offset < end_offset")
+                    continue
+                unit = units_by_id.get(unit_id)
+                if unit is None:
+                    issues.append(f"{row_issue_prefix} references unknown unit_id {unit_id!r}")
+                    continue
+                unit_source_digest = str(unit.get("source_sha256") or "").casefold()
+                source_text = str(unit.get("source_text") or "")
+                computed_source_digest = sha256_text(source_text)
+                if source_digest != computed_source_digest:
+                    issues.append(f"{row_issue_prefix} source_sha256 does not match the current source_text")
+                if unit_source_digest != computed_source_digest:
+                    issues.append(f"{row_issue_prefix} canonical unit source_sha256 does not match its source_text")
+                if end > len(source_text) or source_text[start:end] != source_form:
+                    issues.append(f"{row_issue_prefix} source span does not match canonical source text")
+                key = (unit_id, start, end, source_form)
+                if key in exclusions:
+                    issues.append(f"{row_issue_prefix} duplicates an exact exclusion span")
+                elif key not in expected_occurrences:
+                    issues.append(f"{row_issue_prefix} is not an exact registered source occurrence")
+                for prior_start, prior_end, prior_index in intervals[unit_id]:
+                    if start < prior_end and prior_start < end:
+                        issues.append(
+                            f"{row_issue_prefix} overlaps exclusion row {prior_index} for unit {unit_id!r}"
+                        )
+                intervals[unit_id].append((start, end, index))
+                exclusions.add(key)
+    except (OSError, UnicodeError, csv.Error) as exc:
+        issues.append(f"PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: cannot read exclusion file: {exc}")
+    if issues:
+        return set(), issues
+    return exclusions, issues
+
+
+def occurrence_exclusion_issues_for_units(
+    book_root: Path,
+    contract: dict,
+    units: list[dict],
+    names: list[dict[str, str]],
+) -> list[str]:
+    """Check configured exclusions against the units about to be rendered."""
+    try:
+        if occurrence_exclusion_config(contract) is None:
+            return []
+    except ValueError as exc:
+        return [str(exc)]
+    issues: list[str] = []
+    evidence_units = units
+    try:
+        _manifest_path, canonical_store_path = unit_paths(book_root, contract)
+        if not canonical_store_path.is_file():
+            return [
+                "PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: canonical unit store is required "
+                "to validate configured exclusions"
+            ]
+        evidence_units = read_units(canonical_store_path)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return [f"PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: cannot read canonical unit store: {exc}"]
+    canonical_by_id = {str(unit.get("unit_id")): unit for unit in evidence_units}
+    for unit in units:
+        unit_id = str(unit.get("unit_id") or "")
+        canonical = canonical_by_id.get(unit_id)
+        if canonical is None:
+            issues.append(
+                f"PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: render subset contains unknown canonical unit {unit_id!r}"
+            )
+            continue
+        if (
+            str(unit.get("source_text") or "") != str(canonical.get("source_text") or "")
+            or str(unit.get("source_sha256") or "").casefold() != str(canonical.get("source_sha256") or "").casefold()
+        ):
+            issues.append(
+                f"PROPER_NOUN_OCCURRENCE_EXCLUSION_FAILED: render subset source binding differs from canonical unit {unit_id!r}"
+            )
+    units_by_id = {str(unit.get("unit_id")): unit for unit in evidence_units}
+    forms: dict[str, list[str]] = defaultdict(list)
+    for row in names:
+        if row.get("status") != "locked" or not row.get("entity_id"):
+            continue
+        for form in [row.get("source_name", ""), *parse_aliases(row.get("source_aliases", ""))]:
+            if form:
+                forms[form].append(row["entity_id"])
+    expected_occurrences = {
+        (unit_id, start, end, form)
+        for unit_id, unit in units_by_id.items()
+        for start, end, form in find_form_occurrences(str(unit.get("source_text") or ""), forms)
+    }
+    _excluded, exclusion_issues = load_occurrence_exclusions(
+        book_root, contract, units_by_id, expected_occurrences
+    )
+    return issues + exclusion_issues
 
 
 def source_file_records(book_root: Path, contract: dict) -> list[dict[str, str]]:
@@ -495,6 +704,11 @@ def validate_name_register(book_root: Path, contract: dict) -> list[str]:
                 source_text = str(unit.get("source_text") or "")
                 for start, end, form in find_form_occurrences(source_text, forms):
                     expected_occurrences.add((unit_id, start, end, form))
+            excluded_occurrences, exclusion_issues = load_occurrence_exclusions(
+                book_root, contract, units_by_id, expected_occurrences
+            )
+            issues.extend(exclusion_issues)
+            expected_occurrences.difference_update(excluded_occurrences)
             actual_occurrences: set[tuple[str, int, int, str]] = set()
             first_counts: dict[str, int] = defaultdict(int)
             entity_forms = {
@@ -517,6 +731,8 @@ def validate_name_register(book_root: Path, contract: dict) -> list[str]:
                 if row.get("source_form") not in entity_forms.get(row.get("entity_id", ""), set()):
                     issues.append(f"proper_noun_occurrences.csv:{index}: source form is not registered for entity")
                 actual_occurrences.add((row.get("unit_id", ""), start, end, row.get("source_form", "")))
+                if (row.get("unit_id", ""), start, end, row.get("source_form", "")) in excluded_occurrences:
+                    issues.append(f"proper_noun_occurrences.csv:{index}: explicitly excluded source span must be absent from the occurrence ledger")
                 if row.get("counts_as_first_body_occurrence") == "true":
                     first_counts[row.get("entity_id", "")] += 1
                     if row.get("is_body_occurrence") != "true":
@@ -593,6 +809,16 @@ def validate_contract(book_root: Path, contract: dict) -> list[str]:
             issues.append(f"missing locked input: {path.relative_to(book_root).as_posix()}")
         elif expected_hash != sha256_file(path):
             issues.append(f"locked hash mismatch; relock contract: {path.relative_to(book_root).as_posix()}")
+    try:
+        exclusion_spec = occurrence_exclusion_config(contract)
+        if exclusion_spec is not None:
+            exclusion_path = resolve_inside(book_root, exclusion_spec["path"])
+            if not exclusion_path.is_file():
+                issues.append(f"missing locked input: {exclusion_path.relative_to(book_root).as_posix()}")
+            elif exclusion_spec["sha256"] != sha256_file(exclusion_path):
+                issues.append(f"locked hash mismatch; relock contract: {exclusion_path.relative_to(book_root).as_posix()}")
+    except ValueError as exc:
+        issues.append(str(exc))
     if contract.get("contract_sha256") != contract_digest(contract):
         issues.append("translation contract hash is stale; relock contract")
     issues.extend(validate_name_register(book_root, contract))
@@ -677,6 +903,15 @@ def lock_contract(book_root: Path, args: argparse.Namespace) -> None:
         if not input_path.is_file():
             raise SystemExit(f"Cannot lock missing input: {input_path.relative_to(book_root).as_posix()}")
         contract[section][hash_key] = sha256_file(input_path)
+    try:
+        exclusion_spec = occurrence_exclusion_config(contract)
+        if exclusion_spec is not None:
+            exclusion_path = resolve_inside(book_root, exclusion_spec["path"])
+            if not exclusion_path.is_file():
+                raise SystemExit(f"Cannot lock missing input: {exclusion_path.relative_to(book_root).as_posix()}")
+            proper["occurrence_exclusions"]["sha256"] = sha256_file(exclusion_path)
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
     contract["status"] = "LOCKED"
     contract["locked_at"] = utc_now()
     contract["contract_sha256"] = contract_digest(contract)
@@ -804,6 +1039,17 @@ def build_proper_noun_ledger(book_root: Path, contract: dict) -> None:
             if form:
                 form_entities[form].append(row["entity_id"])
     ledger_path = resolve_inside(book_root, contract_path(contract, "proper_nouns", "occurrence_ledger"))
+    units_by_id = {str(unit.get("unit_id")): unit for unit in units}
+    expected_occurrences = {
+        (unit_id, start, end, form)
+        for unit_id, unit in units_by_id.items()
+        for start, end, form in find_form_occurrences(str(unit.get("source_text") or ""), form_entities)
+    }
+    excluded_occurrences, exclusion_issues = load_occurrence_exclusions(
+        book_root, contract, units_by_id, expected_occurrences
+    )
+    if exclusion_issues:
+        raise SystemExit("Cannot build proper-noun occurrence ledger:\n- " + "\n- ".join(exclusion_issues))
     existing_by_key: dict[tuple[str, int, int, str], dict[str, str]] = {}
     if ledger_path.is_file():
         _path, existing, _columns = load_occurrence_rows(book_root, contract)
@@ -820,6 +1066,8 @@ def build_proper_noun_ledger(book_root: Path, contract: dict) -> None:
         for start, end, form in find_form_occurrences(source, form_entities):
             entity_ids = form_entities[form]
             key = (str(unit["unit_id"]), start, end, form)
+            if key in excluded_occurrences:
+                continue
             previous = existing_by_key.get(key, {})
             entity_id = previous.get("entity_id", "")
             if len(entity_ids) == 1:
@@ -1395,9 +1643,17 @@ def name_forms(row: dict[str, str]) -> tuple[list[str], list[str]]:
 ENTITY_TOKEN_RE = re.compile(r"\{\{pn:([A-Za-z0-9_.:-]+)\}\}")
 
 
+def locked_literal_pattern(literal: str) -> str:
+    """Protect Latin name/term boundaries without excluding Chinese compounds."""
+    start = r"(?<![A-Za-z0-9_])" if re.match(r"[A-Za-z0-9_]", literal) else ""
+    end = r"(?![A-Za-z0-9_])" if re.search(r"[A-Za-z0-9_]$", literal) else ""
+    return start + re.escape(literal) + end
+
+
 def render_target_templates(book_root: Path, contract: dict, units: list[dict]) -> tuple[dict[str, str], list[str]]:
     issues: list[str] = []
     _name_path, names, _columns = load_name_rows(book_root, contract)
+    issues.extend(occurrence_exclusion_issues_for_units(book_root, contract, units, names))
     _occurrence_path, occurrences, _occurrence_columns = load_occurrence_rows(book_root, contract)
     by_entity = {row["entity_id"]: row for row in names}
     occurrence_by_unit: dict[str, list[dict[str, str]]] = defaultdict(list)
@@ -1429,7 +1685,7 @@ def render_target_templates(book_root: Path, contract: dict, units: list[dict]) 
             continue
         without_markers = ENTITY_TOKEN_RE.sub("", template)
         for literal in sorted(locked_literals, key=len, reverse=True):
-            if literal and literal in without_markers:
+            if literal and re.search(locked_literal_pattern(literal), without_markers):
                 issues.append(f"CSV_ONLY_RENDER_REQUIRED: {unit_id} contains direct locked name form {literal!r}")
                 break
         render_queue: dict[str, list[str]] = defaultdict(list)
@@ -1488,10 +1744,30 @@ def render_proper_nouns(book_root: Path, contract: dict) -> None:
     print(f"proper-noun entity rendering complete: units={len(units)}")
 
 
-def validate_name_rendering(units: list[dict], rows: list[dict[str, str]], mode: str) -> list[str]:
+def validate_name_rendering(units: list[dict], rows: list[dict[str, str]], mode: str,
+                            pending_first_entities: set[str] | None = None) -> list[str]:
     issues: list[str] = []
+    pending_first_entities = pending_first_entities or set()
     complete_text = "\n".join(str(unit.get("target_text") or "") for unit in units)
-    for row in rows:
+    # Match the occurrence ledger: title-like positions never consume a
+    # first natural body occurrence and use subsequent_rendering instead.
+    body_units = [unit for unit in units if unit.get("unit_type") not in {"heading", "navigation", "subtitle"}]
+    # Resolve complete locked renderings before their embedded shorter names.
+    # A zoo's name containing a city is not an occurrence of the city entity.
+    form_owners: dict[str, set[int]] = defaultdict(set)
+    for row_index, row in enumerate(rows):
+        source_forms, target_forms = name_forms(row)
+        for form in source_forms + target_forms + [row.get("first_rendering", ""), row.get("subsequent_rendering", "")]:
+            if form:
+                form_owners[form].add(row_index)
+    body_occurrences: dict[int, list[str]] = defaultdict(list)
+    if form_owners:
+        form_pattern = re.compile("|".join(locked_literal_pattern(form) for form in sorted(form_owners, key=lambda value: (-len(value), value))))
+        for unit in body_units:
+            for match in form_pattern.finditer(str(unit.get("target_text") or "")):
+                for owner in form_owners[match.group(0)]:
+                    body_occurrences[owner].append(match.group(0))
+    for row_index, row in enumerate(rows):
         source_forms, target_forms = name_forms(row)
         for source in source_forms:
             nested_patterns = [f"{source}（{source}（"] + [f"{target}（{source}（" for target in target_forms]
@@ -1515,22 +1791,24 @@ def validate_name_rendering(units: list[dict], rows: list[dict[str, str]], mode:
                         issues.append(f"established_chinese_only forbids source form in body: {source!r}")
             elif strategy == "target_source_then_target":
                 first_rendering = row.get("first_rendering") or ""
-                occurrences = [(index, str(unit.get("target_text") or "")) for index, unit in enumerate(units) if any(form in str(unit.get("target_text") or "") for form in source_forms + target_forms)]
+                occurrences = body_occurrences[row_index]
                 if occurrences:
-                    if first_rendering not in occurrences[0][1]:
+                    first_pending = row.get("entity_id") in pending_first_entities
+                    if not first_pending and first_rendering != occurrences[0]:
                         issues.append(f"policy 3 first occurrence does not use locked first_rendering for {row['source_name']!r}")
-                    for _index, text in occurrences[1:]:
-                        if first_rendering and first_rendering in text:
-                            issues.append(f"policy 3 first_rendering repeats after first occurrence for {row['source_name']!r}")
+                    for rendering in occurrences[0 if first_pending else 1:]:
+                        if first_rendering and first_rendering == rendering:
+                            issues.append(f"policy 3 first_rendering appears outside its source first occurrence for {row['source_name']!r}")
                             break
             elif strategy == "source_first_chinese_gloss_then_source":
-                occurrences = [(index, str(unit.get("target_text") or "")) for index, unit in enumerate(units) if row["source_name"] in str(unit.get("target_text") or "")]
+                occurrences = body_occurrences[row_index]
                 if occurrences:
                     first_rendering = row.get("first_rendering") or ""
-                    if first_rendering not in occurrences[0][1]:
+                    first_pending = row.get("entity_id") in pending_first_entities
+                    if not first_pending and first_rendering != occurrences[0]:
                         issues.append(f"first source-first occurrence does not use locked first_rendering for {row['source_name']!r}")
-                    for _index, text in occurrences[1:]:
-                        if first_rendering and first_rendering in text:
+                    for rendering in occurrences[0 if first_pending else 1:]:
+                        if first_rendering and first_rendering == rendering:
                             issues.append(f"source-first first_rendering repeats after first occurrence for {row['source_name']!r}")
                             break
     return issues
@@ -1596,7 +1874,22 @@ def validate_units(book_root: Path, contract: dict, allow_incomplete: bool, requ
         issues.append(f"missing canonical unit manifest: {manifest_path.relative_to(book_root).as_posix()}")
     try:
         _name_path, name_rows, _columns = load_name_rows(book_root, contract)
-        issues.extend(validate_name_rendering(units, name_rows, str((contract.get("proper_nouns") or {}).get("mode") or "")))
+        pending_first_entities: set[str] = set()
+        if allow_incomplete:
+            # Parallel chapter owners may finish a later source occurrence
+            # before the chapter containing the actual first body occurrence.
+            # Do not move that interface into the later chapter; the ledger
+            # and CSV-only renderer still enforce every completed target.
+            _ledger_path, ledger, _ledger_columns = load_occurrence_rows(book_root, contract)
+            by_id = {str(unit["unit_id"]): unit for unit in units}
+            pending_first_entities = {
+                str(row["entity_id"]) for row in ledger
+                if row.get("counts_as_first_body_occurrence") == "true"
+                and not str(by_id.get(str(row["unit_id"]), {}).get("target_text") or "").strip()
+            }
+        issues.extend(validate_name_rendering(units, name_rows,
+                                              str((contract.get("proper_nouns") or {}).get("mode") or ""),
+                                              pending_first_entities))
     except (OSError, ValueError, csv.Error) as exc:
         issues.append(str(exc))
     semantic_status = "NOT_REQUESTED"
@@ -2885,7 +3178,35 @@ def validate_epub_navigation(archive: zipfile.ZipFile, content_documents: set[st
 
 
 def node_text(node: ET.Element | None) -> str:
-    return "" if node is None else " ".join("".join(node.itertext()).split())
+    """Reader-visible text of a node; <br/> counts as whitespace so verse lines stay separable."""
+    if node is None:
+        return ""
+    parts: list[str] = []
+
+    def walk(element: ET.Element) -> None:
+        if element.text:
+            parts.append(element.text)
+        for child in element:
+            if isinstance(child.tag, str) and local_name(child.tag) == "br":
+                parts.append(" ")
+            else:
+                walk(child)
+            if child.tail:
+                parts.append(child.tail)
+
+    walk(node)
+    return " ".join("".join(parts).split())
+
+
+CJK_ADJACENT_SPACE_RE = re.compile(
+    r"(?<=[、-〿぀-ヿ㐀-䶿一-鿿豈-﫿！-｠“”‘’])\s+"
+    r"|\s+(?=[、-〿぀-ヿ㐀-䶿一-鿿豈-﫿！-｠“”‘’])"
+)
+
+
+def comparable_reader_text(value: str) -> str:
+    """Builders join CJK lines without spaces and keep verse breaks; compare text modulo that whitespace."""
+    return CJK_ADJACENT_SPACE_RE.sub("", " ".join(str(value or "").split()))
 
 
 HIDDEN_CSS_DECLARATION_RE = re.compile(
@@ -3008,8 +3329,15 @@ def extract_epub_units(archive: zipfile.ZipFile, kind: str) -> tuple[list[dict],
 
 def plain_markdown_text(value: str) -> str:
     value = re.sub(r"<!--.*?-->", "", value, flags=re.DOTALL)
-    value = re.sub(r"<[^>]+>", " ", value)
-    value = re.sub(r"^#{1,6}\s+", "", value)
+    lines: list[str] = []
+    for line in value.split("\n"):
+        # Builders render quote, list and thematic-break markup as structure, not as visible characters.
+        line = re.sub(r"^\s*(?:>\s?)+", "", line)
+        line = re.sub(r"^\s*(?:[-*+]|\d{1,3}[.)])\s+", "", line)
+        if re.fullmatch(r"\s*(?:[*\-_]\s*){3,}", line):
+            continue
+        lines.append(re.sub(r"^#{1,6}\s+", "", line))
+    value = re.sub(r"<[^>]+>", " ", "\n".join(lines))
     value = re.sub(r"[`*_]", "", value)
     return " ".join(value.split())
 
@@ -3117,16 +3445,18 @@ def verify_artifacts(book_root: Path, contract: dict, reader_mode: str = "none")
             continue
         for actual_row, wanted in zip(actual, expected):
             unit_id = wanted["unit_id"]
-            for key in ("source_sha256", "target_sha256", "target_text"):
+            for key in ("source_sha256", "target_sha256"):
                 if actual_row.get(key) != wanted.get(key):
                     issues.append(f"{kind} EPUB {key} differs for {unit_id}")
-            if kind == "bilingual" and actual_row.get("source_text") != wanted.get("source_text"):
+            if comparable_reader_text(actual_row.get("target_text")) != comparable_reader_text(wanted.get("target_text")):
+                issues.append(f"{kind} EPUB target_text differs for {unit_id}")
+            if kind == "bilingual" and comparable_reader_text(actual_row.get("source_text")) != comparable_reader_text(wanted.get("source_text")):
                 issues.append(f"bilingual EPUB source reader text differs for {unit_id}")
                 if len(issues) >= 100:
                     break
     if "target_only" in artifact_records and "bilingual" in artifact_records:
-        target_projection = [(row["unit_id"], row.get("target_sha256"), row.get("target_text")) for row in artifact_records["target_only"]]
-        bilingual_projection = [(row["unit_id"], row.get("target_sha256"), row.get("target_text")) for row in artifact_records["bilingual"]]
+        target_projection = [(row["unit_id"], row.get("target_sha256"), comparable_reader_text(row.get("target_text"))) for row in artifact_records["target_only"]]
+        bilingual_projection = [(row["unit_id"], row.get("target_sha256"), comparable_reader_text(row.get("target_text"))) for row in artifact_records["bilingual"]]
         if target_projection != bilingual_projection:
             issues.append("target-only and bilingual EPUB reader-visible target units differ")
 

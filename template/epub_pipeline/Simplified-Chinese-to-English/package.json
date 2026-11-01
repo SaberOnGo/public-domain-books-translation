@@ -1,0 +1,7 @@
+{
+  "name": "book-epub-simplified-chinese-to-english",
+  "private": true,
+  "scripts": {
+    "lint:publication": "node scripts/publication_lint.js --target=en --write-report"
+  }
+}

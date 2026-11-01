@@ -26,7 +26,7 @@
     "preflight:template": "npm run check:local-paths && npm run check:translation-coverage && npm run translation:contract:validate && python scripts/check_template_workflow_gate.py --write-report",
     "check:chapter-controls": "python scripts/check_template_workflow_gate.py --chapter-controls-only --write-report",
     "cover:check": "python scripts/check_cover_output_assets.py --write-report",
-    "reader:static-check": "python scripts/check_reader_facing_policy.py --write-report && python scripts/check_reader_navigation.py --write-report && npm run check:bilingual && npm run check:bilingual:interleave",
+    "reader:static-check": "python scripts/check_reader_facing_policy.py --write-report && python scripts/check_reader_navigation.py --write-report && npm run check:bilingual && npm run check:bilingual:interleave && npm run check:final-epub && npm run check:bilingual:alignment",
     "reader:check": "npm run reader:static-check",
     "lint:publication": "node scripts/publication_lint.js --target=zh-Hans --write-report",
     "lint:assets": "node scripts/asset_manifest_check.js --write-report",
@@ -40,6 +40,8 @@
     "build:bilingual": "python scripts/build_bilingual_epub.py",
     "check:bilingual": "python scripts/check_bilingual_parallel.py --write-report",
     "check:bilingual:interleave": "python scripts/check_bilingual_interleave.py --write-report",
+    "check:final-epub": "python scripts/check_final_epub.py --write-report",
+    "check:bilingual:alignment": "python scripts/check_bilingual_alignment.py --write-report",
     "build:epub": "npm run translation:prebuild && npm run preflight:template && npm run lint:publication && npm run lint:assets && npm run cover:check && node scripts/build_epub.js && npm run build:bilingual && npm run reader:check && npm run check:epub && npm run translation:artifact:validate",
     "check:epub": "node scripts/run_epubcheck.js --all-enabled"
   },

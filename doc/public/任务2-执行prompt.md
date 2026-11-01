@@ -175,6 +175,26 @@ output/book.epub 不能单独作为完成依据。
  即不能为了通俗化而通俗化，通俗化和保证专业书籍的专业水平、水准之间并不是互相矛盾的。
  很多书即可以通俗、有趣，不费劲，同时又可以是专业质量非常好（没有偏离该书）的风格，专业度.
  总之严格按照模板要求执行。
+---------------------------------------------------------------------
+我要翻译的书：《罗马帝国衰亡史》
+目标语言：中文
+[重点专有名词(人名、地名、术语、罕见名词、音译后体验很差的名字等) 的翻译格式] 设置 = 3
+请自动选择正确的翻译 prompt：
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_new_template.md。
+
+除非版权或来源无法确认，不要让我填写技术字段。请自动查找可靠公版来源，自动创建项目，完成翻译、审校、EPUB 构建、分层随机抽检和 release。
+翻译执行时必须逐章执行“每章译后全量检查并修复”：每章都要对照整章原文和整章译文检查忠实度、
+中文顺读、术语、标题/小标题、注释、图表文字接口、源语句法残留、过硬过直句、过度解释或加戏等问题；
+发现问题后先修复，但该轮不能 PASS，必须追加新一轮整章复查，直到最新一轮零问题 PASS。
+第一版 EPUB 生成后必须执行“分层随机抽检与问题族追杀”：抽检发现任何问题，不得只修被抽样本，
+必须在当轮归纳为问题族，用 `rg`、术语表、标题表、抽样 manifest 和小上下文原文对照做全书同类审计，
+修复确认命中，记录例外，再用新 seed 追加一轮。译文质量问题族必须使用
+`skills/translation-quality-defect-families/SKILL.md` 做经验沉淀。
+未声明是否启用 LifeBook Digest 时，请自动判断；长篇小说、专业书籍、哲学书在 EPUB 输出后生成 Digest，短篇小说、自然科学类和其他类型不生成。
+如需生成 Digest，请在书籍工程根目录写入 `digest.config.json`（`enabled=true`、`merge_into_epub=true`），
+并在仓库根目录运行：`python -m digest.lifebook_digest --book-root books/{target}/{number}_{目标语言书名}_{目标语言作者名}`。
+输出仍然是标准 EPUB。
 -----------------------------------------------------------
 请先做韩语模板（参考其他语言及公共模板要求），翻译'沈熏《常绿树》'，
 翻译过程中发现的，以及实践的一些经验教训，要复盘，然后写入韩语模板中。
@@ -269,6 +289,11 @@ output/book.epub 不能单独作为完成依据。
 本书项目：\books\zh-Hans\20_罗马帝国衰亡史_爱德华吉本
 请先读取 AGENTS.md、该书 SKILL.md（如有）、
 template/epub_pipeline/README.md、
+
+-------------------------------------------------
+本书项目：\books\zh-Hans\21_甲虫_理查德_马什
+补充说明: 请根据项目模板检查本书的根目录所有内容是否有缺少并补充修复。因为是从其他地方拷贝的，可能目录路径要调整、文档/脚本等要补充。
+请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、
 template/epub_pipeline/common/README.md、
 template/epub_pipeline/common/prompts/08a_chapter_post_translation_control.md、
 template/epub_pipeline/common/references/quality_gate_framework.md、目标语言质量框架，
@@ -278,6 +303,10 @@ template/epub_pipeline/common/references/quality_gate_framework.md、目标语�
 中文顺读、文学性、可读性和吸引力、教学/解释节奏、术语稳定、案例/专名/地名/书名/船名/机构名、
 标题与小标题、注释、图表/公式/表格/图片文字接口、源语句法残留、过硬过直过板句、
 过度解释、无依据加戏、读者可见 AI/制作痕迹、异常空格/乱码、旧纸书目录残留。
+每章必须对照整章原文、整章译文和读者可见上下文，覆盖但不限于忠实度、
+漏译误译、中文顺读、文学性、可读性和吸引力、教学/解释节奏、术语稳定、案例/专名/地名/书名/船名/机构名、
+标题与小标题、注释、图表/公式/表格/图片文字接口、源语句法残留、过硬过直过板句、过度解释、
+无依据加戏、读者可见 AI/制作痕迹、异常空格/乱码、旧纸书目录残留。
 可并行处理不同章节，但每个章节必须独立闭环：每一轮都检查整章；
 只要发现任何问题，先修复该章，但该轮只能记为 `FIXED_RECHECK_REQUIRED`，不能 PASS；
 随后追加新一轮整章复查。只有最新一轮记录 `scope: FULL_CHAPTER`、`issues_found: 0`、
@@ -306,6 +335,21 @@ template/epub_pipeline/common/references/stratified_random_spotcheck.md、
 template/epub_pipeline/common/references/quality_gate_framework.md、
 封面、book-info/frontmatter、图表资产、release 相关规则，
 以及 `skills/translation-quality-defect-families/SKILL.md`。
+源语句法残留、术语漂移、标题超载、过度解释或加戏，必须按 `skills/translation-quality-defect-families/SKILL.md` 处理：
+记录如何发现、如何归纳、如何用低 token 方法查全书同类、如何修复、如何复查。先用 `rg`、术语表、禁用写法、标题表、
+章节控制记录和小上下文原文对照收集候选，只把候选片段交给 agent 复核；不要让 agent 盲读全书。
+完成后重新生成或更新 `qa/chapter_controls/*.control.md`、必要的 `qa/fidelity/`、`qa/readability/`、`qa/terminology/`、
+`qa/gates/` 记录，把通过章节写入或更新到 `chapters/final/`。
+然后重建 EPUB，运行可用的 chapter-control/preflight/publication lint/asset/EPUBCheck 命令。
+报告修复章节、问题族、验证命令结果和仍需进入 Prompt C 的事项。
+------------------------------------------------------------
+本书项目： \books\zh-Hans\19_罗马人的私生活_哈罗德_惠特斯通_约翰斯顿
+连续无问题抽检轮数 N：3
+请先读取 AGENTS.md、该书 SKILL.md（如有）、template/epub_pipeline/README.md、
+template/epub_pipeline/common/README.md、template/epub_pipeline/common/prompts/16a_stratified_random_spotcheck.md、
+template/epub_pipeline/common/references/stratified_random_spotcheck.md、
+template/epub_pipeline/common/references/quality_gate_framework.md、
+封面、book-info/frontmatter、图表资产、release 相关规则，以及 `skills/translation-quality-defect-families/SKILL.md`。
 请设置 /goal：对已生成 EPUB 执行“分层随机抽检与问题族追杀”，并在通过后重新生成 release 或 private artifact。
 不要把本 prompt 当作普通润色；它的核心是发布前发现系统性盲点、全书同类审计、修复闭环和新 seed 复抽。
 运行分层随机抽样，抽样总体是 reader-facing audit units，不是页数，也不只是段落。
@@ -316,6 +360,9 @@ manifest、samples、evidence、reviews、fixes/fix_log.md、verification/closur
 源语句法残留、过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释或加戏，
 必须在本轮把它归纳为问题族，执行全书同类问题审计并修复所有确认命中。
 不得只修被抽中的样本，不得等第二轮才查全书。
+若任一样本发现 P0/P1/P2、单项 <80、读者不可理解、忠实度偏移、事实/术语/专名/标题/注释/图表/公式错误、源语句法残留、
+过硬过直句、短句切断、比喻自撞、排比标点拖拽、代词指代不清、过度解释或加戏，
+必须在本轮把它归纳为问题族，执行全书同类问题审计并修复所有确认命中。不得只修被抽中的样本，不得等第二轮才查全书。
 译文质量问题族必须优先低 token 审计：先用 `rg`、`glossary/terms.csv`、`forbidden_body_renderings`、
 标题映射、章节控制记录、抽样 manifest 和小上下文原文对照收集候选，再把候选片段交给 agent 复核。
 修复后在本轮 `fix_log.md` 和 `closure_check.md` 写清问题族、检索式/审计方法、命中数、修复位置、合理例外和复查结果；
@@ -330,3 +377,132 @@ cover output、reader-facing policy、EPUBCheck，以及 release 或 private art
 private_artifact_state.json.latest_status 必须为 PASS。
 报告 release EPUB 或 private artifact 路径、抽检轮次、修复摘要、验证命令结果和剩余风险。
 重点：“文学性不强，语言在人类看来不顺口，怪怪的。直译感较重，部分句子平、硬、解释腔明显。”
+每次修复后必须重建 EPUB，并用新 seed 追加下一轮抽检。退出条件：最近连续 N 个新 seed 抽检轮均 PASS，所有已发现问题族均关闭，
+`npm run review:random-validate:pass` 通过，且 release_confidence 达到模板要求。
+通过后清理或重建 staging，重新生成 EPUB，运行 publication lint、asset manifest、cover output、
+reader-facing policy、EPUBCheck，以及 release 或 private artifact 脚本。
+公版或授权项目的最终可发布 EPUB 必须输出到该书 output/release/，release_state.json.latest_status 必须为 PASS。
+个人自用项目的最终私人产物必须输出到 output/private_artifacts/，private_artifact_state.json.latest_status 必须为 PASS。
+报告 release EPUB 或 private artifact 路径、抽检轮次、修复摘要、验证命令结果和剩余风险。
+--------------------------------------------------------------------------------------
+我要翻译的书： https://vitalik.eth.limo/snowmoon/    
+该书已有许可证，请查看许可证授权。
+目标语言： 简体中文
+[重点专有名词(人名、地名、术语、罕见名词、音译后体验很差的名字等) 的翻译格式] 设置 = 3
+
+请自动选择正确的翻译 prompt：
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+
+这是我个人自用的,不传播,不用于商业,使用上述给出的url原文链接。 
+翻译时需要先生成本地的原文EPUB。
+请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
+翻译执行时必须逐章执行“每章译后全量检查并修复”；
+第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”。
+发现译文质量问题族时，先在本书闭环，再把可复用经验合并进 `skills/translation-quality-defect-families/SKILL.md`。
+禁止 LifeBook Digest。
+输出仍然是本地标准 EPUB，不发布到 GitHub。
+---------------------------------------------------------------------------------------
+我要翻译的书： "{用户提供的本地PDF书源文件路径}"
+目标语言： 中文
+[重点专有名词(人名、地名、术语、罕见名词、音译后体验很差的名字等) 的翻译格式] 设置 = 3
+
+请自动选择正确的翻译 prompt：
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+
+这是我个人自用的,不用于商业,使用我给出的本地的书源。
+请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
+翻译执行时必须逐章执行“每章译后全量检查并修复”；
+第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”。
+发现译文质量问题族时，先在本书闭环，再把可复用经验合并进 `skills/translation-quality-defect-families/SKILL.md`。
+禁止 LifeBook Digest。
+生成英文EPUB、中文EPUB 和中英双语对照版EPUB。
+---------------------------------------------------------------------------------------
+我要翻译的书： "{用户提供的本地PDF书源文件路径}"
+目标语言： 中文
+[重点专有名词(人名、地名、术语、罕见名词、音译后体验很差的名字等) 的翻译格式] 设置 = 3
+
+请自动选择正确的翻译 prompt：
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+
+这是我个人自用的,不用于商业,使用我给出的本地的书源。
+请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
+翻译执行时必须逐章执行“每章译后全量检查并修复”；
+第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”。
+发现译文质量问题族时，先在本书闭环，再把可复用经验合并进 `skills/translation-quality-defect-families/SKILL.md`。
+禁止 LifeBook Digest。
+生成英文EPUB、中文EPUB 和中英双语对照版EPUB。
+图表、图片要保留，如果没法重新生成图表和图片，可以从原文截取。
+--------------------------------------------------------------------------------------
+我要翻译的书： "{用户提供的本地EPUB书源文件路径}"
+目标语言： 英文
+[重点专有名词(人名、地名、术语、罕见名词、音译后体验很差的名字等) 的翻译格式] 设置 = 3
+
+请自动选择正确的翻译 prompt：
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+
+这是我个人自用的,不用于商业,使用我给出的本地的书源。
+请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
+翻译执行时必须逐章执行“每章译后全量检查并修复”；
+第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”。
+发现译文质量问题族时，先在本书闭环，再把可复用经验合并进 `skills/translation-quality-defect-families/SKILL.md`。
+禁止 LifeBook Digest。
+生成英文EPUB、和中英双语对照版EPUB。
+图表、图片要保留，如果没法重新生成图表和图片，可以从原文截取。
+--------------------------------------------------
+我要翻译的书： "../14_book/private_book/狼王梦 (动物小说大王沈石溪·品藏书系) (沈石溪) .epub"
+目标语言： 英文
+[重点专有名词(人名、地名、术语、罕见名词、音译后体验很差的名字等) 的翻译格式] 设置 = 3
+
+请自动选择正确的翻译 prompt：
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+这是我个人自用的,不用于商业,使用我给出的本地的书源。
+请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。
+翻译执行时必须逐章执行“每章译后全量检查并修复”；
+第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”。
+发现译文质量问题族时，先在本书闭环，再把可复用经验合并进 skills/translation-quality-defect-families/SKILL.md。
+禁止 LifeBook Digest。
+生成英文EPUB、和中英双语对照版EPUB。
+图表、图片要保留，如果没法重新生成图表和图片，可以从原文截取。
+---------------------------------------------------
+snowmoon
+
+对话信息:
+https://chatgpt.com/s/cx_6ae6dd7c4ea48191b874bfbd5075b586
+还没翻译完成，请帮我继续。完成整本翻译，及翻译质量检查后才算完成任务。
+--------------------------------------------------
+《Options as a strategic investment》
+"我要翻译的书： "../14_book/private_book/Options as a strategic investment (McMillan, L. G. (Lawrence G.))-2.pdf"
+目标语言： 中文
+[重点专有名词(人名、地名、术语、罕见名词、音译后体验很差的名字等) 的翻译格式] 设置 = 3
+请自动选择正确的翻译 prompt：
+- 如已有对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_existing_template.md。
+- 如无对应语言方向模板，执行 doc/public/user_prompt/book_translation_private_new_template.md。
+这是我个人自用的,不用于商业,使用我给出的本地的书源。 请自动创建项目，严格完成整个模板规定的系统翻译流程,不允许有任何遗漏。 
+翻译执行时必须逐章执行“每章译后全量检查并修复”； 第一版 EPUB 后必须执行“分层随机抽检与问题族追杀”。 
+发现译文质量问题族时，先在本书闭环，再把可复用经验合并进 skills/translation-quality-defect-families/SKILL.md。 
+禁止 LifeBook Digest。 生成英文EPUB、中文EPUB 和中英双语对照版EPUB。
+ 图表、图片要保留，如果没法重新生成图表和图片，可以从原文截取。"
+对话信息: 
+https://chatgpt.com/s/cx_6ae6de289e848191985d2ca51f2ccaa9
+
+还没翻译完成，请帮我继续。完成整本翻译，及翻译质量检查后才算完成任务。
+-----------------------------------------------------------
+范萨普-头寸管理权威指南翻译
+
+对话信息:https://chatgpt.com/s/cx_6ae7179cbde88191951f0802e73dc7fd
+完成整本翻译，及翻译质量检查后才算完成任务。
+
+还没翻译完成，请帮我继续;完成整本翻译，及翻译质量检查后才算完成任务。
+-----------------------------------------------------------
+项目目录:"."
+github 仓库:"https://github.com/SaberOnGo/public-domain-books-translation"
+你可以查看我之前给AI的Pompt历史:"doc/public",
+之前AI按照项目模板翻译时，老是在一些翻译质量、注释、封面及前几页、特别是中英双语版的翻译上犯错误。
+你分析下我整个项目，看看项目可以怎么优化？
+目标: 使AI按照项目模板和要求翻译的书（中文版、中外双语版、原文版）接近人类翻译专家的高质量，
+有人类翻译的味道，不是AI翻译的机械味。文学上有价值、信达雅等。

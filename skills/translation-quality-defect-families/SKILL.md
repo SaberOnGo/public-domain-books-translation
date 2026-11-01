@@ -102,8 +102,8 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   风险：读者会在进入正文前判断译本是否可信。开篇弱，即使后文准确，也会让读者流失。反复出现的开篇文学债务在最终发布前应按 P2/阻塞处理，不应作为无害 P3 建议。
 - Fix by: First perform target-language-only rewriting: remove explanatory scaffolding, break source syntax, rebuild cadence, and choose idiomatic target-language verbs and clauses. Then compare against the source to ensure the polish did not add argument, motivation, or tone. For Gibbon-like argumentative prose, preserve balance and antithesis without turning the sentence into modern analysis; for biography or dialogue, preserve voice and character pressure instead of smoothing everything into commentary.
   修复方式：先只看目标语重写，删去解释脚手架，打散源语句法，重建节奏，选择自然目标语动词和分句；再回到源文校准，确认润色没有新增论点、动机或语气。吉本式论辩散文要保留均衡和对照，不要改成现代分析说明；传记或对话要保留人物声口和叙述压力，不要全部抹成评论腔。
-- Recheck: Final release requires `qa/literary_style/literary_style_review.md` PASS with `target_only_reading_score: 5`, `read_aloud_awkward_sentence_count: 0`, `literal_explanatory_style_debt_count: 0`, and high-impact sections reviewed. Random review agents must set `high_impact_style_debt_count: 0` and `style_debt_count: 0` for excellence PASS.
-  复查：最终发布必须有 `qa/literary_style/literary_style_review.md` PASS，并记录 `target_only_reading_score: 5`、`read_aloud_awkward_sentence_count: 0`、`literal_explanatory_style_debt_count: 0`，且高影响开篇已复审。随机评审 Agent 若要给优秀 PASS，必须写明 `high_impact_style_debt_count: 0` 和 `style_debt_count: 0`。
+- Recheck: Final release requires `qa/literary_style/literary_style_review.md` PASS with `target_only_reading_score: 5`, `literal_explanatory_style_debt_count: 0`, and high-impact sections reviewed. Random review agents must set `high_impact_style_debt_count: 0` and `style_debt_count: 0` for excellence PASS. Assess prose through target-language text reading; translation QA does not require audio or listening feedback.
+  复查：最终发布必须有 `qa/literary_style/literary_style_review.md` PASS，并记录 `target_only_reading_score: 5`、`literal_explanatory_style_debt_count: 0`，且高影响开篇已复审。随机评审 Agent 若要给优秀 PASS，必须写明 `high_impact_style_debt_count: 0` 和 `style_debt_count: 0`。通过目标语文字阅读判断文风；翻译质检不要求音频或听音反馈。
 
 ### Reader-Facing Note and Quote Interface / 读者可见注号与外文引文接口
 - Symptom: Notes or citation units expose source-side mechanics instead of a reader-stable interface: bare split markers such as `注18-1`, raw bibliography such as `Ludewig in Vit. Justiniani`, unexplained foreign phrases such as `Cqamalh edra` or `Dux... sedentem Imperatorem adorat`, or long source quotations after an already adequate Chinese gist.
@@ -258,14 +258,21 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 
 - Symptom: The translation breaks a coherent source movement into clipped fragments, making the prose read like notes, commands, or a plot outline.
   症状：译文把连续动作或论述切成碎短句，读起来像提纲、指令或剧情摘要。
-- Find by: Chinese-only read-aloud pass, high punctuation density, repeated comma-only action chains, or samples that feel breathless without source pressure.
-  发现方式：中文独立朗读、高标点密度、连续动作清单，或原文并无强压迫感但译文读起来喘不过气。
+- Find by: Chinese-only text reading, high punctuation density, repeated comma-only action chains, or samples that feel breathless without source pressure.
+  发现方式：中文独立文字阅读、高标点密度、连续动作清单，或原文并无强压迫感但译文读起来喘不过气。
 - Fix by: Rebuild sentence groups with natural connectors, subject recovery, rhythm variation, and source-supported pacing; do not flatten tension.
   修复方式：用自然连接、主语恢复、长短变化和原文允许的节奏重组句群；不要把紧张感改平。
-- Recheck: Read the revised paragraph aloud and compare with the source to ensure no action, order, or tone was changed.
-  复查：朗读修订段，并对照原文确认动作、顺序和语气没有被改错。
+- Recheck: Read the revised paragraph as written text and compare with the source to ensure no action, order, or tone was changed.
+  复查：阅读修订段文字，并对照原文确认动作、顺序和语气没有被改错。
 
 ### Metaphor Collision / 比喻自撞
+
+- Dimension and abstract-identity guard: Identify what a comparison measures: a container opening may represent diameter or area, not wall thickness or whole-object volume. Retain genuine thickness comparisons elsewhere and avoid invented measured precision. An idiom about recovering one's nature or identity need not describe physical restoration of a body part. Preserve the source image and action without forcing an incompatible target verb.
+  维度与抽象身份防护：容器开口的比较可能指直径或面积，不是壁厚、整体体积或新增实测值；其他确实比较厚度的语境应保留。恢复本性或身份的习语也未必在写身体修复；保留源文意象和动作，不强配会产生冲突的目标语动词。
+
+
+- Simile subject and modality guard: When a body part or coat is the nearby grammatical subject, check whether a following animate comparison describes that part or the whole character. Make the intended referent explicit in natural target grammar. Recheck coordinated actions and pronouns after repair, preserving whether the entire sequence is imagined, wished for, possible or completed. A word-pattern hit alone does not prove attachment is wrong: an adverbial comparison may naturally qualify the character's action. Do not compress a comparison of degree and bodily state into an invented compound adjective. Restore an ordinary comparative clause and its causal consequence; literal physical phenomena, explicit comparisons and lexical glosses remain contextual exceptions.
+  比喻主体与情态防护：身体部位、毛发等成为邻近语法主体时，须判清后接的有生命比喻指该部位还是整个角色，再用自然目标语明确主体。修复后重查并列动作和代词，同时保留整段属于想象、愿望、可能还是既成行动。词面命中不证明附着错误；状语式比喻也可能自然地修饰角色动作。不能把程度、身体状态与比喻关系压成生造复合形容词；恢复自然比较分句及因果结果。真实物理现象、明示比喻和词语释义仍是语境例外。
 
 - Symptom: A translated image contains mixed vehicles, incompatible physical logic, or extra imagery that sounds vivid but no longer follows the source.
   症状：译文意象混用、物理逻辑互撞，或新增了好看但原文没有支撑的比喻。
@@ -296,6 +303,9 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 
 ### Concept Hard-Shell, Entityification, and Psychology Jargon / 概念硬壳、实体化与心理学滥词
 
+- Transformation-domain guard: Behavioral or psychological change does not automatically denote biological mutation. Check the subject, domain and surrounding argument before choosing a technical term. Preserve actual genetics, source-authored analytic psychology and medical metaphors when supported; keep a metaphor in natural grammatical relation without inventing a diagnosis.
+  变化领域防护：行为或心理变化不自动等于生物学突变。选技术术语前先核对主体、讨论领域和邻接论述。保留真正遗传学、有原文依据的分析性心理叙述及病理比喻；用自然语法表达比喻，不擅加诊断。
+
 - Symptom: A craft concept becomes a rigid target-language term, pseudo-psychology label, physical object, or mechanical spatial model. Typical zh-Hans symptoms include `真实人物` for technical `true character`, `潜意识心灵`, `潜意识自我`, `潜意识冲动`, `进入人物的潜意识`, `巨大领域`, `球体`, `同心层`, and anatomical `内部/内里` where the source is only describing conceptual relation.
   症状：写作技法概念被译成目标语里的硬壳术语、伪心理学标签、物理实体或机械空间模型。简体中文常见表现包括把术语 `true character` 译成“真实人物”，把内在动力写成“潜意识心灵”“潜意识自我”“潜意识冲动”“进入人物的潜意识”，把抽象 `realm/sphere/level` 写成“巨大领域”“球体”“同心层”，或在非实体语境里滥用“内部/内里”。
 - Risk: Readers infer the wrong category: literal real people instead of character nature, pop psychology instead of craft analysis, or physical balls/rooms/body interiors instead of layers of dramatic meaning. This makes the prose sound comic, mechanical, and low-trust even when the source facts are present.
@@ -310,6 +320,9 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   复查：重建后同时扫描终稿 Markdown 和生成 EPUB XHTML。书内复盘应记录问题族名、检测正则、确认修复和合理例外，避免后续审校把同类问题重新当成零散词语问题发现。
 
 ### Enumerative Punctuation Drag / 排比标点拖拽
+
+- English clause and house-style guard: Resolve confirmed comma splices and apply consistent paired quotation marks and prose em dashes in reader text. Classify quoted sounds, sayings and epithets separately from dialogue, measurements, code and protected inline markup. Punctuation repair must not turn an unspoken thought into speech or modify raw source evidence. Scan current Markdown and rebuilt XHTML, then inspect every candidate in its complete source context.
+  英文从句与书内排印防护：修复确认的逗号拼接，读者文本统一使用成对引号和散文破折号。区分声音、格言、称号引文与对白、度量、代码及受保护行内标记。标点修复不能把未说出的想法变成对白，也不能改原始书源证据。扫描当前 Markdown 和重建 XHTML，再逐候选核对完整原文语境。
 
 - Symptom: Source commas, semicolons, dashes, or list rhythm are mechanically mapped into target-language punctuation, producing stiff rows of clauses.
   症状：把原文逗号、分号、破折号或列举节奏机械搬进目标语，形成僵硬的并列从句队列。
@@ -416,6 +429,10 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 
 ### Unclear Pronoun Reference / 代词指代不清
 
+- Trait, reward and multi-actor guard: A development verb can make a pronoun attach to a nearby reward instead of the intended quality. An attacker or planner can also become the nearest subject while the next injury or unawareness belongs to someone else. Reconstruct the complete antecedent, action, injury and knowledge chain with neighbors; make a source-supported role or quality explicit where needed. Do not insert an extra registered name occurrence merely to clarify prose.
+  品质、奖赏与多主体防护：发展类动词后的代词可能误指邻近奖赏；攻击者或筹谋者也可能抢占受伤者、不知情者的指代。结合完整邻段还原先行词、动作、伤者和知情关系，必要时点明有原文依据的身份或品质；不能为澄清随意增加已注册专名次数。
+
+
 - Number/addressee guard: English `you/your` does not mark number. Audit interface strings and dialogue with `room numbers`, multiple keys, `you all`, or group reactions against actual recipients and adjacent actions. A plural object alone does not prove plural addressees; retain a singular address when the context supports one person.
   单复数与受话对象防护：英语 `you/your` 不标单复数。对设备界面和对白中的多个房间号、多把钥匙、`you all` 及群体反应，核对实际受话对象和邻段动作。宾语为复数本身不能证明受话对象为多人；上下文支持一人时保留单称。
 
@@ -429,6 +446,13 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   复查：确认没读过原文的读者也能不猜测地跟上关系。
 
 ### Source-Syntax Residue / 源语句法残留
+
+- Narrative development and inner-state guard: Rebuild nested questions and trait-development clauses into natural target grammar while preserving each unknown, actor and source distinction. Separate genuinely different preparation, practice, learning and maturation from near-synonym pairs that become bureaucratic repetition. Age-related training does not imply time travel or a changed age. Confidence in one's advantage differs from believing a factual report; a source-supported feeling still needs an idiomatic target collocation. Inner monologue does not automatically excuse stiff phrasing. Search confirmed residues and source triggers, then read complete pairs rather than globally deleting paired verbs or abstract nouns. Check property collocations and achieved-result complements: a reshaping action must not presuppose the trait it creates. Keep bodily and mental scope distinct from spatial direction; remove accidental cognate padding without deleting source-supported causal repetition.
+  叙事发展与内心状态防护：嵌套疑问和品质培养句须重建成自然目标语，保留每项未知、主体和源文区别。准备、练习、学习、成熟可能确有区别，也可能是直译后显得公文式的近义重复；年龄相关训练不能暗示时间移动或改年龄。自恃优势与相信某项陈述不同；有原文依据的感情仍须自然搭配，内心独白不自动豁免生硬表达。先扫确认残留与源语触发式，再读完整源译，不全局删除并列动词或抽象词。另查品质搭配和已实现结果的补语关系，塑造动作不能预设它刚产生的品质。身心范围不等于空间方向；消除偶然同根冗词，不删作者有依据的因果重复。
+
+
+- Experiencer and causal-prose guard: In target-language narration, a body part does not normally serve as the grammatical experiencer of a sensation; make the experiencing character the subject, retain an indefinite perceived event rather than asserting a diagnosis, and replace clinical wrappers such as `under the stimulus of` with an idiomatic causal clause when the source is immediate narration. Keep deliberately physiological or explanatory source passages in their own register. A phrase hit is a candidate, not proof of a defect.
+  感受主体与因果散文防护：目标语叙事中，身体部位通常不应充当感受的语法主体；应让实际感受者作主语，保留不确定的感受事件，不擅自下诊断；即时叙事中的“在……刺激下”等临床式外壳应改为自然因果分句。原文有意采用生理学或解释性语域时，应有依据地保留。关键词命中只是候选，不是问题结论。
 
 - Fronted spatial clauses and inserted subjects: When an English placement sentence interrupts a fronted location with a clause about another subject, establish the target-language main action first, then attach the intervening description to its actual subject. Preserve position, quantity and direction: placing ships behind walls does not itself mean that the ships follow the walls in motion. Search source patterns such as `behind ... , ... he/she/they` and `all/both aimed`, plus target phrases such as `紧跟在…，`; inspect each complete candidate and neighbors, retaining natural contextual exceptions. Avoid adding extra named-entity occurrences merely to clarify a pronoun; check the locked occurrence ledger and require a fresh independent full-chapter review after repair.
   前置方位与插入主语防护：英文放置句在前置方位中插入另一主语的说明时，中文先让主动作成立，再把插入说明明确挂到它实际修饰的主体上。保留位置、数量和方向；把飞船放在墙后并不自动表示飞船跟随墙运动。低 token 检索源文 `behind … , … he/she/they`、`all/both aimed` 及译文“紧跟在…，”等候选，再实际读完整片段与邻段，保留自然的上下文例外。不能为澄清代词随意增加专名出现次数；须核对已锁出现账本，修订后追加新独立全章复查。
@@ -471,8 +495,8 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 
 - Symptom: The target text is understandable but still follows source clause order, modifier stacking, passive structure, or abstract noun scaffolding.
   症状：译文能懂，但仍保留源语从句顺序、修饰堆叠、被动结构或抽象名词支架。
-- Find by: Chinese-only reading, long-sentence breath checks, and source comparison for clauses that could be reordered without changing meaning.
-  发现方式：中文独立阅读、长句换气检查，并对照原文找出可重排而不改义的从句。
+- Find by: Target-language text reading, text rhythm checks, and source comparison for clauses that could be reordered without changing meaning.
+  发现方式：目标语独立文字阅读、长句节奏检查，并对照原文找出可重排而不改义的从句。
 - Special check: Audit dangling contrastive or connective fragments such as isolated "相比之下。", "然而。", or similar source-led hinges. Do not stop at punctuation repair; make sure the comparison or turn has a concrete landing point in the target-language clause.
   特别检查：额外审计被截成残句的转折/连接语，例如孤立的“相比之下。”、“然而。”等源语驱动铰链。不要只修标点，要确认比较或转折关系已经在目标语主句里真正落地。
 - Special check: Preserve epistemic and reception stance in evaluative closures. When the source says an idea was "taken as" a paradigm, was "widely held," or that a conclusion is "not surprising," do not compress it into an unqualified target-language praise; retain who holds the view, the evidential distance, and the surprise/non-surprise relation. Audit source markers such as `not surprising`, `unsurprisingly`, `no doubt`, `paradigm`, and `clearly` against target candidates such as `被视为`, `不足为奇`, `毫无疑问`, `范例`, and `显然`, then record technical/logical uses as exceptions.
@@ -640,6 +664,12 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 
 ### Modality, Probability and Negation Scope / 情态、概率与否定范围
 
+- Process, recurrence and effort guard: Motion toward an endpoint need not complete it. Check later delivery, emergence, arrival, death or escape before selecting completed aspect. Repeated alternation is not necessarily a single fixed sequence. An unqualified effort verb does not automatically exhaust every remaining reserve. Preserve source chronology, explicit completion, superlatives and recurring states; do not silently repair an author's own anomaly.
+  过程、反复与用力防护：趋向终点未必已完成，选完成体前核对后续分娩、出现、到达、死亡或脱身。反复交替未必是固定先后各一次；普通用力也不自动耗尽全部余力。保留原文时序、明示完成、极限措辞及反复状态，不暗改作者自身异常。
+- Qualified-measure and finding guard: Decide first whether a measure is physical, idiomatic or structural. A conversion must preserve approximate quantity and magnitude without invented precision. Quote the complete target clause, including approximation, uncertainty, conditions and negation, before declaring an error. A qualified rounded conversion or a registered accepted alternative name is not a defect merely because another wording is preferred. Verify the locked decision and actual source proposition; keep unsupported findings in history with their rejection reason.
+  限定量值与意见精度防护：先判断单位是实体、习语还是结构称谓；换算须保留约数和数量级，不新增精度。认定错误前完整引用约数、推测、条件与否定；有约数的取整换算或已注册的公认别名，不因评审偏好另一表达就算错。核对锁定裁决和源文命题，无据意见保留历史并记录驳回理由。
+
+
 - Tried-set and duration guard: `no combination that he tried` concerns attempted combinations, not all conceivable combinations. Preserve that bound when removing modifier stacks. In an uncertain prediction, `ten or twenty days, maybe a month` retains alternatives and an estimate, rather than a fixed deadline or an unsupported continuous range; classify neighboring numerical uses contextually instead of applying a global punctuation substitution.
   尝试集合与时长防护：no combination that he tried只否定实际尝试的组合，不否定一切可能组合。去掉定语堆叠时保留此范围。不确定预测中的ten or twenty days, maybe a month须保留备选和估计，不能改成固定期限或无依据的连续区间；邻近数字应按语境裁决，不做全书机械标点替换。
 
@@ -660,6 +690,15 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   低 token 审计与闭环：先检索源语触发词和已确认坏译残留，再实际阅读完整候选源译及邻段。分开记录机械扫描单元、实际读过候选、修复种子和语境例外。“只能”“本身”等只是信号，不是全书禁词；个人偏爱另一种通读写法本身不构成缺陷。确认修复后必须追加独立整章零问题复查，再关闭本书问题族。
 
 ### Context-Disambiguation Drift / 上下文选义漂移
+
+- Trait, anatomy and performance guard: A temperament term cannot be replaced by the quantity or quality of nearby nourishment. Distinguish actual disability, exaggerated weakness, performed expression and an observer's hypothesis. Track injury mechanism, functional loss, removed part and death separately at each occurrence: blindness or penetration does not imply extraction, and a later explicit injury cannot sharpen an earlier hypothetical. Preserve explicit removal and source-authored violence. Conventional emotional eye imagery may need ordinary diction, while injury anatomy needs its supported precision. Scan both source triggers and target alternatives and inspect full neighboring actions; never soften or intensify all injuries with a global replacement. Naturalizing an emotional facial image must preserve its source-supported body region; do not silently replace eyes with another anatomical site.
+  性情、解剖与表演防护：性情词不能替换成邻近食物的数量或质量。分别核对真实伤残、夸张虚弱、表演表情和旁观者猜测；逐处区分伤害机制、功能丧失、部位脱落及死亡。致盲、刺穿不自动等于取出，后文伤害不能强化前文假设；明示脱落及作者暴力描写须保留。惯用情绪用眼可需普通措辞，受伤解剖则保留有依据的精度。并查源语触发和目标语候选，再读完整邻接动作，不能全局弱化或升级伤害。自然化情绪面部意象时仍须保留原文支持的身体部位，不能暗中把眼睛换成别处。
+- Sensory channel and atmosphere guard: Emission wording can describe smell, breath, sound, light or liquid. Preserve the actual channel and intensity without inventing droplets, wounds or matter. A threatening atmosphere does not itself mean acoustic silence; check nearby cries, motion and weather. Literal liquid jets, anatomy and quiet remain contextual exceptions.
+  感官通道与气氛防护：发出类词可描写气味、呼吸、声音、光线或液体，须保留通道和强度，不新增液滴、伤口或物质。威胁气氛不自动等于声学寂静，须核查邻近叫声、动作和天气；真实液流、解剖与安静保留为语境例外。
+
+
+- Affection and courtship register guard: An affectionate-wheedling expression may describe a pet seeking an owner's favor, an intimate partner teasing, or an animal courting a mate. Resolve the actual relationship and immediate motive before selecting flirtatious vocabulary. Scan the confirmed source trigger and target alternatives across the current book; personally read full candidate pairs and neighbors, retaining genuinely romantic or courtship cases. Do not globally ban the target word or remove source-authored anthropomorphism.
+  亲昵与求偶语域防护：带有撒娇、讨好意味的表达，可能写宠物向主人求宠爱、亲密伴侣间的打趣，也可能写动物向配偶求偶。选用带调情色彩的词前，先判清实际关系和即时动机。对全书当前文本扫描已确认的源语触发式和目标语替代词，再逐条实读完整源译候选及邻段；保留确属恋爱或求偶的用法。不能全局禁用某个目标词，也不能删掉原文有依据的拟人。
 
 - Spatial-anchor and visibility guard: Resolve what `both sides` refers to before reordering `behind the trees on both sides`: a path can have trees on either side and houses behind those trees; do not move the houses to either side of an unspecified tree. `Blocking the view to a tunnel` obscures the tunnel from sight and does not establish that the tunnel is physically blocked. Use natural target-language placement and visibility verbs, then back-check the spatial anchor and the affected object. Search source triggers together with confirmed target residues, inspect full pairs and neighbors, and preserve justified cases where `both sides` means opposing parties or where the source describes an actual physical barrier.
   空间锚点与可见性防护：重排behind the trees on both sides前，先判清both sides的锚点；可能是小径两侧都有树，房屋位于那些树木之后，不能移成未明确的某棵树的两边。blocking the view to a tunnel遮挡的是看向隧道的视线，不证明隧道被实体堵塞。采用自然中文位置语序和可见性动词后，回查锚点与承受动作的对象。并查完整源语触发与确认译文残留，实读源译和邻段；both sides指交战双方、或原文明示实体障碍时，均保留为语境例外。
@@ -702,6 +741,10 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   外来词情绪义防护：俄语文学对白中的法语或欧洲外来词，常指社交语境中的心绪，而不是现代汉语里的身体或脾性类别。例如沙龙话语里的 `spleen` 应先按忧郁、烦闷、厌倦等上下文判义，不宜顺手译成“脾气”。若确认残留为“驱散您的脾气”这类顺但错的目标词，PASS 前必须扫描终稿/译稿中的精确残留和邻近同义候选。
 
 ### Technique-Term and Idiom Interface / 技法术语与成语接口
+
+- Cultural animal and identity guard: A cultural idiom can contain an animal word that also has a locked literal term elsewhere. Check the idiom's scene function, the source-language gloss and the registered identity together; a fluent idiom cannot introduce a second species. Preserve reasonable idiomatic alternatives without claiming one rendering is mandatory across every genre and language pair.
+  文化动物与身份防护：成语中的动物词可能同时是书内锁定实体术语，须并查成语功能、源语释义与已注册身份；顺口习语不能引入第二物种。保留合理惯用表达，不声称所有体裁和语言方向只能采用一种译法。
+
 
 - Symptom: A craft term, famous line, or English idiom is translated literally enough to become opaque in the target language, even though the exact source form matters for teaching or reader recognition.
   症状：写作技法术语、经典台词或英语成语被直译得不透明；而这些地方的源语形式又关系到教学说明或读者识别。
@@ -930,6 +973,10 @@ When samples repeatedly expose source-order calques, metaphor literalization, mi
   复查：凡修复此问题族的轮次不能 PASS。必须重新做一轮整章复查，并在译稿、终稿、已生成 XHTML（如已有）、术语表和 QA 记录中同时扫描被拒译法与已采纳的领域术语。
 
 ### Reader-facing Markdown structure, figure alt, and bibliography spacing / 读者可见 Markdown 结构、图像替代文本与书目间距
+
+- Aggregate-caption and punctuation guard: Review a collage's overall category independently of its panel objects, relations and printed labels. Correct individual objects do not cure an unsupported or omitted aggregate category; sweep every caption sharing that source category, including earlier accepted captions. Distinguish added editorial image descriptions from original author captions. Separately record format-only countdown or ellipsis spacing changes; improving typography must not be counted as a semantic repair or trigger indiscriminate replacement of every dot pattern.
+  整体图注与标点防护：拼图整体类别须与分图对象、关系及印字分别审查；对象准确不能弥补整体类别的新增或遗漏。新发现类别问题后，应重查同类全部图注，包括此前接受项；编辑增补图像描述与作者原图注须区分。倒计时或省略号留空等纯格式变更单列，不能冒称语义修复，也不能因此机械替换全书点号。
+
 
 - Symptom: Markdown list markers or blockquote markers become visible text in XHTML, a table is labelled as a figure, a complex diagram has only `图像` or a figure number as its `alt`, or bibliography/index punctuation retains source-side spacing such as `Title:Word`, `MA:MIT`, `； repr.`, `59 – 60 , 63 – 64`. These are reader-facing interface defects even when the underlying source facts are correct.
   症状：Markdown 列表符号或引用符号在 XHTML 中变成可见正文，表格被标成图，复杂图只使用 `图像` 或图号作为 `alt`，或者书目/索引保留 `Title:Word`、`MA:MIT`、`； repr.`、`59 – 60 , 63 – 64` 这类源式间距。即使源文事实没有错，这些仍是读者可见接口缺陷。

@@ -97,8 +97,8 @@ Use this skill after `books/scripts/create_book_project.py` has copied `template
 - After each canonical chapter patch is merged, immediately run the chapter-scoped immutable full check. It must cover metadata, nav, table of contents, body text, notes, figures, formulas, tables, images, styles, reader-facing content, plain-language clarity without flattening specialist quality, readability, polishing, terminology, and annotations. Do not limit the check to items named by the user. A fix round must be `FIXED_RECHECK_REQUIRED`; only a later sealed PASS binding exact ordered units and the current chapter digest may promote that chapter. Other independently owned chapters may continue under the adaptive plan.
 - 每个 canonical 章节 patch 合并后，必须立即执行按章不可变全量检查。范围必须覆盖 metadata、nav、目录、正文、注释、图表、公式、表格、图片、样式、读者可见内容、通俗化、可读性、润色、名词术语和注释等，不得只检查用户点名项目。修复轮只能记为 `FIXED_RECHECK_REQUIRED`；只有随后绑定精确有序 unit 和当前 chapter digest 的密封 PASS 才能放行该章。其他独立 owner 的章节可按自适应计划继续。
 
-- Chapter control must record Chinese-only readability scoring and a 20-sentence read-aloud test before source calibration. Chinese score below 4/5, more than one awkward sentence, or breathless key sentences blocks progress.
-- 章节控制必须先记录只看中文的可读性评分和 20 句朗读测试，再做原文校准。中文评分低于 4/5、明显拗口超过 1 句或关键句不断气时，不得继续。
+- Chapter control must record Chinese-only readability scoring and text review before source calibration. Chinese score below 4/5, more than one awkward sentence, or breathless key sentences blocks progress.
+- 章节控制必须先记录只看中文的可读性评分和文字顺读复查，再做原文校准。中文评分低于 4/5，或关键句难以理解时，不得继续。
 
 - Every translated chapter must pass chapter control, fidelity review, readability review, terminology review, imagery audit when relevant, and final chapter gate.
 - 每章译文必须通过译后控制、忠实度审校、可读性审校、术语审校、必要时的意象词审计，以及最终章节门禁。

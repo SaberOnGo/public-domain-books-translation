@@ -207,6 +207,11 @@ class PrivateUseModeTests(unittest.TestCase):
             state = json.loads((project_root / "state" / "pipeline_state.json").read_text(encoding="utf-8"))
             self.assertEqual(state["project_root"], "books/private/zh-Hans/1_private_book")
             self.assertEqual(state["publication_mode"], "private_use")
+            self.assertEqual(state["book_settings"]["proper_noun_translation_format"], 3)
+            self.assertEqual(
+                state["book_settings"]["effective_source"]["proper_noun_translation_format"],
+                "default",
+            )
             self.assertEqual(state["private_use"]["local_source_file_name"], "local-source.epub")
             self.assertEqual(state["private_use"]["redistribution_allowed"], False)
             self.assertEqual(state["private_use"]["commercial_use_allowed"], False)
@@ -255,6 +260,41 @@ class PrivateUseModeTests(unittest.TestCase):
             self.assertFalse((project_root / "scripts" / "check_private_use_gate.py").exists())
             package = json.loads((project_root / "package.json").read_text(encoding="utf-8"))
             self.assertNotIn("private:artifact:create", package["scripts"])
+            state = json.loads((project_root / "state" / "pipeline_state.json").read_text(encoding="utf-8"))
+            self.assertEqual(state["book_settings"]["proper_noun_translation_format"], 3)
+            self.assertEqual(state["book_settings"]["user_overrides"], {})
+
+    def test_create_book_project_records_user_proper_noun_translation_format_override(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            copy_script("books/scripts/create_book_project.py", repo)
+            write_minimal_template(repo)
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(repo / "books" / "scripts" / "create_book_project.py"),
+                    "public_book",
+                    "--source-target",
+                    "English-to-Simplified-Chinese",
+                    "--proper-noun-translation-format",
+                    "4",
+                ],
+                cwd=repo,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            project_root = repo / "books" / "zh-Hans" / "1_public_book"
+            state = json.loads((project_root / "state" / "pipeline_state.json").read_text(encoding="utf-8"))
+            self.assertEqual(state["book_settings"]["proper_noun_translation_format"], 4)
+            self.assertEqual(state["book_settings"]["user_overrides"]["proper_noun_translation_format"], 4)
+            self.assertEqual(
+                state["book_settings"]["effective_source"]["proper_noun_translation_format"],
+                "user",
+            )
 
     def test_create_book_project_accepts_target_language_unicode_title_author_slug(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
