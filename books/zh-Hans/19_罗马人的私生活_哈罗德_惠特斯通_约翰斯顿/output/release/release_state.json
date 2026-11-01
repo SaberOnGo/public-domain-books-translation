@@ -1,0 +1,28 @@
+{
+  "current_version": "v0.0.6",
+  "main_version": 0,
+  "sub_version": 0,
+  "patch_version": 6,
+  "latest_epub": "罗马人的私生活_v0.0.6.epub",
+  "latest_release_note": "release_notes.md",
+  "latest_status": "PASS",
+  "latest_created_at": "2026-06-27T04:39:15Z",
+  "latest_sha256": "8d6a0bad0e8aa41012434b9fe51c8373340e0f585dda5ffdafc1960a870a4f29",
+  "latest_size_bytes": 8090711,
+  "gate_summary": {
+    "random_spotcheck_round": "reviews/random_spotcheck/round_037",
+    "random_spotcheck_validation": "reviews/random_spotcheck/round_037/validation_report.json",
+    "release_confidence": 0.999782,
+    "random_spotcheck_status": "PASS",
+    "random_spotcheck_require_pass": true,
+    "current_review_run_id": "419eb0e52cc92d81cb44d0af",
+    "current_run_pass_rounds_required": 3,
+    "current_run_pass_rounds_count": 3,
+    "epubcheck_path": "output/epubcheck.json",
+    "epubcheck_fatal": 0,
+    "epubcheck_error": 0,
+    "epubcheck_warning": 0,
+    "publication_lint_path": "output/publication_lint.json",
+    "publication_lint_issue_count": 0
+  }
+}
