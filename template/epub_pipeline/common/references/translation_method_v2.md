@@ -29,6 +29,8 @@
 1. 源文规范化：脚注结构、章节提要、拆章脚手架行、诗行与号子分行、转录说明，先清干净再翻译。 / Normalise the source first.
 2. 试译若干代表性场景，跑完五遍，做翻译腔剖面。 / Trial scenes through all five passes; profile translationese.
 3. 填写 `preproduction/_TEMPLATE.translator_brief.md` → 本书 `preproduction/translator_brief.md`：范例 8–12 对、称谓矩阵、方言策略、习语与构式、假朋友与旧义项、一名一法、注释正向清单、10 条易犯毛病。每节不得留空或写套话。 / Fill the brief; no blank or boilerplate sections.
+   - 范例与易犯毛病里的“好例”必须逐字对照原文核过，不得含原文没有的信息：初译会照搬好例，好例里的增译会直接变成译文的增译。 / Every good example in the brief must be checked against the source; drafters copy good examples verbatim, so an addition in an example becomes an addition in the translation.
+   - 手册里从某章提取的习语和毛病会让该章试译占便宜。验证方法本身时，至少再试译一章没有被手册取材的章节。 / Brief items drawn from a chapter favour that chapter's trial; validate the method on at least one chapter the brief did not draw from.
 4. **人工锚点**：批量翻译前，用户阅读开篇约 2000 字 + 随机 3 页（约 15 分钟）。每条意见写入手册第 12 节，并落到某条规则、毛病或范例；必要时修改手册后重译开篇。未完成人工锚点不得开始批量翻译；用户明确放弃时如实记录。 / User reads ~2000-char opening + 3 random pages before batch translation; each comment goes into the brief. Batch translation waits for this unless the user explicitly waives it (record the waiver).
 
 ## 4. 五遍顺序 / Order of passes
@@ -46,6 +48,7 @@ Each scene (800–2000 characters of complete paragraphs) passes through:
 
 - 第 4 遍按整章（或 ≥3000 字连续正文）做；其余按场景做。 / Pass 4 runs per chapter; others per scene.
 - 第 3 遍后逐段算长度比；超阈值或改动过半的段落必须进入第 5 遍。 / Length-ratio check after pass 3 routes paragraphs to pass 5.
+- 第 2 遍单次对读召回有限：试译中第 2 遍只报 2 条，后续复核与成对评审又找出 5 条意义错误。第 3、4 遍改动过的段落必须再对读一次；整章另有一次带原文的成对评审（`35`）作为第二个忠实度视角。 / A single fidelity pass under-reports; re-run fidelity on paragraphs changed in passes 3–4, and treat the pairwise review (`35`) as a second fidelity view.
 - 全书译完后做一次统稿（专名、术语、称谓、章题、注释体系），并对最后四分之一与结尾章节按开篇同等深度复核。 / After all chapters: one consolidation pass, plus full-depth review of the last quarter and ending.
 
 ## 5. 每次调用收到什么 / What each call receives
@@ -93,3 +96,8 @@ A zero-issue report on an AI-draft chapter triggers a re-run by another model fa
 
 按手册第 10 节的正向清单加注：文化项、丢失的双关、时代指涉、源文事实错误、习俗含义。确有必要的解释放进注释，不塞进正文。禁止写给审校看的免责式注释。书籍信息页承诺的注释或术语表，书里必须有。
 Add notes per brief §10; explanations belong in notes, not body text; disclaimer-style notes are forbidden.
+
+## 10. 试译证据 / Trial evidence
+
+2026-11-02 首次试译（英译简中《甲虫》第一章，67 段）：盲评成对比较中，新法每千字错误分 5.2、风格类 2.6，旧流程译文 21.4、15.6；旧译有 19 处拆段与一处对白归属错乱，新译为 0。代价约为单章 65 万 token。局限：全部评审模型同属一家族，手册部分取材于该章，评审后修改未再评。上面第 3、4 节的补充规则来自这次试译。
+First trial (The Beetle ch. 1, English→Simplified Chinese): pairwise error points 5.2 vs 21.4 per 1000 characters, style 2.6 vs 15.6, paragraph splits 0 vs 19; about 650k tokens per chapter. Limits: single model family, brief partly drawn from the chapter, post-review fixes not re-reviewed. The added rules in §3 and §4 come from this trial.
