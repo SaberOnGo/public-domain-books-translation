@@ -568,6 +568,9 @@ def main() -> None:
             "create the next patch version instead. / 已发布版本不可原地覆盖，请发布下一个小版本。"
         )
     findings = final_artifact_findings(editions)
+    routed = load_sibling("check_routed_items").check(book_root)
+    if routed["status"] != "PASS":
+        findings.append(f"ROUTED_ITEMS_OPEN: {routed['routed_item_count']} gate items were routed to later and are not closed in {routed['closure_file']}")
     if findings and args.status in published_statuses:
         for finding in findings:
             print(f"ERROR: {finding}")

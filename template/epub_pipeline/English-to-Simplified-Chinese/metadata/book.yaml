@@ -8,3 +8,16 @@ rights: "Translated text copyright by translator/publisher; source rights per so
 publisher: "Publisher Name"
 date: "YYYY-MM-DD"
 # cover-image: "../frontmatter/cover.jpg"
+# Fields below feed scripts/generate_book_info.py (书籍信息页由脚本生成；不得留模板值).
+original_title: ""
+author: ""
+author_original: ""
+author_years: ""
+# Personal name exactly as the contributor writes it; the credit becomes "LifeBook 书坊 {translator_name}".
+translator_name: ""
+translation_date: ""
+source_name: ""
+source_url: ""
+rights_note: ""
+# The bilingual edition is a separate publication; leave empty to derive it from identifier.
+bilingual_identifier: ""

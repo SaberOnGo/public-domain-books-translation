@@ -98,6 +98,15 @@ This file is for AI agents working from a downloaded copy of this repository.
 - If a script, prompt, launcher, or external AI client integration needs an environment variable for the LifeBook repository root, use `LIFEBOOK_HOME` as the only standard variable. Do not introduce parallel repository-root variables.
 - 如果脚本、prompt、启动器或外部 AI 客户端集成需要用环境变量表示 LifeBook 仓库根目录，只能使用统一变量 `LIFEBOOK_HOME`。不要再引入并行的仓库根目录变量。
 
+## Role-Based Reading and Finished-Artifact Gates / 按角色阅读与成品门禁
+
+- The mandatory reading list above is for the orchestrating agent. Delegated translation, fidelity, rewrite, cold-read and review calls receive only the materials in `template/epub_pipeline/common/references/role_reading_guide.md` (the book's translator brief, relevant handbook sections, the term slice); never pass release, QA-file, lint or versioning rules into a translation call. The translation method is `template/epub_pipeline/common/references/translation_method_v2.md`.
+- 上面的必读清单针对编排者。派出去的初译、对读、脱稿重写、冷读和评审调用，只拿 `template/epub_pipeline/common/references/role_reading_guide.md` 规定的材料（本书译者手册、手艺手册相关小节、命中的术语）；不得把发布、QA 文件、lint 或版本规则塞进翻译调用。翻译方法见 `template/epub_pipeline/common/references/translation_method_v2.md`。
+- Quality gates must check the finished artifact, not only records: `check:final-epub`, `check:bilingual:alignment`, `lint:translationese` and `check:routed-items` run on the built EPUBs and QA files, and release scripts refuse a PASS artifact while they fail. Self-reported PASS fields are not evidence by themselves.
+- 质量门禁必须检查成品而不只检查记录：`check:final-epub`、`check:bilingual:alignment`、`lint:translationese`、`check:routed-items` 直接检查构建出的 EPUB 和 QA 文件，失败时发布脚本拒绝生成 PASS 产物。自报的 PASS 字段本身不构成证据。
+- Book projects copy template scripts at creation. Before rebuilding an older book, run `python books/scripts/sync_book_tools.py <book>` (report) and then `--apply`, so template fixes reach it.
+- 书籍工程创建时复制了模板脚本。重建旧书前，先运行 `python books/scripts/sync_book_tools.py <书籍目录>` 查看差异，确认后加 `--apply`，让模板修复同步到该书。
+
 ## AI Parallel Execution / AI 并行执行
 
 - Before dispatching translation or audit workers, read both `template/epub_pipeline/common/references/adaptive_parallel_orchestration.md` and `template/epub_pipeline/common/references/ai_parallel_execution_guidance.md`. LifeBook provides a static plan and evidence contract; it does not implement a runtime task queue, daemon scheduler, worker launcher, or provider API integration.

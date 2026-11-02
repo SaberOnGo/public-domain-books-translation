@@ -80,6 +80,10 @@ These gates read what the reader actually receives, so they are machine checks r
   - 仍含未改写的模板文字（如“本页为模板占位”）时，构建直接失败。
   
   发布目录只能放发布记录生成过的 EPUB；已按 PASS 或 ITERATIVE_RELEASE 发布的版本不得原地覆盖。
+- `npm run lint:translationese` (`scripts/profile_translationese.py`) profiles each chapter of Chinese target text per 10,000 characters — semicolons, explanatory colons, dashes, pronouns, possessives, 一个, 某种, stock AI phrasing, Latin parentheticals, sentence-length band — and lists chapters over threshold. It is a review signal: the reviewer quotes the flagged sentences and rewrites real translationese by sentence pattern; swapping words or punctuation to lower a count is not a fix.
+- `npm run lint:translationese` 按章统计中文译文的翻译腔信号（每万字分号、解释性冒号、破折号、代词、物主代词、“一个”、某种、AI 套语、正文外文括注、句长区间），列出超阈值的章节。它是复核信号：评审必须引用被标出的句子，按句型重写确属翻译腔的句子；只换词或改标点来压低计数不算修复。
+- `npm run check:routed-items` (`scripts/check_routed_items.py`) lists gate items routed to later (`PASS_WITH_ROUTED_ITEMS`, `终稿前需核对`); release is refused until `qa/routed_items/closure.md` records how each was resolved with `open_routed_items: 0`, written after the newest routed item. The book's `state` alone cannot close them.
+- `npm run check:routed-items` 列出所有“转后续处理”的门禁事项（`PASS_WITH_ROUTED_ITEMS`、“终稿前需核对”等）；只有 `qa/routed_items/closure.md` 逐项记录处理结果并写明 `open_routed_items: 0`，且晚于最新的转出记录，发布才放行。
 - Library-wide regression: `npm --prefix books run check:final-epubs` checks the latest release or private artifact of every book and writes `books/private/final_epub_library_check.json` (private, ignored by Git). Re-run it whenever a gate rule changes.
 - 全书库回归：`npm --prefix books run check:final-epubs` 检查每本书最新的 release 或私人产物，报告写入被 Git 忽略的 `books/private/final_epub_library_check.json`。门禁规则一有变化，就要重跑一次。
 

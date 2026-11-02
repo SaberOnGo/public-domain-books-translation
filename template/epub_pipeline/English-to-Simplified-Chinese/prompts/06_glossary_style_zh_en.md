@@ -73,7 +73,7 @@ entity_id,source_name,target_name,category,display_policy,first_rendering,subseq
 
 术语表不得把所有词都硬锁。除人名、地名、符号和核心专名外，默认使用 `preferred`，让翻译阶段可以优先写出自然中文。若某个 `preferred` 术语在句中会导致拗口、重复或关系不清，允许在不改变概念的前提下改用自然变体，并在术语审校中判断是否需要回收。
 
-盎格鲁-撒克逊制度身份词示例：`thegn` / `thane` 不得默认音译为“塞恩”，也不宜泛译为“支持者”。政治史、土地和军事义务语境中，应按本书上下文选择“王室领主”“领主近臣”“盎格鲁-撒克逊领主”等，并在术语说明中写明原文、又作形式和含义。`witenagemot` 正文用“贤人会议”，原词放术语说明。
+制度身份词（如古英语、拉丁语职衔）正文按语境意译，原词与理由放进本章注释或术语表；具体词条示例见 `profiles/classical-history-zh-Hans/references/historical_status_terms.md`，本书专用写法记入本书 `glossary/terms.csv`。
 
 本步骤必须把高风险术语的禁用写法写入 `forbidden_body_renderings`。例如本书若涉及 `thegn` / `thane`，应把 `塞恩`、裸露的 `thegn` / `thane`、无理由的 `王室领主（thegn）` 以及不适合作统一译名的 `支持者` 纳入禁用或需复核写法；若涉及 `witenagemot`，应把正文裸露 `witenagemot` 纳入禁用写法。
 

@@ -334,6 +334,9 @@ def main() -> None:
     created_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     editions, pipeline_state = enabled_output_editions(book_root, source_epub)
     findings = final_artifact_findings(editions)
+    routed = load_gate("check_routed_items").check(book_root)
+    if routed["status"] != "PASS":
+        findings.append(f"ROUTED_ITEMS_OPEN: {routed['routed_item_count']} gate items were routed to later and are not closed in {routed['closure_file']}")
     if findings and args.status == "PASS":
         for finding in findings:
             print(f"ERROR: {finding}")

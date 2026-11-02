@@ -100,7 +100,7 @@ MD_BACKTICK = re.compile(r"`[^`'\n]{1,80}`")
 MD_FOOTNOTE = re.compile(r"\[\^[\w-]{1,20}\]")
 SEPARATOR = re.compile(r"^[\s*\-_=~·•—–]{3,}$")
 PLACEHOLDER_TEXT = re.compile(
-    r"模板占位|本页为模板|前言模板|说明模板|Translator Name|Book Title|\bTODO\b|\bTBD\b|\bFIXME\b|lorem ipsum|\{\{|\}\}|【待补|待补充|待填写|此处填写",
+    r"\[疑[：:]|模板占位|本页为模板|前言模板|说明模板|Translator Name|Book Title|\bTODO\b|\bTBD\b|\bFIXME\b|lorem ipsum|\{\{|\}\}|【待补|待补充|待填写|此处填写",
     re.IGNORECASE,
 )
 PIPELINE_TRACE = re.compile(

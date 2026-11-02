@@ -501,6 +501,17 @@ def validate_round_artifacts(
         if candidate_count > sample_count and confidence < target_confidence:
             errors.append(f"stratum confidence below target: {stratum}={confidence}")
 
+    if require_pass:
+        note_marker = re.compile(r"\[\d{1,4}\]|（\d{1,4}）|注\d{1,4}")
+        final_dir = book_root / "chapters" / "final"
+        has_notes = final_dir.is_dir() and any(note_marker.search(path.read_text(encoding="utf-8", errors="replace"))
+                                               for path in final_dir.glob("*.md"))
+        caption_note = strata.get("caption_note") or {}
+        if has_notes and int(caption_note.get("candidate_count", 0)) == 0:
+            errors.append(
+                "NOTE_LAYER_NOT_SAMPLED: chapters/final contains note markers but the caption_note stratum has no "
+                "candidates; regenerate samples so notes are reviewed / 书中有注释但注释层没有被抽样"
+            )
     active_confidences = [
         confidence
         for stratum, confidence in confidence_by_stratum.items()

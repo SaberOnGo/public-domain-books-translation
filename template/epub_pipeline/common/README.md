@@ -319,3 +319,10 @@ npm run private:artifact:create
 ```
 
 私人自用产物不是公开 release，不得提交到 GitHub。
+
+## 翻译方法 v2 与按角色阅读 / Translation Method v2 and Role-Based Reading
+
+- 方法总览：`references/translation_method_v2.md`；译者手册模板：`preproduction/_TEMPLATE.translator_brief.md`；五遍 prompt：`prompts/30_scene_translation.md`–`35_pairwise_review.md`。
+- 每个角色读什么、不该收到什么：`references/role_reading_guide.md`。写作方法：`skills/translation-craft-handbook/SKILL.md`；检测信号：`skills/translation-quality-defect-families/catalogue.yaml`。
+- 成品与流程门禁：`check:final-epub`、`check:bilingual:alignment`、`lint:translationese`、`check:routed-items`；书籍信息页由 `scripts/generate_book_info.py` 生成。
+- Method overview, brief template and pass prompts as above; role reading guide; craft handbook and machine-readable catalogue; finished-artifact gates; generated book-info page.

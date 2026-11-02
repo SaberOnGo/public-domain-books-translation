@@ -1,0 +1,565 @@
+# 译文质量缺陷目录 / Translation Quality Defect Catalogue
+# 机器可读：每条 signals 是 {regex: Python 正则} 或 {metric: 指标说明}。
+# Machine-readable: each signal is {regex: Python regex} or {metric: metric description}.
+# 正则只用于定位候选，命中不等于错误，必须回对原文判定。
+# Regex hits are candidates only; confirm against the source before fixing.
+# 维护规则：新增信号或反例→正例，不追加轮次日志；书本个案写入该书 qa/。
+# Maintenance: add signals or bad/good pairs; never append round logs; book cases go to each book's qa/.
+# 叙事详解见 skills/translation-craft-handbook/SKILL.md（handbook_section 字段对应章节号）。
+version: 1
+entries:
+  - id: SYN-001
+    name_zh: "物主代词直搬"
+    name_en: "Possessive pronoun calque"
+    type: syntax
+    handbook_section: 3
+    signals:
+      - regex: '(他|她|它)的(手|脚|头|脸|眼睛|口袋|父亲|母亲|妻子|丈夫)'
+      - metric: "“他的/她的/它的”每万字密度 > 同体裁中文母语基线 2.5 倍"
+    example_bad: "他把他的手伸进他的口袋。"
+    example_good: "他把手伸进口袋。"
+    fix: "身体部位、随身物品、亲属默认省略物主；仅在对比或歧义时保留。"
+    applies_to: ["zh-Hans", "zh-Hant", "from:en,ru,es,it,fr,de", "all genres"]
+
+
+  - id: SYN-002
+    name_zh: "“一个/一种/某种”泛滥（冠词直搬与模糊化）"
+    name_en: "Article calque and vague hedges (yi ge / yi zhong / mou zhong)"
+    type: syntax
+    handbook_section: 3
+    signals:
+      - regex: '一(个|种)(奇怪|强烈|深深|微妙|莫名)的'
+      - metric: "“一个”每万字密度 > 基线 2.5 倍（母语基线约 12）"
+      - regex: '某种(程度上|意义上)?'
+      - metric: "“某种”每万字 > 1.0"
+    example_bad: "一种奇怪的感觉涌了上来。"
+    example_good: "他心里涌起一股说不出的滋味。"
+    fix: "只在强调数量或首次引入且必要时保留；否则删除或换具体量词。"
+    applies_to: ["zh-Hans", "zh-Hant", "from:en,ru,es,it,fr,de"]
+
+  - id: SYN-004
+    name_zh: "副词 -ly 直译为“X地”"
+    name_en: "-ly adverb calqued as X-de"
+    type: syntax
+    handbook_section: 4
+    signals:
+      - regex: '(灾难性|戏剧性|决定性|本能|无意识|不可避免|毫不意外)地'
+    example_bad: "火星人灾难性地入侵地球之后"
+    example_good: "火星人入侵地球、酿成浩劫之后"
+    fix: "把副词改成谓语、补语或独立短句，重组句子骨架。"
+    applies_to: ["zh-Hans", "zh-Hant", "from:en,fr,de"]
+
+
+  - id: SYN-005
+    name_zh: "英文框架句：“以一种……”“当……时”“发现自己”"
+    name_en: "Source frames: in-a-manner, when-clause, found-himself"
+    type: syntax
+    handbook_section: 4
+    signals:
+      - regex: '以一种[^，。；]{1,20}(的方式|的姿态|的口吻|结束|收场)'
+      - regex: '当[^，。]{1,30}(时|的时候)，'
+      - regex: '发现自己(正|已经|被|在)'
+    example_bad: "那声音立刻以一种哽塞结束。"
+    example_good: "那声音一下子噎住了。"
+    fix: "把方式状语改成动词或补语。"
+    applies_to: ["zh-Hans", "zh-Hant", "from:en,fr"]
+
+  - id: SYN-007
+    name_zh: "被动句泛滥"
+    name_en: "Passive overuse"
+    type: syntax
+    handbook_section: 4
+    signals:
+      - regex: '被[^，。]{0,8}所'
+      - metric: "“被”每万字 > 25"
+    example_bad: "城市被敌军所占领，居民被迫被转移。"
+    example_good: "敌军占了城，居民只得迁走。"
+    fix: "改主动或用“让、给、遭、挨”等自然形式。"
+    applies_to: ["zh-Hans", "zh-Hant", "from:en,ru,de"]
+
+
+  - id: SYN-008
+    name_zh: "名词化长链与源语骨架残留"
+    name_en: "Nominal chain and source-syntax residue"
+    type: syntax
+    handbook_section: 4
+    signals:
+      - regex: '(的[^，。；的]{1,8}){4,}'
+      - regex: '(性|化|度)的(形成|实现|发展|确立)'
+      - regex: '(which|that|который|которая|которое)'
+    example_bad: "而事实关系则完全按照这种自我规定形成不同样态。"
+    example_good: "事情会怎样，全看它自己怎么规定。"
+    fix: "拆开名词链，把核心名词还原为动词；修句型而非只换被点名的词。"
+    applies_to: ["zh-Hans", "zh-Hant", "from:de,en,ru"]
+
+
+  - id: SYN-009
+    name_zh: "代词指代不清"
+    name_en: "Unclear pronoun reference"
+    type: syntax
+    handbook_section: 3
+    signals:
+      - regex: '(他|她|它)[^。]{0,20}(他|她|它)[^。]{0,20}(他|她|它)'
+      - metric: "“它”每千字 > 2.0（日韩源文通常 0.3–0.4）"
+    example_bad: "他告诉他，他已经走了。"
+    example_good: "霍尔特告诉流浪汉，那人已经走了。"
+    fix: "指代不清时重复名词或改换句式；同一对象全书一种代词（含船、国家）。"
+    applies_to: ["all targets", "all genres"]
+
+
+  - id: PUN-001
+    name_zh: "分号链（源语标点框架照搬）"
+    name_en: "Semicolon chain carried from source"
+    type: punctuation
+    handbook_section: 2
+    signals:
+      - regex: '；[^。]{0,40}；[^。]{0,40}；'
+      - metric: "“；”每万字 > 40，或全书四等分密度持续上升"
+    example_bad: "大城市没有防护；甚至开阔的乡间也没有防护。"
+    example_good: "大城市毫无防备，连开阔的乡间也一样。"
+    fix: "因果、转折、递进用连词或句号表达；只在内部已有逗号的并列分句保留分号。"
+    applies_to: ["zh-Hans", "zh-Hant", "from:ru,en(18c),de,grc"]
+
+
+  - id: PUN-002
+    name_zh: "机械禁分号导致逗号长龙与连词缝合"
+    name_en: "Comma run-ons and stitched connectors from semicolon bans"
+    type: punctuation
+    handbook_section: 1
+    signals:
+      - regex: '[^。！？]{120,}[。！？]'
+      - metric: "超过 60 字的句子比例 > 15%，同时分号每万字 < 1"
+      - regex: '，(可是|但是|于是|然而|而且)，'
+    example_bad: "水手们降下了帆，船随即停下，而风却越来越大，于是船长下令……（一句 330 字）"
+    example_good: "按动作链分成两三句，每句一个重心；并列两组动作可保留分号。"
+    fix: "先找主干和从属信息再重组；不要以分号计数为目标。"
+    applies_to: ["zh-Hans", "zh-Hant", "all genres"]
+
+  - id: PUN-004
+    name_zh: "冒号成片（引语前、论述中）"
+    name_en: "Colon overuse"
+    type: punctuation
+    handbook_section: 2
+    signals:
+      - regex: '(说|道|问|喊|答)：'
+      - metric: "“：”每万字 > 25（剧本体角色标签、数学论证除外）"
+    example_bad: "东赫说：“走吧。”她说：“好。”"
+    example_good: "“走吧。”东赫说。她应了一声：“好。”"
+    fix: "叙事中说话动作可后置或用逗号；冒号用于正式提示和列举。"
+    applies_to: ["zh-Hans", "zh-Hant", "from:ko,ja,ru,es"]
+
+
+  - id: PUN-005
+    name_zh: "破折号失衡：清零（自我打断被压平）或泛滥"
+    name_en: "Dash imbalance: flattened interruptions or overuse"
+    type: punctuation
+    handbook_section: 2
+    signals:
+      - metric: "源文 '--' 或 '—' 数量 / 译文“——”数量 > 5"
+      - regex: '我……我|我，我'
+      - metric: "“——”每万字 > 30"
+      - regex: '——[^——。]{1,30}——[^。]{0,20}——'
+    example_bad: "“我，我不知道，也许吧。”"
+    example_good: "“我——我不知道——也许吧。”"
+    fix: "自我打断、迟疑、话被截断、语气突转时保留破折号。"
+    applies_to: ["zh-Hans", "zh-Hant", "fiction", "dialogue"]
+
+  - id: PUN-007
+    name_zh: "中文正文中的 ASCII 引号与半角空格"
+    name_en: "ASCII quotes and spaces in Chinese text"
+    type: punctuation
+    handbook_section: 13
+    signals:
+      - regex: '[一-鿿]"[^"\n]{1,20}"'
+      - regex: '[。！？，；：][  ]+[一-鿿“]'
+    example_bad: "……就\"挂掉\"。 他说……"
+    example_good: "……就“挂掉”。他说……"
+    fix: "中文用全角弯引号；中文句间不留空格（检查构建器拼接方式）。"
+    applies_to: ["zh-Hans", "zh-Hant", "bilingual"]
+
+
+  - id: STR-001
+    name_zh: "短句切断"
+    name_en: "Short-sentence fragmentation"
+    type: structure
+    handbook_section: 1
+    signals:
+      - regex: '(?:[^。！？]{1,10}。){4,}'
+      - metric: "平均句长 < 15 字（母语叙事基线约 25–35）"
+    example_bad: "他站起来。他走到门口。他回头看了一眼。他什么也没说。"
+    example_good: "他站起身走到门口，回头看了一眼，终究什么也没说。"
+    fix: "合并同一动作链；长短句交替，节奏跟随原文快慢。"
+    applies_to: ["all targets", "fiction"]
+
+
+  - id: STR-002
+    name_zh: "排比与周期句被拆散"
+    name_en: "Broken parallelism and periodic sentences"
+    type: structure
+    handbook_section: 1
+    signals:
+      - metric: "源文 3 项以上排比或周期句在译文中被切为互不呼应的说明句"
+    example_bad: "我爱这座山。它很高。我也爱它的溪流。溪流很清。"
+    example_good: "我爱这座山的高峻，爱它的清溪，爱它四季的颜色。"
+    fix: "保留排比的重复结构和节奏；周期句可调序但要保持层层推进。"
+    applies_to: ["all targets", "literary prose", "history"]
+
+
+  - id: STR-003
+    name_zh: "标题与小标题超载"
+    name_en: "Title and subtitle overload"
+    type: structure
+    signals:
+      - regex: '^#{1,6} .{30,}$'
+      - metric: "同一卷名在连续页面作为一级标题重复 > 3 次"
+    example_bad: "第一卷：1709—1765（每个单元页重复）"
+    example_good: "卷名只出现一次，各页用章节标题定位。"
+    fix: "章题简洁、层级分明；不把提要或原文副标题塞进标题。"
+    applies_to: ["all targets", "EPUB nav"]
+
+
+  - id: STR-004
+    name_zh: "读者可见 Markdown/HTML/脚手架残留"
+    name_en: "Markdown, HTML and scaffold residue"
+    type: structure
+    handbook_section: 13
+    signals:
+      - regex: '(\*\*[^*]+\*\*|(?<![\w])_[^_\s][^_]*_(?![\w])|^> |&lt;br ?/?&gt;|<br ?/?>|^#{1,6} )'
+      - regex: '(来源部|Source part|\[插图[:：]|\(return\)|（回注）)'
+    example_bad: "<p>## 第一章</p>、_来源部：第二卷_"
+    example_good: "<h1>第一章</h1>，脚手架行删除。"
+    fix: "在成品 XHTML 上扫描；修构建器或源文清洗，不手改成品。"
+    applies_to: ["all targets", "EPUB output"]
+
+
+  - id: LEX-001
+    name_zh: "假朋友与旧义项"
+    name_en: "False friends and archaic senses"
+    type: lexical
+    handbook_section: 5
+    signals:
+      - regex: '(open winter|Old Style|citron-water|triste|sensible|grateful sensation|dollars?|league)'
+      - regex: '(开阔的冬天|柠檬水|旧历|美元|忧郁的代表|不足一里格)'
+    example_bad: "open winter → 开阔的冬天；Old Style → 旧历"
+    example_good: "暖冬（不封冻的冬天）；儒略历"
+    fix: "为每本书建时代义项/假朋友清单；航海、法律、历法、货币语境查旧义项。"
+    applies_to: ["all targets", "historical texts", "travel", "18-19c"]
+
+
+  - id: LEX-002
+    name_zh: "日韩汉字同形词照搬"
+    name_en: "CJK same-character false friends"
+    type: lexical
+    handbook_section: 5
+    signals:
+      - regex: '(亲方|座敷|妹分|登座|薪水人|薪水阶层|常识人|编辑局长|大喜望外|投诉)'
+    example_bad: "亲方吩咐他去座敷等候。"
+    example_good: "师傅吩咐他去客厅等候。"
+    fix: "逐词判断中文是否同义；不同义则意译，确需保留时代词则首现加注。"
+    applies_to: ["zh-Hans", "zh-Hant", "from:ja,ko"]
+
+
+  - id: LEX-003
+    name_zh: "时代语域错置（当代流行语入旧文本）"
+    name_en: "Anachronistic modern idiom"
+    type: register
+    handbook_section: 5
+    signals:
+      - regex: '(雾霾|以肉眼可见的速度|进入状态|临界点|疗愈|强势|组合|打卡|格局|赋能|内卷)'
+    example_bad: "（十九世纪游记）雾在以肉眼可见的速度散去。"
+    example_good: "雾眼看着散开了。"
+    fix: "按作者年代建当代词禁用表；改用时代中性或稍带书面感的说法。"
+    applies_to: ["all targets", "pre-1950 texts"]
+
+
+  - id: LEX-004
+    name_zh: "习语、构式与领域隐喻字面化"
+    name_en: "Idiom, construction and domain-metaphor literalism"
+    type: lexical
+    handbook_section: 6
+    signals:
+      - regex: '(绝非野餐|与北冰洋交涉|第一次见到天日|牛奶已经洒了|上帝的国度|挥出一只欢迎的手)'
+      - metric: "源文命中源语习语清单（如 no picnic、tras la llave、Era tempo、버덤、из-за угла）的句子人工复核"
+      - regex: '(第一道消化|铁在火里|发电站残体)'
+    example_bad: "那趟旅程绝非野餐。"
+    example_good: "那趟路可不是闹着玩的。"
+    fix: "先判断是否习语或固定构式，再找功能对等说法；双关不可译时加注。"
+    applies_to: ["all targets", "all source languages"]
+
+  - id: LEX-006
+    name_zh: "多义词选错义项 / 上下文选义漂移"
+    name_en: "Wrong sense / context-disambiguation drift"
+    type: lexical
+    handbook_section: 5
+    signals:
+      - regex: '(安全覆写|武器(?=的?力量)|法郎(?!.{0,4}瑞士))'
+      - metric: "同一源词在全书 > 2 种译法且语境相同"
+    example_bad: "safety override → 安全覆写机制；arms 一律“武器”"
+    example_good: "安全越权开关；按语境“兵力/军队/武力”"
+    fix: "按局部语境和下游内容回查选义；锁定后写入术语台账。"
+    applies_to: ["all targets"]
+
+
+  - id: LEX-007
+    name_zh: "术语漂移与历史身份降格"
+    name_en: "Terminology drift and historical status downgrading"
+    type: lexical
+    handbook_section: 12
+    signals:
+      - metric: "术语台账中一个源词对应 ≥ 2 个译名（如 努门性/努梅性）"
+      - metric: "法律身份、劳役、官职词被换成现代泛称"
+    example_bad: "Numenheit 前半译“努门性”，后半译“努梅性”。"
+    example_good: "全书统一一个译名，术语表与正文一致。"
+    fix: "全书统稿时按台账回溯替换；历史法律身份词保持专业层级。"
+    applies_to: ["all targets", "history", "law", "philosophy"]
+
+
+  - id: LEX-008
+    name_zh: "AI 中文套语"
+    name_en: "AI-Chinese stock phrases"
+    type: lexical
+    handbook_section: 4
+    signals:
+      - regex: '(一丝|不禁|不由得|缓缓|微微|淡淡|仿佛|宛如|难以言喻|无法言说|涌上心头|心头一)'
+      - metric: "上列套语每万字 > 10"
+    example_bad: "一丝难以言喻的情绪缓缓涌上心头。"
+    example_good: "他心里一动。"
+    fix: "删去无源依据的修饰；按原文强度选词。"
+    applies_to: ["zh-Hans", "zh-Hant", "fiction"]
+
+
+  - id: LEX-009
+    name_zh: "搭配不当、比喻自撞与概念硬壳"
+    name_en: "Miscollocation, metaphor collision and concept jargon"
+    type: lexical
+    signals:
+      - regex: '(美到攫住喉咙|为生命而跑|取得更大的凯旋)'
+      - regex: '(内在(的)?(驱动|动机|机制)|情绪价值|自我认同|心理机制|创伤|边界感)'
+    example_bad: "洪水正在取得更大的凯旋。"
+    example_good: "洪水越涨越凶。"
+    fix: "检查主谓、动宾搭配；比喻只保留一个意象，不叠加冲突意象。"
+    applies_to: ["zh-Hans", "zh-Hant"]
+
+  - id: LEX-011
+    name_zh: "同义重复与复读片段"
+    name_en: "Repeated rendering and duplicated spans"
+    type: lexical
+    signals:
+      - regex: '([一-鿿]{2,4})\1'
+    example_bad: "搜索搜索空间；初级视觉皮层皮层输出"
+    example_good: "搜索空间；初级视觉皮层输出"
+    fix: "合并同一概念的重复译出；叠词等合法重复人工排除。"
+    applies_to: ["zh-Hans", "zh-Hant", "technical", "nonfiction"]
+
+
+  - id: REG-001
+    name_zh: "称谓与敬语机械映射 / 你您漂移"
+    name_en: "Address-term flattening and ni/nin drift"
+    type: register
+    handbook_section: 7
+    signals:
+      - regex: '[一-鿿]{2,3}(先生|小姐)(?=[，。！？”])'
+      - regex: '(老爷|您)'
+      - metric: "同一说话人对同一对象的 你:您 比例跨章翻转"
+    example_bad: "您是第一个成为我肥料的人呢。（权力反转后）"
+    example_good: "你呀，头一个做了我的肥料。"
+    fix: "译前建称谓矩阵（说话人×对象×场合→称谓/你您/语气词），标注关系变化点；按功能映射 さん/씨/батюшка。"
+    applies_to: ["all targets", "from:ja,ko,ru,en", "fiction", "biography"]
+
+
+  - id: REG-002
+    name_zh: "语域错配（体裁 profile 套错）"
+    name_en: "Register mismatch from wrong profile"
+    type: register
+    handbook_section: 7
+    signals:
+      - metric: "抒情散文或史笔被译成说明文：连接词“因此/从而/此外”每千字 > 3"
+    example_bad: "（十八世纪史笔）因此，罗马的局势变得更加复杂。"
+    example_good: "罗马的局面，自此愈加纷乱。"
+    fix: "按作者、年代、体裁写语域锚点并附一段原文→理想译文样例。"
+    applies_to: ["all targets", "history", "literary nonfiction"]
+
+
+  - id: REG-003
+    name_zh: "对话声口与方言抹平"
+    name_en: "Flattened voices and dialect"
+    type: register
+    handbook_section: 8
+    signals:
+      - metric: "多位叙述者/说话人的平均句长、语气词分布无差异"
+      - metric: "源文方言拼写（dropped h、'em、ain't、方言词尾）对应译文全为书面语"
+    example_bad: "“你用的词很大。”"
+    example_good: "“好大一套词儿。”"
+    fix: "每个主要说话人一行声口说明；方言用口语层次体现，不硬套具体地方方言；口头禅只定一种译法。"
+    applies_to: ["all targets", "fiction", "drama"]
+
+
+  - id: REG-004
+    name_zh: "引语拆合导致说话人错位"
+    name_en: "Speaker misattribution after quote split/merge"
+    type: register
+    handbook_section: 8
+    signals:
+      - regex: '”\s*“'
+      - metric: "源文引号对数与译文引号对数不一致的段落"
+    example_bad: "同一人连说的话被拆成两段引语，后一段被读成另一人所说。"
+    example_good: "保持引号结构，或在拆分处补“他接着说”。"
+    fix: "改动引号结构后逐段核对说话人。"
+    applies_to: ["all targets", "fiction"]
+
+
+  - id: STR-005
+    name_zh: "诗歌与歌谣散文化 / 诗行合并"
+    name_en: "Verse rendered as prose / merged lines"
+    type: structure
+    handbook_section: 9
+    signals:
+      - metric: "源文分行文本（诗、号子、歌谣）在成品 XHTML 中只有一个 <p> 或没有 <br/>"
+      - regex: '^\d+\.\d+[a-z]?\s'
+    example_bad: "水手号子 120 行压成一段；诗节标题“1.19a”"
+    example_good: "逐行排出，分节；先定诗体策略，押韵处尽量押韵。"
+    fix: "保留分行分节；在意义、节拍、韵脚间取舍；典故放注释。"
+    applies_to: ["all targets", "poetry", "songs", "fiction with verse"]
+
+
+  - id: FID-001
+    name_zh: "增写、解释腔与动机臆造（无源命题）"
+    name_en: "Invented additions, explanatory recap and invented motive"
+    type: fidelity
+    handbook_section: 10
+    signals:
+      - metric: "译文/原文长度比高于全书中位数 1.6 倍的块，逐句回对原文"
+      - regex: '(这说明|由此可见|换言之|也就是说|这意味着|归根结底)'
+      - regex: '(他心想|她暗想|显然是因为|不难看出)'
+    example_bad: "……仿佛就系于一场赛车的胜负。昔日公民的政治热情，已经退化为对车队颜色的派性忠诚。"
+    example_good: "罗马的福祉，仿佛就系于一场赛车的胜负。"
+    fix: "润色可调序、合并、换词，不得新增命题；读者需要的背景放进译注。"
+    applies_to: ["all targets", "all genres"]
+
+  - id: FID-002
+    name_zh: "反义误译与情态/否定范围错误"
+    name_en: "Reversed meaning, modality and negation scope"
+    type: fidelity
+    signals:
+      - regex: '(不足|已不足|未必|可能会|并非)'
+      - metric: "源文含 little more than / no less than / nothing less / more than / might have 的句子逐句对照"
+    example_bad: "little more than a league → 已不足一里格"
+    example_good: "只一里格多一点"
+    fix: "抽检必须附原文逐句引证；约数、条件、否定范围完整保留。"
+    applies_to: ["all targets"]
+
+
+  - id: NOT-001
+    name_zh: "必要注释缺失"
+    name_en: "Missing necessary notes"
+    type: notes
+    handbook_section: 11
+    signals:
+      - metric: "书籍信息页或译者说明承诺有注，但全书注释数为 0"
+      - metric: "源文含双关、词源笑点、吉兆习俗、旧历法旧币的句子无注"
+    example_bad: "crétin 译“呆病者”，下一句的 chrétien 词源说明悬空。"
+    example_good: "保留词源关联并加一条短译注。"
+    fix: "下一句依赖的双关/词源、读不懂就影响理解的文化事实必须加注，一到三句。"
+    applies_to: ["all targets", "classics", "history", "poetry"]
+
+
+  - id: NOT-002
+    name_zh: "免责式、空话式注释"
+    name_en: "Disclaimer and empty notes"
+    type: notes
+    handbook_section: 11
+    signals:
+      - regex: '(这里不(换算|引入|展开)|此注只是|不作现代解释|仅供参考|不可按今日)'
+      - regex: '(（回注）|\(return\)|^\s*[：:])'
+    example_bad: "这里不换算现代角速度，也不引入现代惯性或参照系解释。"
+    example_good: "删除；如读者确需背景，写一句事实性说明。"
+    fix: "注释面向读者写事实，不写给审校看的声明；回链文字不当内容译出。"
+    applies_to: ["all targets"]
+
+
+  - id: NOT-003
+    name_zh: "注号与注释接口泄漏"
+    name_en: "Note-marker and note-interface leak"
+    type: notes
+    handbook_section: 11
+    signals:
+      - regex: '(^|[^\[\(（])\b\d{1,3}\b(?=[。，；])'
+      - regex: '(译注[：:]|\[\^?\d+\])'
+      - metric: "正文注号数 ≠ 注释数；重复注号或孤儿注 > 0"
+    example_bad: "正文出现裸“译注：法文底本作……”；注号与注释编号错位。"
+    example_good: "正文只留规范注码链接，注释按 ID 回链。"
+    fix: "注码统一生成；原注、编注、译注标签清楚，编号一一对应。"
+    applies_to: ["all targets", "EPUB output"]
+
+
+  - id: NAM-001
+    name_zh: "专名留在源语字母或半译"
+    name_en: "Proper nouns left in source script or half-translated"
+    type: lexical
+    handbook_section: 12
+    signals:
+      - regex: '[一-鿿][A-Z][a-z]{2,}|[A-Z][a-z]{2,}[一-鿿]'
+      - regex: '[一-鿿]+·[A-Z][a-z]+'
+    example_bad: "当Constantius在肯特海岸登陆时；萨尔维乌斯·Julianus"
+    example_good: "君士坦提乌斯在肯特海岸登陆时；萨尔维乌斯·尤利安努斯"
+    fix: "全书专名台账，通行译名优先（Timour→帖木儿）；外文只在首现括注且按全书判断。"
+    applies_to: ["zh-Hans", "zh-Hant", "ja"]
+
+
+  - id: NAM-002
+    name_zh: "专名写法不一 / 同物异译"
+    name_en: "Inconsistent names and split referents"
+    type: lexical
+    handbook_section: 12
+    signals:
+      - metric: "台账中同一源名在正文出现 ≥ 2 种目标写法"
+      - metric: "同一动物/物种两种译名（如 maias 与 urang-outan 分译）"
+    example_bad: "林泊沼泽 / 林伯洛斯特 / 林沼 并存"
+    example_good: "全书统一一种写法。"
+    fix: "全书统稿时按台账回溯；章题与正文用同一译名。"
+    applies_to: ["all targets"]
+
+
+  - id: NAM-003
+    name_zh: "括注原名过量 / 跨目标语照搬括注规则"
+    name_en: "Excess source-name parentheticals"
+    type: lexical
+    handbook_section: 12
+    signals:
+      - regex: '（[A-Za-z][A-Za-z .\-]{2,}）'
+      - regex: '[A-Za-z]+ ?\([一-鿿]+\)'
+      - metric: "同一原名括注出现 > 1 次；对白内出现括注"
+    example_bad: "（第五次出现）加里克（David Garrick）；对白里“四号（Four）”"
+    example_good: "仅全书首现括注一次；对白和儿童读物尽量不括注；英文目标不加汉字括注。"
+    fix: "括注按全书首现判断，不按块；规则按目标语和体裁区分。"
+    applies_to: ["all targets", "bilingual", "children's books"]
+
+
+  - id: QUO-001
+    name_zh: "外文引文缺目标语接口 / 原文行重复"
+    name_en: "Foreign quote without target interface / duplicated original line"
+    type: bilingual
+    signals:
+      - regex: '^[“"]?[A-Za-z][^一-鿿]{40,}$'
+      - metric: "双语版中同一外文名句在源文块和译文块各出现一次"
+    example_bad: "正文整段留拉丁文名句而无译文；双语版名句英文连续出现两遍。"
+    example_good: "单语版：译文为主，必要时附原文行；双语版：源文块已有原文则译文块不再重复。"
+    fix: "全书统一引文接口策略，覆盖全书而非只补读者看过的章节；原文行内标点保持原样。"
+    applies_to: ["all targets", "bilingual", "nonfiction with quotations"]
+
+
+  - id: BIL-001
+    name_zh: "双语对照块错位、串段与少译"
+    name_en: "Bilingual block drift, spill and omission"
+    type: bilingual
+    handbook_section: 13
+    signals:
+      - regex: '[；，]\s*$'
+      - metric: "逐对长度比偏离全书中位数 3 倍以上；数字、专名、引号、注号锚点不一致"
+      - metric: "注释按列表位置而非 ID 配对"
+      - metric: "源单元句数 > 译文单元句数 + 1"
+      - metric: "源文编号列表被合成一个单元，后续单元整体错开"
+    example_bad: "小标题 Narration 旁边是一整段中文；中文块以“；”结尾而对应英文已结束。"
+    example_good: "一个完整源段紧跟其完整译文，只沿句界拆分；注释按 ID 配对。"
+    fix: "按锚点和长度比逐对核对；单语版保留原书分段，不受双语切块影响。"
+    applies_to: ["bilingual editions", "all language pairs"]

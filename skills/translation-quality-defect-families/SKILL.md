@@ -225,6 +225,11 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 
 ### Gate-Passing Style Debt / 过线但不优秀的顺读债务
 
+- Reviewer calibration guard: A random spot-check brief must use the template bands (92–100 publication-excellent with nothing to fix, 88–91 good but with a named improvement, 80–87 needs polish). A brief that says "88+ is excellent" makes reviewers park faithful, fluent samples at 88–90, which hides real debt and blocks the excellence gate for the wrong reason. Require every 88–91 score to name a concrete improvement.
+  评审口径防护：随机抽检简报必须用模板分档（92–100 出版级优秀且无需修改，88–91 较好但须写明具体改进点，80–87 需精修）。若简报写“88分以上即优秀”，评审会把忠实流畅的样本压在88–90，既掩盖真实债务，又让优秀门槛因错误原因无法通过。凡打88–91分都必须写出具体改进点。
+- Opening polish: the author's preface, jacket copy and acknowledgements are read first and judged hardest. Polish them as a whole sequence for voice and rhythm (not unit by unit), and rewrite list-like acknowledgements (`感谢某某，感谢他……`) into natural Chinese prose.
+  开篇润色：作者序言、书衣文字和致谢最先被读到、要求也最高。应整组通读、统一口吻与节奏后再逐段改写，而不是逐单元孤立修改；“感谢某某，感谢他……”式的清单致谢要改成自然的中文叙述。
+
 - Symptom: A review says the passage is readable, understandable, or faithful, but also repeatedly notes stiffness, density, abstract wording, explanatory prose, source-language syntax residue, or "reads like analysis notes." Scores in the 80s are being treated as final excellence even though the prose is only above the hard failure line.
   症状：评审说译文“可读、能懂、忠实”，但反复出现较硬、偏密、略抽象、解释化、源语句法残留、像分析笔记等描述。80 多分被误当成最终优秀，其实只是高于硬失败线。
 - Find by: Random-review score distributions with many 80-91 rows, review keywords such as `可读`, `略硬`, `较硬`, `偏密`, `略抽象`, `解释化`, `翻译腔`, `英式分析腔`, and sample reasons that praise comprehension while withholding natural target-language quality.
@@ -321,6 +326,11 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 
 ### Enumerative Punctuation Drag / 排比标点拖拽
 
+- Book-scale semicolon closure (finance non-fiction, ~1,000 hits): split all units containing `；` into balanced worker packages; each worker rewrites per occurrence against the source and may keep a semicolon only with a registered structure type (`parallel_clauses`, `contrastive_parallel`, `enumerated_long_items`, `source_quote_preserved`) and reason. A validator must prove placeholders, HTML tags and digits are unchanged and the edit stays punctuation-scale; a second agent cross-reviews another package. Generate the line-level exception file only after materialization, because line numbers move. Price lists such as `XYZ普通股，45；1月50看涨期权，1` should be unified book-wide (`XYZ普通股为45，1月50看涨期权为1`) instead of leaving some packages with periods and others with semicolons. Never bulk-replace `;` inside attributes: HTML entities end in `;` (`&gt;`), so an aria-label "cleanup" can break XML.
+  全书级分号闭环（金融非虚构，约1,000处）：把含“；”的单元均衡分包，worker 逐处对照原文改写；只有登记了结构类型（并列分句、对照并列、长列举、引文保真）和理由的分号才可保留。校验脚本须证明占位符、HTML 标签、数字不变且改动只在标点级；另由第二个 agent 交叉复核其他包。逐行例外文件必须在物化之后生成，因为行号会变。报价清单（如“XYZ普通股，45；1月50看涨期权，1”）应全书统一为“XYZ普通股为45，1月50看涨期权为1”，不要各包有的用句号、有的留分号。不得批量替换属性里的“;”：HTML 实体以“;”结尾（`&gt;`），清洗 aria-label 时会破坏 XML。
+- Emphasis and Latin-digit spacing: A space carried over from English after a closing emphasis mark (`。* 到期时`) shows as an abnormal gap in Chinese, and ordinary CJK/Latin space sweeps miss it because `*` is not a letter. Sweep it separately outside tables and MathML. Conversely, a ticker placeholder followed directly by a digit (`XYZ10月50看涨期权`) glues letters and numbers together; keep one half-width space between them (`XYZ 10月50看涨期权`).
+  强调标记与字母数字间距：英文里闭合强调标记后的空格（`。* 到期时`）带进中文后，会显示为异常空隙。由于 `*` 不是字母，普通的中英文空格清扫抓不到它，需要在表格和 MathML 之外单独清扫。反过来，代码占位符后直接跟数字（`XYZ10月50看涨期权`）会让字母和数字粘在一起，两者之间应保留一个半角空格（`XYZ 10月50看涨期权`）。
+
 - English clause and house-style guard: Resolve confirmed comma splices and apply consistent paired quotation marks and prose em dashes in reader text. Classify quoted sounds, sayings and epithets separately from dialogue, measurements, code and protected inline markup. Punctuation repair must not turn an unspoken thought into speech or modify raw source evidence. Scan current Markdown and rebuilt XHTML, then inspect every candidate in its complete source context.
   英文从句与书内排印防护：修复确认的逗号拼接，读者文本统一使用成对引号和散文破折号。区分声音、格言、称号引文与对白、度量、代码及受保护行内标记。标点修复不能把未说出的想法变成对白，也不能改原始书源证据。扫描当前 Markdown 和重建 XHTML，再逐候选核对完整原文语境。
 
@@ -409,6 +419,9 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   低 token 审计：追加源语声韵扫描，例如 `rg -n "单音节|多音节|双音节|三音节|四音节|词数|有声词语|英文原文统计|英文台词|英文短语|同一个词|重复.*(okay|行吗|好吗|没关系)|押韵|头韵|谐元音|节奏|monosyll|polysyll|syllable|word count|alliteration|assonance|consonance|cadence|rhythm|meter" chapters/src chapters/final chapters/translated output/epub_work/EPUB`；随后只复核读者可见证据是译文-only、源文/译文被塞进括注混排、或目标语变体替代同一源词反复证据的候选。
 
 ### Reader-Facing Note Marker Leak / 读者可见注号裸露
+
+- Inline translator brackets: Bracketed inline notes such as `〔译注：原书如此……〕` are raw labels even when they read well. Convert each to a numbered marker in place (`[n]`; inside raw HTML use `<sup class="note-ref">[n]</sup>`) and move the note body to the end of the same unit as `译注[n]：……`, numbering per chapter in reading order; a note that is already its own paragraph stays in place as `译注[n]：`. Source `Note:` labels become `说明：` or `表注：`, never a bare `注：`. Scan with `rg "〔译注|(^|[^\p{L}])注[:：]"` on final chapters before build.
+  行内译注括号：`〔译注：原书如此……〕` 这类行内括注即使读着顺，也属于裸标签。应原位改为编号注号 `[n]`（raw HTML 内用 `<sup class="note-ref">[n]</sup>`），注文移到同一单元末尾写作“译注[n]：……”，每章按阅读顺序编号；本身独立成段的译注原位改为“译注[n]：”。原书的 `Note:` 标签译为“说明：”或“表注：”，不得写裸“注：”。构建前用 `rg "〔译注|(^|[^\p{L}])注[:：]"` 扫描终稿章节。
 
 - Symptom: Chapter body text exposes raw trailing digits or source-authoring note markers instead of a readable note interface, so random-sample review catches naked `3` / `9` endings or similar residue in reader-facing text.
   症状：章节正文把尾随数字或源稿注号原样暴露出来，没有形成可读的注释接口，于是随机抽检会抓到裸露的 `3` / `9` 之类尾注残留。
@@ -631,6 +644,13 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
 
 ### Terminology Drift Under Readability Pressure / 顺读压力下的术语漂移
 
+- Finance-term variant sweep: In long technical books, near-synonym pairs drift chapter by chapter (`担保品/抵押品`, `头寸限额/持仓限额`, `止损订单/止损单`, `利润图/盈亏图`, `执行价格/行权价`, `策略运用者/策略投资者`, `下跌方向/下行盈亏平衡点`, `张/份` for option contracts). Count both variants with `rg -c`, lock the majority or the clearer form, and sweep with a script that carries explicit exemptions: a glossary that defines `Exercise Price` as a separate headword keeps `执行价格`; a classifier rule (`张→份`) applies only when an option word follows. Re-run the same sweep inside every later recheck round, with the same exemptions, so the recheck does not report the exemption as a new finding.
+  金融术语变体清扫：长篇专业书中，近义译法会逐章漂移（担保品/抵押品、头寸限额/持仓限额、止损订单/止损单、利润图/盈亏图、执行价格/行权价、策略运用者/策略投资者、下跌方向/下行盈亏平衡点、期权合约量词张/份）。先用 `rg -c` 统计两种写法，锁定多数或更清楚的一种，再用带明确豁免的脚本清扫：术语表把 `Exercise Price` 列为独立词条时保留“执行价格”；量词规则（张→份）只在后接期权字样时生效。之后每一轮复查都要用同样的豁免重跑清扫，避免把豁免误报为新问题。
+- House style for amounts: Do not mix `$2,000` and `2,000美元` in running prose. Use `N美元` in prose and keep `$` only in tables, figure text and arithmetic expressions.
+  金额体例：正文不要混用“$2,000”和“2,000美元”。散文写“N美元”，表格、图中文字和算式里可保留“$”。
+- Placeholder-locked limits: A locked policy-3 company name (for example IBM rendered as its Chinese name) cannot be turned back into a ticker in a table column without a separate ticker entity. Record the case as a contract exception instead of writing the literal. In the same way, a locked product marker (`看涨{{pn:LEAPS}}`) fixes the word order; do not "normalize" it to a phrase that would split the marker.
+  占位符锁定的边界：策略3锁定的公司名（例如 IBM 渲染为中文全称）在表格代码列中，没有独立代码实体就不能改回代码。应记录为合同例外，而不是直接写字面。同理，锁定的产品占位符（“看涨{{pn:LEAPS}}”）决定了词序，不要为了“统一”改成会拆开占位符的说法。
+
 - Locked institutional-term guard: Ordinary dictionary alternatives may be wrong for a book-defined institution. Once `rubric` is locked as `评定规则` by the work's own definition, do not alternate it with `评议标准` in later exposition. Scan all source occurrences and reader-visible target variants, including body, interfaces and figures; inspect each in context, repair confirmed institutional uses, and retain genuinely ordinary uses as documented exceptions without changing the locked register silently.
   锁定制度术语防护：普通词典中的可选译法，未必适合书内定义的制度。`rubric` 已依据作品定义锁定为“评定规则”时，不能在后文说明中随意漂成“评议标准”。检索全书源词与读者可见译名变体，覆盖正文、界面和图示；逐候选回查上下文，修复确认的制度用法，普通词义则记录为合理例外，不悄然改变锁定表。
 - Tax or interface labels may abbreviate the surrounding explanation but must preserve the book-defined category. Replacing an institutional rule with a scoring item can change what the displayed tax applies to. Check the complete label, neighboring explanation and numeric table; do not repair only narrative occurrences.
@@ -690,6 +710,9 @@ If the round found only format, asset, path, EPUB structure, or other non-transl
   低 token 审计与闭环：先检索源语触发词和已确认坏译残留，再实际阅读完整候选源译及邻段。分开记录机械扫描单元、实际读过候选、修复种子和语境例外。“只能”“本身”等只是信号，不是全书禁词；个人偏爱另一种通读写法本身不构成缺陷。确认修复后必须追加独立整章零问题复查，再关闭本书问题族。
 
 ### Context-Disambiguation Drift / 上下文选义漂移
+
+- Currency and segmentation ambiguity: A shortened currency name can silently switch countries. `Swiss franc` shortened to `法郎` in a chapter that also discusses French francs must become `瑞士法郎`/`瑞郎`, checked against the source each time. Chinese segmentation traps such as `其实值备兑卖出` (read as `其实`) must be rewritten (`对……进行实值备兑卖出`). Scan with `rg "(?<!瑞士)(?<!法国)法郎|其实值"`.
+  货币与切分歧义：货币简称可能悄悄换了国家。同一章也讨论法国法郎时，把 `Swiss franc` 简写成“法郎”，必须改成“瑞士法郎”或“瑞郎”，并逐处核对原文。“其实值备兑卖出”这类会被切分误读（读成“其实”）的写法，必须改写（如“对……进行实值备兑卖出”）。扫描式：`rg "(?<!瑞士)(?<!法国)法郎|其实值"`。
 
 - Trait, anatomy and performance guard: A temperament term cannot be replaced by the quantity or quality of nearby nourishment. Distinguish actual disability, exaggerated weakness, performed expression and an observer's hypothesis. Track injury mechanism, functional loss, removed part and death separately at each occurrence: blindness or penetration does not imply extraction, and a later explicit injury cannot sharpen an earlier hypothetical. Preserve explicit removal and source-authored violence. Conventional emotional eye imagery may need ordinary diction, while injury anatomy needs its supported precision. Scan both source triggers and target alternatives and inspect full neighboring actions; never soften or intensify all injuries with a global replacement. Naturalizing an emotional facial image must preserve its source-supported body region; do not silently replace eyes with another anatomical site.
   性情、解剖与表演防护：性情词不能替换成邻近食物的数量或质量。分别核对真实伤残、夸张虚弱、表演表情和旁观者猜测；逐处区分伤害机制、功能丧失、部位脱落及死亡。致盲、刺穿不自动等于取出，后文伤害不能强化前文假设；明示脱落及作者暴力描写须保留。惯用情绪用眼可需普通措辞，受伤解剖则保留有依据的精度。并查源语触发和目标语候选，再读完整邻接动作，不能全局弱化或升级伤害。自然化情绪面部意象时仍须保留原文支持的身体部位，不能暗中把眼睛换成别处。
@@ -973,6 +996,11 @@ When samples repeatedly expose source-order calques, metaphor literalization, mi
   复查：凡修复此问题族的轮次不能 PASS。必须重新做一轮整章复查，并在译稿、终稿、已生成 XHTML（如已有）、术语表和 QA 记录中同时扫描被拒译法与已采纳的领域术语。
 
 ### Reader-facing Markdown structure, figure alt, and bibliography spacing / 读者可见 Markdown 结构、图像替代文本与书目间距
+
+- Figure axis and table-note interface: Captions that describe axis labels must use the book's locked term (Delta → `德尔塔`, or the symbol `Δ` where the locked literal cannot be written outside a placeholder), never an invented paraphrase such as `价格敏感度` that contradicts the body. When a table survives only as a source image, its footnote marks (`*`, `e`) need a Chinese table note (`表注：……`), or readers cannot decode `6e` and `30*`.
+  图轴与表注接口：图注描述坐标轴时，必须使用书内锁定术语（Delta 译“德尔塔”；锁定字面无法写在占位符外时用符号“Δ”），不得自造与正文矛盾的说法，例如“价格敏感度”。表格只以原书图片保留时，图中的脚注符号（`*`、`e`）必须给出中文表注（“表注：……”），否则读者看不懂“6e”“30*”。
+- Figure-text transcription with locked names: When a caption says `图中文字：…`, it must transcribe what the image actually prints. Do not turn `XYZ: 82` into `该股票：82`, `Delta` into `Δ`, or `PERCS` into a generic `优先股`. If the unit already holds the needed `{{pn:...}}` placeholders, move them into the transcription without changing their order, give the caption title a neutral wording, and put the full names in the `alt` attribute (attributes are outside the locked-literal scan). If the unit has no placeholder for the name, use a non-misleading back-reference (`正文所述优先股`), record a contract exception, and keep the full name in `alt`.
+  含锁定名的图中文字转写：图注写“图中文字：……”时，必须忠实转写图上实际印的文字，不能把 `XYZ: 82` 改成“该股票：82”，把 `Delta` 改成“Δ”，或把 `PERCS` 泛化成“优先股”。本单元已有所需 `{{pn:...}}` 占位符时，在不改变顺序的前提下把它们移入转写处，图题改用中性写法，完整名称写进 `alt` 属性（属性不在锁定字面扫描范围内）。本单元没有对应占位符时，用不会误导的回指（如“正文所述优先股”），记录合同例外，并在 `alt` 中保留全称。
 
 - Aggregate-caption and punctuation guard: Review a collage's overall category independently of its panel objects, relations and printed labels. Correct individual objects do not cure an unsupported or omitted aggregate category; sweep every caption sharing that source category, including earlier accepted captions. Distinguish added editorial image descriptions from original author captions. Separately record format-only countdown or ellipsis spacing changes; improving typography must not be counted as a semantic repair or trigger indiscriminate replacement of every dot pattern.
   整体图注与标点防护：拼图整体类别须与分图对象、关系及印字分别审查；对象准确不能弥补整体类别的新增或遗漏。新发现类别问题后，应重查同类全部图注，包括此前接受项；编辑增补图像描述与作者原图注须区分。倒计时或省略号留空等纯格式变更单列，不能冒称语义修复，也不能因此机械替换全书点号。

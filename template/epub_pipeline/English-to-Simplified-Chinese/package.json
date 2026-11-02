@@ -43,7 +43,9 @@
     "check:final-epub": "python scripts/check_final_epub.py --write-report",
     "check:bilingual:alignment": "python scripts/check_bilingual_alignment.py --write-report",
     "build:epub": "npm run translation:prebuild && npm run preflight:template && npm run lint:publication && npm run lint:assets && npm run cover:check && node scripts/build_epub.js && npm run build:bilingual && npm run reader:check && npm run check:epub && npm run translation:artifact:validate",
-    "check:epub": "node scripts/run_epubcheck.js --all-enabled"
+    "check:epub": "node scripts/run_epubcheck.js --all-enabled",
+    "lint:translationese": "python scripts/profile_translationese.py --write-report",
+    "check:routed-items": "python scripts/check_routed_items.py --write-report"
   },
   "description": "Book-local npm scripts for English to Simplified Chinese EPUB production. Shared Node dependencies are installed once under books/node_modules and are resolved by walking up from the project root.",
   "license": "UNLICENSED"

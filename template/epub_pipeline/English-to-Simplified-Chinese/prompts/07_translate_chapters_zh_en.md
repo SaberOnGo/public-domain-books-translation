@@ -1,5 +1,8 @@
 # 07 分章翻译 / Translate Chapters
 
+> **v2 方法 / Method v2**：翻译调用改用 `prompts/30_scene_translation.md`（场景级初译，只收本书译者手册 `preproduction/translator_brief.md`、前情和命中术语），随后依次执行 `31` 对读、`32` 脱稿重写、`33` 冷读、`34` 回译抽查、`35` 异构成对评审；总览见 `references/translation_method_v2.md`，按角色阅读见 `references/role_reading_guide.md`。本文件下列规则继续适用于单元合并、并行与门禁。
+> Translation calls now use `prompts/30_scene_translation.md` with the book's translator brief, followed by passes 31–35; see `references/translation_method_v2.md`.
+
 ## 输入 / Input
 
 - `chapters/src/*.md`
@@ -58,7 +61,7 @@
 - 普通名词、器物名、衣物名、材料名和动作名必须译成中文，不得写成 `source term（中文释义）`，也不得写成 `中文词（source term）`。人名首次出现保留英文原名的规则不适用于普通名词。
 - 历史术语、制度名、身份称谓、专业术语和文化负载词正文默认使用中文译名或准确意译，不得批量写成 `中文译名（source term）`。需要交代原词时，优先在正文处加统一注号，如 `术语[1]` 或 `术语（1）`，并把原词、释义和译名理由写入本章译注、章末注或术语表。只有不保留原词会造成明显误解、原词本身是作者论证对象、或学界译名分歧必须当场交代时，才允许正文短括注原词，并在 control 或术语表记录理由。
 - 注号只能使用 `[1]`、`(1)` / `（1）`、`注1` 三类体系。不得使用带圈数字、外面小圆圈的“注”、裸 `译注：` / `脚注：` / `尾注：` / `附注：`，或句末裸数字。
-- 盎格鲁-撒克逊制度身份词示例：`thegn` / `thane` 不得默认音译为“塞恩”，也不宜统一译成“支持者”。若语境强调土地、等级、服役和政治义务，正文按上下文用“王室领主”“领主近臣”“盎格鲁-撒克逊领主”等；术语注再写原文为 `thegns`，又作 `thanes`。`witenagemot` 正文用“贤人会议”，原词放术语注。
+- 制度身份词（如古英语、拉丁语职衔）正文按语境意译，原词与理由放进本章注释或术语表；具体词条示例见 `profiles/classical-history-zh-Hans/references/historical_status_terms.md`，本书专用写法记入本书 `glossary/terms.csv`。
 - 删除旧纸书中的可见分隔符，例如 `* * * * *`、`*****`、`----`；不得替换成 `---` 或其他可见分隔线。
 - 忠实事实和语气。
 - 中文必须自然，有叙述气息。
