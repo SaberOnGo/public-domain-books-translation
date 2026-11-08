@@ -101,3 +101,6 @@ Add notes per brief §10; explanations belong in notes, not body text; disclaime
 
 2026-11-02 首次试译（英译简中《甲虫》第一章，67 段）：盲评成对比较中，新法每千字错误分 5.2、风格类 2.6，旧流程译文 21.4、15.6；旧译有 19 处拆段与一处对白归属错乱，新译为 0。代价约为单章 65 万 token。局限：全部评审模型同属一家族，手册部分取材于该章，评审后修改未再评。上面第 3、4 节的补充规则来自这次试译。
 First trial (The Beetle ch. 1, English→Simplified Chinese): pairwise error points 5.2 vs 21.4 per 1000 characters, style 2.6 vs 15.6, paragraph splits 0 vs 19; about 650k tokens per chapter. Limits: single model family, brief partly drawn from the chapter, post-review fixes not re-reviewed. The added rules in §3 and §4 come from this trial.
+
+调用顺序、目录约定与实测约束（并发上限、卡死处理、额度中断后续跑、专名表）见 `chapter_driver_runbook.md`，辅助脚本是 `scripts/method_v2_tool.py`。
+For call order, layout and constraints observed in practice (concurrency cap, stall handling, resuming after a rate limit, name ledger), see `chapter_driver_runbook.md`; the helper script is `scripts/method_v2_tool.py`.
