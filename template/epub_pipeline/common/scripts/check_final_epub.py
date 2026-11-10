@@ -260,7 +260,7 @@ def read_epub(path: Path) -> EpubData:
 
 
 def body_of(raw: str) -> str:
-    match = re.search(r"<body\b[^>]*>(.*)</body>", raw, flags=re.DOTALL | re.IGNORECASE)
+    match = re.search(r"<(?:\w+:)?body\b[^>]*>(.*)</(?:\w+:)?body>", raw, flags=re.DOTALL | re.IGNORECASE)
     body = match.group(1) if match else raw
     body = re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL)
     return re.sub(r"<(script|style)\b.*?</\1>", "", body, flags=re.DOTALL | re.IGNORECASE)
@@ -286,6 +286,7 @@ class BlockCollector(HTMLParser):
             self.blocks.append((tag, text))
 
     def handle_starttag(self, tag: str, attrs: list) -> None:
+        tag = tag.rsplit(":", 1)[-1]  # namespace-prefixed XHTML (html:p) must behave like p
         if tag in ("script", "style"):
             self.skip += 1
         elif tag == "br":
@@ -298,10 +299,12 @@ class BlockCollector(HTMLParser):
             self.stack.append([tag, []])
 
     def handle_startendtag(self, tag: str, attrs: list) -> None:
+        tag = tag.rsplit(":", 1)[-1]
         if tag == "br":
             self.handle_data("\n")
 
     def handle_endtag(self, tag: str) -> None:
+        tag = tag.rsplit(":", 1)[-1]
         if tag in ("script", "style"):
             self.skip = max(0, self.skip - 1)
             return

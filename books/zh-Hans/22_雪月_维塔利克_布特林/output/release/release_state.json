@@ -1,44 +1,44 @@
 {
-  "current_version": "v0.0.2",
+  "current_version": "v0.0.4",
   "main_version": 0,
   "sub_version": 0,
-  "patch_version": 2,
-  "latest_epub": "雪月_v0.0.2.epub",
+  "patch_version": 4,
+  "latest_epub": "雪月_v0.0.4.epub",
   "latest_epubs": [
     {
       "edition_type": "target_only",
       "source_epub": "output/book.epub",
-      "epub": "雪月_v0.0.2.epub",
-      "sha256": "76cfc68cf625c619d83678f786b41b7b602d2de66e77d275e35462b2dc72068d",
-      "size_bytes": 2129654
+      "epub": "雪月_v0.0.4.epub",
+      "sha256": "49549556155dcd902011cbe7c04802f76ef075f37e0c1b6b8e301e2114b7db19",
+      "size_bytes": 2117254
     },
     {
       "edition_type": "bilingual_parallel",
       "source_epub": "output/book_bilingual_parallel.epub",
-      "epub": "雪月_中英双语_v0.0.2.epub",
-      "sha256": "c94d48ad7b7921b160483faed6fbde591581b58e96db08745633ce1590a3315a",
-      "size_bytes": 2495045
+      "epub": "雪月_中英双语_v0.0.4.epub",
+      "sha256": "8f2b1e9365a882123b20fc75afd8d5909c22717c882ab1394d39030e64267b25",
+      "size_bytes": 2482821
     },
     {
       "edition_type": "source_original",
       "source_epub": "output/book_english.epub",
-      "epub": "雪月_英文原文_v0.0.2.epub",
-      "sha256": "68bb6e0667eb52d583281fbf319efc3b2fe6e856d59e131278419255a7e166e1",
-      "size_bytes": 1090504
+      "epub": "雪月_英文原文_v0.0.4.epub",
+      "sha256": "0eeff2944c54c8f7acddc6a2dc714519c3751a2f052510ddd2ec4783d9bbc9d8",
+      "size_bytes": 1077819
     }
   ],
   "latest_release_note": "release_notes.md",
   "latest_status": "PASS",
-  "latest_created_at": "2026-10-05T05:07:45Z",
-  "latest_sha256": "76cfc68cf625c619d83678f786b41b7b602d2de66e77d275e35462b2dc72068d",
-  "latest_size_bytes": 2129654,
+  "latest_created_at": "2026-11-10T05:49:32Z",
+  "latest_sha256": "49549556155dcd902011cbe7c04802f76ef075f37e0c1b6b8e301e2114b7db19",
+  "latest_size_bytes": 2117254,
   "gate_summary": {
-    "random_spotcheck_round": "reviews/random_spotcheck/round_005",
-    "random_spotcheck_validation": "reviews/random_spotcheck/round_005/validation_report.json",
+    "random_spotcheck_round": "reviews/random_spotcheck/round_018",
+    "random_spotcheck_validation": "reviews/random_spotcheck/round_018/validation_report.json",
     "release_confidence": 1.0,
     "random_spotcheck_status": "PASS",
     "random_spotcheck_require_pass": true,
-    "current_review_run_id": "7990b5d2a643ff7a86d8e8fd",
+    "current_review_run_id": "a1bdcdc96f1f3e18d2433a9f",
     "current_run_pass_rounds_required": 2,
     "current_run_pass_rounds_count": 2,
     "epubcheck_path": "output/epubcheck.json",
@@ -49,9 +49,9 @@
       {
         "edition_type": "target_only",
         "artifact_path": "output/book.epub",
-        "artifact_sha256": "76cfc68cf625c619d83678f786b41b7b602d2de66e77d275e35462b2dc72068d",
+        "artifact_sha256": "49549556155dcd902011cbe7c04802f76ef075f37e0c1b6b8e301e2114b7db19",
         "report_path": "output/epubcheck.json",
-        "report_artifact_sha256": "76cfc68cf625c619d83678f786b41b7b602d2de66e77d275e35462b2dc72068d",
+        "report_artifact_sha256": "49549556155dcd902011cbe7c04802f76ef075f37e0c1b6b8e301e2114b7db19",
         "report_artifact_path": "output/book.epub",
         "report_edition_type": "target_only",
         "fatal": 0,
@@ -63,9 +63,9 @@
       {
         "edition_type": "bilingual_parallel",
         "artifact_path": "output/book_bilingual_parallel.epub",
-        "artifact_sha256": "c94d48ad7b7921b160483faed6fbde591581b58e96db08745633ce1590a3315a",
+        "artifact_sha256": "8f2b1e9365a882123b20fc75afd8d5909c22717c882ab1394d39030e64267b25",
         "report_path": "output/epubcheck_bilingual_parallel.json",
-        "report_artifact_sha256": "c94d48ad7b7921b160483faed6fbde591581b58e96db08745633ce1590a3315a",
+        "report_artifact_sha256": "8f2b1e9365a882123b20fc75afd8d5909c22717c882ab1394d39030e64267b25",
         "report_artifact_path": "output/book_bilingual_parallel.epub",
         "report_edition_type": "bilingual_parallel",
         "fatal": 0,
@@ -77,9 +77,9 @@
       {
         "edition_type": "source_original",
         "artifact_path": "output/book_english.epub",
-        "artifact_sha256": "68bb6e0667eb52d583281fbf319efc3b2fe6e856d59e131278419255a7e166e1",
+        "artifact_sha256": "0eeff2944c54c8f7acddc6a2dc714519c3751a2f052510ddd2ec4783d9bbc9d8",
         "report_path": "output/epubcheck_source_original.json",
-        "report_artifact_sha256": "68bb6e0667eb52d583281fbf319efc3b2fe6e856d59e131278419255a7e166e1",
+        "report_artifact_sha256": "0eeff2944c54c8f7acddc6a2dc714519c3751a2f052510ddd2ec4783d9bbc9d8",
         "report_artifact_path": "output/book_english.epub",
         "report_edition_type": "source_original",
         "fatal": 0,
@@ -119,19 +119,19 @@
     "literary_source_fidelity_backcheck_after_polish": true,
     "gpl_corresponding_source": {
       "status": "CURRENT_SAME_VERSION_GPL_SOURCE_REBUILD_AND_FIVE_ARTIFACTS_VERIFIED",
-      "version": "v0.0.2",
-      "archive": "output/source_packages/v0.0.2/Snowmoon_Corresponding_Source_v0.0.2.zip",
-      "archive_sha256": "ebbaed15e57a401b80489d5fb1217ed16000a57698c8a92cbc1494bef8bcba7b",
-      "package_verification": "output/source_packages/v0.0.2/package_verification.json",
-      "package_verification_sha256": "5e5c6cdadc351698f8214af68278d5fb2a4a0858f15541cff374f8c618d1fe49",
-      "isolated_rebuild_report": "build/source_rebuild/v0.0.2/rebuild_verification.json",
-      "isolated_rebuild_report_sha256": "1a8dd4bf2f53420659799fc24a7c5631743db70b2db4fc1a270a2978f74bca0e",
-      "immutable_baseline_proof": "qa/technical/final_subject_attachment_20261005_round007_candidate_baseline.json",
-      "immutable_baseline_proof_sha256": "53515054bb17ece6a44728a011513b4f61bf0ecee104a190262fb4fa2a31809b",
+      "version": "v0.0.4",
+      "archive": "output/source_packages/v0.0.4/Snowmoon_Corresponding_Source_v0.0.4.zip",
+      "archive_sha256": "b37db41bdaa41bba39f2057fe442853e234f0758ba5d506d2eda130a57bad2bb",
+      "package_verification": "output/source_packages/v0.0.4/package_verification.json",
+      "package_verification_sha256": "84dc0975b4bfd9f04a3a8aad83dda27571b9db12057143ae2917ba0d81b5b7e6",
+      "isolated_rebuild_report": "build/source_rebuild/v0.0.4/rebuild_verification.json",
+      "isolated_rebuild_report_sha256": "687d60b1340f9976ebbb60fc0c1070643c069102a266719d68ad7e2dd3fdd868",
+      "immutable_baseline_proof": "qa/technical/v004_final_20261110_round008_candidate_baseline.json",
+      "immutable_baseline_proof_sha256": "caf448dafed1f31051c71cf71279da5189b2d96db16fca2168886cb6b861226a",
       "artifact_sha256": {
-        "book.epub": "76cfc68cf625c619d83678f786b41b7b602d2de66e77d275e35462b2dc72068d",
-        "book_bilingual_parallel.epub": "c94d48ad7b7921b160483faed6fbde591581b58e96db08745633ce1590a3315a",
-        "book_english.epub": "68bb6e0667eb52d583281fbf319efc3b2fe6e856d59e131278419255a7e166e1"
+        "book.epub": "49549556155dcd902011cbe7c04802f76ef075f37e0c1b6b8e301e2114b7db19",
+        "book_bilingual_parallel.epub": "8f2b1e9365a882123b20fc75afd8d5909c22717c882ab1394d39030e64267b25",
+        "book_english.epub": "0eeff2944c54c8f7acddc6a2dc714519c3751a2f052510ddd2ec4783d9bbc9d8"
       },
       "web_file_count": 94
     }

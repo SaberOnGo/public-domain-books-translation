@@ -1072,3 +1072,68 @@ When samples repeatedly expose source-order calques, metaphor literalization, mi
   世界观界面标签漂移：反复出现的界面标签（消息表头 `From`、设备状态 `Attested`、`audits` 等流程名词）全书只能有一种译法（本书为“发件人”“已认证”“审计”）。最终随机抽检前，应汇总源文含该标签的所有单元并统计译法变体；哪怕只有零星异译，也按问题族处理。
 - Recheck: these repairs are `FIXED_RECHECK_REQUIRED`; every touched chapter needs a fresh zero-issue full-chapter round, and a family fix applied to an already sealed chapter re-opens that chapter.
   复查：这些修复都属于 `FIXED_RECHECK_REQUIRED`；凡被改动的章节都需要新的零问题整章复核，问题族修复若触及已封存章节，该章即重新打开。
+
+### Silently normalised source typos / 源文排印错误被静默改写（第7轮回填）
+
+- Symptom: a source word is misspelled ("Black-Schoes", "artibrageur", "voltility"). The translation silently writes the correct formal name or word with no note, so the reader cannot check the original. Treat as a missing translator note.
+- Fix: translate the intended name or word, then add one 译注 in the same chapter stating the printed form, the correction, and the rendering used (e.g. 原文作X，系Y之误，此处按Z译出). Do not write a locked name literally inside the note; use its placeholder only if the occurrence ledger expects it.
+- Guard: a note must not add placeholder occurrences the ledger does not expect, and must not put a locked literal outside its placeholder.
+- Backfill record: round 007 (book 3 期权战略投资), units 0e8d45f5, c7a05899, 55ad1559.
+
+### Figure alt-text families, note-marker audits and register-name disputes / 图片说明家族、注号核对与登记译名争议（头寸规模确定书，抽检第1–11轮回填）
+
+- Alt-text families: when a figure alt is rewritten, treat every sibling figure of the same template as one family and fix them together (e.g. optimizer-table row labels must match the book's transcription table: 最高平均收益 / 最高中位收益 / 破产概率<1% / 破产概率>0% / 达标概率减破产概率; a label followed directly by a number needs a connector such as “为”; distribution panels must describe what the image really shows — blank plot area with the printed banner, headings versus buttons). Verify every number against the figure's data CSV.
+  图片说明家族：改写一个图片 alt 时，把同模板的全部同类图当作一个问题族一起修，并逐项对照图的数据 CSV；行标签与转录表保持一致，标签后紧跟数字时加连接词，描述必须与图像实际内容一致。
+- XML escaping: `<` and `>` inside an `alt` attribute must be written `&lt;` / `&gt;`; a raw bracket makes the raw XHTML container invalid and breaks the build.
+  XML 转义：alt 属性里的 `<`、`>` 必须写成 `&lt;`、`&gt;`，否则原始 XHTML 不合法、构建失败。
+- Note-marker audits: a reviewer claim of a "dangling" `[^n]` must be checked against `chapters/notes/{chapter}.md` (plain `[n] text` definitions) before any fix; translator-note anchors that the source lacks are by design. Four rounds of P1 claims were misreads.
+  注号核对：评审称注号“悬空”时，先查 `chapters/notes/{chapter}.md` 的 `[n] 文本` 定义再决定是否修改；译者注可以新增源文没有的锚点，历轮 P1 多为误读。
+- Register-name disputes: product and company names rendered by the locked proper-noun register (e.g. the TradeSim descriptive rendering) are policy decisions; a spot-check reviewer disagreeing with a documented register rendering is recorded as a dispute and closed with the register evidence, not by local edits that break the ledger.
+  登记译名争议：专名登记表锁定的软件和公司译名属于项目决定；评审对已记录的登记译名有异议时，按争议记录并以登记表证据关闭，不得用局部改写破坏占用台账。
+- Polish limit: after a whole-book polish pass (149 units changed across 8 chapter groups, rechecked), spot-check averages stayed near 90–91; remaining score loss is spread over isolated stiff sentences and register-driven repeated full names, not a systematic style defect.
+  精修上限：全书精修（8 组、149 单元）后抽检均分仍约 90–91，剩余扣分分散在个别生硬句和登记术语重复全称，不再是系统性文笔问题。
+- Backfill record: book 4 头寸规模确定权威指南, spot-check rounds 001–011.
+- Locked-name captions and alt text (options book, rounds 019–030): when a figure or caption unit carries no `{{pn:...}}` placeholder, writing the locked Chinese form (e.g. a Greek-letter name, a product full name) or the English full name in it is rejected (`CSV_ONLY_RENDER_REQUIRED`), and adding a placeholder is rejected too (`ENTITY_OCCURRENCE_COVERAGE_FAILED`). Reword without the locked form (e.g. "图题所示指标", "时间损耗") or, if the placeholder count already matches the source caption, move the placeholder into the title; otherwise record a contract exception with the evidence instead of retrying edits. Never delete a placeholder to "fix" wording.
+  锁定名与图注、alt：图注或 alt 单元没有占位符时，直接写锁定中文名或英文全称会被拒绝，新增占位符也会被拒绝。应改用不含锁定形式的写法；若占位符数量与源图题一致，可把占位符移到图题；否则记录合同例外并附证据，不要反复试改，更不要为改措辞删除占位符。
+- Terminology unification by whole-book search: one unit used a synonym for a term fixed elsewhere (e.g. a "保本价" family against the book-wide "盈亏平衡点"). Search the whole reader-facing book for the synonym, replace the noun uses in every unit in one batch, and keep verb uses.
+  术语统一：同一术语在个别章节用了近义词时，全书检索该近义词，一次批量替换所有名词用法，动词用法保留。
+- Cross-reference titles: a reference such as "第3章题为“…”的一节" must reuse the exact chapter heading in the final text; check it against the heading, not against memory.
+  交叉引用题名：“第 N 章题为“…”的一节”必须与成稿标题一字不差，按标题核对。
+- Note anchors: every `译注[n]：` needs exactly one body anchor `[n]` (or a `sup` anchor in a figure caption) in the same unit, and notes are numbered in reading order within the chapter. Count `[n]` occurrences per chapter (each number must appear twice: anchor and label) after any note edit.
+  译注锚点：每条“译注[n]：”在同一单元内必须有且只有一个正文锚点，章内按阅读顺序编号；改动译注后按章统计 [n] 出现次数（锚点和注文各一次）。
+- Reviewer misalignment: a spot-check claim of "added", "omitted" or "reversed" must be checked against the unit's own `source_text` before any edit. Several severe claims in rounds 017–022 and 026 were sample-to-source misalignments; the translation followed the source, and editing it (or deleting a faithful sentence) broke the occurrence ledger.
+  评审错配：评审称“增译、漏译、结论相反”时，先对照该单元自己的 `source_text` 再改；多条“严重”实为样本与源段错配，译文本忠实，盲目修改还会破坏占用台账。
+- Semicolons in new notes: a newly written translator note or list line containing `；` fails the semicolon gate (F33 UNRESOLVED); use a comma or a full stop.
+  新写的译注或列表行不要用中文分号，否则分号门禁失败，改用逗号或句号。
+- Backfill record: options book 期权战略投资, spot-check rounds 008–030.
+- Translator notes must state only verified facts (options book, round 034): a note that says the book has a printing error must be recomputed with that unit's own numbers and premises. One note applied the formula of the previous worked example to a different position and called a correct figure an error; another gave a "corrected solution" that did not satisfy the printed equations; another called a normal debit-spread quote a mistake. Do not carry numbers across examples, do not state causes you cannot verify (old edition, OCR), and when the source phrasing is a standard usage, add no note. After finding one bad note, audit every note in the book with independent recomputation.
+  译注只写已核实内容：声称原书有误的译注必须用该单元自己的数字和前提复算；不得把前一个例子的算式套到另一个头寸，不得写无法证实的原因（旧版文字、识别错误），原文是通行说法时不加译注；发现一条错注后，要对全书译注做独立复算审计。
+- Doubled-character typos (options book, round 036): search the book for the exact suspicious string (e.g. "即即") and fix every hit in one batch; a generic repeated-character regex matches hundreds of legitimate words and is not a usable audit.
+  叠字笔误：评审指出一处“即即”后，用精确字符串检索全书并一次批量修正；宽泛的叠字正则会命中大量正常词语，不能作为审计手段。
+- Registered-term placeholder collisions (position sizing book, round 016): a locked register term (e.g. "optimal bet size" rendered as 最优头寸规模) can collide with a neighbouring term of the same book (position size) and make a sentence contradict itself. The placeholder cannot be deleted (marker count must stay identical), so keep it and add a short appositive that disambiguates ("，也就是下注规模"), then recheck the unit independently. Do not touch the register for one site.
+  登记术语占位符冲突（头寸规模确定书，抽检第16轮）：锁定登记词（如 optimal bet size 渲染为“最优头寸规模”）可能与同书相邻术语（头寸规模）混淆，使句子自相矛盾。占位符不能删（标记数必须一致），应保留并补一个消歧同位语（“，也就是下注规模”），再做独立复查；不要为单点改登记表。
+- Backfill record: position sizing book 头寸规模确定, spot-check round 016.
+- Edit only against the unit's own source (options book, round 038): before changing any sentence, read that translation unit's own `source_text`. A sentence that a reviewer calls "interpretive" may be a faithful rendering of this unit; a fix drawn from a similar sentence elsewhere in the chapter replaces fidelity with a different passage. One such edit made in round 021 was only caught by a random sample in round 038.
+  只对照单元自己的源文修改：改任何句子前先读该翻译单元自己的 `source_text`；评审说“解释性改写”的句子可能正是本单元的忠实译文，拿章内相似句当依据会把忠实换成别处内容。第21轮的一次此类修改，直到第38轮才被随机抽到。
+
+### Reviewer-fix truncation, scripted verdicts and gate collisions / 评审修订句截断、脚本代写判定与门禁冲突（雪月 v0.0.3，文学第9–36轮与抽检第10轮回填）
+
+- Reviewer-suggested sentences can silently truncate a unit (snowmoon v0.0.3, literary round 11): of 55 suggested fixes, three replaced a multi-sentence unit with only its last sentence and one added a gender ("她") for a gender-neutral "a Keeper". The independent semantic review caught all four. Apply every suggested fix as an exact-substring replacement on the unit's own `target_template` (assert the pattern occurs exactly once), never by pasting the suggested sentence, and re-run the semantic review for every edited unit.
+  评审给出的“建议句”可能把多句单元截成最后一句，或凭空加性别。一律按单元自己的 `target_template` 做精确子串替换（断言恰好命中一次），不要整句粘贴；改过的单元必须重新做语义复核。
+- Scripted verdict files are not reviews: reviewer subagents wrote all-PASS files with one repeated summary through a script. Reject any results file whose summaries are identical or near-identical, quarantine it, and re-dispatch with an explicit "hand-written, unit-specific notes" instruction.
+  脚本批量写 PASS 不是复核：摘要整章相同的结果文件一律作废并隔离，重派并明确要求逐条手写、摘要针对单元内容。
+- Entity markers: a rewrite that drops one `{{pn:...}}` marker fails the merge (ENTITY_OCCURRENCE_COVERAGE_FAILED). Keep every marker, or rebuild the template from the rendered fix and check that the markers round-trip.
+  改写丢掉一个实体标记会使合并失败；保留全部标记，或由渲染句反推模板并核对标记往返一致。
+- Glossary and semicolon gates are keyed to exact text: a locked term whose forbidden rendering is a common word (XOR → 或者 forbidden) fires whenever that word appears in a unit whose source contains the term; an approved semicolon exception is keyed to the line's exact text, so any edit of that line needs the exception refreshed (or the semicolon removed, which is preferable).
+  门禁按精确文本匹配：锁定术语的禁用译法若是常用词（XOR 禁用“或者”），含该术语的单元里一出现就报错；分号例外按整行文本登记，改动该行必须同步更新例外（更好的做法是直接去掉分号）。
+- Silent-read variance: two independent silent readers flag different sentences each round, and single-reader flags rotate. Fix sentences both readers flag, name pronoun referents explicitly, split sentences that stack three actions, and state the scoring rubric (including that locked first-mention source-name glosses and setting-driven technical density are not by themselves deductions) identically to both readers.
+  静读波动：两名读者每轮标记的句子不同；优先修两人同时标记的句子，明确代词指代，拆开叠三个动作的句子，并向两名读者用同一评分口径（锁定的首现原文括注、设定本身的技术词密度不单独扣分）。
+- Packet text: build review packets with `get_text(" ")` then collapse spaces between CJK characters; `get_text("")` glues adjacent spans and produced false FAILs.
+  审校包文本：用 `get_text(" ")` 再合并中文间空格；`get_text("")` 会粘连相邻 span，造成假 FAIL。
+- Spot-check round 10 families: a figure title that named the same game differently from its sibling figures (圆点堆游戏 vs 取圆点游戏); straight single quotes around constructed-language words in dialogue (use nested curly quotes, search the whole book); a dropped size adjective ("oversized") in a noun phrase. Search the whole book for each family before resampling.
+  抽检第10轮问题族：同一游戏在相邻图题里译名不一致；对话中构造语词用直单引号（改为弯引号并全书检索）；名词短语里漏掉尺寸形容词。重抽前全书检索各同类。
+- Backfill record: snowmoon v0.0.3, literary rounds 9–36, spot-check round 010.
+- Spot-check round 14 families (snowmoon v0.0.4): one caption of a four-figure group dropped a modifier its siblings carry (Drone-operation display → 行动界面 vs 无人机行动界面); one concept rendered two ways (casualty ratios as 损失比例 in three units, 伤亡比 in eight). When fixing a figure caption, change the svg `aria-label`, `<title>` and `<figcaption>` together; after any caption or term change, grep the whole unit store for the sibling captions and the variant rendering before resampling. Sampling exports flatten `<br/>` and cell borders into `||||`; check the real EPUB XHTML before calling it a table defect.
+  抽检第14轮问题族：同组四张图题注有一张漏掉兄弟题注都有的修饰词；同一概念 casualty ratios 在三处译“损失比例”、八处译“伤亡比”。改图题注须同时改 svg 的 aria-label、title 与 figcaption；任何题注或术语改动后，重抽前全书检索同组题注与异译。抽检导出会把 `<br/>` 与单元格边界拍平成“||||”，判定表格缺陷前先看真实 EPUB XHTML。
+- Spot-check round 17 family (snowmoon v0.0.4): one coined word (autobus) rendered 公共汽车 fifteen times and 自动公交 three times. When a reviewer flags one rendering of a recurring coined word, grep the whole unit store for every rendering of the source word, pick the majority, and unify before resampling. Also: if a reviewer misreads a locked ledger rendering (Sadzu Du → 主城) as a dropped name, tell the reviewer the ledger entry and let them rewrite their own row; never edit reviewer rows.
+  抽检第17轮问题族：同一生造词 autobus 十五处译“公共汽车”、三处译“自动公交”。评审指出一处译法时，全书检索该原词的全部译法，取多数统一后再复抽。评审把已锁定的专名译法（Sadzu Du→主城）误读为漏译时，把账本条目告知评审并由其自行改写评审行，不得替评审改行。
