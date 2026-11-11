@@ -140,6 +140,11 @@ def check(book, num, target):
             ratio = len(CJK.findall(t)) / max(len(src[i]), 1)
             if ratio < 0.12 or ratio > 0.6:
                 problems.append(f"{i}: length ratio {ratio:.2f} (CJK chars / source chars)")
+    body_text = re.sub(r"\[P\d+\]", "", text.split("## 注释")[0])
+    marks = {int(x) for x in re.findall(r"\[(\d+)\]", body_text)}
+    defs = [int(m.group(1)) for n in notes for m in [re.match(r"^\[(\d+)\]", n)] if m]
+    if marks != set(defs) or len(defs) != len(set(defs)):
+        problems.append(f"note markers {sorted(marks)} do not match note definitions {sorted(defs)}")
     out(f"ch{num}: {len(tgt)}/{len(src)} paragraphs, {len(notes)} note lines")
     for p in problems:
         out("PROBLEM " + p)
@@ -149,14 +154,18 @@ def check(book, num, target):
 
 def merge(book, num, out_path, files):
     cdir = book / f"qa/method_v2/ch{num}"
-    paras, notes = {}, {}
+    paras, notes, dup_notes = {}, {}, []
     for f in files:
         p, n = read_numbered(f)
         paras.update(p)
         for line in n:
             m = re.match(r"^\[(\d+)\]", line)
             if m:
-                notes[int(m.group(1))] = line
+                key = int(m.group(1))
+                if key in notes and notes[key] != line:
+                    out(f"WARNING duplicate note number [{key}] with different text in {f}; renumber the unit's notes")
+                    dup_notes.append(key)
+                notes[key] = line
     head = (cdir / "heading_zh.md").read_text(encoding="utf-8").strip()
     lines = [head, ""]
     for i in sorted(paras, key=lambda k: int(k[1:])):
@@ -167,6 +176,7 @@ def merge(book, num, out_path, files):
             lines += [notes[k], ""]
     Path(out_path).write_text("\n".join(lines), encoding="utf-8")
     out(f"merged {len(paras)} paragraphs, {len(notes)} notes -> {out_path}")
+    return 1 if dup_notes else 0
 
 
 def profile(target):
@@ -195,7 +205,7 @@ def main():
     if a.cmd == "profile":
         return profile(a.target)
     if a.cmd == "merge":
-        return merge(Path(a.book).resolve(), a.num, a.out, a.files)
+        sys.exit(merge(Path(a.book).resolve(), a.num, a.out, a.files))
     book = Path(a.book).resolve()
     if a.cmd == "prepare":
         prepare(book)
